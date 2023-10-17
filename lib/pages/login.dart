@@ -94,6 +94,10 @@ class Login extends StatelessWidget {
                                 ? ''
                                 : 'Please enter your mobile number',
                             border: const OutlineInputBorder(),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.black), // Change the color here
+                            ),
                             floatingLabelBehavior: FloatingLabelBehavior.never,
                           ),
                           focusNode: _textFieldFocusNode,

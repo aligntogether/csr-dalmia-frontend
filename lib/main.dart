@@ -1,9 +1,12 @@
 import 'package:dalmia/pages/login.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter_config/flutter_config.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
-import 'package:dalmia/pages/vdf/addhouse.dart';
+import 'package:dalmia/pages/vdf/household/addhouse.dart';
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await FlutterConfig.loadEnvVariables();
   runApp(const MyWidget());
 }
 
@@ -12,6 +15,6 @@ class MyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: Login());
+    return const MaterialApp(debugShowCheckedModeBanner: false, home: Login());
   }
 }

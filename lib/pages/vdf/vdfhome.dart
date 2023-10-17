@@ -1,4 +1,5 @@
-import 'package:dalmia/pages/vdf/addhouse.dart';
+import 'package:dalmia/pages/AddStreet.dart';
+import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/dash.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: VdfHome(),
     );
   }
@@ -31,33 +32,47 @@ class _VdfHomeState extends State<VdfHome> {
     });
   }
 
+  bool _toggle = false;
+
+  void _openDrawer() {
+    setState(() {
+      _toggle = true;
+    });
+  }
+
+  void _closeDrawer() {
+    setState(() {
+      _toggle = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100),
+          preferredSize: const Size.fromHeight(100),
           child: AppBar(
             titleSpacing: 20,
             backgroundColor: Colors.white,
-            title: Image(image: AssetImage('images/icon.jpg')),
+            title: const Image(image: AssetImage('images/icon.jpg')),
             automaticallyImplyLeading: false,
             actions: <Widget>[
               IconButton(
                 iconSize: 30,
                 onPressed: () {
-                  // Toggle the drawer
+                  _openDrawer();
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.menu,
                   color: Colors.black,
                 ),
               ),
             ],
             bottom: PreferredSize(
-              preferredSize: Size.fromHeight(50),
+              preferredSize: const Size.fromHeight(50),
               child: Container(
-                padding: EdgeInsets.only(left: 30, bottom: 10),
+                padding: const EdgeInsets.only(left: 30, bottom: 10),
                 alignment: Alignment.topLeft,
                 color: Colors.white,
                 child: Text(
@@ -75,9 +90,9 @@ class _VdfHomeState extends State<VdfHome> {
           children: [
             Center(child: DashTab()),
             // Add the drawer as a positioned widget
-            if (_selectedIndex == 1) _buildDrawer1(),
+            if (_toggle == true) _buildDrawer1()
 
-            if (_selectedIndex == 2) _buildDrawer2()
+            // if (_selectedIndex == 2) _buildDrawer2()
           ],
         ),
         bottomNavigationBar: BottomAppBar(
@@ -86,9 +101,9 @@ class _VdfHomeState extends State<VdfHome> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               buildTabItem(Icons.dashboard_customize_outlined, "Dashboard", 0),
-              buildTabItem(Icons.home_sharp, "Home", 1),
-              buildTabItem(Icons.streetview_outlined, "Streets", 2),
-              buildTabItem(Icons.drafts_outlined, "Interventions", 3),
+              buildTabItem(Icons.home_sharp, "Add Household", 1),
+              buildTabItem(Icons.streetview_outlined, "Add Street", 2),
+              buildTabItem(Icons.drafts_outlined, "Drafts", 3),
             ],
           ),
         ),
@@ -103,6 +118,20 @@ class _VdfHomeState extends State<VdfHome> {
     return InkWell(
       onTap: () {
         _onTabTapped(index);
+        if (index == 1) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => MyForm(),
+            ),
+          );
+        }
+        if (index == 2) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => AddStreet(),
+            ),
+          );
+        }
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -122,109 +151,53 @@ class _VdfHomeState extends State<VdfHome> {
     );
   }
 
-  // Widget _buildTabContent(int index) {
-  //   switch (index) {
-  //     case 0:
-  //       return DashTab();
-  //     case 1:
-  //       return HomeTab();
-  //     case 2:
-  //       return StreetTab();
-  //     case 3:
-  //       return IntervantionTab();
-  //     default:
-  //       return Container();
-  //   }
-  // }
-
   Widget _buildDrawer1() {
     return Positioned.fill(
       child: GestureDetector(
         onTap: () {
+          _closeDrawer();
           // Close the drawer when tapping outside
         },
         child: Container(
           color: Colors.black.withOpacity(0.3),
           child: Align(
-            alignment: Alignment.bottomCenter,
+            alignment: Alignment.topCenter,
             child: Container(
-              height: MediaQuery.of(context).size.height / 3,
+              // height: MediaQuery.of(context).size.height / 3,
               color: Colors.white,
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
                     ListTile(
-                      leading: Icon(Icons.add_circle_outline),
-                      title: Text('Add a Household'),
+                      leading: const Icon(Icons.close),
                       onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => MyForm(),
-                          ),
-                        );
+                        _closeDrawer();
                         // Handle item 1 click
                         // Close the drawer
                       },
                     ),
                     ListTile(
-                      leading: Icon(Icons.timer_sharp),
-                      title: Text('Update Household Details'),
+                      leading: const Icon(Icons.add_circle_outline),
+                      title: const Text('Reports'),
                       onTap: () {
-                        // Handle item 2 click
+                        // Navigator.of(context).push(
+                        //   MaterialPageRoute(
+                        //     builder: (context) => MyForm(),
+                        //   ),
+                        // );
+                        // Handle item 1 click
                         // Close the drawer
                       },
                     ),
                     ListTile(
-                      leading: Icon(Icons.note_alt_rounded),
-                      title: Text('View Drafts'),
+                      leading: const Icon(Icons.timer_sharp),
+                      title: const Text('Logout'),
                       onTap: () {
                         // Handle item 2 click
                         // Close the drawer
                       },
                     ),
-                    // Add more items as needed
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
-  Widget _buildDrawer2() {
-    return Positioned.fill(
-      child: GestureDetector(
-        onTap: () {
-          // Close the drawer when tapping outside
-        },
-        child: Container(
-          color: Colors.black.withOpacity(0.3),
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: MediaQuery.of(context).size.height / 3,
-              color: Colors.white,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    ListTile(
-                      leading: Icon(Icons.add),
-                      title: Text('All Streets'),
-                      onTap: () {
-                        // Handle item 1 click
-                        // Close the drawer
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.edit),
-                      title: Text('Add a Streets'),
-                      onTap: () {
-                        // Handle item 2 click
-                        // Close the drawer
-                      },
-                    ),
                     // Add more items as needed
                   ],
                 ),
@@ -237,19 +210,10 @@ class _VdfHomeState extends State<VdfHome> {
   }
 }
 
-// class DashTab extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Center(
-//       child: Text("Dashboard Tab Content"),
-//     );
-//   }
-// }
-
 class IntervantionTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Text('Interventions Tab Content'),
     );
   }

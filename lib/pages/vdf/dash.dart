@@ -31,16 +31,16 @@ class DashTab extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         CustomCard(
-                          imageUrl: 'images/household.png',
+                          imageUrl: 'images/t_house.png',
                           subtitle: 'Total Household',
                           title: '150',
                         ),
                         CustomCard(
-                            imageUrl: 'images/shared.png',
+                            imageUrl: 'images/m_house.png',
                             title: '150',
                             subtitle: 'Mapped Household'),
                         CustomCard(
-                            imageUrl: 'images/interv.png',
+                            imageUrl: 'images/s_house.png',
                             title: '130',
                             subtitle: 'Selected for Intervention'),
                       ],
@@ -66,20 +66,44 @@ class DashTab extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         CustomCard(
-                          imageUrl: 'images/ihouse.png',
+                          imageUrl: 'images/i_house.png',
                           subtitle: 'Household covered',
                           title: '30',
                         ),
                         CustomCard(
-                            imageUrl: 'images/iplanned.png',
+                            imageUrl: 'images/i_planned.png',
                             title: '100',
-                            subtitle: 'Intervention plaaned'),
+                            subtitle: 'Intervention planned'),
                         CustomCard(
                             imageUrl: 'images/icompleted.png',
                             title: '25',
                             subtitle: 'Household completed'),
                       ],
                     ))
+              ],
+            ),
+            Column(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.only(left: 20, bottom: 10),
+                  child: const Text(
+                    'Follow up',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.topLeft,
+                  padding: EdgeInsets.only(left: 100),
+                  child: CustomCard(
+                    imageUrl: 'images/overdue.png',
+                    subtitle: 'Overdue',
+                    title: '1',
+                  ),
+                )
               ],
             ),
             Column(
