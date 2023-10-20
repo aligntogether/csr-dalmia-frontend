@@ -1,13 +1,15 @@
-import 'package:dalmia/pages/AddStreet.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/dash.dart';
+import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
@@ -58,6 +60,17 @@ class _VdfHomeState extends State<VdfHome> {
             title: const Image(image: AssetImage('images/icon.jpg')),
             automaticallyImplyLeading: false,
             actions: <Widget>[
+              CircleAvatar(
+                child: IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.notifications_none_outlined,
+                      // color: Colors.blue,
+                    )),
+              ),
+              SizedBox(
+                width: 20,
+              ),
               IconButton(
                 iconSize: 30,
                 onPressed: () {
@@ -193,6 +206,7 @@ class _VdfHomeState extends State<VdfHome> {
                       leading: const Icon(Icons.timer_sharp),
                       title: const Text('Logout'),
                       onTap: () {
+                        _showConfirmationDialog(context);
                         // Handle item 2 click
                         // Close the drawer
                       },
@@ -217,4 +231,45 @@ class IntervantionTab extends StatelessWidget {
       child: Text('Interventions Tab Content'),
     );
   }
+}
+
+void _showConfirmationDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: Icon(Icons.close),
+            ),
+            Text('Are you sure you want to logout of the application?'),
+          ],
+        ),
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.blue,
+              ),
+              onPressed: () {
+                // Navigator.of(context).push(
+                //   MaterialPageRoute(
+                //     builder: (context) => const Approval(),
+                //   ),
+                // );
+                // Perform actions when 'Yes' is clicked
+              },
+              child: const Text('Yes'),
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }

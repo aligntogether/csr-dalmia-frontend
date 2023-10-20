@@ -1,6 +1,6 @@
 import 'package:dalmia/pages/otp.dart';
+
 import 'package:flutter/material.dart';
-import 'package:dalmia/pages/vdf/vdfhome.dart';
 
 class Login extends StatelessWidget {
   const Login({super.key});
@@ -11,7 +11,7 @@ class Login extends StatelessWidget {
   }
 
   SafeArea login(context) {
-    final FocusNode _textFieldFocusNode = FocusNode();
+    final FocusNode textFieldFocusNode = FocusNode();
 
     return SafeArea(
       child: Scaffold(
@@ -56,10 +56,8 @@ class Login extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        child: const Image(
-                          image: AssetImage('images/icon.jpg'),
-                        ),
+                      const Image(
+                        image: AssetImage('images/icon.jpg'),
                       ),
                       Container(
                         padding: const EdgeInsets.all(20.0),
@@ -90,17 +88,17 @@ class Login extends StatelessWidget {
                         child: TextField(
                           textAlign: TextAlign.center,
                           decoration: InputDecoration(
-                            hintText: _textFieldFocusNode.hasFocus
+                            hintText: textFieldFocusNode.hasFocus
                                 ? ''
                                 : 'Please enter your mobile number',
                             border: const OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(
+                            focusedBorder: const OutlineInputBorder(
                               borderSide: BorderSide(
                                   color: Colors.black), // Change the color here
                             ),
                             floatingLabelBehavior: FloatingLabelBehavior.never,
                           ),
-                          focusNode: _textFieldFocusNode,
+                          focusNode: textFieldFocusNode,
                         ),
                       ),
                       const SizedBox(height: 20.0),
@@ -113,7 +111,7 @@ class Login extends StatelessWidget {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xcc0054a6),
+                          backgroundColor: const Color(0xcc0054a6),
                           elevation: 5.0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5.0),

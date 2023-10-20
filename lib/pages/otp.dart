@@ -1,26 +1,21 @@
-import 'package:flutter/material.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:flutter/material.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:flutter/services.dart';
 
 class Otp extends StatelessWidget {
-  const Otp({super.key});
+  const Otp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return otp(context);
   }
 
-  SafeArea otp(context) {
-    final FocusNode _textFieldFocusNode = FocusNode();
+  SafeArea otp(BuildContext context) {
+    final TextEditingController _pinEditingController = TextEditingController();
 
     return SafeArea(
       child: Scaffold(
-        // appBar: AppBar(
-        //   title: const Text(
-        //     'Appbar',
-        //   ),
-        //   centerTitle: true,
-        //   backgroundColor: Colors.white,
-        // ),
         body: Stack(
           children: [
             const Positioned(
@@ -86,16 +81,25 @@ class Otp extends StatelessWidget {
                       Container(
                         margin: const EdgeInsets.only(bottom: 40.0),
                         width: 300.0,
-                        child: TextField(
-                          textAlign: TextAlign.center,
-                          decoration: InputDecoration(
-                            hintText: _textFieldFocusNode.hasFocus
-                                ? ''
-                                : 'Please enter OTP',
-                            border: const OutlineInputBorder(),
-                            floatingLabelBehavior: FloatingLabelBehavior.never,
-                          ),
-                          focusNode: _textFieldFocusNode,
+                        child: PinCodeTextField(
+                          appContext: context,
+                          length: 6,
+                          onChanged: (value) {},
+                          controller: _pinEditingController,
+                          pinTheme: PinTheme(
+                              shape: PinCodeFieldShape.underline,
+                              borderRadius: BorderRadius.circular(5),
+                              fieldHeight: 50,
+                              fieldWidth: 40,
+                              inactiveColor: Colors.grey,
+                              activeColor: Colors.black
+                              // activeFillColor: Colors.white,
+                              ),
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          obscureText: true,
+                          obscuringCharacter: '*',
                         ),
                       ),
                       const SizedBox(height: 20.0),

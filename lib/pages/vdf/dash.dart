@@ -18,7 +18,7 @@ class DashTab extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.only(left: 20, bottom: 10),
                   child: const Text(
-                    'Houseolds Covered',
+                    'Households Summary',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
@@ -156,7 +156,7 @@ class DashTab extends StatelessWidget {
                         CustomCard(
                           imageUrl: 'images/income.png',
                           title: '10',
-                          subtitle: '50k to 75k',
+                          subtitle: 'More than 1L',
                         ),
                       ],
                     ),

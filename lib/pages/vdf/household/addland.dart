@@ -24,6 +24,23 @@ class _MyFormState extends State<AddLand> {
             'Add Household',
             style: TextStyle(color: Colors.black),
           ),
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: const Row(
+              children: [
+                Icon(
+                  Icons.keyboard_arrow_left_outlined,
+                  color: Colors.black,
+                ),
+                Text(
+                  'Back',
+                  style: TextStyle(color: Colors.black),
+                )
+              ],
+            ),
+          ),
           backgroundColor: Colors.grey[50],
           actions: <Widget>[
             IconButton(

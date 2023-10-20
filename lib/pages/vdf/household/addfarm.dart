@@ -1,16 +1,16 @@
 import 'package:dalmia/pages/vdf/household/addland.dart';
-import 'package:dalmia/pages/vdf/household/addlivestock.dart';
+import 'package:dalmia/pages/vdf/household/selecttype.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:flutter/material.dart';
 
-class AddCrop extends StatefulWidget {
-  const AddCrop({Key? key}) : super(key: key);
+class AddFarm extends StatefulWidget {
+  const AddFarm({Key? key}) : super(key: key);
 
   @override
-  State<AddCrop> createState() => _AddCropState();
+  State<AddFarm> createState() => _AddFarmState();
 }
 
-class _AddCropState extends State<AddCrop> {
+class _AddFarmState extends State<AddFarm> {
   List<bool> cropCheckList = List.filled(16, false);
 
   @override
@@ -26,6 +26,11 @@ class _AddCropState extends State<AddCrop> {
           ),
           leading: GestureDetector(
             onTap: () {
+              // Navigator.of(context).push(
+              //   MaterialPageRoute(
+              //     builder: (context) => AddLand(),
+              //   ),
+              // );
               Navigator.of(context).pop();
             },
             child: const Row(
@@ -69,43 +74,62 @@ class _AddCropState extends State<AddCrop> {
               const Padding(
                 padding: EdgeInsets.only(left: 20),
                 child: Text(
-                  'Add Crops Details',
+                  'Add Farm Equipment Details',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Padding(
-                padding: EdgeInsets.only(left: 20),
-                child: Text(
-                  'What are the crops you have cultivated in the past three years? ',
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+              Column(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  SizedBox(height: 20),
+                  Rowstock('Tractor'),
+                  SizedBox(height: 20),
+                  Rowstock('Mini Tractor'),
+                  SizedBox(height: 20),
+                  Rowstock('Rotovator'),
+                  SizedBox(height: 20),
+                  Rowstock('Sprayer'),
+                  SizedBox(height: 20),
+                  Rowstock('Weeder'),
+                  SizedBox(height: 20),
+                  Rowstock('MB Plough'),
+                  SizedBox(height: 20),
+                  Rowstock('Harvestor'),
+                  SizedBox(height: 20),
+                  Row(
                     children: [
-                      cropRow('Paddy', 0),
-                      cropRow('Sugarcane', 1),
-                      cropRow('Maize, Corn', 2),
-                      cropRow('Chilli', 3),
-                      cropRow('Millet', 4),
-                      cropRow('Fodder', 5),
-                      cropRow('Gingilee', 6),
-                      cropRow('Bengalgram', 7),
-                      const SizedBox(height: 16),
                       SizedBox(
-                        width: 120,
+                        width: 40,
+                      ),
+                      Text(
+                        'Others1',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey),
+                      ),
+                      SizedBox(
+                        width: 85,
                         height: 35,
                         child: TextField(
                           decoration: const InputDecoration(
-                            labelText: 'Other Crop 1',
+                            label: Text('Specify'),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 55,
+                        height: 35,
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            label: Text('No.'),
                             border: OutlineInputBorder(
                               borderSide: BorderSide(
                                 width: 2,
@@ -116,24 +140,36 @@ class _AddCropState extends State<AddCrop> {
                       ),
                     ],
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  SizedBox(height: 20),
+                  Row(
                     children: [
-                      cropRow('Paddy', 8),
-                      cropRow('Sugarcane', 9),
-                      cropRow('Maize, Corn', 10),
-                      cropRow('Chilli', 11),
-                      cropRow('Millet', 12),
-                      cropRow('Fodder', 13),
-                      cropRow('Gingilee', 14),
-                      cropRow('Bengalgram', 15),
-                      const SizedBox(height: 16),
+                      Text(
+                        'Others2',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey),
+                      ),
                       SizedBox(
-                        width: 120,
+                        width: 85,
                         height: 35,
                         child: TextField(
                           decoration: const InputDecoration(
-                            labelText: 'Other crop 2',
+                            label: Text('Specify'),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 55,
+                        height: 35,
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            label: Text('No.'),
                             border: OutlineInputBorder(
                               borderSide: BorderSide(
                                 width: 2,
@@ -143,8 +179,11 @@ class _AddCropState extends State<AddCrop> {
                         ),
                       ),
                     ],
-                  )
+                  ),
                 ],
+              ),
+              const SizedBox(
+                height: 20,
               ),
               const SizedBox(height: 20),
               Row(
@@ -157,14 +196,9 @@ class _AddCropState extends State<AddCrop> {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => AddStock(),
+                          builder: (context) => SelectType(),
                         ),
                       );
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder: (context) => AddCrop(),
-                      //   ),
-                      // );
                     },
                     child: const Text('Next'),
                   ),
@@ -192,20 +226,36 @@ class _AddCropState extends State<AddCrop> {
       ),
     );
   }
+}
 
-  Widget cropRow(String text, int index) {
-    return Row(
-      children: [
-        Checkbox(
-          value: cropCheckList[index],
-          onChanged: (value) {
-            setState(() {
-              cropCheckList[index] = value!;
-            });
-          },
+Widget Rowstock(String text) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceAround,
+    children: [
+      // SizedBox(
+      //   width: 40,
+      // ),
+      Text(
+        text,
+        style: TextStyle(
+            fontSize: 16, fontWeight: FontWeight.w600, color: Colors.grey),
+      ),
+      // SizedBox(
+      //   width: 40,
+      // ),
+      SizedBox(
+        width: 45,
+        height: 30,
+        child: TextField(
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                width: 2,
+              ),
+            ),
+          ),
         ),
-        Text(text),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 }
