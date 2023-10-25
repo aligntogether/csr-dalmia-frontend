@@ -1,4 +1,5 @@
 import 'package:dalmia/pages/login.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_config/flutter_config.dart';
 
@@ -9,10 +10,13 @@ void main() {
 }
 
 class MyWidget extends StatelessWidget {
-  const MyWidget({Key? key});
+  const MyWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: Login());
+    return MaterialApp(
+        theme: AppTheme.lightTheme,
+        debugShowCheckedModeBanner: false,
+        home: Login());
   }
 }

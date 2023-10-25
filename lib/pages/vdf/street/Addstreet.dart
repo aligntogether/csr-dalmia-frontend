@@ -1,10 +1,14 @@
 // import 'package:dalmia/pages/vdf/household/addhead.dart';
+import 'package:dalmia/pages/vdf/street/CheckStreet.dart';
 import 'package:flutter/material.dart';
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
 // import 'package:flutter_config/flutter_config.dart';
 
 // returns 'abcdefgh'
+String selectedPanchayat = "";
+String selectedVillage = "";
+
 class Panchayat {
   final String id;
   final String name;
@@ -185,8 +189,8 @@ class _AddStreetState extends State<AddStreet> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 20),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 40),
+                      // const SizedBox(height: 20),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(350, 50),
@@ -202,12 +206,20 @@ class _AddStreetState extends State<AddStreet> {
                                     false) {
                                   // All fields are valid, you can process the data
                                   // Perform actions with the field values
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => CheckStreet(
+                                        selectedPanchayat: _selectedPanchayat,
+                                        selectedVillage: _selectedVillage,
+                                      ),
+                                    ),
+                                  );
 
-                                  // Navigator.of(context).push(
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) => AddHead(),
-                                  //   ),
-                                  // );
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => CheckStreet(),
+                                    ),
+                                  );
                                 }
                               }
                             : null,

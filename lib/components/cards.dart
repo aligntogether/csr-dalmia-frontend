@@ -4,20 +4,25 @@ class CustomCard extends StatelessWidget {
   final String imageUrl;
   final String title;
   final String subtitle;
+  final Color bg;
+  final Color textcolor;
 
   CustomCard({
     required this.imageUrl,
     required this.title,
     required this.subtitle,
+    required this.bg,
+    required this.textcolor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 120,
-      height: 150,
+      height: 160,
       child: Card(
-        elevation: 4.0,
+        color: bg,
+        // elevation: 4.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
@@ -43,7 +48,7 @@ class CustomCard extends StatelessWidget {
                 subtitle,
                 style: TextStyle(
                   fontSize: 14.0,
-                  color: Colors.grey,
+                  color: textcolor,
                 ),
               ),
             ),
@@ -52,6 +57,7 @@ class CustomCard extends StatelessWidget {
               child: Text(
                 title,
                 style: TextStyle(
+                  color: textcolor,
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                 ),

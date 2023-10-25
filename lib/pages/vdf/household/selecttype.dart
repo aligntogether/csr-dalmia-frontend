@@ -1,4 +1,5 @@
 import 'package:dalmia/pages/vdf/household/approval.dart';
+import 'package:dalmia/pages/vdf/intervention/Addinter.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,7 @@ class _SelectTypeState extends State<SelectType> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               GestureDetector(
                 onTap: () {
@@ -35,15 +36,14 @@ class _SelectTypeState extends State<SelectType> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.blue,
-                ),
+                style:
+                    ElevatedButton.styleFrom(backgroundColor: Colors.blue[900]),
                 onPressed: () {
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const Approval(),
-                  //   ),
-                  // );
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => Addinter(),
+                    ),
+                  );
                   // Perform actions when 'Yes' is clicked
                 },
                 child: const Text('Yes'),
@@ -54,8 +54,12 @@ class _SelectTypeState extends State<SelectType> {
                   side: const BorderSide(width: 1, color: Colors.blue),
                 ),
                 onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const Approval(),
+                    ),
+                  );
                   // Perform actions when 'No' is clicked
-                  Navigator.of(context).pop();
                 },
                 child: const Text(
                   'No',
@@ -130,21 +134,20 @@ class _SelectTypeState extends State<SelectType> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Checkbox(
-                      value: ownChecked,
-                      onChanged: (value) {
-                        setState(() {
-                          ownChecked = value!;
-                        });
-                      },
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    const Text('Own'),
-                  ],
+                RadioListTile(
+                  value: true,
+                  groupValue: ownChecked,
+                  onChanged: (value) {
+                    setState(() {
+                      ownChecked = value as bool;
+                      if (value) rentedChecked = false;
+                    });
+                  },
+                  title: const Text('Own'),
+                ),
+                Divider(
+                  color: Colors.grey, // Add your desired color for the line
+                  thickness: 1, // Add the desired thickness for the line
                 ),
                 if (ownChecked) ...[
                   const SizedBox(height: 20),
@@ -153,30 +156,29 @@ class _SelectTypeState extends State<SelectType> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Rowstock('Pakka'),
+                      Rowst('Pakka'),
                       const SizedBox(height: 20),
-                      Rowstock('Titled'),
+                      Rowst('Titled'),
                       const SizedBox(height: 20),
-                      Rowstock('Kutcha'),
+                      Rowst('Kutcha'),
                     ],
                   ),
                 ],
                 const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Checkbox(
-                      value: rentedChecked,
-                      onChanged: (value) {
-                        setState(() {
-                          rentedChecked = value!;
-                        });
-                      },
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    const Text('Rented'),
-                  ],
+                RadioListTile(
+                  value: true,
+                  groupValue: rentedChecked,
+                  onChanged: (value) {
+                    setState(() {
+                      rentedChecked = value as bool;
+                      if (value) ownChecked = false;
+                    });
+                  },
+                  title: const Text('Rented'),
+                ),
+                Divider(
+                  color: Colors.grey, // Add your desired color for the line
+                  thickness: 1, // Add the desired thickness for the line
                 ),
                 const SizedBox(height: 20),
                 TextField(
@@ -227,7 +229,7 @@ class _SelectTypeState extends State<SelectType> {
   }
 }
 
-Widget Rowstock(String text) {
+Widget Rowst(String text) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceAround,
     children: [

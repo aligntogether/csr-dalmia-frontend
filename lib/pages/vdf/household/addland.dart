@@ -59,99 +59,111 @@ class _MyFormState extends State<AddLand> {
             ),
           ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(left: 20, top: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Add Land Ownership Details',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20, top: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Add Land Ownership Details',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
-              SizedBox(height: 32),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(
-                    'Rainfed',
-                    style: TextStyle(color: Colors.grey[500], fontSize: 15),
-                  ),
-                  SizedBox(height: 16),
-                  Wrap(
-                    alignment: WrapAlignment.start,
-                    spacing: 20,
-                    children: [
-                      inputdetail('6 acre'),
-                      inputdetail('6 acre'),
-                      inputdetail('6 acre'),
-                      inputdetail('6 acre'),
-                      inputdetail('6 acre'),
-                      inputdetail('6 acre'),
-                    ],
-                  )
-                ],
-              ),
-              SizedBox(height: 32),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Irrigated',
-                    style: TextStyle(color: Colors.grey[500], fontSize: 15),
-                  ),
-                  SizedBox(height: 16),
-                  Wrap(
-                    alignment: WrapAlignment.start,
-                    spacing: 20,
-                    children: [
-                      inputdetail('6 acre'),
-                      inputdetail('6 acre'),
-                      inputdetail('6 acre'),
-                      inputdetail('6 acre'),
-                      inputdetail('6 acre'),
-                      inputdetail('6 acre'),
-                    ],
-                  )
-                ],
-              ),
-              SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.blue[900],
+                SizedBox(height: 32),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text(
+                      'Rainfed',
+                      style: TextStyle(color: Colors.grey[500], fontSize: 15),
                     ),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => AddCrop(),
-                        ),
-                      );
-                    },
-                    child: Text('Next'),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
+                    SizedBox(height: 16),
+                    FractionallySizedBox(
+                      widthFactor: 1.0,
+                      child: Wrap(
+                        alignment: WrapAlignment.spaceAround,
+                        runSpacing: 20,
+                        spacing: 20,
+                        children: [
+                          InputDetail('1 acres'),
+                          InputDetail('2 acres'),
+                          InputDetail('3 acres'),
+                          InputDetail('4 acres'),
+                          InputDetail('5 acres'),
+                          InputDetail('5 & above'),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(height: 32),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Irrigated',
+                      style: TextStyle(color: Colors.grey[500], fontSize: 15),
                     ),
-                    onPressed: () {
-                      // Perform actions with the field values
+                    SizedBox(height: 16),
+                    FractionallySizedBox(
+                      widthFactor: 1.0,
+                      child: Wrap(
+                        alignment: WrapAlignment.spaceAround,
+                        runSpacing: 20,
+                        spacing: 20,
+                        children: [
+                          InputDetail('1 acres'),
+                          InputDetail('2 acres'),
+                          InputDetail('3 acres'),
+                          InputDetail('4 acres'),
+                          InputDetail('5 acres'),
+                          InputDetail('5 & above'),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(height: 32),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.blue[900],
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => AddCrop(),
+                          ),
+                        );
+                      },
+                      child: Text('Next'),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        backgroundColor: Colors.white,
+                        side: const BorderSide(width: 1, color: Colors.blue),
+                      ),
+                      onPressed: () {
+                        // Perform actions with the field values
 
-                      // Save as draft
-                    },
-                    child: Text(
-                      'Save as Draft',
-                      style: TextStyle(color: Colors.blue[900]),
+                        // Save as draft
+                      },
+                      child: const Text(
+                        'Save as Draft',
+                        style: TextStyle(color: Colors.blue),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -159,25 +171,33 @@ class _MyFormState extends State<AddLand> {
   }
 }
 
-class inputdetail extends StatelessWidget {
+class InputDetail extends StatefulWidget {
   final String acre;
 
-  const inputdetail(
-    this.acre, {
-    super.key,
-  });
+  const InputDetail(this.acre, {Key? key}) : super(key: key);
+
+  @override
+  _InputDetailState createState() => _InputDetailState();
+}
+
+class _InputDetailState extends State<InputDetail> {
+  bool isSelected = false;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {},
-      child: Text(
-        acre,
-        style: TextStyle(color: Colors.black),
-      ),
+      onPressed: () {
+        setState(() {
+          isSelected = !isSelected;
+        });
+      },
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(85, 38),
-        backgroundColor: Colors.white,
+        backgroundColor: isSelected ? Color(0xFFF15A22) : Colors.white,
+      ),
+      child: Text(
+        widget.acre,
+        style: TextStyle(color: isSelected ? Colors.white : Colors.black),
       ),
     );
   }

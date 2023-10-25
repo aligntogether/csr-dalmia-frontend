@@ -1,4 +1,4 @@
-import 'package:dalmia/pages/vdf/household/addland.dart';
+import 'package:dalmia/pages/vdf/household/addlivestock.dart';
 import 'package:dalmia/pages/vdf/household/selecttype.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:flutter/material.dart';
@@ -98,87 +98,107 @@ class _AddFarmState extends State<AddFarm> {
                   SizedBox(height: 20),
                   Rowstock('Harvestor'),
                   SizedBox(height: 20),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 40,
-                      ),
-                      Text(
-                        'Others1',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey),
-                      ),
-                      SizedBox(
-                        width: 85,
-                        height: 35,
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            label: Text('Specify'),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                width: 2,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: 70,
+                          child: Text(
+                            'Others1',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 90,
+                          height: 40,
+                          child: TextField(
+                            decoration: InputDecoration(
+                              label: Text('Specify'),
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 10),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  width: 2,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 55,
-                        height: 35,
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            label: Text('No.'),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                width: 2,
+                        SizedBox(
+                          width: 50,
+                          height: 30,
+                          child: TextField(
+                            decoration: InputDecoration(
+                              label: Text('No.'),
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 10),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  width: 2,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Text(
-                        'Others2',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey),
-                      ),
-                      SizedBox(
-                        width: 85,
-                        height: 35,
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            label: Text('Specify'),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                width: 2,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: 70,
+                          child: Text(
+                            'Others2',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 90,
+                          height: 40,
+                          child: TextField(
+                            decoration: InputDecoration(
+                              label: Text('Specify'),
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 10),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  width: 2,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 55,
-                        height: 35,
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            label: Text('No.'),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                width: 2,
+                        SizedBox(
+                          width: 50,
+                          height: 30,
+                          child: TextField(
+                            decoration: InputDecoration(
+                              label: Text('No.'),
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 10),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  width: 2,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -226,36 +246,4 @@ class _AddFarmState extends State<AddFarm> {
       ),
     );
   }
-}
-
-Widget Rowstock(String text) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceAround,
-    children: [
-      // SizedBox(
-      //   width: 40,
-      // ),
-      Text(
-        text,
-        style: TextStyle(
-            fontSize: 16, fontWeight: FontWeight.w600, color: Colors.grey),
-      ),
-      // SizedBox(
-      //   width: 40,
-      // ),
-      SizedBox(
-        width: 45,
-        height: 30,
-        child: TextField(
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(
-              borderSide: BorderSide(
-                width: 2,
-              ),
-            ),
-          ),
-        ),
-      ),
-    ],
-  );
 }

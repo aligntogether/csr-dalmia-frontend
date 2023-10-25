@@ -21,6 +21,7 @@ class _MyFormState extends State<AddHead> {
   String? _selectedCaste;
   String? _selectedPrimaryEmployment;
   String? _selectedSecondaryEmployment;
+  bool _validateFields = false;
 
   List<String> genderOptions = ['Male', 'Female'];
   List<String> educationOptions = [
@@ -38,6 +39,8 @@ class _MyFormState extends State<AddHead> {
     'Option 2',
     'Option 3'
   ]; // Replace with actual options
+  DateTime? selectedDate;
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -47,10 +50,22 @@ class _MyFormState extends State<AddHead> {
     );
     if (picked != null && picked != _dobController.text) {
       setState(() {
-        String formattedDate = DateFormat('dd/MM/yyyy').format(picked);
-        _dobController.text = formattedDate;
+        selectedDate = picked;
+        _dobController.text = DateFormat('dd/MM/yyyy').format(picked);
       });
     }
+  }
+
+  int calculateAge(DateTime? selectedDate) {
+    if (selectedDate == null) return 0;
+    DateTime currentDate = DateTime.now();
+    int age = currentDate.year - selectedDate.year;
+    if (currentDate.month < selectedDate.month ||
+        (currentDate.month == selectedDate.month &&
+            currentDate.day < selectedDate.day)) {
+      age--;
+    }
+    return age;
   }
 
   @override
@@ -101,7 +116,7 @@ class _MyFormState extends State<AddHead> {
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -126,7 +141,7 @@ class _MyFormState extends State<AddHead> {
                       labelText: 'Head Name *',
                       border: OutlineInputBorder(),
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 16.0),
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
                     validator: (value) {
                       if (value?.isEmpty ?? true) {
@@ -145,7 +160,7 @@ class _MyFormState extends State<AddHead> {
                       labelText: 'Mobile Number *',
                       border: OutlineInputBorder(),
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 16.0),
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
                     validator: (value) {
                       if (value?.isEmpty ?? true) {
@@ -155,30 +170,55 @@ class _MyFormState extends State<AddHead> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _dobController,
-                    decoration: InputDecoration(
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 240,
+                        child: TextFormField(
+                          controller: _dobController,
+                          decoration: InputDecoration(
+                            focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black),
+                            ),
+                            labelText: 'Date of Birth *',
+                            border: const OutlineInputBorder(),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 20.0),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                _selectDate(context);
+                              },
+                              icon: const Icon(Icons.calendar_month_outlined),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value?.isEmpty ?? true) {
+                              return 'Date of Birth is required';
+                            }
+                            return null;
+                          },
+                        ),
                       ),
-                      labelText: 'Date of Birth *',
-                      border: const OutlineInputBorder(),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 16.0),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          _selectDate(context);
-                          // Add your date picker functionality here
-                        },
-                        icon: const Icon(Icons.calendar_month_outlined),
+                      Container(
+                        width: 100,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        child: TextFormField(
+                          enabled: false,
+                          decoration: InputDecoration(
+                            labelText: selectedDate != null
+                                ? '${calculateAge(selectedDate)} yrs'
+                                : 'Age(yrs)',
+                            border: OutlineInputBorder(),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 20.0),
+                          ),
+                        ),
                       ),
-                    ),
-                    validator: (value) {
-                      if (value?.isEmpty ?? true) {
-                        return 'Date of Birth is required';
-                      }
-                      return null;
-                    },
+                    ],
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField(
@@ -201,7 +241,7 @@ class _MyFormState extends State<AddHead> {
                       labelText: 'Gender *',
                       border: OutlineInputBorder(),
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 16.0),
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
                     icon: const Icon(
                       Icons.keyboard_arrow_down_sharp,
@@ -234,7 +274,7 @@ class _MyFormState extends State<AddHead> {
                       labelText: 'Education *',
                       border: OutlineInputBorder(),
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 16.0),
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
                     icon: const Icon(
                       Icons.keyboard_arrow_down_sharp,
@@ -270,7 +310,7 @@ class _MyFormState extends State<AddHead> {
                       labelText: 'Caste *',
                       border: OutlineInputBorder(),
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 16.0),
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -303,7 +343,7 @@ class _MyFormState extends State<AddHead> {
                       labelText: 'Primary Employment *',
                       border: OutlineInputBorder(),
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 16.0),
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -336,10 +376,19 @@ class _MyFormState extends State<AddHead> {
                       labelText: 'Secondary Employment',
                       border: OutlineInputBorder(),
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 16.0),
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
                   ),
                   const SizedBox(height: 16),
+                  if (_validateFields &&
+                      !(_formKey.currentState?.validate() ?? false))
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: Text(
+                        'Please fill all the mandatory fields',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -353,20 +402,18 @@ class _MyFormState extends State<AddHead> {
                               builder: (context) => const AddFamily(),
                             ),
                           );
+                          setState(() {
+                            _validateFields = true;
+                          });
                           if (_formKey.currentState?.validate() ?? false) {
-                            // All fields are valid, you can process the data
+                            // Navigator.of(context).push(
+                            //   MaterialPageRoute(
+                            //     builder: (context) => const AddFamily(),
+                            //   ),
+                            // );
                             final name = _nameController.text;
                             final mobile = _mobileController.text;
                             final dob = _dobController.text;
-
-                            // Perform actions with the field values
-
-                            // Navigate to the next page
-                            // Navigator.of(context).push(
-                            //   MaterialPageRoute(
-                            //     builder: (context) => NextPage(),
-                            //   ),
-                            // );
                           }
                         },
                         child: const Text('Next'),

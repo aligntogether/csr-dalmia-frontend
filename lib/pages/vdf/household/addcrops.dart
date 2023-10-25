@@ -80,9 +80,10 @@ class _AddCropState extends State<AddCrop> {
                 height: 20,
               ),
               const Padding(
-                padding: EdgeInsets.only(left: 20),
+                padding: EdgeInsets.only(left: 20, bottom: 20),
                 child: Text(
                   'What are the crops you have cultivated in the past three years? ',
+                  style: TextStyle(fontSize: 16),
                 ),
               ),
               Row(
@@ -146,7 +147,7 @@ class _AddCropState extends State<AddCrop> {
                   )
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 25),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

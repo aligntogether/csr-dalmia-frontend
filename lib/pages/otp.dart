@@ -62,8 +62,8 @@ class Otp extends StatelessWidget {
                           'Gram Parivartan Project',
                           style: TextStyle(
                             color: Color(0xff0054a6),
-                            fontSize: 30.0,
-                            fontWeight: FontWeight.w700,
+                            fontSize: 25.0,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
                       ),
@@ -119,8 +119,8 @@ class Otp extends StatelessWidget {
                           ),
                         ),
                         child: Container(
-                          width: 293,
-                          height: 60.0,
+                          width: 273,
+                          height: 55.0,
                           alignment: Alignment.center,
                           child: const Text(
                             'Submit',

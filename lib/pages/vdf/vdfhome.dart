@@ -1,3 +1,4 @@
+import 'package:dalmia/pages/login.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/dash.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
@@ -125,7 +126,7 @@ class _VdfHomeState extends State<VdfHome> {
   }
 
   Widget buildTabItem(IconData icon, String label, int index) {
-    final isSelected = index == _selectedIndex;
+    final isSelected = index == 0;
     final color = isSelected ? Colors.blue : Colors.black;
 
     return InkWell(
@@ -176,10 +177,13 @@ class _VdfHomeState extends State<VdfHome> {
           child: Align(
             alignment: Alignment.topCenter,
             child: Container(
+              padding: EdgeInsets.only(left: 20, right: 20),
               // height: MediaQuery.of(context).size.height / 3,
               color: Colors.white,
               child: SingleChildScrollView(
                 child: Column(
+                  // crossAxisAlignment: CrossAxisAlignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     ListTile(
                       leading: const Icon(Icons.close),
@@ -190,7 +194,10 @@ class _VdfHomeState extends State<VdfHome> {
                       },
                     ),
                     ListTile(
-                      leading: const Icon(Icons.add_circle_outline),
+                      leading: const Icon(
+                        Icons.document_scanner_outlined,
+                        color: Colors.black,
+                      ),
                       title: const Text('Reports'),
                       onTap: () {
                         // Navigator.of(context).push(
@@ -202,8 +209,15 @@ class _VdfHomeState extends State<VdfHome> {
                         // Close the drawer
                       },
                     ),
+                    Divider(
+                      color: Colors.grey, // Add your desired color for the line
+                      thickness: 1, // Add the desired thickness for the line
+                    ),
                     ListTile(
-                      leading: const Icon(Icons.timer_sharp),
+                      leading: const Icon(
+                        Icons.logout_outlined,
+                        color: Colors.black,
+                      ),
                       title: const Text('Logout'),
                       onTap: () {
                         _showConfirmationDialog(context);
@@ -239,7 +253,7 @@ void _showConfirmationDialog(BuildContext context) {
     builder: (BuildContext context) {
       return AlertDialog(
         title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             GestureDetector(
               onTap: () {
@@ -254,15 +268,14 @@ void _showConfirmationDialog(BuildContext context) {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.blue,
-              ),
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.blue[900]),
               onPressed: () {
-                // Navigator.of(context).push(
-                //   MaterialPageRoute(
-                //     builder: (context) => const Approval(),
-                //   ),
-                // );
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const Login(),
+                  ),
+                );
                 // Perform actions when 'Yes' is clicked
               },
               child: const Text('Yes'),

@@ -1,5 +1,4 @@
 import 'package:dalmia/pages/vdf/household/addfarm.dart';
-
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +10,7 @@ class Approval extends StatefulWidget {
 }
 
 class _ApprovalState extends State<Approval> {
-  List<bool> cropCheckList = List.filled(16, false);
+  int? selectedRadio;
 
   @override
   Widget build(BuildContext context) {
@@ -24,27 +23,6 @@ class _ApprovalState extends State<Approval> {
             'Add Household',
             style: TextStyle(color: Colors.black),
           ),
-          // leading: GestureDetector(
-          //   onTap: () {
-          //     Navigator.of(context).push(
-          //       MaterialPageRoute(
-          //         builder: (context) => AddLand(),
-          //       ),
-          //     );
-          //   },
-          //   child: const Row(
-          //     children: [
-          //       Icon(
-          //         Icons.keyboard_arrow_left_outlined,
-          //         color: Colors.black,
-          //       ),
-          //       Text(
-          //         'Back',
-          //         style: TextStyle(color: Colors.black),
-          //       )
-          //     ],
-          //   ),
-          // ),
           backgroundColor: Colors.grey[50],
           actions: <Widget>[
             IconButton(
@@ -73,114 +51,74 @@ class _ApprovalState extends State<Approval> {
               const Padding(
                 padding: EdgeInsets.only(left: 20),
                 child: Text(
-                  'Why do you want to drop this family from intevention?',
+                  'Why do you want to drop this family from intervention?',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
-              Column(
-                children: [
-                  SizedBox(height: 20),
-                  Rowstock('Cows'),
-                  SizedBox(height: 20),
-                  Rowstock('Goats'),
-                  SizedBox(height: 20),
-                  Rowstock('Buffalo'),
-                  SizedBox(height: 20),
-                  Rowstock('Poultry'),
-                  SizedBox(height: 20),
-                  Rowstock('Pigs'),
-                  SizedBox(height: 20),
-                  Rowstock('Ducks'),
-                  SizedBox(height: 20),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 40,
-                      ),
-                      Text(
-                        'Others1',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey),
-                      ),
-                      SizedBox(
-                        width: 85,
-                        height: 35,
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            label: Text('Specify'),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 55,
-                        height: 35,
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            label: Text('No.'),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Text(
-                        'Others2',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey),
-                      ),
-                      SizedBox(
-                        width: 85,
-                        height: 35,
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            label: Text('Specify'),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 55,
-                        height: 35,
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            label: Text('No.'),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
               const SizedBox(
                 height: 20,
+              ),
+              Column(
+                children: [
+                  RadioListTile<int>(
+                    title: const Text(
+                        'Family is financially stable and has accepted to be dropped from DBF intervention.'),
+                    value: 1,
+                    groupValue: selectedRadio,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedRadio = value;
+                      });
+                    },
+                  ),
+                  RadioListTile<int>(
+                    title: const Text(
+                        'Cultivable fields not used directly by owner who stays outstation.'),
+                    value: 2,
+                    groupValue: selectedRadio,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedRadio = value;
+                      });
+                    },
+                  ),
+                  RadioListTile<int>(
+                    title: const Text(
+                        'Family not willing to participate in our intervention.'),
+                    value: 3,
+                    groupValue: selectedRadio,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedRadio = value;
+                      });
+                    },
+                  ),
+                  RadioListTile<int>(
+                    title: const Text('Other reason'),
+                    value: 4,
+                    groupValue: selectedRadio,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedRadio = value;
+                      });
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 13, right: 13),
+                    child: TextField(
+                      enabled: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Please specify the reason',
+                        border: OutlineInputBorder(),
+                      ),
+                      maxLines:
+                          3, // Adjust the number of lines as per your requirement
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
               Row(
@@ -190,30 +128,8 @@ class _ApprovalState extends State<Approval> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue[900],
                     ),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => AddFarm(),
-                        ),
-                      );
-                    },
-                    child: const Text('Next'),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      backgroundColor: Colors.white,
-                      side: const BorderSide(width: 1, color: Colors.blue),
-                    ),
-                    onPressed: () {
-                      // Perform actions with the field values
-
-                      // Save as draft
-                    },
-                    child: const Text(
-                      'Save as Draft',
-                      style: TextStyle(color: Colors.blue),
-                    ),
+                    onPressed: () {},
+                    child: const Text('submit for approval'),
                   ),
                 ],
               ),
@@ -223,34 +139,4 @@ class _ApprovalState extends State<Approval> {
       ),
     );
   }
-}
-
-Widget Rowstock(String text) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          text,
-          style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.w600, color: Colors.grey),
-        ),
-        SizedBox(
-          width: 80,
-          height: 30,
-          child: TextField(
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(horizontal: 10),
-              border: OutlineInputBorder(
-                borderSide: BorderSide(
-                  width: 2,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
 }
