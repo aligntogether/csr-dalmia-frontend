@@ -1,4 +1,5 @@
 import 'package:dalmia/pages/login.dart';
+import 'package:dalmia/pages/vdf/Reports/Home.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/dash.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
@@ -200,11 +201,11 @@ class _VdfHomeState extends State<VdfHome> {
                       ),
                       title: const Text('Reports'),
                       onTap: () {
-                        // Navigator.of(context).push(
-                        //   MaterialPageRoute(
-                        //     builder: (context) => MyForm(),
-                        //   ),
-                        // );
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => HomeReport(),
+                          ),
+                        );
                         // Handle item 1 click
                         // Close the drawer
                       },

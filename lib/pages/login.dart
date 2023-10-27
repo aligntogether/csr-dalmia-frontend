@@ -1,9 +1,26 @@
 import 'package:dalmia/pages/otp.dart';
-
 import 'package:flutter/material.dart';
 
-class Login extends StatelessWidget {
-  const Login({super.key});
+class Login extends StatefulWidget {
+  const Login({Key? key}) : super(key: key);
+
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  final FocusNode textFieldFocusNode = FocusNode();
+  bool isContainerVisible = true;
+
+  @override
+  void initState() {
+    super.initState();
+    textFieldFocusNode.addListener(() {
+      setState(() {
+        isContainerVisible = !textFieldFocusNode.hasFocus;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,8 +28,6 @@ class Login extends StatelessWidget {
   }
 
   SafeArea login(context) {
-    final FocusNode textFieldFocusNode = FocusNode();
-
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -51,21 +66,26 @@ class Login extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Image(
-                            image: AssetImage('images/icon.jpg'),
+                          SizedBox(
+                            height: 20,
                           ),
-                          Container(
-                            padding: const EdgeInsets.all(20.0),
-                            margin: const EdgeInsets.only(bottom: 20.0),
-                            child: const Text(
-                              'Gram Parivartan Project',
-                              style: TextStyle(
-                                color: Color(0xff0054a6),
-                                fontSize: 25.0,
-                                fontWeight: FontWeight.w800,
+                          if (isContainerVisible)
+                            const Image(
+                              image: AssetImage('images/icon.jpg'),
+                            ),
+                          if (isContainerVisible)
+                            Container(
+                              padding: const EdgeInsets.all(20.0),
+                              margin: const EdgeInsets.only(bottom: 20.0),
+                              child: const Text(
+                                'Gram Parivartan Project',
+                                style: TextStyle(
+                                  color: Color(0xff0054a6),
+                                  fontSize: 25.0,
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
                             ),
-                          ),
                           Container(
                             padding: const EdgeInsets.fromLTRB(0, 0, 0, 20.0),
                             child: const Text(

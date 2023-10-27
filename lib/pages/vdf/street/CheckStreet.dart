@@ -57,7 +57,7 @@ class _CheckStreetState extends State<CheckStreet> {
                     width: 300,
                     height: 100,
                     decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 162, 255, 165)),
+                        color: Color.fromARGB(255, 232, 253, 233)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -84,22 +84,22 @@ class _CheckStreetState extends State<CheckStreet> {
                       columns: const <DataColumn>[
                         DataColumn(
                           label: Text(
-                            'First Heading',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            'Street Name',
+                            style: TextStyle(),
                           ),
                         ),
                         DataColumn(
                           label: Text(
-                            'Second Heading',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            'No. of Family/ \n No. of Household',
+                            style: TextStyle(),
                           ),
                         ),
                       ],
                       rows: <DataRow>[
                         DataRow(
                           cells: <DataCell>[
-                            DataCell(Text('Data 1')),
-                            DataCell(Text('Data 2')),
+                            DataCell(Text('Main street with cement control')),
+                            DataCell(Text('40/40')),
                           ],
                         ),
                         DataRow(

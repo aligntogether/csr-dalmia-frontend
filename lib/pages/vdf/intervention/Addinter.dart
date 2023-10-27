@@ -1,3 +1,4 @@
+import 'package:dalmia/pages/vdf/intervention/Details.dart';
 import 'package:flutter/material.dart';
 
 class Intervention {
@@ -192,12 +193,11 @@ void _confirmitem(BuildContext context) {
                 style:
                     ElevatedButton.styleFrom(backgroundColor: Colors.blue[900]),
                 onPressed: () {
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const Login(),
-                  //   ),
-                  // );
-                  // Perform actions when 'Yes' is clicked
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => Details(),
+                    ),
+                  );
                 },
                 child: const Text('Continue adding Intervention'),
               ),

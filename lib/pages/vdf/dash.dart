@@ -92,7 +92,7 @@ class DashTab extends StatelessWidget {
                           imageUrl: 'images/icompleted.png',
                           title: '25',
                           bg: Color.fromARGB(144, 161, 255, 211),
-                          subtitle: 'Household completed',
+                          subtitle: 'Interventions completed',
                           textcolor: Color(0xFF0C7243),
                         ),
                       ],

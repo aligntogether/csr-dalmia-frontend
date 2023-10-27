@@ -1,4 +1,5 @@
 // import 'package:dalmia/pages/vdf/household/addhead.dart';
+import 'package:dalmia/pages/vdf/street/AddNew.dart';
 import 'package:dalmia/pages/vdf/street/CheckStreet.dart';
 import 'package:flutter/material.dart';
 // import 'dart:convert';
@@ -10,18 +11,18 @@ String selectedPanchayat = "";
 String selectedVillage = "";
 
 class Panchayat {
-  final String id;
-  final String name;
+  final String panchayatId;
+  final String panchayat;
 
-  Panchayat(this.id, this.name);
+  Panchayat(this.panchayatId, this.panchayat);
 }
 
 class Village {
-  final String id;
-  final String name;
+  final String villageId;
+  final String village;
   final String panchayatId;
 
-  Village(this.id, this.name, this.panchayatId);
+  Village(this.villageId, this.village, this.panchayatId);
 }
 
 class Street {
@@ -115,8 +116,8 @@ class _AddStreetState extends State<AddStreet> {
                         value: _selectedPanchayat,
                         items: panchayats.map((Panchayat panchayat) {
                           return DropdownMenuItem<String>(
-                            value: panchayat.id,
-                            child: Text(panchayat.name),
+                            value: panchayat.panchayatId,
+                            child: Text(panchayat.panchayat),
                           );
                         }).toList(),
                         onChanged: (String? newValue) {
@@ -153,8 +154,8 @@ class _AddStreetState extends State<AddStreet> {
                                 village.panchayatId == _selectedPanchayat)
                             .map((Village village) {
                           return DropdownMenuItem<String>(
-                            value: village.id,
-                            child: Text(village.name),
+                            value: village.villageId,
+                            child: Text(village.village),
                           );
                         }).toList(),
                         onChanged: _selectedPanchayat != null
@@ -206,18 +207,25 @@ class _AddStreetState extends State<AddStreet> {
                                     false) {
                                   // All fields are valid, you can process the data
                                   // Perform actions with the field values
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => CheckStreet(
-                                        selectedPanchayat: _selectedPanchayat,
-                                        selectedVillage: _selectedVillage,
-                                      ),
-                                    ),
-                                  );
+
+                                  // Retrieve the selected panchayat and village
+                                  String selectedPanchayatName = panchayats
+                                      .firstWhere((element) =>
+                                          element.panchayatId ==
+                                          _selectedPanchayat)
+                                      .panchayat;
+                                  String selectedVillageName = villages
+                                      .firstWhere((element) =>
+                                          element.villageId == _selectedVillage)
+                                      .village;
 
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => CheckStreet(),
+                                      builder: (context) => CheckStreet(
+                                        selectedPanchayat:
+                                            selectedPanchayatName,
+                                        selectedVillage: selectedVillageName,
+                                      ),
                                     ),
                                   );
                                 }

@@ -3,8 +3,31 @@ import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:flutter/services.dart';
 
-class Otp extends StatelessWidget {
+class Otp extends StatefulWidget {
   const Otp({Key? key}) : super(key: key);
+
+  @override
+  _OtpState createState() => _OtpState();
+}
+
+class _OtpState extends State<Otp> {
+  final FocusNode textFieldFocusNode = FocusNode();
+  bool isContainerVisible = true;
+  @override
+  void dispose() {
+    textFieldFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    textFieldFocusNode.addListener(() {
+      setState(() {
+        isContainerVisible = !textFieldFocusNode.hasFocus;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,23 +73,26 @@ class Otp extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        child: const Image(
-                          image: AssetImage('images/icon.jpg'),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(20.0),
-                        margin: const EdgeInsets.only(bottom: 20.0),
-                        child: const Text(
-                          'Gram Parivartan Project',
-                          style: TextStyle(
-                            color: Color(0xff0054a6),
-                            fontSize: 25.0,
-                            fontWeight: FontWeight.w800,
+                      if (isContainerVisible)
+                        Container(
+                          child: const Image(
+                            image: AssetImage('images/icon.jpg'),
                           ),
                         ),
-                      ),
+                      // if (isContainerVisible)
+                      if (isContainerVisible)
+                        Container(
+                          padding: const EdgeInsets.all(20.0),
+                          margin: const EdgeInsets.only(bottom: 20.0),
+                          child: const Text(
+                            'Gram Parivartan Project',
+                            style: TextStyle(
+                              color: Color(0xff0054a6),
+                              fontSize: 25.0,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
                       Container(
                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 20.0),
                         child: const Text(
@@ -92,14 +118,13 @@ class Otp extends StatelessWidget {
                               fieldHeight: 50,
                               fieldWidth: 40,
                               inactiveColor: Colors.grey,
-                              activeColor: Colors.black
-                              // activeFillColor: Colors.white,
-                              ),
+                              activeColor: Colors.black),
                           inputFormatters: <TextInputFormatter>[
                             FilteringTextInputFormatter.digitsOnly
                           ],
                           obscureText: true,
                           obscuringCharacter: '*',
+                          focusNode: textFieldFocusNode,
                         ),
                       ),
                       const SizedBox(height: 20.0),
