@@ -1,6 +1,7 @@
 import 'package:dalmia/pages/vdf/household/addfamily.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -189,7 +190,10 @@ class _MyFormState extends State<AddHead> {
                               onPressed: () {
                                 _selectDate(context);
                               },
-                              icon: const Icon(Icons.calendar_month_outlined),
+                              icon: const Icon(
+                                Icons.calendar_month_outlined,
+                                color: CustomColorTheme.iconColor,
+                              ),
                             ),
                           ),
                           validator: (value) {
@@ -245,6 +249,7 @@ class _MyFormState extends State<AddHead> {
                     ),
                     icon: const Icon(
                       Icons.keyboard_arrow_down_sharp,
+                      color: CustomColorTheme.iconColor,
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -278,6 +283,7 @@ class _MyFormState extends State<AddHead> {
                     ),
                     icon: const Icon(
                       Icons.keyboard_arrow_down_sharp,
+                      color: CustomColorTheme.iconColor,
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -302,6 +308,7 @@ class _MyFormState extends State<AddHead> {
                     },
                     icon: const Icon(
                       Icons.keyboard_arrow_down_sharp,
+                      color: CustomColorTheme.iconColor,
                     ),
                     decoration: const InputDecoration(
                       focusedBorder: OutlineInputBorder(
@@ -335,6 +342,7 @@ class _MyFormState extends State<AddHead> {
                     },
                     icon: const Icon(
                       Icons.keyboard_arrow_down_sharp,
+                      color: CustomColorTheme.iconColor,
                     ),
                     decoration: const InputDecoration(
                       focusedBorder: OutlineInputBorder(
@@ -368,6 +376,7 @@ class _MyFormState extends State<AddHead> {
                     },
                     icon: const Icon(
                       Icons.keyboard_arrow_down_sharp,
+                      color: CustomColorTheme.iconColor,
                     ),
                     decoration: const InputDecoration(
                       focusedBorder: OutlineInputBorder(

@@ -1,6 +1,7 @@
 import 'package:dalmia/pages/vdf/household/approval.dart';
 import 'package:dalmia/pages/vdf/intervention/Addinter.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
 class SelectType extends StatefulWidget {
@@ -143,7 +144,17 @@ class _SelectTypeState extends State<SelectType> {
                       if (value) rentedChecked = false;
                     });
                   },
-                  title: const Text('Own'),
+                  title: Text(
+                    'Own',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: ownChecked
+                            ? CustomColorTheme.iconColor
+                            : CustomColorTheme.labelColor),
+                  ),
+                  activeColor: Colors
+                      .orange, // Define the active color for the radio button
+                  selectedTileColor: Colors.orange,
                 ),
                 Divider(
                   color: Colors.grey, // Add your desired color for the line
@@ -174,7 +185,17 @@ class _SelectTypeState extends State<SelectType> {
                       if (value) ownChecked = false;
                     });
                   },
-                  title: const Text('Rented'),
+                  title: Text(
+                    'Rented',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: rentedChecked
+                            ? CustomColorTheme.iconColor
+                            : CustomColorTheme.labelColor),
+                  ),
+                  activeColor: CustomColorTheme
+                      .iconColor, // Define the active color for the radio button
+                  selectedTileColor: CustomColorTheme.iconColor,
                 ),
                 Divider(
                   color: Colors.grey, // Add your desired color for the line

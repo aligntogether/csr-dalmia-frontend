@@ -1,6 +1,7 @@
 import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/household/addland.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -133,13 +134,17 @@ class _MyFormState extends State<AddFamily> {
                     children: [
                       const SizedBox(height: 16),
                       ExpansionTile(
+                        iconColor: CustomColorTheme.iconColor,
                         initiallyExpanded: formExpandStateList[i],
                         onExpansionChanged: (newState) {
                           setState(() {
                             formExpandStateList[i] = newState;
                           });
                         },
-                        title: Text('Member ${i + 1}'),
+                        title: Text(
+                          'Member ${i + 1}',
+                          style: TextStyle(color: Colors.black),
+                        ),
                         children: [
                           Form(
                             key: _formKey,
@@ -211,7 +216,9 @@ class _MyFormState extends State<AddFamily> {
                                               _selectDate(context);
                                             },
                                             icon: const Icon(
-                                                Icons.calendar_month_outlined),
+                                              Icons.calendar_month_outlined,
+                                              color: CustomColorTheme.iconColor,
+                                            ),
                                           ),
                                         ),
                                         validator: (value) {
@@ -271,6 +278,7 @@ class _MyFormState extends State<AddFamily> {
                                   ),
                                   icon: const Icon(
                                     Icons.keyboard_arrow_down_sharp,
+                                    color: CustomColorTheme.iconColor,
                                   ),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -306,6 +314,7 @@ class _MyFormState extends State<AddFamily> {
                                   ),
                                   icon: const Icon(
                                     Icons.keyboard_arrow_down_sharp,
+                                    color: CustomColorTheme.iconColor,
                                   ),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -330,6 +339,7 @@ class _MyFormState extends State<AddFamily> {
                                   },
                                   icon: const Icon(
                                     Icons.keyboard_arrow_down_sharp,
+                                    color: CustomColorTheme.iconColor,
                                   ),
                                   decoration: const InputDecoration(
                                     focusedBorder: OutlineInputBorder(
@@ -365,6 +375,7 @@ class _MyFormState extends State<AddFamily> {
                                   },
                                   icon: const Icon(
                                     Icons.keyboard_arrow_down_sharp,
+                                    color: CustomColorTheme.iconColor,
                                   ),
                                   decoration: const InputDecoration(
                                     focusedBorder: OutlineInputBorder(
@@ -400,6 +411,7 @@ class _MyFormState extends State<AddFamily> {
                                   },
                                   icon: const Icon(
                                     Icons.keyboard_arrow_down_sharp,
+                                    color: CustomColorTheme.iconColor,
                                   ),
                                   decoration: const InputDecoration(
                                     focusedBorder: OutlineInputBorder(

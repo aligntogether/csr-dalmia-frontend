@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:dalmia/pages/vdf/intervention/Details.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Intervention {
   final String id;
@@ -15,28 +17,40 @@ class Addinter extends StatefulWidget {
 
 class _AddinterState extends State<Addinter> {
   final _formKey = GlobalKey<FormState>();
-  List<Intervention> interventions = [
-    Intervention('1', 'Intervention 1'),
-    Intervention('2', 'Intervention 2'),
-    Intervention('3', 'Intervention 3'),
-    Intervention('4', 'Intervention 4'),
-  ];
-
+  List<Intervention> interventions = [];
   List<Intervention> filteredInterventions = [];
   TextEditingController interventionController = TextEditingController();
   bool showListView = true;
 
-  void filterInterventions(String query) {
-    setState(() {
-      if (query.isNotEmpty) {
-        filteredInterventions = interventions
-            .where((intervention) =>
-                intervention.name.toLowerCase().contains(query.toLowerCase()))
-            .toList();
+  void filterInterventions(String query) async {
+    if (query.isNotEmpty) {
+      var url = Uri.parse(
+          'http://192.168.1.71:8080/get-matching-interventions?interventionPatternName=$query');
+      var response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data != null && data['resp_body'] != null) {
+          List<dynamic> fetchedInterventions = data['resp_body'][0];
+          List<Intervention> interventionsList = fetchedInterventions
+              .map((intervention) => Intervention(
+                  DateTime.now().millisecondsSinceEpoch.toString(),
+                  intervention))
+              .toList();
+          setState(() {
+            filteredInterventions = interventionsList;
+          });
+        } else {
+          print("API response is null or empty.");
+        }
       } else {
-        filteredInterventions = interventions;
+        throw Exception('Failed to load interventions');
       }
-    });
+    } else {
+      setState(() {
+        filteredInterventions = interventions;
+      });
+    }
   }
 
   @override
@@ -57,7 +71,7 @@ class _AddinterState extends State<Addinter> {
             IconButton(
               iconSize: 30,
               onPressed: () {
-                Navigator.of(context).pop();
+                _confirmitem(context);
               },
               icon: const Icon(
                 Icons.close,
@@ -102,14 +116,16 @@ class _AddinterState extends State<Addinter> {
                               labelText: 'Search Intervention name/ID',
                               suffixIcon: IconButton(
                                 onPressed: () {},
-                                icon: const Icon(Icons.search),
+                                icon: const Icon(
+                                  Icons.search,
+                                  color: Colors
+                                      .orange, // Customize the search icon color here
+                                ),
                               )),
                           onChanged: (value) {
                             filterInterventions(value);
                           },
                         ),
-
-                        // const SizedBox(height: 20),
                         if (showListView)
                           Container(
                             decoration: BoxDecoration(
@@ -137,7 +153,7 @@ class _AddinterState extends State<Addinter> {
                               },
                             ),
                           ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         ElevatedButton(
@@ -145,7 +161,11 @@ class _AddinterState extends State<Addinter> {
                             minimumSize: const Size(350, 50),
                           ),
                           onPressed: () {
-                            _confirmitem(context);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => Details(),
+                              ),
+                            );
                           },
                           child: const Text('Confirm'),
                         ),
@@ -192,13 +212,7 @@ void _confirmitem(BuildContext context) {
               ElevatedButton(
                 style:
                     ElevatedButton.styleFrom(backgroundColor: Colors.blue[900]),
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => Details(),
-                    ),
-                  );
-                },
+                onPressed: () {},
                 child: const Text('Continue adding Intervention'),
               ),
             ],

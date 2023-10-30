@@ -1,20 +1,24 @@
+import 'dart:math';
+
 import 'package:dalmia/pages/vdf/Reports/Business.dart';
-import 'package:dalmia/pages/vdf/Reports/Cumulative.dart';
 import 'package:dalmia/pages/vdf/Reports/Form1.dart';
 import 'package:dalmia/pages/vdf/Reports/Livehood.dart';
 import 'package:dalmia/pages/vdf/Reports/Top20.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
-class HomeReport extends StatefulWidget {
-  const HomeReport({Key? key}) : super(key: key);
+class Cumulative extends StatefulWidget {
+  const Cumulative({Key? key}) : super(key: key);
 
   @override
-  State<HomeReport> createState() => _HomeReportState();
+  State<Cumulative> createState() => _CumulativeState();
 }
 
-class _HomeReportState extends State<HomeReport> {
+class _CumulativeState extends State<Cumulative> {
+  String? selectedPanchayat;
+  String? selectedVillage;
   int? selectedRadio;
   int _selectedIndex = 0; // Track the currently selected tab index
 
@@ -26,6 +30,7 @@ class _HomeReportState extends State<HomeReport> {
 
   @override
   Widget build(BuildContext context) {
+    final Random random = Random();
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
@@ -36,7 +41,7 @@ class _HomeReportState extends State<HomeReport> {
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 TextButton.icon(
@@ -54,90 +59,16 @@ class _HomeReportState extends State<HomeReport> {
                     )),
                 const SizedBox(height: 20),
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 20),
-                    Container(
-                      padding: EdgeInsets.all(20),
-                      width: MediaQuery.of(context).size.width,
-
-                      // decoration: BoxDecoration(
-
-                      //     borderRadius: BorderRadius.circular(20),
-                      //     color: Colors.white60),
-                      decoration: ShapeDecoration(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        shadows: [
-                          BoxShadow(
-                            color: Color(0x19000000),
-                            blurRadius: 20,
-                            offset: Offset(0, 10),
-                            spreadRadius: 0,
-                          )
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Report of Balamurugan'),
-                          TextButton.icon(
-                              onPressed: () {},
-                              icon: Icon(Icons.calendar_month_outlined),
-                              label: Text('data')),
-                          Divider(
-                            color: Colors
-                                .grey, // Add your desired color for the line
-                            thickness:
-                                1, // Add the desired thickness for the line
-                          ),
-                          DataTable(
-                            dividerThickness: 0.0,
-                            columns: const <DataColumn>[
-                              DataColumn(
-                                label: Expanded(
-                                  child: Text(
-                                    'Data 1',
-                                    // style: TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Expanded(
-                                  child: Text(
-                                    'Data',
-                                    // style: TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                            ],
-                            rows: <DataRow>[
-                              celldata(
-                                  'Total Households in working area', '2473'),
-                              celldata('Total Households mapped', '2473'),
-                              celldata(
-                                  'Total Households selected for Intervention',
-                                  '2473'),
-                              celldata('Total Interventions planned', '2473'),
-                              celldata('Total Interventions completed', '2473'),
-                              celldata('Households earning additional income',
-                                  '2473'),
-                              celldata('Rs.25K - Rs.50K addl. income', '2473'),
-                              celldata('Rs.50K - Rs.75K addl. income', '2473'),
-                              celldata('Rs.75K - Rs.1L addl. income', '2473'),
-                              celldata('More than Rs.1L addl. income', '2473'),
-                              celldata('Aggregated additional income', '2473'),
-
-                              // Add more rows as needed
-                            ],
-                          ),
-                        ],
-                      ),
+                    Text(
+                      'Cumulative Household Details',
                     ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    tab1(random)
                   ],
-                ),
+                )
               ],
             ),
           ),
@@ -154,6 +85,173 @@ class _HomeReportState extends State<HomeReport> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Center tab1(Random random) {
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text('<Location name>'),
+          SizedBox(
+            height: 10,
+          ),
+          Text('Panchayats wise report'),
+          SizedBox(
+            height: 10,
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              headingRowColor:
+                  MaterialStateColor.resolveWith((states) => Colors.blue),
+              dividerThickness: 2,
+              columnSpacing: 15,
+              columns: const <DataColumn>[
+                DataColumn(
+                  label: Text(
+                    'Panchayat Name',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Income follow up Overdue',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Number of selected HHs without intervention',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'No. of Interventions started but not completed',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+              rows: List<DataRow>.generate(
+                10,
+                (index) {
+                  return DataRow(
+                    color: MaterialStateColor.resolveWith((states) {
+                      // Alternating row colors
+                      return index.isOdd ? Colors.lightBlue[50]! : Colors.white;
+                    }),
+                    cells: <DataCell>[
+                      DataCell(
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              selectedPanchayat = 'Panchayat ${index + 1}';
+                            });
+                          },
+                          child: Text(
+                            'Panchayat ${index + 1}',
+                            style: TextStyle(
+                                color: CustomColorTheme.iconColor,
+                                decoration: TextDecoration.underline,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      DataCell(Text(
+                        '${random.nextInt(100)}',
+                      )),
+                      DataCell(Text('${random.nextInt(100)}')),
+                      DataCell(Text('${random.nextInt(100)}')),
+                    ],
+                  );
+                },
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget tab2(Random random) {
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(selectedVillage!),
+          Text('Village wise report'),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              headingRowColor:
+                  MaterialStateColor.resolveWith((states) => Colors.blue),
+              dividerThickness: 2,
+              columnSpacing: 15,
+              columns: const <DataColumn>[
+                DataColumn(
+                  label: Text(
+                    'Village Name',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Income follow up Overdue',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Number of selected HHs without intervention',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'No. of Interventions started but not completed',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+              rows: List<DataRow>.generate(
+                10,
+                (index) {
+                  return DataRow(
+                    color: MaterialStateColor.resolveWith((states) {
+                      // Alternating row colors
+                      return index.isOdd ? Colors.lightBlue[50]! : Colors.white;
+                    }),
+                    cells: <DataCell>[
+                      DataCell(
+                        InkWell(
+                          onTap: () {
+                            // Handle village name click
+                          },
+                          child: Text(
+                            'Village ${index + 1}',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      DataCell(Text(
+                        '${random.nextInt(100)}',
+                      )),
+                      DataCell(Text('${random.nextInt(100)}')),
+                      DataCell(Text('${random.nextInt(100)}')),
+                    ],
+                  );
+                },
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -302,11 +400,7 @@ class _HomeReportState extends State<HomeReport> {
                           ),
                         );
                       } else if (selectedRadio == 2) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => Cumulative(),
-                          ),
-                        ); // Navigate to the corresponding tab
+                        _onTabTapped(1); // Navigate to the corresponding tab
                       } else if (selectedRadio == 3) {
                         _onTabTapped(2); // Navigate to the corresponding tab
                       } else if (selectedRadio == 4) {
@@ -341,23 +435,6 @@ class _HomeReportState extends State<HomeReport> {
       },
     );
   }
-}
-
-DataRow celldata(String left, String right) {
-  return DataRow(
-    cells: <DataCell>[
-      DataCell(
-        Expanded(
-          child: Text(left),
-        ),
-      ),
-      DataCell(
-        Expanded(
-          child: Text(right),
-        ),
-      ),
-    ],
-  );
 }
 
 class reportappbar extends StatelessWidget {

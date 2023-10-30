@@ -1,3 +1,4 @@
+import 'package:dalmia/pages/vdf/Reports/Home.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:flutter/material.dart';
@@ -33,50 +34,7 @@ class _LeverwiseState extends State<Leverwise> {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(100),
-          child: AppBar(
-            titleSpacing: 20,
-            backgroundColor: Colors.white,
-            title: const Image(image: AssetImage('images/icon.jpg')),
-            automaticallyImplyLeading: false,
-            actions: <Widget>[
-              CircleAvatar(
-                child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.notifications_none_outlined,
-                    // color: Colors.blue,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 20),
-              IconButton(
-                iconSize: 30,
-                onPressed: () {
-                  // _openDrawer();
-                },
-                icon: const Icon(
-                  Icons.menu,
-                  color: Colors.black,
-                ),
-              ),
-            ],
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(50),
-              child: Container(
-                padding: const EdgeInsets.only(left: 30, bottom: 10),
-                alignment: Alignment.topCenter,
-                color: Colors.white,
-                child: const Text(
-                  'Reports',
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
+            preferredSize: const Size.fromHeight(100), child: reportappbar()),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20.0),

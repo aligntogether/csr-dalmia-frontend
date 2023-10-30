@@ -1,18 +1,17 @@
 import 'package:dalmia/pages/vdf/Reports/Home.dart';
-import 'package:dalmia/pages/vdf/Reports/Leverwise.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-class Form1 extends StatefulWidget {
-  const Form1({Key? key}) : super(key: key);
+class Top20 extends StatefulWidget {
+  const Top20({Key? key}) : super(key: key);
 
   @override
-  State<Form1> createState() => _Form1State();
+  State<Top20> createState() => _Top20State();
 }
 
-class _Form1State extends State<Form1> {
+class _Top20State extends State<Top20> {
   int? selectedRadio;
   int _selectedIndex = 0; // Track the currently selected tab index
 
@@ -29,7 +28,9 @@ class _Form1State extends State<Form1> {
         List.generate(10, (index) => random.nextInt(100));
     final List<int> populationList =
         List.generate(10, (index) => random.nextInt(100));
-
+    final List<int> incomeList =
+        List.generate(10, (index) => random.nextInt(100));
+    ;
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
@@ -80,45 +81,38 @@ class _Form1State extends State<Form1> {
                 Center(
                   child: Column(
                     children: [
-                      const Text('Form 1 Gram Parivartan'),
+                      const Text(' Top 20 Households with Additional Income'),
                       const SizedBox(
                         height: 20,
                       ),
                       SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: DataTable(
-                          headingRowColor: MaterialStateColor.resolveWith(
-                              (states) => Colors.blue),
-                          columns: const <DataColumn>[
-                            DataColumn(
-                              label: Text(
-                                'Panchayat',
-                                style: TextStyle(color: Colors.white),
+                          scrollDirection: Axis.horizontal,
+                          child: DataTable(
+                            headingRowColor: MaterialStateColor.resolveWith(
+                                (states) => Colors.blue),
+                            columns: [
+                              DataColumn(
+                                label: Text(
+                                  'Code',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Village',
-                                style: TextStyle(color: Colors.white),
+                              DataColumn(
+                                label: Text(
+                                  'Name',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Household',
-                                style: TextStyle(color: Colors.white),
+                              DataColumn(
+                                label: Text(
+                                  'Actual annual updated so far',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Population',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ],
-                          rows: List<DataRow>.generate(
-                            11,
-                            (index) {
-                              if (index < 10) {
+                            ],
+                            rows: List<DataRow>.generate(
+                              10,
+                              (index) {
                                 return DataRow(
                                   color: MaterialStateColor.resolveWith(
                                     (states) {
@@ -132,43 +126,12 @@ class _Form1State extends State<Form1> {
                                     DataCell(Text('Panchayat $index')),
                                     DataCell(Text('Village $index')),
                                     DataCell(Text('${householdList[index]}')),
-                                    DataCell(Text('${populationList[index]}')),
+                                    // Assuming incomeList is the list of average income per interaction
                                   ],
                                 );
-                              } else {
-                                final totalHouseholds =
-                                    householdList.reduce((a, b) => a + b);
-                                final totalPopulation =
-                                    populationList.reduce((a, b) => a + b);
-                                return DataRow(
-                                  cells: <DataCell>[
-                                    const DataCell(Text('')),
-                                    const DataCell(Text(
-                                      'Total',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    )),
-                                    DataCell(
-                                      Text(
-                                        '$totalHouseholds',
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    DataCell(
-                                      Text(
-                                        '$totalPopulation',
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                      )
+                              },
+                            ),
+                          ))
                     ],
                   ),
                 )
@@ -332,13 +295,9 @@ class _Form1State extends State<Form1> {
                       if (selectedRadio == 1) {
                         _onTabTapped(0); // Navigate to the corresponding tab
                       } else if (selectedRadio == 2) {
-                        // Navigate to the corresponding tab
+                        _onTabTapped(1); // Navigate to the corresponding tab
                       } else if (selectedRadio == 3) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => Leverwise(),
-                          ),
-                        ); // Navigate to the corresponding tab
+                        _onTabTapped(2); // Navigate to the corresponding tab
                       } else if (selectedRadio == 4) {
                         _onTabTapped(3); // Navigate to the corresponding tab
                       } else if (selectedRadio == 5) {

@@ -1,6 +1,7 @@
 import 'package:dalmia/pages/vdf/household/addland.dart';
 import 'package:dalmia/pages/vdf/household/addlivestock.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
 class AddCrop extends StatefulWidget {
@@ -204,8 +205,17 @@ class _AddCropState extends State<AddCrop> {
               cropCheckList[index] = value!;
             });
           },
+          activeColor: CustomColorTheme.iconColor,
         ),
-        Text(text),
+        Text(
+          text,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: cropCheckList[index]
+                ? CustomColorTheme.iconColor
+                : CustomColorTheme.labelColor,
+          ),
+        ),
       ],
     );
   }

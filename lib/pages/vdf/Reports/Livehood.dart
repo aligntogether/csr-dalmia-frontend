@@ -1,18 +1,17 @@
 import 'package:dalmia/pages/vdf/Reports/Home.dart';
-import 'package:dalmia/pages/vdf/Reports/Leverwise.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-class Form1 extends StatefulWidget {
-  const Form1({Key? key}) : super(key: key);
+class LivehoodPlan extends StatefulWidget {
+  const LivehoodPlan({Key? key}) : super(key: key);
 
   @override
-  State<Form1> createState() => _Form1State();
+  State<LivehoodPlan> createState() => _LivehoodPlanState();
 }
 
-class _Form1State extends State<Form1> {
+class _LivehoodPlanState extends State<LivehoodPlan> {
   int? selectedRadio;
   int _selectedIndex = 0; // Track the currently selected tab index
 
@@ -29,7 +28,9 @@ class _Form1State extends State<Form1> {
         List.generate(10, (index) => random.nextInt(100));
     final List<int> populationList =
         List.generate(10, (index) => random.nextInt(100));
-
+    final List<int> incomeList =
+        List.generate(10, (index) => random.nextInt(100));
+    ;
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
@@ -80,95 +81,40 @@ class _Form1State extends State<Form1> {
                 Center(
                   child: Column(
                     children: [
-                      const Text('Form 1 Gram Parivartan'),
+                      const Text(' Livelihood Funds Utilization'),
                       const SizedBox(
                         height: 20,
                       ),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: DataTable(
-                          headingRowColor: MaterialStateColor.resolveWith(
-                              (states) => Colors.blue),
+                          headingRowHeight: 0.0,
                           columns: const <DataColumn>[
-                            DataColumn(
-                              label: Text(
-                                'Panchayat',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Village',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Household',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Population',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
+                            DataColumn(label: Text('Sno.')),
+                            DataColumn(label: Text('Business Plan Titles')),
                           ],
                           rows: List<DataRow>.generate(
-                            11,
+                            3,
                             (index) {
-                              if (index < 10) {
-                                return DataRow(
-                                  color: MaterialStateColor.resolveWith(
-                                    (states) {
-                                      // Alternating row colors
-                                      return index.isOdd
-                                          ? Colors.lightBlue[50] as Color
-                                          : Colors.white as Color;
-                                    },
-                                  ),
-                                  cells: <DataCell>[
-                                    DataCell(Text('Panchayat $index')),
-                                    DataCell(Text('Village $index')),
-                                    DataCell(Text('${householdList[index]}')),
-                                    DataCell(Text('${populationList[index]}')),
-                                  ],
-                                );
-                              } else {
-                                final totalHouseholds =
-                                    householdList.reduce((a, b) => a + b);
-                                final totalPopulation =
-                                    populationList.reduce((a, b) => a + b);
-                                return DataRow(
-                                  cells: <DataCell>[
-                                    const DataCell(Text('')),
-                                    const DataCell(Text(
-                                      'Total',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    )),
-                                    DataCell(
-                                      Text(
-                                        '$totalHouseholds',
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    DataCell(
-                                      Text(
-                                        '$totalPopulation',
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              }
+                              return DataRow(
+                                color: MaterialStateColor.resolveWith(
+                                  (states) {
+                                    // Alternating row colors
+                                    return index.isOdd
+                                        ? Colors.lightBlue[50] as Color
+                                        : Colors.white as Color;
+                                  },
+                                ),
+                                cells: <DataCell>[
+                                  DataCell(Text('Allocated(Rs.)')),
+                                  DataCell(Text('5000')),
+                                ],
+                              );
                             },
                           ),
                         ),
-                      )
+                      ),
+                      Text('Last updated on:12/07/23')
                     ],
                   ),
                 )
@@ -332,13 +278,9 @@ class _Form1State extends State<Form1> {
                       if (selectedRadio == 1) {
                         _onTabTapped(0); // Navigate to the corresponding tab
                       } else if (selectedRadio == 2) {
-                        // Navigate to the corresponding tab
+                        _onTabTapped(1); // Navigate to the corresponding tab
                       } else if (selectedRadio == 3) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => Leverwise(),
-                          ),
-                        ); // Navigate to the corresponding tab
+                        _onTabTapped(2); // Navigate to the corresponding tab
                       } else if (selectedRadio == 4) {
                         _onTabTapped(3); // Navigate to the corresponding tab
                       } else if (selectedRadio == 5) {

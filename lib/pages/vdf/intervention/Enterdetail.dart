@@ -38,6 +38,7 @@ class _EnterDetailState extends State<EnterDetail> {
 
   @override
   Widget build(BuildContext context) {
+    bool isButtonEnabled = selectedName != null;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -145,14 +146,22 @@ class _EnterDetailState extends State<EnterDetail> {
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(350, 50),
+                        backgroundColor:
+                            isButtonEnabled ? Colors.blue : Colors.lightBlue,
                       ),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => Followup(),
-                          ),
-                        );
-                      },
+                      onPressed: isButtonEnabled
+                          ? () {
+                              if (_completeController.text.isNotEmpty) {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => Followup(),
+                                  ),
+                                );
+                              } else {
+                                _successmsg(context);
+                              }
+                            }
+                          : null,
                       child: const Text('Continue'),
                     ),
                   ],
@@ -164,4 +173,65 @@ class _EnterDetailState extends State<EnterDetail> {
       ),
     );
   }
+}
+
+void _successmsg(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: SizedBox(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: 40,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                  'Intervention 1 is added successfully. What do you wish to do next?'),
+            ],
+          ),
+        ),
+        content: Column(
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 0,
+                backgroundColor: Colors.white,
+                side: const BorderSide(width: 1, color: Colors.blue),
+              ),
+              onPressed: () {
+                // Perform actions with the field values
+
+                // Save as draft
+              },
+              child: const Text(
+                'Add another intervention',
+                style: TextStyle(color: Colors.blue),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue[900],
+                minimumSize: const Size(250, 50),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Save and Close'),
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }

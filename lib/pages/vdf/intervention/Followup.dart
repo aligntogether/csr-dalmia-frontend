@@ -1,3 +1,4 @@
+import 'package:dalmia/pages/vdf/intervention/Financials.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -53,8 +54,18 @@ class _FollowupState extends State<Followup> {
     }
   }
 
+  bool areFollowupDatesFilled() {
+    return selectedDate1 != null &&
+        selectedDate2 != null &&
+        selectedDate3 != null &&
+        selectedDate4 != null &&
+        selectedDate5 != null &&
+        selectedDate6 != null;
+  }
+
   @override
   Widget build(BuildContext context) {
+    bool isButtonEnabled = areFollowupDatesFilled();
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -93,27 +104,27 @@ class _FollowupState extends State<Followup> {
                 SizedBox(
                   height: 20,
                 ),
-                followdate(context, 'Followup 1', _followController1),
+                followdate(context, 'Followup 1*', _followController1),
                 SizedBox(
                   height: 20,
                 ),
-                followdate(context, 'Followup 2', _followController2),
+                followdate(context, 'Followup 2*', _followController2),
                 SizedBox(
                   height: 20,
                 ),
-                followdate(context, 'Followup 3', _followController3),
+                followdate(context, 'Followup 3*', _followController3),
                 SizedBox(
                   height: 20,
                 ),
-                followdate(context, 'Followup 4', _followController4),
+                followdate(context, 'Followup 4*', _followController4),
                 SizedBox(
                   height: 20,
                 ),
-                followdate(context, 'Followup 5', _followController5),
+                followdate(context, 'Followup 5*', _followController5),
                 SizedBox(
                   height: 20,
                 ),
-                followdate(context, 'Followup 6', _followController6),
+                followdate(context, 'Followup 6*', _followController6),
                 SizedBox(
                   height: 40,
                 ),
@@ -123,8 +134,19 @@ class _FollowupState extends State<Followup> {
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(350, 50),
+                        backgroundColor: isButtonEnabled
+                            ? Colors.blue.shade900
+                            : Colors.lightBlue,
                       ),
-                      onPressed: () {},
+                      onPressed: isButtonEnabled
+                          ? () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => Financial(),
+                                ),
+                              );
+                            }
+                          : null,
                       child: const Text('Continue'),
                     ),
                   ],
