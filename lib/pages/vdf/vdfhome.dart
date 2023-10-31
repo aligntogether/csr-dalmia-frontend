@@ -93,9 +93,9 @@ class _VdfHomeState extends State<VdfHome> {
                 child: Text(
                   'Welcome Suresh!',
                   style: TextStyle(
-                    color: Colors.grey.shade700,
-                    fontSize: 20,
-                  ),
+                      color: Colors.grey.shade700,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500),
                 ),
               ),
             ),

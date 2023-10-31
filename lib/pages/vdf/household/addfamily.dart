@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class AddFamily extends StatefulWidget {
-  const AddFamily({super.key});
+  const AddFamily({Key? key}) : super(key: key);
 
   @override
   _MyFormState createState() => _MyFormState();
@@ -17,14 +17,14 @@ class _MyFormState extends State<AddFamily> {
   List<Widget> forms = [];
   int formCount = 1;
 
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _mobileController = TextEditingController();
-  final TextEditingController _dobController = TextEditingController();
-  String? _selectedGender;
-  String? _selectedEducation;
-  String? _selectedCaste;
-  String? _selectedPrimaryEmployment;
-  String? _selectedSecondaryEmployment;
+  final List<TextEditingController> _nameControllers = [];
+  final List<TextEditingController> _mobileControllers = [];
+  final List<TextEditingController> _dobControllers = [];
+  final List<String?> _selectedGenders = [];
+  List<String?> _selectedEducations = [];
+  List<String?> _selectedCastes = [];
+  List<String?> _selectedPrimaryEmployments = [];
+  List<String?> _selectedSecondaryEmployments = [];
 
   List<String> genderOptions = ['Male', 'Female'];
   List<String> educationOptions = ['Option 1', 'Option 2', 'Option 3'];
@@ -39,6 +39,16 @@ class _MyFormState extends State<AddFamily> {
     super.initState();
     formExpandStateList = List<bool>.generate(formCount, (index) => false);
     formFilledStateList = List<bool>.generate(formCount, (index) => false);
+    for (int i = 0; i < formCount; i++) {
+      _nameControllers.add(TextEditingController());
+      _mobileControllers.add(TextEditingController());
+      _dobControllers.add(TextEditingController());
+      _selectedGenders.add(null);
+      _selectedEducations.add(null);
+      _selectedCastes.add(null);
+      _selectedPrimaryEmployments.add(null);
+      _selectedSecondaryEmployments.add(null);
+    }
   }
 
   DateTime? selectedDate;
@@ -50,10 +60,11 @@ class _MyFormState extends State<AddFamily> {
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
-    if (picked != null && picked != _dobController.text) {
+    if (picked != null) {
       setState(() {
         selectedDate = picked;
-        _dobController.text = DateFormat('dd/MM/yyyy').format(picked);
+        _dobControllers[formCount - 1].text =
+            DateFormat('dd/MM/yyyy').format(picked);
       });
     }
   }
@@ -152,7 +163,7 @@ class _MyFormState extends State<AddFamily> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 TextFormField(
-                                  controller: _nameController,
+                                  controller: _nameControllers[i],
                                   decoration: const InputDecoration(
                                     focusedBorder: OutlineInputBorder(
                                       borderSide:
@@ -172,7 +183,7 @@ class _MyFormState extends State<AddFamily> {
                                 ),
                                 const SizedBox(height: 20),
                                 TextFormField(
-                                  controller: _mobileController,
+                                  controller: _mobileControllers[i],
                                   decoration: const InputDecoration(
                                     focusedBorder: OutlineInputBorder(
                                       borderSide:
@@ -198,7 +209,7 @@ class _MyFormState extends State<AddFamily> {
                                     SizedBox(
                                       width: 240,
                                       child: TextFormField(
-                                        controller: _dobController,
+                                        controller: _dobControllers[i],
                                         decoration: InputDecoration(
                                           focusedBorder:
                                               const OutlineInputBorder(
@@ -254,7 +265,7 @@ class _MyFormState extends State<AddFamily> {
                                 ),
                                 const SizedBox(height: 16),
                                 DropdownButtonFormField(
-                                  value: _selectedGender,
+                                  value: _selectedGenders[i],
                                   items: genderOptions.map((String gender) {
                                     return DropdownMenuItem(
                                       value: gender,
@@ -263,7 +274,7 @@ class _MyFormState extends State<AddFamily> {
                                   }).toList(),
                                   onChanged: (newValue) {
                                     setState(() {
-                                      _selectedGender = newValue;
+                                      _selectedGenders[i] = newValue as String?;
                                     });
                                   },
                                   decoration: const InputDecoration(
@@ -289,7 +300,7 @@ class _MyFormState extends State<AddFamily> {
                                 ),
                                 const SizedBox(height: 16),
                                 DropdownButtonFormField(
-                                  value: _selectedEducation,
+                                  value: _selectedEducations[i],
                                   items:
                                       educationOptions.map((String education) {
                                     return DropdownMenuItem(
@@ -299,7 +310,8 @@ class _MyFormState extends State<AddFamily> {
                                   }).toList(),
                                   onChanged: (newValue) {
                                     setState(() {
-                                      _selectedEducation = newValue;
+                                      _selectedEducations[i] =
+                                          newValue as String?;
                                     });
                                   },
                                   decoration: const InputDecoration(
@@ -325,7 +337,7 @@ class _MyFormState extends State<AddFamily> {
                                 ),
                                 const SizedBox(height: 16),
                                 DropdownButtonFormField(
-                                  value: _selectedCaste,
+                                  value: _selectedCastes[i],
                                   items: casteOptions.map((String caste) {
                                     return DropdownMenuItem(
                                       value: caste,
@@ -334,7 +346,7 @@ class _MyFormState extends State<AddFamily> {
                                   }).toList(),
                                   onChanged: (newValue) {
                                     setState(() {
-                                      _selectedCaste = newValue;
+                                      _selectedCastes[i] = newValue as String?;
                                     });
                                   },
                                   icon: const Icon(
@@ -360,7 +372,7 @@ class _MyFormState extends State<AddFamily> {
                                 ),
                                 const SizedBox(height: 16),
                                 DropdownButtonFormField(
-                                  value: _selectedPrimaryEmployment,
+                                  value: _selectedPrimaryEmployments[i],
                                   items: employmentOptions
                                       .map((String employment) {
                                     return DropdownMenuItem(
@@ -370,7 +382,8 @@ class _MyFormState extends State<AddFamily> {
                                   }).toList(),
                                   onChanged: (newValue) {
                                     setState(() {
-                                      _selectedPrimaryEmployment = newValue;
+                                      _selectedPrimaryEmployments[i] =
+                                          newValue as String?;
                                     });
                                   },
                                   icon: const Icon(
@@ -396,7 +409,7 @@ class _MyFormState extends State<AddFamily> {
                                 ),
                                 const SizedBox(height: 16),
                                 DropdownButtonFormField(
-                                  value: _selectedSecondaryEmployment,
+                                  value: _selectedSecondaryEmployments[i],
                                   items: employmentOptions
                                       .map((String employment) {
                                     return DropdownMenuItem(
@@ -406,7 +419,8 @@ class _MyFormState extends State<AddFamily> {
                                   }).toList(),
                                   onChanged: (newValue) {
                                     setState(() {
-                                      _selectedSecondaryEmployment = newValue;
+                                      _selectedSecondaryEmployments[i] =
+                                          newValue as String?;
                                     });
                                   },
                                   icon: const Icon(
@@ -448,6 +462,14 @@ class _MyFormState extends State<AddFamily> {
                           formCount++;
                           formExpandStateList.add(false);
                           formFilledStateList.add(false);
+                          _nameControllers.add(TextEditingController());
+                          _mobileControllers.add(TextEditingController());
+                          _dobControllers.add(TextEditingController());
+                          _selectedGenders.add(null);
+                          _selectedEducations.add(null);
+                          _selectedCastes.add(null);
+                          _selectedPrimaryEmployments.add(null);
+                          _selectedSecondaryEmployments.add(null);
                         });
                       },
                     ),
@@ -477,9 +499,9 @@ class _MyFormState extends State<AddFamily> {
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
                           // All fields are valid, you can process the data
-                          final name = _nameController.text;
-                          final mobile = _mobileController.text;
-                          final dob = _dobController.text;
+                          // final name = _nameController.text;
+                          // final mobile = _mobileController.text;
+                          // final dob = _dobController.text;
 
                           // Perform actions with the field values
 
@@ -500,10 +522,4 @@ class _MyFormState extends State<AddFamily> {
       ),
     );
   }
-}
-
-void main() {
-  runApp(const MaterialApp(
-    home: AddFamily(),
-  ));
 }

@@ -1,4 +1,6 @@
 import 'package:dalmia/pages/vdf/household/addfamily.dart';
+import 'dart:convert';
+import 'dart:io';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
@@ -35,11 +37,33 @@ class _MyFormState extends State<AddHead> {
     'Option 2',
     'Option 3'
   ]; // Replace with actual options
-  List<String> employmentOptions = [
-    'Option 1',
-    'Option 2',
-    'Option 3'
-  ]; // Replace with actual options
+  List<String> employmentOptions = ['Option 1', 'Option 2', 'Option 3'];
+  // Replace with actual options
+  void saveFormDataToJson() {
+    final name = _nameController.text;
+    final mobile = _mobileController.text;
+    final dob = _dobController.text;
+
+    Map<String, dynamic> headData = {
+      'name': name,
+      'mobile': mobile,
+      'dob': dob,
+      'gender': _selectedGender,
+      'education': _selectedEducation,
+      'caste': _selectedCaste,
+      'primaryEmployment': _selectedPrimaryEmployment,
+      'secondaryEmployment': _selectedSecondaryEmployment,
+    };
+
+    Map<String, dynamic> householdData = {
+      'head': headData,
+    };
+
+    String jsonData = json.encode({'household': householdData});
+
+    File('form_data.json').writeAsStringSync(jsonData);
+  }
+
   DateTime? selectedDate;
 
   Future<void> _selectDate(BuildContext context) async {
@@ -423,6 +447,7 @@ class _MyFormState extends State<AddHead> {
                             final name = _nameController.text;
                             final mobile = _mobileController.text;
                             final dob = _dobController.text;
+                            saveFormDataToJson();
                           }
                         },
                         child: const Text('Next'),

@@ -1,3 +1,4 @@
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
 class CustomCard extends StatelessWidget {
@@ -47,7 +48,8 @@ class CustomCard extends StatelessWidget {
               child: Text(
                 subtitle,
                 style: TextStyle(
-                  fontSize: 14.0,
+                  fontSize: 13.0,
+                  fontWeight: FontWeight.w500,
                   color: textcolor,
                 ),
               ),
@@ -58,8 +60,8 @@ class CustomCard extends StatelessWidget {
                 title,
                 style: TextStyle(
                   color: textcolor,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),

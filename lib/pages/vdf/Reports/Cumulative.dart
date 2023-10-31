@@ -4,6 +4,7 @@ import 'package:dalmia/pages/vdf/Reports/Business.dart';
 import 'package:dalmia/pages/vdf/Reports/Form1.dart';
 import 'package:dalmia/pages/vdf/Reports/Livehood.dart';
 import 'package:dalmia/pages/vdf/Reports/Top20.dart';
+import 'package:dalmia/pages/vdf/Reports/hhidform.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
@@ -19,6 +20,8 @@ class Cumulative extends StatefulWidget {
 class _CumulativeState extends State<Cumulative> {
   String? selectedPanchayat;
   String? selectedVillage;
+  int _selectedpanchayatindex = 0;
+  int _selectedvillagetindex = 0;
   int? selectedRadio;
   int _selectedIndex = 0; // Track the currently selected tab index
 
@@ -33,9 +36,9 @@ class _CumulativeState extends State<Cumulative> {
     final Random random = Random();
     return SafeArea(
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(100),
-          child: reportappbar(),
+        appBar: const PreferredSize(
+          preferredSize: Size.fromHeight(100),
+          child: Reportappbar(),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -44,19 +47,41 @@ class _CumulativeState extends State<Cumulative> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                TextButton.icon(
-                    style: TextButton.styleFrom(
-                        backgroundColor:
-                            const Color.fromARGB(255, 85, 164, 228),
-                        foregroundColor: Colors.white),
-                    onPressed: () {
-                      _reportpopup(context);
-                    },
-                    icon: Icon(Icons.folder_outlined),
-                    label: Text(
-                      'view other reports',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )),
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Icon(
+                            Icons.keyboard_arrow_left_outlined,
+                            color: Colors.black,
+                          ),
+                          Text(
+                            'Back',
+                            style: TextStyle(color: Colors.black),
+                          )
+                        ],
+                      ),
+                    ),
+                    TextButton.icon(
+                        style: TextButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 85, 164, 228),
+                            foregroundColor: Colors.white),
+                        onPressed: () {
+                          _reportpopup(context);
+                        },
+                        icon: Icon(Icons.folder_outlined),
+                        label: Text(
+                          'view other reports',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )),
+                  ],
+                ),
                 const SizedBox(height: 20),
                 Column(
                   children: [
@@ -66,7 +91,20 @@ class _CumulativeState extends State<Cumulative> {
                     SizedBox(
                       height: 40,
                     ),
-                    tab1(random)
+                    Container(
+                      child: () {
+                        if (selectedPanchayat ==
+                            'Panchayat ${_selectedpanchayatindex + 1}') {
+                          return villagetab(random);
+                        } else if (selectedVillage ==
+                                'Village ${_selectedvillagetindex + 1}' &&
+                            selectedPanchayat == '0') {
+                          return streettab(random);
+                        } else {
+                          return panchayattab(random);
+                        }
+                      }(),
+                    )
                   ],
                 )
               ],
@@ -89,7 +127,7 @@ class _CumulativeState extends State<Cumulative> {
     );
   }
 
-  Center tab1(Random random) {
+  Center panchayattab(Random random) {
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -149,6 +187,11 @@ class _CumulativeState extends State<Cumulative> {
                           onTap: () {
                             setState(() {
                               selectedPanchayat = 'Panchayat ${index + 1}';
+                              _selectedpanchayatindex = index;
+                              // _selectedVillageindex = index;
+
+                              // selectedVillage =
+                              //     'Village ${_selectedVillageindex + 1}';
                             });
                           },
                           child: Text(
@@ -176,12 +219,12 @@ class _CumulativeState extends State<Cumulative> {
     );
   }
 
-  Widget tab2(Random random) {
+  Widget villagetab(Random random) {
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(selectedVillage!),
+          Text(selectedPanchayat!),
           Text('Village wise report'),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -228,12 +271,104 @@ class _CumulativeState extends State<Cumulative> {
                       DataCell(
                         InkWell(
                           onTap: () {
-                            // Handle village name click
+                            setState(() {
+                              selectedVillage = 'Village ${index + 1}';
+                              _selectedvillagetindex = index;
+                              selectedPanchayat = '0';
+                              // _selectedVillageindex = index;
+
+                              // selectedVillage =
+                              //     'Village ${_selectedVillageindex + 1}';
+                            });
                           },
                           child: Text(
                             'Village ${index + 1}',
                             style: TextStyle(
-                              color: Colors.blue,
+                              color: Colors.orange,
+                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      DataCell(Text(
+                        '${random.nextInt(100)}',
+                      )),
+                      DataCell(Text('${random.nextInt(100)}')),
+                      DataCell(Text('${random.nextInt(100)}')),
+                    ],
+                  );
+                },
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget streettab(Random random) {
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(selectedVillage!),
+          Text('Street wise report'),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              headingRowColor:
+                  MaterialStateColor.resolveWith((states) => Colors.blue),
+              dividerThickness: 2,
+              columnSpacing: 15,
+              columns: const <DataColumn>[
+                DataColumn(
+                  label: Text(
+                    'Street Name',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Income follow up Overdue',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Number of selected HHs without intervention',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'No. of Interventions started but not completed',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+              rows: List<DataRow>.generate(
+                10,
+                (index) {
+                  return DataRow(
+                    color: MaterialStateColor.resolveWith((states) {
+                      // Alternating row colors
+                      return index.isOdd ? Colors.lightBlue[50]! : Colors.white;
+                    }),
+                    cells: <DataCell>[
+                      DataCell(
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => HhidForm(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Street ${index + 1}',
+                            style: TextStyle(
+                              color: Colors.orange,
                               decoration: TextDecoration.underline,
                               fontWeight: FontWeight.bold,
                             ),
@@ -437,8 +572,8 @@ class _CumulativeState extends State<Cumulative> {
   }
 }
 
-class reportappbar extends StatelessWidget {
-  const reportappbar({
+class Reportappbar extends StatelessWidget {
+  const Reportappbar({
     super.key,
   });
 

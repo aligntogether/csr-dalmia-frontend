@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:flutter/services.dart';
 
+import '../common/common.dart';
+
 class Otp extends StatefulWidget {
   const Otp({Key? key}) : super(key: key);
 
@@ -128,7 +130,7 @@ class _OtpState extends State<Otp> {
                         ),
                       ),
                       const SizedBox(height: 20.0),
-                      ElevatedButton(
+                      SubmitButton(
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
@@ -136,27 +138,6 @@ class _OtpState extends State<Otp> {
                             ),
                           );
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xcc0054a6),
-                          elevation: 5.0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                        ),
-                        child: Container(
-                          width: 273,
-                          height: 55.0,
-                          alignment: Alignment.center,
-                          child: const Text(
-                            'Submit',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w600,
-                              height: 1.2125,
-                              color: Color(0xffffffff),
-                            ),
-                          ),
-                        ),
                       ),
                     ],
                   ),

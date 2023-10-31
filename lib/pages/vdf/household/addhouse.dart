@@ -67,7 +67,7 @@
 //   List<Village> villages = [];
 //   List<Street> streets = [];
 
-//   final String panchayatUrl = 'http://192.168.1.32:8080/list-Panchayat';
+//   final String panchayatUrl = 'http://192.168.1.79:8080/list-Panchayat';
 
 //   Future<List<Panchayat>> fetchPanchayats() async {
 //     try {
@@ -94,7 +94,7 @@
 //     try {
 //       final response = await http.get(
 //         Uri.parse(
-//             'http://192.168.1.32:8080/list-Village?panchayatId=$panchayatId'),
+//             'http://192.168.1.79:8080/list-Village?panchayatId=$panchayatId'),
 //       );
 //       if (response.statusCode == 200) {
 //         Iterable list = json.decode(response.body);
@@ -112,7 +112,7 @@
 //   Future<List<Street>> fetchStreets(String villageId) async {
 //     try {
 //       final response = await http.get(
-//         Uri.parse('http://192.168.1.32:8080/list-Street?VillageId=$villageId'),
+//         Uri.parse('http://192.168.1.79:8080/list-Street?VillageId=$villageId'),
 //       );
 //       if (response.statusCode == 200) {
 //         Iterable list = json.decode(response.body);
@@ -236,8 +236,8 @@
 //                       DropdownButtonFormField<String>(
 //                         value: _selectedVillage,
 //                         items: villages
-//                             .where((village) =>
-//                                 village.panchayatId == _selectedPanchayat)
+//                             // .where((village) =>
+//                             //     village.panchayatId == _selectedPanchayat)
 //                             .map((Village village) {
 //                           return DropdownMenuItem<String>(
 //                             value: village.villageid,
@@ -286,8 +286,8 @@
 //                       DropdownButtonFormField<String>(
 //                         value: _selectedStreet,
 //                         items: streets
-//                             .where((street) =>
-//                                 street.villageId == _selectedVillage)
+//                             // .where((street) =>
+//                             //     street.villageId == _selectedVillage)
 //                             .map((Street street) {
 //                           return DropdownMenuItem<String>(
 //                             value: street.streetid,

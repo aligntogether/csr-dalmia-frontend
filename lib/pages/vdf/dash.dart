@@ -1,4 +1,5 @@
 import 'package:dalmia/components/cards.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
 class DashTab extends StatelessWidget {
@@ -20,8 +21,8 @@ class DashTab extends StatelessWidget {
                   child: const Text(
                     'Households Summary',
                     style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
+                      fontSize: CustomFontTheme.headingSize,
+                      fontWeight: CustomFontTheme.headingwt,
                     ),
                   ),
                 ),
@@ -64,8 +65,8 @@ class DashTab extends StatelessWidget {
                   child: const Text(
                     'Interventions',
                     style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
+                      fontSize: CustomFontTheme.headingSize,
+                      fontWeight: CustomFontTheme.headingwt,
                     ),
                   ),
                 ),
@@ -108,8 +109,8 @@ class DashTab extends StatelessWidget {
                   child: const Text(
                     'Follow up',
                     style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
+                      fontSize: CustomFontTheme.headingSize,
+                      fontWeight: CustomFontTheme.headingwt,
                     ),
                   ),
                 ),
@@ -149,7 +150,10 @@ class DashTab extends StatelessWidget {
                       children: [
                         TextSpan(
                           text: 'Household with additional\n income',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: CustomFontTheme.headingSize,
+                            fontWeight: CustomFontTheme.headingwt,
+                          ),
                         ),
                         TextSpan(text: ' (per annum)\n'),
                       ],
