@@ -1,7 +1,15 @@
+import 'package:dalmia/pages/vdf/Reports/Business.dart';
+import 'package:dalmia/pages/vdf/Reports/Cumulative.dart';
+import 'package:dalmia/pages/vdf/Reports/Form1.dart';
 import 'package:dalmia/pages/vdf/Reports/Home.dart';
 import 'package:dalmia/pages/vdf/Reports/Leverwise.dart';
+import 'package:dalmia/pages/vdf/Reports/Livehood.dart';
+import 'package:dalmia/pages/vdf/Reports/Top20.dart';
+import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
+import 'package:dalmia/pages/vdf/intervention/Addinter.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/services.dart';
@@ -87,14 +95,19 @@ class _HhidFormState extends State<HhidForm> {
                 Center(
                   child: Column(
                     children: [
-                      const Text('Cumulative Household Details'),
+                      const Text(
+                        'Cumulative Household Details',
+                        style: TextStyle(
+                            fontSize: CustomFontTheme.textSize,
+                            fontWeight: CustomFontTheme.headingwt),
+                      ),
                       const SizedBox(
                         height: 20,
                       ),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: DataTable(
-                          columns: const <DataColumn>[
+                          columns: <DataColumn>[
                             DataColumn(
                               label: Text(
                                 'HHID',
@@ -152,20 +165,57 @@ class _HhidFormState extends State<HhidForm> {
                               ),
                             ),
                             DataColumn(
-                              label: Text(
-                                'Follow ups for income update',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
+                              label: Row(
+                                children: [
+                                  Text(
+                                    'Follow ups for income update',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text('int.1',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                      Text('int.2',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                      Text('int.3',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                      Text('int.4',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                      Text('int.5',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                           headingRowColor: MaterialStateColor.resolveWith(
-                              (states) => Colors.blue),
-                          rows: const <DataRow>[
+                              (states) => CustomColorTheme.secondaryColor),
+                          rows: <DataRow>[
                             DataRow(
                               cells: <DataCell>[
-                                DataCell(Text('1')),
+                                DataCell(
+                                  InkWell(
+                                    onTap: () {
+                                      _takeaction(context);
+                                    },
+                                    child: Text(
+                                      'AROKSKTS001',
+                                      style: const TextStyle(
+                                        color: CustomColorTheme.iconColor,
+                                        decoration: TextDecoration.underline,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                                 DataCell(Text('Yes')),
                                 DataCell(Text('John Doe')),
                                 DataCell(Text('Intervention 1')),
@@ -177,7 +227,19 @@ class _HhidFormState extends State<HhidForm> {
                             ),
                             DataRow(
                               cells: <DataCell>[
-                                DataCell(Text('2')),
+                                DataCell(
+                                  InkWell(
+                                    onTap: () {},
+                                    child: Text(
+                                      'AROKSKTS002',
+                                      style: TextStyle(
+                                        color: CustomColorTheme.iconColor,
+                                        decoration: TextDecoration.underline,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                                 DataCell(Text('No')),
                                 DataCell(Text('Jane Smith')),
                                 DataCell(Text('Intervention 2')),
@@ -197,9 +259,43 @@ class _HhidFormState extends State<HhidForm> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ElevatedButton(
-                        onPressed: () {}, child: Text('Download as Excel')),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              CustomColorTheme.backgroundColor),
+                        ),
+                        onPressed: () {},
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.picture_as_pdf_rounded,
+                              color: CustomColorTheme.primaryColor,
+                            ),
+                            Text(
+                              'Download  Excel',
+                              style: TextStyle(
+                                  color: CustomColorTheme.primaryColor),
+                            ),
+                          ],
+                        )),
                     ElevatedButton(
-                        onPressed: () {}, child: Text('Download as PDF')),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              CustomColorTheme.backgroundColor),
+                        ),
+                        onPressed: () {},
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.picture_as_pdf,
+                              color: CustomColorTheme.primaryColor,
+                            ),
+                            Text(
+                              'Download PDF',
+                              style: TextStyle(
+                                  color: CustomColorTheme.primaryColor),
+                            ),
+                          ],
+                        )),
                   ],
                 )
               ],
@@ -269,24 +365,34 @@ class _HhidFormState extends State<HhidForm> {
         return StatefulBuilder(
           builder: (BuildContext context, setState) {
             return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('View other Reports'),
+                      Text('View other Reports'),
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).pop();
                         },
-                        child: const Icon(Icons.close),
+                        child: Icon(Icons.close),
                       ),
                     ],
                   ),
                   RadioListTile<int>(
-                    title: const Text(
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
                       'Form 1 Gram Parivartan',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: selectedRadio == 1
+                              ? CustomColorTheme.iconColor
+                              : CustomColorTheme.textColor),
                     ),
                     value: 1,
                     groupValue: selectedRadio,
@@ -297,8 +403,16 @@ class _HhidFormState extends State<HhidForm> {
                     },
                   ),
                   RadioListTile<int>(
-                    title: const Text(
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
                       'Cumulative Household data',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: selectedRadio == 2
+                              ? CustomColorTheme.iconColor
+                              : CustomColorTheme.textColor),
                     ),
                     value: 2,
                     groupValue: selectedRadio,
@@ -309,8 +423,16 @@ class _HhidFormState extends State<HhidForm> {
                     },
                   ),
                   RadioListTile<int>(
-                    title: const Text(
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
                       'Leverwise number of interventions',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: selectedRadio == 3
+                              ? CustomColorTheme.iconColor
+                              : CustomColorTheme.textColor),
                     ),
                     value: 3,
                     groupValue: selectedRadio,
@@ -321,7 +443,17 @@ class _HhidFormState extends State<HhidForm> {
                     },
                   ),
                   RadioListTile<int>(
-                    title: const Text('Top 20 additional income HH'),
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
+                      'Top 20 additional income HH',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: selectedRadio == 4
+                              ? CustomColorTheme.iconColor
+                              : CustomColorTheme.textColor),
+                    ),
                     value: 4,
                     groupValue: selectedRadio,
                     onChanged: (value) {
@@ -331,7 +463,17 @@ class _HhidFormState extends State<HhidForm> {
                     },
                   ),
                   RadioListTile<int>(
-                    title: const Text('List of Business Plans engaged'),
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
+                      'List of Business Plans engaged',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: selectedRadio == 5
+                              ? CustomColorTheme.iconColor
+                              : CustomColorTheme.textColor),
+                    ),
                     value: 5,
                     groupValue: selectedRadio,
                     onChanged: (value) {
@@ -341,7 +483,17 @@ class _HhidFormState extends State<HhidForm> {
                     },
                   ),
                   RadioListTile<int>(
-                    title: const Text('Livelihood Funds Utilization'),
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
+                      'Livelihood Funds Utilization',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: selectedRadio == 6
+                              ? CustomColorTheme.iconColor
+                              : CustomColorTheme.textColor),
+                    ),
                     value: 6,
                     groupValue: selectedRadio,
                     onChanged: (value) {
@@ -357,12 +509,20 @@ class _HhidFormState extends State<HhidForm> {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue[900]),
+                        backgroundColor: CustomColorTheme.primaryColor),
                     onPressed: () {
                       if (selectedRadio == 1) {
-                        _onTabTapped(0); // Navigate to the corresponding tab
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => Form1(),
+                          ),
+                        );
                       } else if (selectedRadio == 2) {
-                        // Navigate to the corresponding tab
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => Cumulative(),
+                          ),
+                        ); // Navigate to the corresponding tab
                       } else if (selectedRadio == 3) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -370,14 +530,322 @@ class _HhidFormState extends State<HhidForm> {
                           ),
                         ); // Navigate to the corresponding tab
                       } else if (selectedRadio == 4) {
-                        _onTabTapped(3); // Navigate to the corresponding tab
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => Top20(),
+                          ),
+                        );
+                        // Navigate to the corresponding tab
                       } else if (selectedRadio == 5) {
-                        _onTabTapped(4); // Navigate to the corresponding tab
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => BusinessPlan(),
+                          ),
+                        );
+                        // Navigate to the corresponding tab
                       } else if (selectedRadio == 6) {
-                        _onTabTapped(5); // Navigate to the corresponding tab
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => LivehoodPlan(),
+                          ),
+                        ); // Navigate to the corresponding tab
                       }
                     },
                     child: const Text('View Reports'),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _takeaction(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('AROKSKTS001'),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+                  Text('Update Completion Date '),
+                  RadioListTile<int>(
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
+                      'Add Intervention',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: CustomColorTheme.textColor),
+                    ),
+                    value: 1,
+                    groupValue: selectedRadio,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedRadio = value;
+                      });
+                    },
+                  ),
+                  RadioListTile<int>(
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
+                      'Update Completion Date',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: CustomColorTheme.textColor),
+                    ),
+                    value: 2,
+                    groupValue: selectedRadio,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedRadio = value;
+                      });
+                    },
+                  ),
+                  RadioListTile<int>(
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
+                      'Add Additional Income',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: CustomColorTheme.textColor),
+                    ),
+                    value: 3,
+                    groupValue: selectedRadio,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedRadio = value;
+                      });
+                    },
+                  ),
+                  RadioListTile<int>(
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
+                      'Update Household Details',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: CustomColorTheme.textColor),
+                    ),
+                    value: 4,
+                    groupValue: selectedRadio,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedRadio = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: CustomColorTheme.primaryColor),
+                    onPressed: () {
+                      if (selectedRadio == 1) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => Addinter(),
+                          ),
+                        );
+                      } else if (selectedRadio == 2) {
+                        Navigator.of(context).pop();
+                        _updatecompletion(context);
+                      } else if (selectedRadio == 3) {
+                        // Navigator.of(context).push(
+                        //   MaterialPageRoute(
+                        //     builder: (context) => Leverwise(),
+                        //   ),
+                        // ); // Navigate to the corresponding tab
+                      } else if (selectedRadio == 4) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => AddHead(),
+                          ),
+                        );
+                        // Navigate to the corresponding tab
+                      }
+                    },
+                    child: const Text('Continue'),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _updatecompletion(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('AROKSKTS001'),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    'Update Completion Date',
+                    style: TextStyle(fontSize: CustomFontTheme.textSize),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  RadioListTile<int>(
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
+                      'int.1    Mushroom Cultivation',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          // fontWeight: CustomFontTheme.headingwt,
+                          color: CustomColorTheme.textColor),
+                    ),
+                    value: 1,
+                    groupValue: selectedRadio,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedRadio = value;
+                      });
+                    },
+                  ),
+                  RadioListTile<int>(
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
+                      'Update Completion Date',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: CustomColorTheme.textColor),
+                    ),
+                    value: 2,
+                    groupValue: selectedRadio,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedRadio = value;
+                      });
+                    },
+                  ),
+                  RadioListTile<int>(
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
+                      'Add Additional Income',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: CustomColorTheme.textColor),
+                    ),
+                    value: 3,
+                    groupValue: selectedRadio,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedRadio = value;
+                      });
+                    },
+                  ),
+                  RadioListTile<int>(
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
+                      'Update Household Details',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: CustomColorTheme.textColor),
+                    ),
+                    value: 4,
+                    groupValue: selectedRadio,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedRadio = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: CustomColorTheme.primaryColor),
+                    onPressed: () {
+                      if (selectedRadio == 1) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => Form1(),
+                          ),
+                        );
+                      } else if (selectedRadio == 2) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => Cumulative(),
+                          ),
+                        ); // Navigate to the corresponding tab
+                      } else if (selectedRadio == 3) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => Leverwise(),
+                          ),
+                        ); // Navigate to the corresponding tab
+                      } else if (selectedRadio == 4) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => Top20(),
+                          ),
+                        );
+                        // Navigate to the corresponding tab
+                      }
+                    },
+                    child: const Text('Continue'),
                   ),
                 ],
               ),

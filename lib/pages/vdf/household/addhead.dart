@@ -5,6 +5,7 @@ import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class AddHead extends StatefulWidget {
@@ -177,6 +178,11 @@ class _MyFormState extends State<AddHead> {
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
+                    keyboardType: TextInputType.phone,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      LengthLimitingTextInputFormatter(10),
+                    ],
                     controller: _mobileController,
                     decoration: const InputDecoration(
                       focusedBorder: OutlineInputBorder(
@@ -190,6 +196,8 @@ class _MyFormState extends State<AddHead> {
                     validator: (value) {
                       if (value?.isEmpty ?? true) {
                         return 'Mobile Number is required';
+                      } else if (value!.length != 10) {
+                        return 'Mobile Number should be 10 digits';
                       }
                       return null;
                     },
@@ -199,35 +207,35 @@ class _MyFormState extends State<AddHead> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                        width: 240,
-                        child: TextFormField(
-                          controller: _dobController,
-                          decoration: InputDecoration(
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black),
-                            ),
-                            labelText: 'Date of Birth *',
-                            border: const OutlineInputBorder(),
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 20.0),
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                _selectDate(context);
-                              },
-                              icon: const Icon(
-                                Icons.calendar_month_outlined,
-                                color: CustomColorTheme.iconColor,
+                          width: 240,
+                          child: TextFormField(
+                            controller: _dobController,
+                            readOnly: true, // Set the field to be read-only
+                            decoration: InputDecoration(
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black),
+                              ),
+                              labelText: 'Date of Birth *',
+                              border: const OutlineInputBorder(),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 20.0),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  _selectDate(context);
+                                },
+                                icon: const Icon(
+                                  Icons.calendar_month_outlined,
+                                  color: CustomColorTheme.iconColor,
+                                ),
                               ),
                             ),
-                          ),
-                          validator: (value) {
-                            if (value?.isEmpty ?? true) {
-                              return 'Date of Birth is required';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
+                            validator: (value) {
+                              if (value?.isEmpty ?? true) {
+                                return 'Date of Birth is required';
+                              }
+                              return null;
+                            },
+                          )),
                       Container(
                         width: 100,
                         decoration: BoxDecoration(

@@ -3,7 +3,9 @@ import 'package:dalmia/pages/vdf/Reports/Home.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/dash.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 void main() {
   runApp(const MyApp());
@@ -63,10 +65,13 @@ class _VdfHomeState extends State<VdfHome> {
             automaticallyImplyLeading: false,
             actions: <Widget>[
               CircleAvatar(
+                backgroundColor: CustomColorTheme.primaryColor,
                 child: IconButton(
                     onPressed: () {},
                     icon: Icon(
                       Icons.notifications_none_outlined,
+                      color: Colors.white,
+
                       // color: Colors.blue,
                     )),
               ),
@@ -80,7 +85,7 @@ class _VdfHomeState extends State<VdfHome> {
                 },
                 icon: const Icon(
                   Icons.menu,
-                  color: Colors.black,
+                  color: CustomColorTheme.primaryColor,
                 ),
               ),
             ],
@@ -94,7 +99,7 @@ class _VdfHomeState extends State<VdfHome> {
                   'Welcome Suresh!',
                   style: TextStyle(
                       color: Colors.grey.shade700,
-                      fontSize: 12,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500),
                 ),
               ),
@@ -115,10 +120,10 @@ class _VdfHomeState extends State<VdfHome> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              buildTabItem(Icons.dashboard_customize_outlined, "Dashboard", 0),
-              buildTabItem(Icons.home_sharp, "Add Household", 1),
-              buildTabItem(Icons.streetview_outlined, "Add Street", 2),
-              buildTabItem(Icons.drafts_outlined, "Drafts", 3),
+              buildTabItem('images/Dashboard_Outline.svg', "Dashboard", 0),
+              buildTabItem('images/Household_Outline.svg', "Add Household", 1),
+              buildTabItem('images/Street_Outline.svg', "Add Street", 2),
+              buildTabItem('images/Drafts_Outline.svg', "Drafts", 3),
             ],
           ),
         ),
@@ -126,9 +131,9 @@ class _VdfHomeState extends State<VdfHome> {
     );
   }
 
-  Widget buildTabItem(IconData icon, String label, int index) {
+  Widget buildTabItem(String imagePath, String label, int index) {
     final isSelected = index == 0;
-    final color = isSelected ? Colors.blue : Colors.black;
+    final color = isSelected ? CustomColorTheme.primaryColor : Colors.black;
 
     return InkWell(
       onTap: () {
@@ -151,18 +156,78 @@ class _VdfHomeState extends State<VdfHome> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            color: color,
+          SvgPicture.asset(
+            imagePath,
+            color: isSelected ? CustomColorTheme.primaryColor : Colors.black,
+            // width: 24, // Adjust the width as needed
+            // height: 24, // Adjust the height as needed
           ),
           Text(
             label,
             style: TextStyle(
-              color: color,
-            ),
+                color: color, fontSize: 15, fontWeight: FontWeight.w400),
           ),
         ],
       ),
+    );
+  }
+
+  void _showConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          title: SizedBox(
+            width: 283,
+            height: 80,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Icon(Icons.close),
+                ),
+                Text(
+                  'Are you sure you want to logout of the application?',
+                  style: TextStyle(
+                    fontSize: 16,
+                    // fontFamily: 'Inter',
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              SizedBox(
+                width: 157,
+                height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    side: const BorderSide(),
+                    backgroundColor: CustomColorTheme.primaryColor,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const Login(),
+                      ),
+                    );
+                    // Perform actions when 'Yes' is clicked
+                  },
+                  child: const Text('Yes'),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -195,9 +260,11 @@ class _VdfHomeState extends State<VdfHome> {
                       },
                     ),
                     ListTile(
-                      leading: const Icon(
-                        Icons.document_scanner_outlined,
-                        color: Colors.black,
+                      leading: SvgPicture.asset(
+                        'images/report.svg',
+
+                        // width: 24, // Adjust the width as needed
+                        // height: 24, // Adjust the height as needed
                       ),
                       title: const Text('Reports'),
                       onTap: () {
@@ -215,9 +282,11 @@ class _VdfHomeState extends State<VdfHome> {
                       thickness: 1, // Add the desired thickness for the line
                     ),
                     ListTile(
-                      leading: const Icon(
-                        Icons.logout_outlined,
-                        color: Colors.black,
+                      leading: SvgPicture.asset(
+                        'images/logout.svg',
+
+                        // width: 24, // Adjust the width as needed
+                        // height: 24, // Adjust the height as needed
                       ),
                       title: const Text('Logout'),
                       onTap: () {
@@ -237,53 +306,4 @@ class _VdfHomeState extends State<VdfHome> {
       ),
     );
   }
-}
-
-class IntervantionTab extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Interventions Tab Content'),
-    );
-  }
-}
-
-void _showConfirmationDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-              child: Icon(Icons.close),
-            ),
-            Text('Are you sure you want to logout of the application?'),
-          ],
-        ),
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            ElevatedButton(
-              style:
-                  ElevatedButton.styleFrom(backgroundColor: Colors.blue[900]),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const Login(),
-                  ),
-                );
-                // Perform actions when 'Yes' is clicked
-              },
-              child: const Text('Yes'),
-            ),
-          ],
-        ),
-      );
-    },
-  );
 }

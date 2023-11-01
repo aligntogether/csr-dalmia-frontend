@@ -1,4 +1,6 @@
 import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:dalmia/theme.dart';
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 
 class Addnew extends StatefulWidget {
@@ -23,7 +25,7 @@ class _AddnewState extends State<Addnew> {
             iconTheme: const IconThemeData(color: Colors.black),
             centerTitle: true,
             title: const Text(
-              'Add Street',
+              'Add a Street',
               style: TextStyle(color: Colors.black),
             ),
             backgroundColor: Colors.grey[50],
@@ -87,6 +89,17 @@ class _AddnewState extends State<Addnew> {
                     child: TextField(
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
+                          label: Text('Enter Street Name')),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: 300,
+                    child: TextField(
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(),
                           label: Text('Enter Number of Households')),
                     ),
                   ),
@@ -108,6 +121,35 @@ class _AddnewState extends State<Addnew> {
                     },
                     child: const Text('Add Street'),
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40),
+                    child: Text(
+                      'This street name and street code are already added to the village.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 35),
+                    child: Text(
+                      'Check all streets added to the village here',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.red,
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),

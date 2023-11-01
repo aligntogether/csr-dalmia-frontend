@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 class DashTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(top: 25),
-      color: Colors.grey.shade100,
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -57,6 +56,9 @@ class DashTab extends StatelessWidget {
                     ))
               ],
             ),
+            SizedBox(
+              height: 20,
+            ),
             Column(
               children: [
                 Container(
@@ -99,6 +101,9 @@ class DashTab extends StatelessWidget {
                       ],
                     ))
               ],
+            ),
+            SizedBox(
+              height: 20,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

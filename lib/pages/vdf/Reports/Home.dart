@@ -1,11 +1,14 @@
 import 'package:dalmia/pages/vdf/Reports/Business.dart';
 import 'package:dalmia/pages/vdf/Reports/Cumulative.dart';
 import 'package:dalmia/pages/vdf/Reports/Form1.dart';
+import 'package:dalmia/pages/vdf/Reports/Leverwise.dart';
 import 'package:dalmia/pages/vdf/Reports/Livehood.dart';
 import 'package:dalmia/pages/vdf/Reports/Top20.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeReport extends StatefulWidget {
   const HomeReport({Key? key}) : super(key: key);
@@ -41,24 +44,26 @@ class _HomeReportState extends State<HomeReport> {
               children: [
                 TextButton.icon(
                     style: TextButton.styleFrom(
-                        backgroundColor:
-                            const Color.fromARGB(255, 85, 164, 228),
+                        backgroundColor: const Color(0xFF008CD3),
                         foregroundColor: Colors.white),
                     onPressed: () {
                       _reportpopup(context);
                     },
                     icon: Icon(Icons.folder_outlined),
                     label: Text(
-                      'view other reports',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      'View other Reports',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
                     )),
-                const SizedBox(height: 20),
+                const SizedBox(height: 00),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 20),
                     Container(
-                      padding: EdgeInsets.all(20),
+                      padding: EdgeInsets.symmetric(horizontal: 20),
                       width: MediaQuery.of(context).size.width,
 
                       // decoration: BoxDecoration(
@@ -82,11 +87,29 @@ class _HomeReportState extends State<HomeReport> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Report of Balamurugan'),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: const Text(
+                              'Report of Balamurugan',
+                              style: TextStyle(
+                                  fontSize: CustomFontTheme.textSize,
+                                  fontWeight: CustomFontTheme.headingwt),
+                            ),
+                          ),
                           TextButton.icon(
                               onPressed: () {},
-                              icon: Icon(Icons.calendar_month_outlined),
-                              label: Text('data')),
+                              icon: Icon(
+                                Icons.calendar_month_outlined,
+                                color: CustomColorTheme.iconColor,
+                              ),
+                              label: Text(
+                                '01 Jan 2021 - 01 Jan 2023',
+                                style: TextStyle(
+                                    color: CustomColorTheme.primaryColor),
+                              )),
                           Divider(
                             color: Colors
                                 .grey, // Add your desired color for the line
@@ -147,10 +170,10 @@ class _HomeReportState extends State<HomeReport> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              buildTabItem(Icons.dashboard_customize_outlined, "Dashboard", 0),
-              buildTabItem(Icons.home_sharp, "Add Household", 1),
-              buildTabItem(Icons.streetview_outlined, "Add Street", 2),
-              buildTabItem(Icons.drafts_outlined, "Drafts", 3),
+              buildTabItem('images/Dashboard_Outline.svg', "Dashboard", 0),
+              buildTabItem('images/Household_Outline.svg', "Add Household", 1),
+              buildTabItem('images/Street_Outline.svg', "Add Street", 2),
+              buildTabItem('images/Drafts_Outline.svg', "Drafts", 3),
             ],
           ),
         ),
@@ -158,7 +181,7 @@ class _HomeReportState extends State<HomeReport> {
     );
   }
 
-  Widget buildTabItem(IconData icon, String label, int index) {
+  Widget buildTabItem(String imagePath, String label, int index) {
     final isSelected = index == 0;
     final color = isSelected ? Colors.blue : Colors.black;
 
@@ -183,9 +206,10 @@ class _HomeReportState extends State<HomeReport> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            color: color,
+          SvgPicture.asset(
+            imagePath,
+            // width: 24, // Adjust the width as needed
+            // height: 24, // Adjust the height as needed
           ),
           Text(
             label,
@@ -205,6 +229,8 @@ class _HomeReportState extends State<HomeReport> {
         return StatefulBuilder(
           builder: (BuildContext context, setState) {
             return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -221,8 +247,16 @@ class _HomeReportState extends State<HomeReport> {
                     ],
                   ),
                   RadioListTile<int>(
-                    title: const Text(
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
                       'Form 1 Gram Parivartan',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: selectedRadio == 1
+                              ? CustomColorTheme.iconColor
+                              : CustomColorTheme.textColor),
                     ),
                     value: 1,
                     groupValue: selectedRadio,
@@ -233,8 +267,16 @@ class _HomeReportState extends State<HomeReport> {
                     },
                   ),
                   RadioListTile<int>(
-                    title: const Text(
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
                       'Cumulative Household data',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: selectedRadio == 2
+                              ? CustomColorTheme.iconColor
+                              : CustomColorTheme.textColor),
                     ),
                     value: 2,
                     groupValue: selectedRadio,
@@ -245,8 +287,16 @@ class _HomeReportState extends State<HomeReport> {
                     },
                   ),
                   RadioListTile<int>(
-                    title: const Text(
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
                       'Leverwise number of interventions',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: selectedRadio == 3
+                              ? CustomColorTheme.iconColor
+                              : CustomColorTheme.textColor),
                     ),
                     value: 3,
                     groupValue: selectedRadio,
@@ -257,7 +307,17 @@ class _HomeReportState extends State<HomeReport> {
                     },
                   ),
                   RadioListTile<int>(
-                    title: const Text('Top 20 additional income HH'),
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
+                      'Top 20 additional income HH',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: selectedRadio == 4
+                              ? CustomColorTheme.iconColor
+                              : CustomColorTheme.textColor),
+                    ),
                     value: 4,
                     groupValue: selectedRadio,
                     onChanged: (value) {
@@ -267,7 +327,17 @@ class _HomeReportState extends State<HomeReport> {
                     },
                   ),
                   RadioListTile<int>(
-                    title: const Text('List of Business Plans engaged'),
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
+                      'List of Business Plans engaged',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: selectedRadio == 5
+                              ? CustomColorTheme.iconColor
+                              : CustomColorTheme.textColor),
+                    ),
                     value: 5,
                     groupValue: selectedRadio,
                     onChanged: (value) {
@@ -277,7 +347,17 @@ class _HomeReportState extends State<HomeReport> {
                     },
                   ),
                   RadioListTile<int>(
-                    title: const Text('Livelihood Funds Utilization'),
+                    activeColor: CustomColorTheme.iconColor,
+                    selectedTileColor: CustomColorTheme.iconColor,
+                    title: Text(
+                      'Livelihood Funds Utilization',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
+                          color: selectedRadio == 6
+                              ? CustomColorTheme.iconColor
+                              : CustomColorTheme.textColor),
+                    ),
                     value: 6,
                     groupValue: selectedRadio,
                     onChanged: (value) {
@@ -293,7 +373,7 @@ class _HomeReportState extends State<HomeReport> {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue[900]),
+                        backgroundColor: CustomColorTheme.primaryColor),
                     onPressed: () {
                       if (selectedRadio == 1) {
                         Navigator.of(context).push(
@@ -308,7 +388,11 @@ class _HomeReportState extends State<HomeReport> {
                           ),
                         ); // Navigate to the corresponding tab
                       } else if (selectedRadio == 3) {
-                        _onTabTapped(2); // Navigate to the corresponding tab
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => Leverwise(),
+                          ),
+                        ); // Navigate to the corresponding tab
                       } else if (selectedRadio == 4) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -348,12 +432,22 @@ DataRow celldata(String left, String right) {
     cells: <DataCell>[
       DataCell(
         Expanded(
-          child: Text(left),
+          child: Text(
+            left,
+            style: TextStyle(
+                fontSize: CustomFontTheme.textSize,
+                fontWeight: CustomFontTheme.textwt),
+          ),
         ),
       ),
       DataCell(
         Expanded(
-          child: Text(right),
+          child: Text(
+            right,
+            style: TextStyle(
+                fontSize: CustomFontTheme.textSize,
+                fontWeight: CustomFontTheme.headingwt),
+          ),
         ),
       ),
     ],
@@ -385,9 +479,7 @@ class reportappbar extends StatelessWidget {
         const SizedBox(width: 20),
         IconButton(
           iconSize: 30,
-          onPressed: () {
-            // _openDrawer();
-          },
+          onPressed: () {},
           icon: const Icon(
             Icons.menu,
             color: Colors.black,
@@ -403,8 +495,8 @@ class reportappbar extends StatelessWidget {
           child: const Text(
             'Reports',
             style: TextStyle(
-              fontSize: 20,
-            ),
+                fontSize: CustomFontTheme.textSize,
+                fontWeight: CustomFontTheme.headingwt),
           ),
         ),
       ),

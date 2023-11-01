@@ -1,5 +1,6 @@
 import 'package:dalmia/pages/otp.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../common/common.dart';
 
@@ -103,6 +104,11 @@ class _LoginState extends State<Login> {
                             margin: const EdgeInsets.only(bottom: 40.0),
                             width: 300.0,
                             child: TextField(
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[0-9]')),
+                                LengthLimitingTextInputFormatter(10),
+                              ],
                               textAlign: TextAlign.center,
                               decoration: InputDecoration(
                                 hintText: textFieldFocusNode.hasFocus

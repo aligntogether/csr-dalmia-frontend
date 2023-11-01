@@ -75,8 +75,8 @@ class _CumulativeState extends State<Cumulative> {
                         onPressed: () {
                           _reportpopup(context);
                         },
-                        icon: Icon(Icons.folder_outlined),
-                        label: Text(
+                        icon: const Icon(Icons.folder_outlined),
+                        label: const Text(
                           'view other reports',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         )),
@@ -85,10 +85,10 @@ class _CumulativeState extends State<Cumulative> {
                 const SizedBox(height: 20),
                 Column(
                   children: [
-                    Text(
+                    const Text(
                       'Cumulative Household Details',
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 40,
                     ),
                     Container(
@@ -132,12 +132,12 @@ class _CumulativeState extends State<Cumulative> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text('<Location name>'),
-          SizedBox(
+          const Text('<Location name>'),
+          const SizedBox(
             height: 10,
           ),
-          Text('Panchayats wise report'),
-          SizedBox(
+          const Text('Panchayats wise report'),
+          const SizedBox(
             height: 10,
           ),
           SingleChildScrollView(
@@ -196,7 +196,7 @@ class _CumulativeState extends State<Cumulative> {
                           },
                           child: Text(
                             'Panchayat ${index + 1}',
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: CustomColorTheme.iconColor,
                                 decoration: TextDecoration.underline,
                                 fontWeight: FontWeight.bold),
@@ -225,7 +225,7 @@ class _CumulativeState extends State<Cumulative> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(selectedPanchayat!),
-          Text('Village wise report'),
+          const Text('Village wise report'),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
@@ -283,8 +283,8 @@ class _CumulativeState extends State<Cumulative> {
                           },
                           child: Text(
                             'Village ${index + 1}',
-                            style: TextStyle(
-                              color: Colors.orange,
+                            style: const TextStyle(
+                              color: CustomColorTheme.iconColor,
                               decoration: TextDecoration.underline,
                               fontWeight: FontWeight.bold,
                             ),
@@ -313,7 +313,7 @@ class _CumulativeState extends State<Cumulative> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(selectedVillage!),
-          Text('Street wise report'),
+          const Text('Street wise report'),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
@@ -361,14 +361,14 @@ class _CumulativeState extends State<Cumulative> {
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => HhidForm(),
+                                builder: (context) => const HhidForm(),
                               ),
                             );
                           },
                           child: Text(
                             'Street ${index + 1}',
-                            style: TextStyle(
-                              color: Colors.orange,
+                            style: const TextStyle(
+                              color: CustomColorTheme.iconColor,
                               decoration: TextDecoration.underline,
                               fontWeight: FontWeight.bold,
                             ),
@@ -444,12 +444,12 @@ class _CumulativeState extends State<Cumulative> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('View other Reports'),
+                      const Text('View other Reports'),
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).pop();
                         },
-                        child: Icon(Icons.close),
+                        child: const Icon(Icons.close),
                       ),
                     ],
                   ),
@@ -531,7 +531,7 @@ class _CumulativeState extends State<Cumulative> {
                       if (selectedRadio == 1) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => Form1(),
+                            builder: (context) => const Form1(),
                           ),
                         );
                       } else if (selectedRadio == 2) {
@@ -541,21 +541,21 @@ class _CumulativeState extends State<Cumulative> {
                       } else if (selectedRadio == 4) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => Top20(),
+                            builder: (context) => const Top20(),
                           ),
                         );
                         // Navigate to the corresponding tab
                       } else if (selectedRadio == 5) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => BusinessPlan(),
+                            builder: (context) => const BusinessPlan(),
                           ),
                         );
                         // Navigate to the corresponding tab
                       } else if (selectedRadio == 6) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => LivehoodPlan(),
+                            builder: (context) => const LivehoodPlan(),
                           ),
                         ); // Navigate to the corresponding tab
                       }

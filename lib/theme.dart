@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class CustomColorTheme {
-  static const Color primaryColor = Colors.blue;
+  static const Color primaryColor = Color(0xFF27528F);
+  static const Color secondaryColor = Color(0xFF008CD3);
+
   static const Color accentColor = Colors.red;
   static const Color backgroundColor = Colors.white;
   static const Color textColor = Colors.black;
   static const Color labelColor = Colors.grey;
   static const Color iconColor = Color(0xFFF15A22);
-  static const Color heading = Color(0xFFF15A22);
-  static const Color text = Color(0xFFF15A22);
 }
 
 class CustomFontTheme {
@@ -16,8 +16,8 @@ class CustomFontTheme {
   static const FontWeight labelwt = FontWeight.w500;
   static const FontWeight textwt = FontWeight.w400;
 
-  static const double headingSize = 16.0;
-  static const double textSize = 14.0;
+  static const double headingSize = 18.0;
+  static const double textSize = 16.0;
 }
 
 class AppTheme {

@@ -3,6 +3,7 @@ import 'package:dalmia/pages/vdf/household/addland.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class AddFamily extends StatefulWidget {
@@ -20,14 +21,17 @@ class _MyFormState extends State<AddFamily> {
   final List<TextEditingController> _nameControllers = [];
   final List<TextEditingController> _mobileControllers = [];
   final List<TextEditingController> _dobControllers = [];
+
   final List<String?> _selectedGenders = [];
   List<String?> _selectedEducations = [];
+  List<String?> _selectedRelation = [];
   List<String?> _selectedCastes = [];
   List<String?> _selectedPrimaryEmployments = [];
   List<String?> _selectedSecondaryEmployments = [];
 
   List<String> genderOptions = ['Male', 'Female'];
   List<String> educationOptions = ['Option 1', 'Option 2', 'Option 3'];
+  List<String> relationOptions = ['Wife', 'Son', 'Daughter'];
   List<String> casteOptions = ['Option 1', 'Option 2', 'Option 3'];
   List<String> employmentOptions = ['Option 1', 'Option 2', 'Option 3'];
 
@@ -45,6 +49,7 @@ class _MyFormState extends State<AddFamily> {
       _dobControllers.add(TextEditingController());
       _selectedGenders.add(null);
       _selectedEducations.add(null);
+      _selectedRelation.add(null);
       _selectedCastes.add(null);
       _selectedPrimaryEmployments.add(null);
       _selectedSecondaryEmployments.add(null);
@@ -169,20 +174,26 @@ class _MyFormState extends State<AddFamily> {
                                       borderSide:
                                           BorderSide(color: Colors.black),
                                     ),
-                                    labelText: 'Head Name *',
+                                    labelText: 'Member Name *',
                                     border: OutlineInputBorder(),
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
                                   validator: (value) {
                                     if (value?.isEmpty ?? true) {
-                                      return 'Head Name is required';
+                                      return 'Member Name is required';
                                     }
                                     return null;
                                   },
                                 ),
                                 const SizedBox(height: 20),
                                 TextFormField(
+                                  keyboardType: TextInputType.phone,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'[0-9]')),
+                                    LengthLimitingTextInputFormatter(10),
+                                  ],
                                   controller: _mobileControllers[i],
                                   decoration: const InputDecoration(
                                     focusedBorder: OutlineInputBorder(
@@ -197,6 +208,8 @@ class _MyFormState extends State<AddFamily> {
                                   validator: (value) {
                                     if (value?.isEmpty ?? true) {
                                       return 'Mobile Number is required';
+                                    } else if (value!.length != 10) {
+                                      return 'Mobile Number should be 10 digits';
                                     }
                                     return null;
                                   },
@@ -207,39 +220,41 @@ class _MyFormState extends State<AddFamily> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     SizedBox(
-                                      width: 240,
-                                      child: TextFormField(
-                                        controller: _dobControllers[i],
-                                        decoration: InputDecoration(
-                                          focusedBorder:
-                                              const OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.black),
-                                          ),
-                                          labelText: 'Date of Birth *',
-                                          border: const OutlineInputBorder(),
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 16,
-                                                  vertical: 20.0),
-                                          suffixIcon: IconButton(
-                                            onPressed: () {
-                                              _selectDate(context);
-                                            },
-                                            icon: const Icon(
-                                              Icons.calendar_month_outlined,
-                                              color: CustomColorTheme.iconColor,
+                                        width: 240,
+                                        child: TextFormField(
+                                          controller: _dobControllers[i],
+                                          readOnly:
+                                              true, // Set the field to be read-only
+                                          decoration: InputDecoration(
+                                            focusedBorder:
+                                                const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.black),
+                                            ),
+                                            labelText: 'Date of Birth *',
+                                            border: const OutlineInputBorder(),
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 16,
+                                                    vertical: 20.0),
+                                            suffixIcon: IconButton(
+                                              onPressed: () {
+                                                _selectDate(context);
+                                              },
+                                              icon: const Icon(
+                                                Icons.calendar_month_outlined,
+                                                color:
+                                                    CustomColorTheme.iconColor,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        validator: (value) {
-                                          if (value?.isEmpty ?? true) {
-                                            return 'Date of Birth is required';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                    ),
+                                          validator: (value) {
+                                            if (value?.isEmpty ?? true) {
+                                              return 'Date of Birth is required';
+                                            }
+                                            return null;
+                                          },
+                                        )),
                                     Container(
                                       width: 100,
                                       decoration: BoxDecoration(
@@ -334,6 +349,73 @@ class _MyFormState extends State<AddFamily> {
                                     }
                                     return null;
                                   },
+                                ),
+                                const SizedBox(height: 16),
+                                DropdownButtonFormField(
+                                  value: _selectedEducations[i],
+                                  items:
+                                      educationOptions.map((String education) {
+                                    return DropdownMenuItem(
+                                      value: education,
+                                      child: Text(education),
+                                    );
+                                  }).toList(),
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      _selectedEducations[i] =
+                                          newValue as String?;
+                                    });
+                                  },
+                                  decoration: const InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.black),
+                                    ),
+                                    labelText: 'Education *',
+                                    border: OutlineInputBorder(),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 20.0),
+                                  ),
+                                  icon: const Icon(
+                                    Icons.keyboard_arrow_down_sharp,
+                                    color: CustomColorTheme.iconColor,
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Education is required';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 16),
+                                DropdownButtonFormField(
+                                  value: _selectedRelation[i],
+                                  items: relationOptions.map((String relation) {
+                                    return DropdownMenuItem(
+                                      value: relation,
+                                      child: Text(relation),
+                                    );
+                                  }).toList(),
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      _selectedRelation[i] =
+                                          newValue as String?;
+                                    });
+                                  },
+                                  decoration: const InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.black),
+                                    ),
+                                    labelText: 'Add Relationship',
+                                    border: OutlineInputBorder(),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 20.0),
+                                  ),
+                                  icon: const Icon(
+                                    Icons.keyboard_arrow_down_sharp,
+                                    color: CustomColorTheme.iconColor,
+                                  ),
                                 ),
                                 const SizedBox(height: 16),
                                 DropdownButtonFormField(
@@ -467,6 +549,7 @@ class _MyFormState extends State<AddFamily> {
                           _dobControllers.add(TextEditingController());
                           _selectedGenders.add(null);
                           _selectedEducations.add(null);
+                          _selectedRelation.add(null);
                           _selectedCastes.add(null);
                           _selectedPrimaryEmployments.add(null);
                           _selectedSecondaryEmployments.add(null);
