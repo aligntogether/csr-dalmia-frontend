@@ -9,6 +9,39 @@ class AddLand extends StatefulWidget {
 }
 
 class _MyFormState extends State<AddLand> {
+  void updateRainfedSelection(String selectedAcre) {
+    setState(() {
+      for (var key in selectedRainfedMap.keys) {
+        selectedRainfedMap[key] = key == selectedAcre;
+      }
+    });
+  }
+
+  void updateIrrigatedSelection(String selectedAcre) {
+    setState(() {
+      for (var key in selectedIrrigatedMap.keys) {
+        selectedIrrigatedMap[key] = key == selectedAcre;
+      }
+    });
+  }
+
+  final Map<String, bool> selectedRainfedMap = {
+    '1 acres': false,
+    '2 acres': false,
+    '3 acres': false,
+    '4 acres': false,
+    '5 acres': false,
+    '5 & above': false,
+  };
+
+  final Map<String, bool> selectedIrrigatedMap = {
+    '1 acres': false,
+    '2 acres': false,
+    '3 acres': false,
+    '4 acres': false,
+    '5 acres': false,
+    '5 & above': false,
+  };
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -89,12 +122,18 @@ class _MyFormState extends State<AddLand> {
                         runSpacing: 20,
                         spacing: 20,
                         children: [
-                          InputDetail('1 acres'),
-                          InputDetail('2 acres'),
-                          InputDetail('3 acres'),
-                          InputDetail('4 acres'),
-                          InputDetail('5 acres'),
-                          InputDetail('5 & above'),
+                          InputDetail('1 acres', selectedRainfedMap,
+                              updateRainfedSelection),
+                          InputDetail('2 acres', selectedRainfedMap,
+                              updateRainfedSelection),
+                          InputDetail('3 acres', selectedRainfedMap,
+                              updateRainfedSelection),
+                          InputDetail('4 acres', selectedRainfedMap,
+                              updateRainfedSelection),
+                          InputDetail('5 acres', selectedRainfedMap,
+                              updateRainfedSelection),
+                          InputDetail('5 & above', selectedRainfedMap,
+                              updateRainfedSelection),
                         ],
                       ),
                     )
@@ -116,12 +155,18 @@ class _MyFormState extends State<AddLand> {
                         runSpacing: 20,
                         spacing: 20,
                         children: [
-                          InputDetail('1 acres'),
-                          InputDetail('2 acres'),
-                          InputDetail('3 acres'),
-                          InputDetail('4 acres'),
-                          InputDetail('5 acres'),
-                          InputDetail('5 & above'),
+                          InputDetail('1 acres', selectedIrrigatedMap,
+                              updateIrrigatedSelection),
+                          InputDetail('2 acres', selectedIrrigatedMap,
+                              updateIrrigatedSelection),
+                          InputDetail('3 acres', selectedIrrigatedMap,
+                              updateIrrigatedSelection),
+                          InputDetail('4 acres', selectedIrrigatedMap,
+                              updateIrrigatedSelection),
+                          InputDetail('5 acres', selectedIrrigatedMap,
+                              updateIrrigatedSelection),
+                          InputDetail('5 & above', selectedIrrigatedMap,
+                              updateIrrigatedSelection),
                         ],
                       ),
                     )
@@ -171,33 +216,30 @@ class _MyFormState extends State<AddLand> {
   }
 }
 
-class InputDetail extends StatefulWidget {
+class InputDetail extends StatelessWidget {
   final String acre;
+  final Map<String, bool> isSelectedMap;
+  final Function(String) updateSelection;
 
-  const InputDetail(this.acre, {Key? key}) : super(key: key);
-
-  @override
-  _InputDetailState createState() => _InputDetailState();
-}
-
-class _InputDetailState extends State<InputDetail> {
-  bool isSelected = false;
+  const InputDetail(this.acre, this.isSelectedMap, this.updateSelection,
+      {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        setState(() {
-          isSelected = !isSelected;
-        });
+        updateSelection(acre);
       },
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(85, 38),
-        backgroundColor: isSelected ? Color(0xFFF15A22) : Colors.white,
+        backgroundColor:
+            isSelectedMap[acre]! ? const Color(0xFFF15A22) : Colors.white,
       ),
       child: Text(
-        widget.acre,
-        style: TextStyle(color: isSelected ? Colors.white : Colors.black),
+        acre,
+        style: TextStyle(
+            color: isSelectedMap[acre]! ? Colors.white : Colors.black),
       ),
     );
   }

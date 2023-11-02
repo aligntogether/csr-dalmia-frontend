@@ -1,12 +1,15 @@
+import 'package:dalmia/apis/commonobject.dart';
 import 'package:dalmia/pages/vdf/household/addfamily.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
+import 'package:dalmia/apis/form_logic.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class AddHead extends StatefulWidget {
   const AddHead({super.key});
@@ -21,25 +24,54 @@ class _MyFormState extends State<AddHead> {
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
   String? _selectedGender;
+  List<dynamic> genderOptions = [];
   String? _selectedEducation;
   String? _selectedCaste;
+  List<dynamic> casteOptions = [];
   String? _selectedPrimaryEmployment;
   String? _selectedSecondaryEmployment;
   bool _validateFields = false;
-
-  List<String> genderOptions = ['Male', 'Female'];
+  // List<String> genderOptions = ['Male', 'Female'];
   List<String> educationOptions = [
     'Option 1',
     'Option 2',
     'Option 3'
   ]; // Replace with actual options
-  List<String> casteOptions = [
-    'Option 1',
-    'Option 2',
-    'Option 3'
-  ]; // Replace with actual options
+  // List<String> casteOptions = [
+  //   'Option 1',
+  //   'Option 2',
+  //   'Option 3'
+  // ]; // Replace with actual options
   List<String> employmentOptions = ['Option 1', 'Option 2', 'Option 3'];
   // Replace with actual options
+  Future<void> fetchGenderOptions() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://192.168.1.71:8080/dropdown?titleId=101'),
+      );
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+        List<dynamic> options = commonObject.respBody['options'];
+
+        setState(() {
+          genderOptions = options;
+        });
+      } else {
+        throw Exception(
+            'Failed to load gender options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchGenderOptions();
+  }
+
   void saveFormDataToJson() {
     final name = _nameController.text;
     final mobile = _mobileController.text;
@@ -49,11 +81,11 @@ class _MyFormState extends State<AddHead> {
       'name': name,
       'mobile': mobile,
       'dob': dob,
-      'gender': _selectedGender,
-      'education': _selectedEducation,
-      'caste': _selectedCaste,
-      'primaryEmployment': _selectedPrimaryEmployment,
-      'secondaryEmployment': _selectedSecondaryEmployment,
+      'gender': {'value': _selectedGender},
+      'education': {'value': _selectedEducation},
+      'caste': {'value': _selectedCaste},
+      'primaryEmployment': {'value': _selectedPrimaryEmployment},
+      'secondaryEmployment': {'value': _selectedSecondaryEmployment},
     };
 
     Map<String, dynamic> householdData = {
@@ -257,12 +289,13 @@ class _MyFormState extends State<AddHead> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  DropdownButtonFormField(
+                  DropdownButtonFormField<String>(
                     value: _selectedGender,
-                    items: genderOptions.map((String gender) {
-                      return DropdownMenuItem(
-                        value: gender,
-                        child: Text(gender),
+                    items: genderOptions
+                        .map<DropdownMenuItem<String>>((dynamic gender) {
+                      return DropdownMenuItem<String>(
+                        value: gender['titleData'].toString(),
+                        child: Text(gender['titleData'].toString()),
                       );
                     }).toList(),
                     onChanged: (newValue) {
@@ -291,46 +324,13 @@ class _MyFormState extends State<AddHead> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  DropdownButtonFormField(
-                    value: _selectedEducation,
-                    items: educationOptions.map((String education) {
-                      return DropdownMenuItem(
-                        value: education,
-                        child: Text(education),
-                      );
-                    }).toList(),
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedEducation = newValue;
-                      });
-                    },
-                    decoration: const InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
-                      labelText: 'Education *',
-                      border: OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
-                    ),
-                    icon: const Icon(
-                      Icons.keyboard_arrow_down_sharp,
-                      color: CustomColorTheme.iconColor,
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Education is required';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField(
+                  DropdownButtonFormField<String>(
                     value: _selectedCaste,
-                    items: casteOptions.map((String caste) {
-                      return DropdownMenuItem(
-                        value: caste,
-                        child: Text(caste),
+                    items: casteOptions
+                        .map<DropdownMenuItem<String>>((dynamic caste) {
+                      return DropdownMenuItem<String>(
+                        value: caste['titleData'].toString(),
+                        child: Text(caste['titleData'].toString()),
                       );
                     }).toList(),
                     onChanged: (newValue) {

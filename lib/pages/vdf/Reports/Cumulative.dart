@@ -1,9 +1,8 @@
 import 'dart:math';
 
-import 'package:dalmia/pages/vdf/Reports/Business.dart';
-import 'package:dalmia/pages/vdf/Reports/Form1.dart';
-import 'package:dalmia/pages/vdf/Reports/Livehood.dart';
-import 'package:dalmia/pages/vdf/Reports/Top20.dart';
+import 'package:dalmia/components/reportappbar.dart';
+import 'package:dalmia/components/reportpop.dart';
+
 import 'package:dalmia/pages/vdf/Reports/hhidform.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
@@ -11,7 +10,7 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
 class Cumulative extends StatefulWidget {
-  const Cumulative({Key? key}) : super(key: key);
+  const Cumulative({super.key});
 
   @override
   State<Cumulative> createState() => _CumulativeState();
@@ -38,7 +37,9 @@ class _CumulativeState extends State<Cumulative> {
       child: Scaffold(
         appBar: const PreferredSize(
           preferredSize: Size.fromHeight(100),
-          child: Reportappbar(),
+          child: reportappbar(
+            heading: 'Report',
+          ),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -48,6 +49,7 @@ class _CumulativeState extends State<Cumulative> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
                       onTap: () {
@@ -73,12 +75,20 @@ class _CumulativeState extends State<Cumulative> {
                                 const Color.fromARGB(255, 85, 164, 228),
                             foregroundColor: Colors.white),
                         onPressed: () {
-                          _reportpopup(context);
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return ReportPopupWidget(context);
+                            },
+                          );
                         },
                         icon: const Icon(Icons.folder_outlined),
                         label: const Text(
-                          'view other reports',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          'View other Reports',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
                         )),
                   ],
                 ),
@@ -427,198 +437,6 @@ class _CumulativeState extends State<Cumulative> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  void _reportpopup(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, setState) {
-            return AlertDialog(
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('View other Reports'),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Icon(Icons.close),
-                      ),
-                    ],
-                  ),
-                  RadioListTile<int>(
-                    title: const Text(
-                      'Form 1 Gram Parivartan',
-                    ),
-                    value: 1,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    title: const Text(
-                      'Cumulative Household data',
-                    ),
-                    value: 2,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    title: const Text(
-                      'Leverwise number of interventions',
-                    ),
-                    value: 3,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    title: const Text('Top 20 additional income HH'),
-                    value: 4,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    title: const Text('List of Business Plans engaged'),
-                    value: 5,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    title: const Text('Livelihood Funds Utilization'),
-                    value: 6,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              content: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue[900]),
-                    onPressed: () {
-                      if (selectedRadio == 1) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const Form1(),
-                          ),
-                        );
-                      } else if (selectedRadio == 2) {
-                        _onTabTapped(1); // Navigate to the corresponding tab
-                      } else if (selectedRadio == 3) {
-                        _onTabTapped(2); // Navigate to the corresponding tab
-                      } else if (selectedRadio == 4) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const Top20(),
-                          ),
-                        );
-                        // Navigate to the corresponding tab
-                      } else if (selectedRadio == 5) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const BusinessPlan(),
-                          ),
-                        );
-                        // Navigate to the corresponding tab
-                      } else if (selectedRadio == 6) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const LivehoodPlan(),
-                          ),
-                        ); // Navigate to the corresponding tab
-                      }
-                    },
-                    child: const Text('View Reports'),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-class Reportappbar extends StatelessWidget {
-  const Reportappbar({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      titleSpacing: 20,
-      backgroundColor: Colors.white,
-      title: const Image(image: AssetImage('images/icon.jpg')),
-      automaticallyImplyLeading: false,
-      actions: <Widget>[
-        CircleAvatar(
-          child: IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.notifications_none_outlined,
-              // color: Colors.blue,
-            ),
-          ),
-        ),
-        const SizedBox(width: 20),
-        IconButton(
-          iconSize: 30,
-          onPressed: () {
-            // _openDrawer();
-          },
-          icon: const Icon(
-            Icons.menu,
-            color: Colors.black,
-          ),
-        ),
-      ],
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(50),
-        child: Container(
-          padding: const EdgeInsets.only(left: 30, bottom: 10),
-          alignment: Alignment.topCenter,
-          color: Colors.white,
-          child: const Text(
-            'Reports',
-            style: TextStyle(
-              fontSize: 20,
-            ),
-          ),
-        ),
       ),
     );
   }

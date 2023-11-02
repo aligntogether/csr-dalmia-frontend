@@ -1,4 +1,6 @@
-import 'package:dalmia/pages/vdf/Reports/Home.dart';
+import 'package:dalmia/components/reportappbar.dart';
+import 'package:dalmia/components/reportpop.dart';
+
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +35,11 @@ class _LeverwiseState extends State<Leverwise> {
     ;
     return SafeArea(
       child: Scaffold(
-        appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(100), child: reportappbar()),
+        appBar: const PreferredSize(
+            preferredSize: Size.fromHeight(100),
+            child: reportappbar(
+              heading: 'Report',
+            )),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -68,12 +73,20 @@ class _LeverwiseState extends State<Leverwise> {
                                 const Color.fromARGB(255, 85, 164, 228),
                             foregroundColor: Colors.white),
                         onPressed: () {
-                          _reportpopup(context);
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return ReportPopupWidget(context);
+                            },
+                          );
                         },
-                        icon: Icon(Icons.folder_outlined),
-                        label: Text(
-                          'view other reports',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        icon: const Icon(Icons.folder_outlined),
+                        label: const Text(
+                          'View other Reports',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
                         )),
                   ],
                 ),
@@ -90,7 +103,7 @@ class _LeverwiseState extends State<Leverwise> {
                           child: DataTable(
                             headingRowColor: MaterialStateColor.resolveWith(
                                 (states) => Colors.blue),
-                            columns: [
+                            columns: const [
                               DataColumn(
                                 label: Text(
                                   'Levers',
@@ -206,128 +219,6 @@ class _LeverwiseState extends State<Leverwise> {
           ),
         ],
       ),
-    );
-  }
-
-  void _reportpopup(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, setState) {
-            return AlertDialog(
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('View other Reports'),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Icon(Icons.close),
-                      ),
-                    ],
-                  ),
-                  RadioListTile<int>(
-                    title: const Text(
-                      'Form 1 Gram Parivartan',
-                    ),
-                    value: 1,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    title: const Text(
-                      'Cumulative Household data',
-                    ),
-                    value: 2,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    title: const Text(
-                      'Leverwise number of interventions',
-                    ),
-                    value: 3,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    title: const Text('Top 20 additional income HH'),
-                    value: 4,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    title: const Text('List of Business Plans engaged'),
-                    value: 5,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    title: const Text('Livelihood Funds Utilization'),
-                    value: 6,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              content: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue[900]),
-                    onPressed: () {
-                      if (selectedRadio == 1) {
-                        _onTabTapped(0); // Navigate to the corresponding tab
-                      } else if (selectedRadio == 2) {
-                        _onTabTapped(1); // Navigate to the corresponding tab
-                      } else if (selectedRadio == 3) {
-                        _onTabTapped(2); // Navigate to the corresponding tab
-                      } else if (selectedRadio == 4) {
-                        _onTabTapped(3); // Navigate to the corresponding tab
-                      } else if (selectedRadio == 5) {
-                        _onTabTapped(4); // Navigate to the corresponding tab
-                      } else if (selectedRadio == 6) {
-                        _onTabTapped(5); // Navigate to the corresponding tab
-                      }
-                    },
-                    child: const Text('View Reports'),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
     );
   }
 }

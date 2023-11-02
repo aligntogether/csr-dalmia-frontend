@@ -1,4 +1,5 @@
 import 'package:dalmia/pages/login.dart';
+import 'package:dalmia/pages/vdf/Draft/draft.dart';
 import 'package:dalmia/pages/vdf/Reports/Home.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/dash.dart';
@@ -64,18 +65,19 @@ class _VdfHomeState extends State<VdfHome> {
             title: const Image(image: AssetImage('images/icon.jpg')),
             automaticallyImplyLeading: false,
             actions: <Widget>[
+              // Padding(padding: EdgeInsets.only(top: 15.0)),
               CircleAvatar(
                 backgroundColor: CustomColorTheme.primaryColor,
                 child: IconButton(
                     onPressed: () {},
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.notifications_none_outlined,
                       color: Colors.white,
 
                       // color: Colors.blue,
                     )),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 20,
               ),
               IconButton(
@@ -152,6 +154,13 @@ class _VdfHomeState extends State<VdfHome> {
             ),
           );
         }
+        if (index == 3) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => Draft(),
+            ),
+          );
+        }
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -189,9 +198,9 @@ class _VdfHomeState extends State<VdfHome> {
                   onTap: () {
                     Navigator.of(context).pop();
                   },
-                  child: Icon(Icons.close),
+                  child: const Icon(Icons.close),
                 ),
-                Text(
+                const Text(
                   'Are you sure you want to logout of the application?',
                   style: TextStyle(
                     fontSize: 16,
@@ -243,7 +252,7 @@ class _VdfHomeState extends State<VdfHome> {
           child: Align(
             alignment: Alignment.topCenter,
             child: Container(
-              padding: EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               // height: MediaQuery.of(context).size.height / 3,
               color: Colors.white,
               child: SingleChildScrollView(
@@ -270,14 +279,14 @@ class _VdfHomeState extends State<VdfHome> {
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => HomeReport(),
+                            builder: (context) => const HomeReport(),
                           ),
                         );
                         // Handle item 1 click
                         // Close the drawer
                       },
                     ),
-                    Divider(
+                    const Divider(
                       color: Colors.grey, // Add your desired color for the line
                       thickness: 1, // Add the desired thickness for the line
                     ),

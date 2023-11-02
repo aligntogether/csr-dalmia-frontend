@@ -1,7 +1,9 @@
+import 'package:dalmia/components/reportappbar.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
 class Draft extends StatefulWidget {
-  const Draft({super.key});
+  const Draft({Key? key});
 
   @override
   State<Draft> createState() => _DraftState();
@@ -13,50 +15,135 @@ class _DraftState extends State<Draft> {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(100),
-          child: AppBar(
-            titleSpacing: 20,
-            backgroundColor: Colors.white,
-            title: const Image(image: AssetImage('images/icon.jpg')),
-            automaticallyImplyLeading: false,
-            actions: <Widget>[
-              CircleAvatar(
-                child: IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.notifications_none_outlined,
-                      // color: Colors.blue,
-                    )),
+            preferredSize: Size.fromHeight(100),
+            child: reportappbar(heading: 'Drafts')),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 20,
+              ),
+              Center(
+                  child: Text(
+                'Select a row to edit or delete draft HH',
+                style: TextStyle(
+                    fontSize: CustomFontTheme.textSize,
+                    fontWeight: CustomFontTheme.headingwt),
+              )),
+              SizedBox(
+                height: 20,
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  headingRowColor:
+                      MaterialStateColor.resolveWith((states) => Colors.blue),
+                  columns: <DataColumn>[
+                    DataColumn(
+                      label: Text(
+                        ' ',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    DataColumn(
+                      label:
+                          Text('Date', style: TextStyle(color: Colors.white)),
+                    ),
+                    DataColumn(
+                      label: Text('Head Name',
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                    DataColumn(
+                      label:
+                          Text('Street', style: TextStyle(color: Colors.white)),
+                    ),
+                    DataColumn(
+                      label: Text('Village',
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+                  rows: <DataRow>[
+                    DataRow(
+                      cells: <DataCell>[
+                        DataCell(
+                          Checkbox(
+                            value: false,
+                            onChanged: (value) {},
+                          ),
+                        ),
+                        DataCell(Text(
+                            '2023-10-31')), // Placeholder date, replace with actual data
+                        DataCell(Text(
+                            'John Doe')), // Placeholder name, replace with actual data
+                        DataCell(Text(
+                            'Main Street')), // Placeholder street, replace with actual data
+                        DataCell(Text('Rural Village')),
+                      ],
+                    ),
+                    DataRow(
+                      color: MaterialStateColor.resolveWith(
+                          (states) => Colors.lightBlue[50]!),
+                      cells: <DataCell>[
+                        DataCell(
+                          Checkbox(
+                            value: false,
+                            onChanged: (value) {},
+                          ),
+                        ),
+                        DataCell(Text(
+                            '2023-10-31')), // Placeholder date, replace with actual data
+                        DataCell(Text(
+                            'John Doe')), // Placeholder name, replace with actual data
+                        DataCell(Text(
+                            'Main Street')), // Placeholder street, replace with actual data
+                        DataCell(Text('Rural Village')),
+                      ],
+                    ),
+                    // Add more DataRows as needed
+                  ],
+                ),
               ),
               SizedBox(
-                width: 20,
+                height: 20,
               ),
-              IconButton(
-                iconSize: 30,
-                onPressed: () {
-                  // _openDrawer();
-                },
-                icon: const Icon(
-                  Icons.menu,
-                  color: Colors.black,
-                ),
-              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                      style: ButtonStyle(
+                        elevation: MaterialStateProperty.all(0.0),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            CustomColorTheme.primaryColor),
+                      ),
+                      onPressed: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Edit Household',
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      )),
+                  ElevatedButton(
+                      style: ButtonStyle(
+                        elevation: MaterialStateProperty.all(0.0),
+                        side: MaterialStateProperty.all<BorderSide>(BorderSide(
+                            color: CustomColorTheme.primaryColor, width: 1)),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            CustomColorTheme.backgroundColor),
+                      ),
+                      onPressed: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Delete Household',
+                          style:
+                              TextStyle(color: CustomColorTheme.primaryColor),
+                        ),
+                      )),
+                ],
+              )
             ],
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(50),
-              child: Container(
-                padding: const EdgeInsets.only(left: 30, bottom: 10),
-                alignment: Alignment.topLeft,
-                color: Colors.white,
-                child: Text(
-                  'Draft',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-            ),
           ),
         ),
       ),

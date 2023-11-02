@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dalmia/Controllers/family.dart';
 import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/household/addland.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
@@ -18,16 +22,32 @@ class _MyFormState extends State<AddFamily> {
   List<Widget> forms = [];
   int formCount = 1;
 
+  void addMemberData() {
+    Map<String, dynamic> familyData = {
+      'name': _nameControllers[formCount - 1].text,
+      'mobile': _mobileControllers[formCount - 1].text,
+      'dob': _dobControllers[formCount - 1].text,
+      'gender': _selectedGenders[formCount - 1],
+      'education': _selectedEducations[formCount - 1],
+      'relation': _selectedRelation[formCount - 1],
+      'caste': _selectedCastes[formCount - 1],
+      'primaryEmployment': _selectedPrimaryEmployments[formCount - 1],
+      'secondaryEmployment': _selectedSecondaryEmployments[formCount - 1],
+    };
+    appendFamilyDataToJsonFile(familyData, formCount);
+  }
+
+  Map<String, dynamic> jsonData = {};
   final List<TextEditingController> _nameControllers = [];
   final List<TextEditingController> _mobileControllers = [];
   final List<TextEditingController> _dobControllers = [];
 
   final List<String?> _selectedGenders = [];
-  List<String?> _selectedEducations = [];
-  List<String?> _selectedRelation = [];
-  List<String?> _selectedCastes = [];
-  List<String?> _selectedPrimaryEmployments = [];
-  List<String?> _selectedSecondaryEmployments = [];
+  final List<String?> _selectedEducations = [];
+  final List<String?> _selectedRelation = [];
+  final List<String?> _selectedCastes = [];
+  final List<String?> _selectedPrimaryEmployments = [];
+  final List<String?> _selectedSecondaryEmployments = [];
 
   List<String> genderOptions = ['Male', 'Female'];
   List<String> educationOptions = ['Option 1', 'Option 2', 'Option 3'];
@@ -540,20 +560,23 @@ class _MyFormState extends State<AddFamily> {
                     IconButton(
                       icon: const Icon(Icons.add),
                       onPressed: () {
-                        setState(() {
-                          formCount++;
-                          formExpandStateList.add(false);
-                          formFilledStateList.add(false);
-                          _nameControllers.add(TextEditingController());
-                          _mobileControllers.add(TextEditingController());
-                          _dobControllers.add(TextEditingController());
-                          _selectedGenders.add(null);
-                          _selectedEducations.add(null);
-                          _selectedRelation.add(null);
-                          _selectedCastes.add(null);
-                          _selectedPrimaryEmployments.add(null);
-                          _selectedSecondaryEmployments.add(null);
-                        });
+                        if (_formKey.currentState?.validate() ?? false) {
+                          addMemberData();
+                          setState(() {
+                            formCount++;
+                            formExpandStateList.add(false);
+                            formFilledStateList.add(false);
+                            _nameControllers.add(TextEditingController());
+                            _mobileControllers.add(TextEditingController());
+                            _dobControllers.add(TextEditingController());
+                            _selectedGenders.add(null);
+                            _selectedEducations.add(null);
+                            _selectedRelation.add(null);
+                            _selectedCastes.add(null);
+                            _selectedPrimaryEmployments.add(null);
+                            _selectedSecondaryEmployments.add(null);
+                          });
+                        }
                       },
                     ),
                     const Text('Add another member'),
@@ -567,6 +590,8 @@ class _MyFormState extends State<AddFamily> {
                         backgroundColor: Colors.blue[900],
                       ),
                       onPressed: () {
+                        addMemberData();
+
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => AddLand(),
