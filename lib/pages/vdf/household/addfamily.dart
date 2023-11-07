@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:http/http.dart' as http;
 import 'package:dalmia/Controllers/family.dart';
+import 'package:dalmia/apis/commonobject.dart';
 import 'package:dalmia/pages/vdf/household/addhead.dart';
+import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/household/addland.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
@@ -49,14 +51,123 @@ class _MyFormState extends State<AddFamily> {
   final List<String?> _selectedPrimaryEmployments = [];
   final List<String?> _selectedSecondaryEmployments = [];
 
-  List<String> genderOptions = ['Male', 'Female'];
-  List<String> educationOptions = ['Option 1', 'Option 2', 'Option 3'];
-  List<String> relationOptions = ['Wife', 'Son', 'Daughter'];
-  List<String> casteOptions = ['Option 1', 'Option 2', 'Option 3'];
-  List<String> employmentOptions = ['Option 1', 'Option 2', 'Option 3'];
+  List<dynamic> genderOptions = [];
+
+  List<dynamic> educationOptions = [];
+  List<dynamic> primaryEmploymentOptions = [];
+  List<dynamic> secondaryEmploymentOptions = [];
+  List<dynamic> relationOptions = [];
+
+  // List<String> genderOptions = ['Male', 'Female'];
+  // List<String> educationOptions = ['Option 1', 'Option 2', 'Option 3'];
+  // List<String> relationOptions = ['Wife', 'Son', 'Daughter'];
+  // List<String> casteOptions = ['Option 1', 'Option 2', 'Option 3'];
+  // List<String> employmentOptions = ['Option 1', 'Option 2', 'Option 3'];
 
   List<bool> formExpandStateList = [];
   List<bool> formFilledStateList = [];
+
+  Future<void> fetchGenderOptions() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://192.168.1.71:8080/dropdown?titleId=101'),
+      );
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+        List<dynamic> options = commonObject.respBody['options'];
+
+        setState(() {
+          genderOptions = options;
+        });
+      } else {
+        throw Exception(
+            'Failed to load gender options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> fetchRelationOptions() async {
+    const String url = 'http://192.168.1.71:8080/dropdown?titleId=111';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+        List<dynamic> options = commonObject.respBody['options'];
+        setState(() {
+          relationOptions = options;
+        });
+      } else {
+        throw Exception(
+            'Failed to load relation options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> fetchEducationOptions() async {
+    const String url = 'http://192.168.1.71:8080/dropdown?titleId=102';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+        List<dynamic> options = commonObject.respBody['options'];
+        setState(() {
+          educationOptions = options;
+        });
+      } else {
+        throw Exception(
+            'Failed to load Education options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> fetchPrimaryOptions() async {
+    const String url = 'http://192.168.1.71:8080/dropdown?titleId=103';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+        List<dynamic> options = commonObject.respBody['options'];
+        setState(() {
+          primaryEmploymentOptions = options;
+        });
+      } else {
+        throw Exception(
+            'Failed to load Primary Education options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> fetchSecondaryOptions() async {
+    const String url = 'http://192.168.1.71:8080/dropdown?titleId=104';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+        List<dynamic> options = commonObject.respBody['options'];
+        setState(() {
+          secondaryEmploymentOptions = options;
+        });
+      } else {
+        throw Exception(
+            'Failed to load Secondary Education options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
 
   @override
   void initState() {
@@ -74,6 +185,13 @@ class _MyFormState extends State<AddFamily> {
       _selectedPrimaryEmployments.add(null);
       _selectedSecondaryEmployments.add(null);
     }
+    fetchGenderOptions();
+
+    fetchEducationOptions();
+    fetchGenderOptions();
+    fetchPrimaryOptions();
+    fetchSecondaryOptions();
+    fetchRelationOptions();
   }
 
   DateTime? selectedDate;
@@ -299,17 +417,20 @@ class _MyFormState extends State<AddFamily> {
                                   ],
                                 ),
                                 const SizedBox(height: 16),
-                                DropdownButtonFormField(
+                                DropdownButtonFormField<String>(
                                   value: _selectedGenders[i],
-                                  items: genderOptions.map((String gender) {
-                                    return DropdownMenuItem(
-                                      value: gender,
-                                      child: Text(gender),
+                                  items: genderOptions
+                                      .map<DropdownMenuItem<String>>(
+                                          (dynamic gender) {
+                                    return DropdownMenuItem<String>(
+                                      value: gender['titleData'].toString(),
+                                      child:
+                                          Text(gender['titleData'].toString()),
                                     );
                                   }).toList(),
                                   onChanged: (newValue) {
                                     setState(() {
-                                      _selectedGenders[i] = newValue as String?;
+                                      _selectedGenders[i] = newValue;
                                     });
                                   },
                                   decoration: const InputDecoration(
@@ -334,19 +455,20 @@ class _MyFormState extends State<AddFamily> {
                                   },
                                 ),
                                 const SizedBox(height: 16),
-                                DropdownButtonFormField(
+                                DropdownButtonFormField<String>(
                                   value: _selectedEducations[i],
-                                  items:
-                                      educationOptions.map((String education) {
-                                    return DropdownMenuItem(
-                                      value: education,
-                                      child: Text(education),
+                                  items: educationOptions
+                                      .map<DropdownMenuItem<String>>(
+                                          (dynamic education) {
+                                    return DropdownMenuItem<String>(
+                                      value: education['titleData'].toString(),
+                                      child: Text(
+                                          education['titleData'].toString()),
                                     );
                                   }).toList(),
                                   onChanged: (newValue) {
                                     setState(() {
-                                      _selectedEducations[i] =
-                                          newValue as String?;
+                                      _selectedEducations[i] = newValue;
                                     });
                                   },
                                   decoration: const InputDecoration(
@@ -370,56 +492,59 @@ class _MyFormState extends State<AddFamily> {
                                     return null;
                                   },
                                 ),
-                                const SizedBox(height: 16),
-                                DropdownButtonFormField(
-                                  value: _selectedEducations[i],
-                                  items:
-                                      educationOptions.map((String education) {
-                                    return DropdownMenuItem(
-                                      value: education,
-                                      child: Text(education),
-                                    );
-                                  }).toList(),
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      _selectedEducations[i] =
-                                          newValue as String?;
-                                    });
-                                  },
-                                  decoration: const InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.black),
-                                    ),
-                                    labelText: 'Education *',
-                                    border: OutlineInputBorder(),
-                                    contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 20.0),
-                                  ),
-                                  icon: const Icon(
-                                    Icons.keyboard_arrow_down_sharp,
-                                    color: CustomColorTheme.iconColor,
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Education is required';
-                                    }
-                                    return null;
-                                  },
-                                ),
+                                // const SizedBox(height: 16),
+                                // DropdownButtonFormField(
+                                //   value: _selectedEducations[i],
+                                //   items:
+                                //       educationOptions.map((String education) {
+                                //     return DropdownMenuItem(
+                                //       value: education,
+                                //       child: Text(education),
+                                //     );
+                                //   }).toList(),
+                                //   onChanged: (newValue) {
+                                //     setState(() {
+                                //       _selectedEducations[i] =
+                                //           newValue as String?;
+                                //     });
+                                //   },
+                                //   decoration: const InputDecoration(
+                                //     focusedBorder: OutlineInputBorder(
+                                //       borderSide:
+                                //           BorderSide(color: Colors.black),
+                                //     ),
+                                //     labelText: 'Education *',
+                                //     border: OutlineInputBorder(),
+                                //     contentPadding: EdgeInsets.symmetric(
+                                //         horizontal: 16, vertical: 20.0),
+                                //   ),
+                                //   icon: const Icon(
+                                //     Icons.keyboard_arrow_down_sharp,
+                                //     color: CustomColorTheme.iconColor,
+                                //   ),
+                                //   validator: (value) {
+                                //     if (value == null || value.isEmpty) {
+                                //       return 'Education is required';
+                                //     }
+                                //     return null;
+                                //   },
+                                // ),
                                 const SizedBox(height: 16),
                                 DropdownButtonFormField(
                                   value: _selectedRelation[i],
-                                  items: relationOptions.map((String relation) {
-                                    return DropdownMenuItem(
-                                      value: relation,
-                                      child: Text(relation),
+                                  items: relationOptions
+                                      .map<DropdownMenuItem<String>>(
+                                          (dynamic relationship) {
+                                    return DropdownMenuItem<String>(
+                                      value:
+                                          relationship['titleData'].toString(),
+                                      child: Text(
+                                          relationship['titleData'].toString()),
                                     );
                                   }).toList(),
                                   onChanged: (newValue) {
                                     setState(() {
-                                      _selectedRelation[i] =
-                                          newValue as String?;
+                                      _selectedRelation[i] = newValue;
                                     });
                                   },
                                   decoration: const InputDecoration(
@@ -438,54 +563,22 @@ class _MyFormState extends State<AddFamily> {
                                   ),
                                 ),
                                 const SizedBox(height: 16),
-                                DropdownButtonFormField(
-                                  value: _selectedCastes[i],
-                                  items: casteOptions.map((String caste) {
-                                    return DropdownMenuItem(
-                                      value: caste,
-                                      child: Text(caste),
-                                    );
-                                  }).toList(),
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      _selectedCastes[i] = newValue as String?;
-                                    });
-                                  },
-                                  icon: const Icon(
-                                    Icons.keyboard_arrow_down_sharp,
-                                    color: CustomColorTheme.iconColor,
-                                  ),
-                                  decoration: const InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.black),
-                                    ),
-                                    labelText: 'Caste *',
-                                    border: OutlineInputBorder(),
-                                    contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 20.0),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Caste is required';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 16),
-                                DropdownButtonFormField(
+
+                                DropdownButtonFormField<String>(
                                   value: _selectedPrimaryEmployments[i],
-                                  items: employmentOptions
-                                      .map((String employment) {
-                                    return DropdownMenuItem(
-                                      value: employment,
-                                      child: Text(employment),
+                                  items: primaryEmploymentOptions
+                                      .map<DropdownMenuItem<String>>(
+                                          (dynamic primaryemployment) {
+                                    return DropdownMenuItem<String>(
+                                      value: primaryemployment['titleData']
+                                          .toString(),
+                                      child: Text(primaryemployment['titleData']
+                                          .toString()),
                                     );
                                   }).toList(),
                                   onChanged: (newValue) {
                                     setState(() {
-                                      _selectedPrimaryEmployments[i] =
-                                          newValue as String?;
+                                      _selectedPrimaryEmployments[i] = newValue;
                                     });
                                   },
                                   icon: const Icon(
@@ -510,19 +603,23 @@ class _MyFormState extends State<AddFamily> {
                                   },
                                 ),
                                 const SizedBox(height: 16),
-                                DropdownButtonFormField(
+                                DropdownButtonFormField<String>(
                                   value: _selectedSecondaryEmployments[i],
-                                  items: employmentOptions
-                                      .map((String employment) {
-                                    return DropdownMenuItem(
-                                      value: employment,
-                                      child: Text(employment),
+                                  items: secondaryEmploymentOptions
+                                      .map<DropdownMenuItem<String>>(
+                                          (dynamic secondaryemployment) {
+                                    return DropdownMenuItem<String>(
+                                      value: secondaryemployment['titleData']
+                                          .toString(),
+                                      child: Text(
+                                          secondaryemployment['titleData']
+                                              .toString()),
                                     );
                                   }).toList(),
                                   onChanged: (newValue) {
                                     setState(() {
                                       _selectedSecondaryEmployments[i] =
-                                          newValue as String?;
+                                          newValue;
                                     });
                                   },
                                   icon: const Icon(
@@ -602,8 +699,9 @@ class _MyFormState extends State<AddFamily> {
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                      ),
+                          backgroundColor: Colors.white,
+                          side: BorderSide(
+                              color: CustomColorTheme.primaryColor, width: 1)),
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
                           // All fields are valid, you can process the data

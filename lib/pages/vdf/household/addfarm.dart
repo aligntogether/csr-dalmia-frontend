@@ -1,6 +1,7 @@
 import 'package:dalmia/pages/vdf/household/addlivestock.dart';
 import 'package:dalmia/pages/vdf/household/selecttype.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
 class AddFarm extends StatefulWidget {
@@ -83,24 +84,23 @@ class _AddFarmState extends State<AddFarm> {
               ),
               Column(
                 children: [
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Rowstock('Tractor'),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Rowstock('Mini Tractor'),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Rowstock('Rotovator'),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Rowstock('Sprayer'),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Rowstock('Weeder'),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Rowstock('MB Plough'),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Rowstock('Harvestor'),
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
+                  const SizedBox(height: 20),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -149,9 +149,8 @@ class _AddFarmState extends State<AddFarm> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -216,7 +215,7 @@ class _AddFarmState extends State<AddFarm> {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => SelectType(),
+                          builder: (context) => const SelectType(),
                         ),
                       );
                     },
@@ -226,16 +225,17 @@ class _AddFarmState extends State<AddFarm> {
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
                       backgroundColor: Colors.white,
-                      side: const BorderSide(width: 1, color: Colors.blue),
+                      side: BorderSide(
+                          color: CustomColorTheme.primaryColor, width: 1),
                     ),
                     onPressed: () {
                       // Perform actions with the field values
 
                       // Save as draft
                     },
-                    child: const Text(
+                    child: Text(
                       'Save as Draft',
-                      style: TextStyle(color: Colors.blue),
+                      style: TextStyle(color: Colors.blue[900]),
                     ),
                   ),
                 ],

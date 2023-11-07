@@ -34,10 +34,10 @@ class _BusinessPlanState extends State<BusinessPlan> {
     ;
     return SafeArea(
       child: Scaffold(
-        appBar: const PreferredSize(
-            preferredSize: Size.fromHeight(100),
-            child: reportappbar(
-              heading: 'Report',
+        appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(100),
+            child: ReportAppBar(
+              heading: 'Reports',
             )),
         body: SingleChildScrollView(
           child: Padding(
@@ -68,8 +68,7 @@ class _BusinessPlanState extends State<BusinessPlan> {
                     ),
                     TextButton.icon(
                         style: TextButton.styleFrom(
-                            backgroundColor:
-                                const Color.fromARGB(255, 85, 164, 228),
+                            backgroundColor: const Color(0xFF008CD3),
                             foregroundColor: Colors.white),
                         onPressed: () {
                           showDialog(

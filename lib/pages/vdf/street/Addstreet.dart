@@ -1,36 +1,45 @@
-// import 'package:dalmia/pages/vdf/household/addhead.dart';
-import 'package:dalmia/pages/vdf/street/AddNew.dart';
+import 'package:dalmia/apis/commonobject.dart';
+import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/street/CheckStreet.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
-// import 'dart:convert';
-// import 'package:http/http.dart' as http;
-// import 'package:flutter_config/flutter_config.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-// returns 'abcdefgh'
 String selectedPanchayat = "";
 String selectedVillage = "";
+String selectedVillageId = "";
 
 class Panchayat {
   final String panchayatId;
-  final String panchayat;
+  final String clusterId;
+  final String panchayatName;
 
-  Panchayat(this.panchayatId, this.panchayat);
+  Panchayat(this.panchayatId, this.clusterId, this.panchayatName);
+
+  factory Panchayat.fromJson(Map<String, dynamic> json) {
+    return Panchayat(
+      json['panchayatId'].toString(),
+      json['clusterId'].toString(),
+      json['panchayatName'].toString(),
+    );
+  }
 }
 
 class Village {
-  final String villageId;
+  final String villageid;
   final String village;
   final String panchayatId;
 
-  Village(this.villageId, this.village, this.panchayatId);
-}
+  Village(this.villageid, this.village, this.panchayatId);
 
-class Street {
-  final String id;
-  final String name;
-  final String villageId;
-
-  Street(this.id, this.name, this.villageId);
+  factory Village.fromJson(Map<String, dynamic> json) {
+    return Village(
+      json['villageId'].toString(),
+      json['villageName'].toString(),
+      json['panchayatId'].toString(),
+    );
+  }
 }
 
 class AddStreet extends StatefulWidget {
@@ -42,24 +51,70 @@ class _AddStreetState extends State<AddStreet> {
   final _formKey = GlobalKey<FormState>();
   String? _selectedPanchayat;
   String? _selectedVillage;
-  String? _selectedStreet;
 
-  List<Panchayat> panchayats = [
-    Panchayat('1', 'Panchayat 1'),
-    Panchayat('2', 'Panchayat 2'),
-    Panchayat('3', 'Panchayat 3')
-  ];
-  List<Village> villages = [
-    Village('1', 'Village 1', '1'),
-    Village('2', 'Village 2', '1'),
-    Village('3', 'Village 3', '1'),
-    Village('4', 'Village 4', '2'),
-    Village('5', 'Village 6', '2'),
-    Village('6', 'Village 5', '2'),
-    Village('7', 'Village 7', '3'),
-    Village('8', 'Village 8', '3'),
-    Village('9', 'Village 9', '3'),
-  ];
+  List<Panchayat> panchayats = [];
+  List<Village> villages = [];
+
+  final String panchayatUrl = 'http://192.168.1.71:8080/list-Panchayat';
+
+  Future<List<Panchayat>> fetchPanchayats() async {
+    try {
+      final response = await http.get(
+        Uri.parse(panchayatUrl),
+        headers: <String, String>{
+          'vdfId': '10001',
+        },
+      );
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+        print(commonObject.respBody);
+        List<dynamic> panchayatsData = commonObject.respBody as List<dynamic>;
+        List<Panchayat> panchayats = panchayatsData
+            .map((model) => Panchayat.fromJson(model as Map<String, dynamic>))
+            .toList();
+
+        return panchayats;
+      } else {
+        throw Exception('Failed to load panchayats: ${response.statusCode}');
+      }
+    } catch (e) {
+      print(e);
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<List<Village>> fetchVillages(String panchayatId) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'http://192.168.1.71:8080/list-Village?panchayatId=$panchayatId'),
+      );
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+
+        Iterable list = commonObject.respBody;
+        List<Village> villages =
+            List<Village>.from(list.map((model) => Village.fromJson(model)));
+        return villages;
+      } else {
+        throw Exception('Failed to load villages: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPanchayats().then((value) {
+      setState(() {
+        panchayats = value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +126,7 @@ class _AddStreetState extends State<AddStreet> {
           iconTheme: const IconThemeData(color: Colors.black),
           centerTitle: true,
           title: const Text(
-            'Add Street',
+            'Add Household',
             style: TextStyle(color: Colors.black),
           ),
           backgroundColor: Colors.grey[50],
@@ -103,7 +158,7 @@ class _AddStreetState extends State<AddStreet> {
                       const Padding(
                         padding: EdgeInsets.only(right: 100.0),
                         child: Text(
-                          'Select Panchayat & Village ',
+                          'Select Panchayat & Village',
                           textAlign: TextAlign.start,
                           style: TextStyle(
                             fontSize: 18,
@@ -117,17 +172,26 @@ class _AddStreetState extends State<AddStreet> {
                         items: panchayats.map((Panchayat panchayat) {
                           return DropdownMenuItem<String>(
                             value: panchayat.panchayatId,
-                            child: Text(panchayat.panchayat),
+                            child: Text(panchayat.panchayatName),
                           );
                         }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _selectedPanchayat = newValue;
-                            _selectedVillage = null;
-                          });
+                        onChanged: (String? newValue) async {
+                          if (newValue != null) {
+                            setState(() {
+                              _selectedPanchayat = newValue;
+                              _selectedVillage = null;
+
+                              fetchVillages(newValue).then((value) {
+                                setState(() {
+                                  villages = value;
+                                });
+                              });
+                            });
+                          }
                         },
                         icon: const Icon(
                           Icons.keyboard_arrow_down_sharp,
+                          color: CustomColorTheme.iconColor,
                         ),
                         decoration: InputDecoration(
                           labelText: 'Select a Panchayat',
@@ -150,23 +214,22 @@ class _AddStreetState extends State<AddStreet> {
                       DropdownButtonFormField<String>(
                         value: _selectedVillage,
                         items: villages
-                            .where((village) =>
-                                village.panchayatId == _selectedPanchayat)
+                            // .where((village) =>
+                            //     village.panchayatId == _selectedPanchayat)
                             .map((Village village) {
                           return DropdownMenuItem<String>(
-                            value: village.villageId,
+                            value: village.villageid,
                             child: Text(village.village),
                           );
                         }).toList(),
-                        onChanged: _selectedPanchayat != null
-                            ? (String? newValue) {
-                                setState(() {
-                                  _selectedVillage = newValue;
-                                });
-                              }
-                            : null,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedVillage = newValue;
+                          });
+                        },
                         icon: const Icon(
                           Icons.keyboard_arrow_down_sharp,
+                          color: CustomColorTheme.iconColor,
                         ),
                         decoration: InputDecoration(
                           labelText: 'Select a Village',
@@ -177,8 +240,7 @@ class _AddStreetState extends State<AddStreet> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.black), // Change the color here
+                            borderSide: BorderSide(color: Colors.black),
                           ),
                         ),
                         validator: (value) {
@@ -190,15 +252,14 @@ class _AddStreetState extends State<AddStreet> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 40),
-                      // const SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(350, 50),
                           backgroundColor: _selectedPanchayat != null &&
                                   _selectedVillage != null
-                              ? Colors.blue[900]
-                              : Colors.blue[100],
+                              ? CustomColorTheme.primaryColor
+                              : const Color.fromRGBO(39, 82, 143, 0.5),
                         ),
                         onPressed: _selectedPanchayat != null &&
                                 _selectedVillage != null
@@ -213,26 +274,30 @@ class _AddStreetState extends State<AddStreet> {
                                       .firstWhere((element) =>
                                           element.panchayatId ==
                                           _selectedPanchayat)
-                                      .panchayat;
+                                      .panchayatName;
                                   String selectedVillageName = villages
                                       .firstWhere((element) =>
-                                          element.villageId == _selectedVillage)
+                                          element.villageid == _selectedVillage)
                                       .village;
+                                  String selectedVillagId = villages
+                                      .firstWhere((element) =>
+                                          element.villageid == _selectedVillage)
+                                      .villageid;
 
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => CheckStreet(
-                                        selectedPanchayat:
-                                            selectedPanchayatName,
-                                        selectedVillage: selectedVillageName,
-                                      ),
+                                          selectedPanchayat:
+                                              selectedPanchayatName,
+                                          selectedVillage: selectedVillageName,
+                                          selectedVillagId: selectedVillagId),
                                     ),
                                   );
                                 }
                               }
                             : null,
                         child: const Text('Next'),
-                      ),
+                      )
                     ],
                   ),
                 ],

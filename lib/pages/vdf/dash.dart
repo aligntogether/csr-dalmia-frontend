@@ -35,28 +35,28 @@ class DashTab extends StatelessWidget {
                           imageUrl: 'images/t_house.png',
                           subtitle: 'Total Household',
                           title: '150',
-                          bg: Color.fromARGB(255, 252, 215, 184),
-                          textcolor: Color(0xFFB94216),
+                          bg: const Color.fromARGB(255, 252, 215, 184),
+                          textcolor: const Color(0xFFB94216),
                         ),
                         CustomCard(
                           imageUrl: 'images/m_house.png',
                           title: '150',
                           subtitle: 'Mapped Household',
-                          bg: Color.fromARGB(255, 252, 215, 184),
-                          textcolor: Color(0xFFB94216),
+                          bg: const Color.fromARGB(255, 252, 215, 184),
+                          textcolor: const Color(0xFFB94216),
                         ),
                         CustomCard(
                           imageUrl: 'images/s_house.png',
                           title: '130',
                           subtitle: 'Selected for Intervention',
-                          bg: Color.fromARGB(255, 252, 215, 184),
-                          textcolor: Color(0xFFB94216),
+                          bg: const Color.fromARGB(255, 252, 215, 184),
+                          textcolor: const Color(0xFFB94216),
                         ),
                       ],
                     ))
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Column(
@@ -81,28 +81,28 @@ class DashTab extends StatelessWidget {
                           imageUrl: 'images/i_house.png',
                           subtitle: 'Household covered',
                           title: '30',
-                          bg: Color.fromARGB(144, 161, 255, 211),
-                          textcolor: Color(0xFF0C7243),
+                          bg: const Color.fromARGB(144, 161, 255, 211),
+                          textcolor: const Color(0xFF0C7243),
                         ),
                         CustomCard(
                           imageUrl: 'images/i_planned.png',
                           title: '100',
                           subtitle: 'Intervention planned',
-                          bg: Color.fromARGB(144, 161, 255, 211),
-                          textcolor: Color(0xFF0C7243),
+                          bg: const Color.fromARGB(144, 161, 255, 211),
+                          textcolor: const Color(0xFF0C7243),
                         ),
                         CustomCard(
                           imageUrl: 'images/icompleted.png',
                           title: '25',
-                          bg: Color.fromARGB(144, 161, 255, 211),
+                          bg: const Color.fromARGB(144, 161, 255, 211),
                           subtitle: 'Interventions completed',
-                          textcolor: Color(0xFF0C7243),
+                          textcolor: const Color(0xFF0C7243),
                         ),
                       ],
                     ))
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Column(
@@ -129,14 +129,14 @@ class DashTab extends StatelessWidget {
                           imageUrl: 'images/overdue.png',
                           subtitle: 'Overdue',
                           title: '1',
-                          bg: Color.fromARGB(223, 142, 188, 245),
-                          textcolor: Color(0xFF064F96),
+                          bg: const Color.fromARGB(223, 142, 188, 245),
+                          textcolor: const Color(0xFF064F96),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 120,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 120,
                       ),
                     ],
@@ -150,7 +150,7 @@ class DashTab extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.only(left: 20, bottom: 10, top: 20),
                   child: RichText(
-                    text: TextSpan(
+                    text: const TextSpan(
                       style: TextStyle(fontSize: 16, color: Colors.black),
                       children: [
                         TextSpan(
@@ -166,7 +166,7 @@ class DashTab extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(left: 10),
+                  padding: const EdgeInsets.only(left: 10),
                   child: FractionallySizedBox(
                     widthFactor: 1.0,
                     child: Wrap(
@@ -178,36 +178,36 @@ class DashTab extends StatelessWidget {
                           imageUrl: 'images/income.png',
                           subtitle: 'Less than 25k',
                           title: '70',
-                          bg: Color.fromARGB(255, 174, 218, 240),
-                          textcolor: Color(0xFF0374AD),
+                          bg: const Color.fromARGB(255, 174, 218, 240),
+                          textcolor: const Color(0xFF0374AD),
                         ),
                         CustomCard(
                           imageUrl: 'images/income.png',
                           title: '40',
                           subtitle: '25k to 50k',
-                          bg: Color.fromARGB(255, 174, 218, 240),
-                          textcolor: Color(0xFF0374AD),
+                          bg: const Color.fromARGB(255, 174, 218, 240),
+                          textcolor: const Color(0xFF0374AD),
                         ),
                         CustomCard(
                           imageUrl: 'images/income.png',
                           title: '10',
                           subtitle: '50k to 75k',
-                          bg: Color.fromARGB(255, 174, 218, 240),
-                          textcolor: Color(0xFF0374AD),
+                          bg: const Color.fromARGB(255, 174, 218, 240),
+                          textcolor: const Color(0xFF0374AD),
                         ),
                         CustomCard(
                           imageUrl: 'images/income.png',
                           title: '10',
                           subtitle: '50k to 75k',
-                          bg: Color.fromARGB(255, 174, 218, 240),
-                          textcolor: Color(0xFF0374AD),
+                          bg: const Color.fromARGB(255, 174, 218, 240),
+                          textcolor: const Color(0xFF0374AD),
                         ),
                         CustomCard(
                           imageUrl: 'images/income.png',
                           title: '10',
                           subtitle: 'More than 1L',
-                          bg: Color.fromARGB(255, 174, 218, 240),
-                          textcolor: Color(0xFF0374AD),
+                          bg: const Color.fromARGB(255, 174, 218, 240),
+                          textcolor: const Color(0xFF0374AD),
                         ),
                       ],
                     ),

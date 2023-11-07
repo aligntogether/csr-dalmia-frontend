@@ -1,4 +1,5 @@
 import 'package:dalmia/pages/vdf/intervention/Followup.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -47,7 +48,7 @@ class _EnterDetailState extends State<EnterDetail> {
           iconTheme: const IconThemeData(color: Colors.black),
           centerTitle: true,
           title: const Text(
-            'Add Intervention',
+            'Assign Intervention',
             style: TextStyle(color: Colors.black),
           ),
           backgroundColor: Colors.grey[50],
@@ -70,8 +71,8 @@ class _EnterDetailState extends State<EnterDetail> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Enter Details'),
-                SizedBox(
+                const Text('Enter Details'),
+                const SizedBox(
                   height: 20,
                 ),
                 DropdownButtonFormField<String>(
@@ -96,12 +97,12 @@ class _EnterDetailState extends State<EnterDetail> {
                       borderSide: const BorderSide(),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    focusedBorder: OutlineInputBorder(
+                    focusedBorder: const OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black),
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 TextFormField(
@@ -128,16 +129,16 @@ class _EnterDetailState extends State<EnterDetail> {
                     return null;
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
-                TextField(
-                  decoration: const InputDecoration(
+                const TextField(
+                  decoration: InputDecoration(
                     labelText: 'Any remarks about this household?',
                     border: OutlineInputBorder(),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 40,
                 ),
                 Row(
@@ -146,8 +147,9 @@ class _EnterDetailState extends State<EnterDetail> {
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(350, 50),
-                        backgroundColor:
-                            isButtonEnabled ? Colors.blue : Colors.lightBlue,
+                        backgroundColor: isButtonEnabled
+                            ? CustomColorTheme.primaryColor
+                            : Colors.lightBlue,
                       ),
                       onPressed: isButtonEnabled
                           ? () {
@@ -180,7 +182,7 @@ void _successmsg(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: SizedBox(
+        title: const SizedBox(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -216,7 +218,7 @@ void _successmsg(BuildContext context) {
                 style: TextStyle(color: Colors.blue),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             ElevatedButton(

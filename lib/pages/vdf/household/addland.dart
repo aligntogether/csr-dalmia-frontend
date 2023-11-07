@@ -1,6 +1,7 @@
 import 'package:dalmia/pages/vdf/household/addcrops.dart';
 import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
 class AddLand extends StatefulWidget {
@@ -81,7 +82,7 @@ class _MyFormState extends State<AddLand> {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => VdfHome(),
+                    builder: (context) => const VdfHome(),
                   ),
                 );
               },
@@ -98,14 +99,14 @@ class _MyFormState extends State<AddLand> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Add Land Ownership Details',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -114,7 +115,7 @@ class _MyFormState extends State<AddLand> {
                       'Rainfed',
                       style: TextStyle(color: Colors.grey[500], fontSize: 15),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     FractionallySizedBox(
                       widthFactor: 1.0,
                       child: Wrap(
@@ -139,7 +140,7 @@ class _MyFormState extends State<AddLand> {
                     )
                   ],
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -147,7 +148,7 @@ class _MyFormState extends State<AddLand> {
                       'Irrigated',
                       style: TextStyle(color: Colors.grey[500], fontSize: 15),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     FractionallySizedBox(
                       widthFactor: 1.0,
                       child: Wrap(
@@ -172,7 +173,7 @@ class _MyFormState extends State<AddLand> {
                     )
                   ],
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -183,7 +184,7 @@ class _MyFormState extends State<AddLand> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => AddCrop(),
+                            builder: (context) => const AddCrop(),
                           ),
                         );
                       },
@@ -192,17 +193,18 @@ class _MyFormState extends State<AddLand> {
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
+                        side: BorderSide(
+                            color: CustomColorTheme.primaryColor, width: 1),
                         backgroundColor: Colors.white,
-                        side: const BorderSide(width: 1, color: Colors.blue),
                       ),
                       onPressed: () {
                         // Perform actions with the field values
 
                         // Save as draft
                       },
-                      child: const Text(
+                      child: Text(
                         'Save as Draft',
-                        style: TextStyle(color: Colors.blue),
+                        style: TextStyle(color: Colors.blue[900]),
                       ),
                     ),
                   ],

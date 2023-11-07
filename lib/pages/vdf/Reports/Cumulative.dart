@@ -1,11 +1,14 @@
 import 'dart:math';
 
+import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
+import 'package:dalmia/pages/vdf/Draft/draft.dart';
 
 import 'package:dalmia/pages/vdf/Reports/hhidform.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
+import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -22,119 +25,165 @@ class _CumulativeState extends State<Cumulative> {
   int _selectedpanchayatindex = 0;
   int _selectedvillagetindex = 0;
   int? selectedRadio;
-  int _selectedIndex = 0; // Track the currently selected tab index
-
   void _onTabTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      selectedIndex = index;
     });
+    if (selectedIndex == 0) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const VdfHome(),
+        ),
+      );
+    } else if (selectedIndex == 1) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => MyForm(),
+        ),
+      );
+    } else if (selectedIndex == 2) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => AddStreet(),
+        ),
+      );
+    } else if (selectedIndex == 3) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const Draft(),
+        ),
+      );
+    }
   }
 
+  int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     final Random random = Random();
     return SafeArea(
-      child: Scaffold(
-        appBar: const PreferredSize(
-          preferredSize: Size.fromHeight(100),
-          child: reportappbar(
-            heading: 'Report',
-          ),
+        child: Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(100),
+        child: ReportAppBar(
+          heading: 'Reports',
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Icon(
-                            Icons.keyboard_arrow_left_outlined,
-                            color: Colors.black,
-                          ),
-                          Text(
-                            'Back',
-                            style: TextStyle(color: Colors.black),
-                          )
-                        ],
-                      ),
-                    ),
-                    TextButton.icon(
-                        style: TextButton.styleFrom(
-                            backgroundColor:
-                                const Color.fromARGB(255, 85, 164, 228),
-                            foregroundColor: Colors.white),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return ReportPopupWidget(context);
-                            },
-                          );
-                        },
-                        icon: const Icon(Icons.folder_outlined),
-                        label: const Text(
-                          'View other Reports',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        )),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Column(
-                  children: [
-                    const Text(
-                      'Cumulative Household Details',
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    Container(
-                      child: () {
-                        if (selectedPanchayat ==
-                            'Panchayat ${_selectedpanchayatindex + 1}') {
-                          return villagetab(random);
-                        } else if (selectedVillage ==
-                                'Village ${_selectedvillagetindex + 1}' &&
-                            selectedPanchayat == '0') {
-                          return streettab(random);
-                        } else {
-                          return panchayattab(random);
-                        }
-                      }(),
-                    )
-                  ],
-                )
-              ],
-            ),
-          ),
-        ),
-        bottomNavigationBar: BottomAppBar(
-          elevation: 10,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              buildTabItem(Icons.dashboard_customize_outlined, "Dashboard", 0),
-              buildTabItem(Icons.home_sharp, "Add Household", 1),
-              buildTabItem(Icons.streetview_outlined, "Add Street", 2),
-              buildTabItem(Icons.drafts_outlined, "Drafts", 3),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Icon(
+                          Icons.keyboard_arrow_left_outlined,
+                          color: Colors.black,
+                        ),
+                        Text(
+                          'Back',
+                          style: TextStyle(color: Colors.black),
+                        )
+                      ],
+                    ),
+                  ),
+                  TextButton.icon(
+                      style: TextButton.styleFrom(
+                          backgroundColor: const Color(0xFF008CD3),
+                          foregroundColor: Colors.white),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return ReportPopupWidget(context);
+                          },
+                        );
+                      },
+                      icon: const Icon(Icons.folder_outlined),
+                      label: const Text(
+                        'View other Reports',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Column(
+                children: [
+                  const Text(
+                    'Cumulative Household Details',
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Container(
+                    child: () {
+                      if (selectedPanchayat ==
+                          'Panchayat ${_selectedpanchayatindex + 1}') {
+                        return villagetab(random);
+                      } else if (selectedVillage ==
+                              'Village ${_selectedvillagetindex + 1}' &&
+                          selectedPanchayat == '0') {
+                        return streettab(random);
+                      } else {
+                        return panchayattab(random);
+                      }
+                    }(),
+                  )
+                ],
+              )
             ],
           ),
         ),
       ),
-    );
+      bottomNavigationBar: BottomAppBar(
+        elevation: 10,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            CustomTabItem(
+              imagePath: 'images/Dashboard_Outline.svg',
+              label: "Dashboard",
+              index: 0,
+              selectedIndex: selectedIndex,
+              onTabTapped: _onTabTapped,
+            ),
+            CustomTabItem(
+              imagePath: 'images/Household_Outline.svg',
+              label: "Add Household",
+              index: 1,
+              selectedIndex: selectedIndex,
+              onTabTapped: _onTabTapped,
+            ),
+            CustomTabItem(
+              imagePath: 'images/Street_Outline.svg',
+              label: "Add Street",
+              index: 2,
+              selectedIndex: selectedIndex,
+              onTabTapped: _onTabTapped,
+            ),
+            CustomTabItem(
+              imagePath: 'images/Drafts_Outline.svg',
+              label: "Drafts",
+              index: 3,
+              selectedIndex: selectedIndex,
+              onTabTapped: _onTabTapped,
+            ),
+          ],
+        ),
+      ),
+    ));
   }
 
   Center panchayattab(Random random) {
@@ -396,46 +445,6 @@ class _CumulativeState extends State<Cumulative> {
               ),
             ),
           )
-        ],
-      ),
-    );
-  }
-
-  Widget buildTabItem(IconData icon, String label, int index) {
-    final isSelected = index == 0;
-    final color = isSelected ? Colors.blue : Colors.black;
-
-    return InkWell(
-      onTap: () {
-        _onTabTapped(index);
-        if (index == 1) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => MyForm(),
-            ),
-          );
-        }
-        if (index == 2) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => AddStreet(),
-            ),
-          );
-        }
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            color: color,
-          ),
-          Text(
-            label,
-            style: TextStyle(
-              color: color,
-            ),
-          ),
         ],
       ),
     );

@@ -136,11 +136,11 @@ class _ApprovalState extends State<Approval> {
                     activeColor: CustomColorTheme.iconColor,
                     selectedTileColor: CustomColorTheme.iconColor,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 13, right: 13),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 13, right: 13),
                     child: TextField(
                       enabled: true,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Please specify the reason',
                         border: OutlineInputBorder(),
                       ),

@@ -1,4 +1,5 @@
 import 'package:dalmia/pages/vdf/intervention/Enterdetail.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
 class Details extends StatefulWidget {
@@ -17,7 +18,7 @@ class _DetailsState extends State<Details> {
           iconTheme: const IconThemeData(color: Colors.black),
           centerTitle: true,
           title: const Text(
-            'Add Intervention',
+            'Assign Intervention',
             style: TextStyle(color: Colors.black),
           ),
           backgroundColor: Colors.grey[50],
@@ -40,25 +41,25 @@ class _DetailsState extends State<Details> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Details of Intervention -1'),
-                Divider(
+                const Text('Details of Intervention -1'),
+                const Divider(
                   color: Colors.grey, // Add your desired color for the line
                   thickness: 1, // Add the desired thickness for the line
                 ),
-                Text('Mushroom Shed 15ft x 15ft 200 beds'),
-                Row(
+                const Text('Mushroom Shed 15ft x 15ft 200 beds'),
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [Text('Lever'), Text('Micro Enterprise')],
                 ),
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [Text('Lever'), Text('Micro Enterprise')],
                 ),
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [Text('Lever'), Text('Micro Enterprise')],
                 ),
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [Text('Lever'), Text('Micro Enterprise')],
                 ),
@@ -67,6 +68,7 @@ class _DetailsState extends State<Details> {
                   children: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: CustomColorTheme.primaryColor,
                         minimumSize: const Size(350, 50),
                       ),
                       onPressed: () {
@@ -80,7 +82,7 @@ class _DetailsState extends State<Details> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Row(

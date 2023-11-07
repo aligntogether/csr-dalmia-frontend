@@ -1,6 +1,7 @@
 import 'package:dalmia/pages/vdf/household/addfarm.dart';
 import 'package:dalmia/pages/vdf/household/addland.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
 class AddStock extends StatefulWidget {
@@ -78,22 +79,21 @@ class _AddStockState extends State<AddStock> {
               ),
               Column(
                 children: [
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Rowstock('Cows'),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Rowstock('Goats'),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Rowstock('Buffalo'),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Rowstock('Poultry'),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Rowstock('Pigs'),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Rowstock('Ducks'),
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
+                  const SizedBox(height: 20),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -142,9 +142,8 @@ class _AddStockState extends State<AddStock> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -209,7 +208,7 @@ class _AddStockState extends State<AddStock> {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => AddFarm(),
+                          builder: (context) => const AddFarm(),
                         ),
                       );
                     },
@@ -219,16 +218,17 @@ class _AddStockState extends State<AddStock> {
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
                       backgroundColor: Colors.white,
-                      side: const BorderSide(width: 1, color: Colors.blue),
+                      side: BorderSide(
+                          color: CustomColorTheme.primaryColor, width: 1),
                     ),
                     onPressed: () {
                       // Perform actions with the field values
 
                       // Save as draft
                     },
-                    child: const Text(
+                    child: Text(
                       'Save as Draft',
-                      style: TextStyle(color: Colors.blue),
+                      style: TextStyle(color: Colors.blue[900]),
                     ),
                   ),
                 ],
@@ -251,11 +251,11 @@ Widget Rowstock(String text) {
           width: 90,
           child: Text(
             text,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 16, fontWeight: FontWeight.w600, color: Colors.grey),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           width: 50,
           height: 30,
           child: TextField(
@@ -269,7 +269,7 @@ Widget Rowstock(String text) {
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           width: 50,
         )
       ],

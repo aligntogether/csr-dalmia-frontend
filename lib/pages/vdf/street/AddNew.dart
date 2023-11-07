@@ -1,14 +1,12 @@
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
-import 'package:excel/excel.dart';
+
 import 'package:flutter/material.dart';
 
 class Addnew extends StatefulWidget {
-  final String? selectedPanchayat;
-  final String? selectedVillage;
-
-  const Addnew({Key? key, this.selectedPanchayat, this.selectedVillage})
-      : super(key: key);
+  const Addnew({
+    super.key,
+  });
 
   @override
   _AddnewState createState() => _AddnewState();
@@ -51,29 +49,26 @@ class _AddnewState extends State<Addnew> {
               child: Column(
                 // crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Container(
                     width: 300,
                     height: 100,
-                    decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 162, 255, 165)),
+                    decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 232, 253, 233)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Panchayat : ${widget.selectedPanchayat} '),
-                        Text('Village:  ${widget.selectedVillage}')
-                      ],
+                      children: [Text('Panchayat } '), Text('Village}')],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 300,
                     child: TextField(
                       decoration: InputDecoration(
@@ -81,21 +76,21 @@ class _AddnewState extends State<Addnew> {
                           label: Text('Enter Street Name')),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 300,
                     child: TextField(
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          label: Text('Enter Street Name')),
+                          label: Text('Enter Street Code')),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 300,
                     child: TextField(
                       decoration: InputDecoration(
@@ -103,7 +98,7 @@ class _AddnewState extends State<Addnew> {
                           label: Text('Enter Number of Households')),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 40,
                   ),
                   ElevatedButton(
@@ -121,11 +116,11 @@ class _AddnewState extends State<Addnew> {
                     },
                     child: const Text('Add Street'),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 40),
                     child: Text(
                       'This street name and street code are already added to the village.',
                       textAlign: TextAlign.center,
@@ -135,11 +130,11 @@ class _AddnewState extends State<Addnew> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 35),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 35),
                     child: Text(
                       'Check all streets added to the village here',
                       textAlign: TextAlign.center,
@@ -163,7 +158,7 @@ void _confirmbox(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: SizedBox(
+        title: const SizedBox(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -199,7 +194,7 @@ void _confirmbox(BuildContext context) {
                 style: TextStyle(color: Colors.blue),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             ElevatedButton(
@@ -218,7 +213,7 @@ void _confirmbox(BuildContext context) {
                 style: TextStyle(color: Colors.blue),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             ElevatedButton(

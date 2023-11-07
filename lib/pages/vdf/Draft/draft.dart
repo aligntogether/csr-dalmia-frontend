@@ -1,4 +1,9 @@
+import 'package:dalmia/Constants/constants.dart';
+import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/components/reportappbar.dart';
+import 'package:dalmia/pages/vdf/household/addhouse.dart';
+import 'package:dalmia/pages/vdf/street/Addstreet.dart';
+import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -10,28 +15,60 @@ class Draft extends StatefulWidget {
 }
 
 class _DraftState extends State<Draft> {
+  void _onTabTapped(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+    if (selectedIndex == 0) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const VdfHome(),
+        ),
+      );
+    } else if (selectedIndex == 1) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => MyForm(),
+        ),
+      );
+    } else if (selectedIndex == 2) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => AddStreet(),
+        ),
+      );
+    } else if (selectedIndex == 3) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const Draft(),
+        ),
+      );
+    }
+  }
+
+  int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-            preferredSize: Size.fromHeight(100),
-            child: reportappbar(heading: 'Drafts')),
+            preferredSize: const Size.fromHeight(100),
+            child: ReportAppBar(heading: 'Drafts')),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Center(
+              const Center(
                   child: Text(
                 'Select a row to edit or delete draft HH',
                 style: TextStyle(
                     fontSize: CustomFontTheme.textSize,
                     fontWeight: CustomFontTheme.headingwt),
               )),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               SingleChildScrollView(
@@ -39,7 +76,7 @@ class _DraftState extends State<Draft> {
                 child: DataTable(
                   headingRowColor:
                       MaterialStateColor.resolveWith((states) => Colors.blue),
-                  columns: <DataColumn>[
+                  columns: const <DataColumn>[
                     DataColumn(
                       label: Text(
                         ' ',
@@ -72,13 +109,13 @@ class _DraftState extends State<Draft> {
                             onChanged: (value) {},
                           ),
                         ),
-                        DataCell(Text(
+                        const DataCell(Text(
                             '2023-10-31')), // Placeholder date, replace with actual data
-                        DataCell(Text(
+                        const DataCell(Text(
                             'John Doe')), // Placeholder name, replace with actual data
-                        DataCell(Text(
+                        const DataCell(Text(
                             'Main Street')), // Placeholder street, replace with actual data
-                        DataCell(Text('Rural Village')),
+                        const DataCell(Text('Rural Village')),
                       ],
                     ),
                     DataRow(
@@ -91,20 +128,20 @@ class _DraftState extends State<Draft> {
                             onChanged: (value) {},
                           ),
                         ),
-                        DataCell(Text(
+                        const DataCell(Text(
                             '2023-10-31')), // Placeholder date, replace with actual data
-                        DataCell(Text(
+                        const DataCell(Text(
                             'John Doe')), // Placeholder name, replace with actual data
-                        DataCell(Text(
+                        const DataCell(Text(
                             'Main Street')), // Placeholder street, replace with actual data
-                        DataCell(Text('Rural Village')),
+                        const DataCell(Text('Rural Village')),
                       ],
                     ),
                     // Add more DataRows as needed
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Row(
@@ -117,8 +154,8 @@ class _DraftState extends State<Draft> {
                             CustomColorTheme.primaryColor),
                       ),
                       onPressed: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: Text(
                           'Edit Household',
                           style: TextStyle(fontWeight: FontWeight.w500),
@@ -127,14 +164,16 @@ class _DraftState extends State<Draft> {
                   ElevatedButton(
                       style: ButtonStyle(
                         elevation: MaterialStateProperty.all(0.0),
-                        side: MaterialStateProperty.all<BorderSide>(BorderSide(
-                            color: CustomColorTheme.primaryColor, width: 1)),
+                        side: MaterialStateProperty.all<BorderSide>(
+                            const BorderSide(
+                                color: CustomColorTheme.primaryColor,
+                                width: 1)),
                         backgroundColor: MaterialStateProperty.all<Color>(
                             CustomColorTheme.backgroundColor),
                       ),
                       onPressed: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: Text(
                           'Delete Household',
                           style:
@@ -143,6 +182,42 @@ class _DraftState extends State<Draft> {
                       )),
                 ],
               )
+            ],
+          ),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          elevation: 10,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              CustomTabItem(
+                imagePath: 'images/Dashboard_Outline.svg',
+                label: "Dashboard",
+                index: 0,
+                selectedIndex: selectedIndex,
+                onTabTapped: _onTabTapped,
+              ),
+              CustomTabItem(
+                imagePath: 'images/Household_Outline.svg',
+                label: "Add Household",
+                index: 1,
+                selectedIndex: selectedIndex,
+                onTabTapped: _onTabTapped,
+              ),
+              CustomTabItem(
+                imagePath: 'images/Street_Outline.svg',
+                label: "Add Street",
+                index: 2,
+                selectedIndex: selectedIndex,
+                onTabTapped: _onTabTapped,
+              ),
+              CustomTabItem(
+                imagePath: 'images/Drafts_Outline.svg',
+                label: "Drafts",
+                index: 3,
+                selectedIndex: selectedIndex,
+                onTabTapped: _onTabTapped,
+              ),
             ],
           ),
         ),

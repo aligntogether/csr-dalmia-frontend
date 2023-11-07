@@ -28,6 +28,9 @@ class _ReportPopupWidgetState extends State<ReportPopupWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // SizedBox(
+              //   width: 2,
+              // ),
               const Text('View other Reports'),
               GestureDetector(
                 onTap: () {
@@ -174,52 +177,56 @@ class _ReportPopupWidgetState extends State<ReportPopupWidget> {
         ],
       ),
       content: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: CustomColorTheme.primaryColor,
+          Expanded(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: CustomColorTheme.primaryColor,
+              ),
+              onPressed: () {
+                if (selectedRadio == 1) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const Form1(),
+                    ),
+                  );
+                } else if (selectedRadio == 2) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const Cumulative(),
+                    ),
+                  ); // Navigate to the corresponding tab
+                } else if (selectedRadio == 3) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const Leverwise(),
+                    ),
+                  ); // Navigate to the corresponding tab
+                } else if (selectedRadio == 4) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const Top20(),
+                    ),
+                  ); // Navigate to the corresponding tab
+                } else if (selectedRadio == 5) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const BusinessPlan(),
+                    ),
+                  ); // Navigate to the corresponding tab
+                } else if (selectedRadio == 6) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const LivehoodPlan(),
+                    ),
+                  ); // Navigate to the corresponding tab
+                }
+              },
+              child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: const Text('View Report')),
             ),
-            onPressed: () {
-              if (selectedRadio == 1) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const Form1(),
-                  ),
-                );
-              } else if (selectedRadio == 2) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const Cumulative(),
-                  ),
-                ); // Navigate to the corresponding tab
-              } else if (selectedRadio == 3) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const Leverwise(),
-                  ),
-                ); // Navigate to the corresponding tab
-              } else if (selectedRadio == 4) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const Top20(),
-                  ),
-                ); // Navigate to the corresponding tab
-              } else if (selectedRadio == 5) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const BusinessPlan(),
-                  ),
-                ); // Navigate to the corresponding tab
-              } else if (selectedRadio == 6) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const LivehoodPlan(),
-                  ),
-                ); // Navigate to the corresponding tab
-              }
-            },
-            child: const Text('View Reports'),
           ),
         ],
       ),

@@ -9,7 +9,6 @@ import 'package:dalmia/pages/vdf/Reports/form1.dart';
 import 'package:dalmia/pages/vdf/Reports/leverwise.dart';
 
 import 'package:dalmia/pages/vdf/Reports/top20.dart';
-import 'package:dalmia/pages/vdf/Reports/updateinter.dart';
 import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/intervention/Addinter.dart';
@@ -18,25 +17,19 @@ import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
-// import 'package:data_table_2/data_table_2.dart';
-// import 'package:flutter/services.dart';
-// import 'package:pdf/widgets.dart' as pw;
-// import 'package:open_file/open_file.dart';
-// import 'package:path_provider/path_provider.dart';
-// import 'package:excel/excel.dart';
 
 import 'dart:math';
 
 import 'package:flutter_svg/svg.dart';
 
-class HhidForm extends StatefulWidget {
-  const HhidForm({Key? key}) : super(key: key);
+class UpdateIntervention extends StatefulWidget {
+  const UpdateIntervention({Key? key}) : super(key: key);
 
   @override
-  State<HhidForm> createState() => _HhidFormState();
+  State<UpdateIntervention> createState() => _UpdateInterventionState();
 }
 
-class _HhidFormState extends State<HhidForm> {
+class _UpdateInterventionState extends State<UpdateIntervention> {
   int? selectedRadio;
   void _onTabTapped(int index) {
     setState(() {
@@ -84,7 +77,7 @@ class _HhidFormState extends State<HhidForm> {
         appBar: PreferredSize(
             preferredSize: const Size.fromHeight(100),
             child: ReportAppBar(
-              heading: 'Reports',
+              heading: 'Update Intervention',
             )),
         body: SingleChildScrollView(
           child: Padding(
@@ -93,57 +86,21 @@ class _HhidFormState extends State<HhidForm> {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Row(
-                        children: [
-                          Icon(
-                            Icons.keyboard_arrow_left_outlined,
-                            color: Colors.black,
-                          ),
-                          Text(
-                            'Back',
-                            style: TextStyle(color: Colors.black),
-                          )
-                        ],
-                      ),
-                    ),
-                    TextButton.icon(
-                        style: TextButton.styleFrom(
-                            backgroundColor: const Color(0xFF008CD3),
-                            foregroundColor: Colors.white),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return ReportPopupWidget(context);
-                            },
-                          );
-                        },
-                        icon: const Icon(Icons.folder_outlined),
-                        label: const Text(
-                          'View other Reports',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        )),
-                  ],
-                ),
                 const SizedBox(height: 20),
                 Center(
                   child: Column(
                     children: [
                       const Text(
-                        'Cumulative Household Details',
+                        'AROSKMTS001',
                         style: TextStyle(
                             fontSize: CustomFontTheme.textSize,
                             fontWeight: CustomFontTheme.headingwt),
+                      ),
+                      const Text(
+                        'Vermicompost-Permanent \n structure New 10ft x 2ft',
+                        style: TextStyle(
+                            fontSize: CustomFontTheme.textSize,
+                            fontWeight: CustomFontTheme.labelwt),
                       ),
                       const SizedBox(
                         height: 20,
@@ -154,7 +111,7 @@ class _HhidFormState extends State<HhidForm> {
                           columns: const <DataColumn>[
                             DataColumn(
                               label: Text(
-                                'HHID',
+                                'Details',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white),
@@ -242,55 +199,33 @@ class _HhidFormState extends State<HhidForm> {
                           ],
                           headingRowColor: MaterialStateColor.resolveWith(
                               (states) => CustomColorTheme.secondaryColor),
-                          rows: <DataRow>[
+                          rows: const <DataRow>[
                             DataRow(
                               cells: <DataCell>[
-                                DataCell(
-                                  InkWell(
-                                    onTap: () {
-                                      _takeaction(context);
-                                    },
-                                    child: const Text(
-                                      'AROKSKTS001',
-                                      style: TextStyle(
-                                        color: CustomColorTheme.iconColor,
-                                        decoration: TextDecoration.underline,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const DataCell(Text('Yes')),
-                                const DataCell(Text('John Doe')),
-                                const DataCell(Text('Intervention 1')),
-                                const DataCell(Text('Yes')),
-                                const DataCell(Text('500')),
-                                const DataCell(Text('600')),
-                                const DataCell(Text('')),
+                                DataCell(Text('Follow up 1')),
+                                DataCell(Text('Yes')),
+                                DataCell(Text('John Doe')),
+                                DataCell(Text('Intervention 1')),
+                                DataCell(Text('Yes')),
+                                DataCell(Text('500')),
+                                DataCell(Text('600')),
+                                DataCell(Text('')),
                               ],
                             ),
                             DataRow(
                               cells: <DataCell>[
                                 DataCell(
-                                  InkWell(
-                                    onTap: () {},
-                                    child: const Text(
-                                      'AROKSKTS002',
-                                      style: TextStyle(
-                                        color: CustomColorTheme.iconColor,
-                                        decoration: TextDecoration.underline,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                  Text(
+                                    'Follow up 2',
                                   ),
                                 ),
-                                const DataCell(Text('No')),
-                                const DataCell(Text('Jane Smith')),
-                                const DataCell(Text('Intervention 2')),
-                                const DataCell(Text('No')),
-                                const DataCell(Text('300')),
-                                const DataCell(Text('400')),
-                                const DataCell(Text('')),
+                                DataCell(Text('No')),
+                                DataCell(Text('Jane Smith')),
+                                DataCell(Text('Intervention 2')),
+                                DataCell(Text('No')),
+                                DataCell(Text('300')),
+                                DataCell(Text('400')),
+                                DataCell(Text('')),
                               ],
                             ),
                           ],
@@ -302,43 +237,40 @@ class _HhidFormState extends State<HhidForm> {
                 SizedBox(
                   height: 20,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              CustomColorTheme.backgroundColor),
-                        ),
-                        onPressed: () {},
-                        child: Row(
-                          children: [
-                            SvgPicture.asset('images/Excel.svg'),
-                            const Text(
-                              'Download  Excel',
-                              style: TextStyle(
-                                  color: CustomColorTheme.primaryColor),
-                            ),
-                          ],
-                        )),
-                    ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              CustomColorTheme.backgroundColor),
-                        ),
-                        onPressed: () {},
-                        child: Row(
-                          children: [
-                            SvgPicture.asset('images/pdf.svg'),
-                            const Text(
-                              'Download PDF',
-                              style: TextStyle(
-                                  color: CustomColorTheme.primaryColor),
-                            ),
-                          ],
-                        )),
-                  ],
-                )
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(350, 50),
+                      backgroundColor: CustomColorTheme.primaryColor),
+                  onPressed: () {
+                    // Navigator.of(context).push(
+                    //   MaterialPageRoute(
+                    //     builder: (context) => const AddHead(),
+                    //   ),
+                    // );
+                  },
+                  child: const Text(
+                    'Save Update',
+                    style: TextStyle(fontSize: CustomFontTheme.textSize),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        side: BorderSide(
+                            color: CustomColorTheme.primaryColor, width: 1),
+                        minimumSize: const Size(350, 50),
+                        backgroundColor: CustomColorTheme.backgroundColor),
+                    onPressed: () {},
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'Call Beneficiary',
+                        style: TextStyle(color: CustomColorTheme.primaryColor),
+                      ),
+                    )),
               ],
             ),
           ),
@@ -744,7 +676,7 @@ class _HhidFormState extends State<HhidForm> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => UpdateIntervention(),
+                            builder: (context) => Followup(),
                           ),
                         );
                       },

@@ -174,16 +174,17 @@ class _AddCropState extends State<AddCrop> {
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
                       backgroundColor: Colors.white,
-                      side: const BorderSide(width: 1, color: Colors.blue),
+                      side: BorderSide(
+                          color: CustomColorTheme.primaryColor, width: 1),
                     ),
                     onPressed: () {
                       // Perform actions with the field values
 
                       // Save as draft
                     },
-                    child: const Text(
+                    child: Text(
                       'Save as Draft',
-                      style: TextStyle(color: Colors.blue),
+                      style: TextStyle(color: Colors.blue[900]),
                     ),
                   ),
                 ],

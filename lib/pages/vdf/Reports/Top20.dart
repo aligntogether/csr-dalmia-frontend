@@ -1,8 +1,12 @@
+import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
+import 'package:dalmia/pages/vdf/Draft/draft.dart';
 
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
+import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
@@ -15,12 +19,37 @@ class Top20 extends StatefulWidget {
 
 class _Top20State extends State<Top20> {
   int? selectedRadio;
-  int _selectedIndex = 0; // Track the currently selected tab index
+  int selectedIndex = 0; // Track the currently selected tab index
 
   void _onTabTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      selectedIndex = index;
     });
+    if (selectedIndex == 0) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const VdfHome(),
+        ),
+      );
+    } else if (selectedIndex == 1) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => MyForm(),
+        ),
+      );
+    } else if (selectedIndex == 2) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => AddStreet(),
+        ),
+      );
+    } else if (selectedIndex == 3) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const Draft(),
+        ),
+      );
+    }
   }
 
   @override
@@ -35,10 +64,10 @@ class _Top20State extends State<Top20> {
     // ;
     return SafeArea(
       child: Scaffold(
-        appBar: const PreferredSize(
-            preferredSize: Size.fromHeight(100),
-            child: reportappbar(
-              heading: 'Report',
+        appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(100),
+            child: ReportAppBar(
+              heading: 'Reports',
             )),
         body: SingleChildScrollView(
           child: Padding(
@@ -69,8 +98,7 @@ class _Top20State extends State<Top20> {
                     ),
                     TextButton.icon(
                         style: TextButton.styleFrom(
-                            backgroundColor:
-                                const Color.fromARGB(255, 85, 164, 228),
+                            backgroundColor: const Color(0xFF008CD3),
                             foregroundColor: Colors.white),
                         onPressed: () {
                           showDialog(
@@ -94,7 +122,12 @@ class _Top20State extends State<Top20> {
                 Center(
                   child: Column(
                     children: [
-                      const Text(' Top 20 Households with Additional Income'),
+                      const Text(
+                        ' Top 20 Households with Additional Income',
+                        style: TextStyle(
+                            fontSize: CustomFontTheme.textSize,
+                            fontWeight: CustomFontTheme.headingwt),
+                      ),
                       const SizedBox(
                         height: 20,
                       ),
@@ -132,7 +165,7 @@ class _Top20State extends State<Top20> {
                                       // Alternating row colors
                                       return index.isOdd
                                           ? Colors.lightBlue[50] as Color
-                                          : Colors.white as Color;
+                                          : Colors.white;
                                     },
                                   ),
                                   cells: <DataCell>[
@@ -157,10 +190,34 @@ class _Top20State extends State<Top20> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              buildTabItem(Icons.dashboard_customize_outlined, "Dashboard", 0),
-              buildTabItem(Icons.home_sharp, "Add Household", 1),
-              buildTabItem(Icons.streetview_outlined, "Add Street", 2),
-              buildTabItem(Icons.drafts_outlined, "Drafts", 3),
+              CustomTabItem(
+                imagePath: 'images/Dashboard_Outline.svg',
+                label: "Dashboard",
+                index: 0,
+                selectedIndex: selectedIndex,
+                onTabTapped: _onTabTapped,
+              ),
+              CustomTabItem(
+                imagePath: 'images/Household_Outline.svg',
+                label: "Add Household",
+                index: 1,
+                selectedIndex: selectedIndex,
+                onTabTapped: _onTabTapped,
+              ),
+              CustomTabItem(
+                imagePath: 'images/Street_Outline.svg',
+                label: "Add Street",
+                index: 2,
+                selectedIndex: selectedIndex,
+                onTabTapped: _onTabTapped,
+              ),
+              CustomTabItem(
+                imagePath: 'images/Drafts_Outline.svg',
+                label: "Drafts",
+                index: 3,
+                selectedIndex: selectedIndex,
+                onTabTapped: _onTabTapped,
+              ),
             ],
           ),
         ),

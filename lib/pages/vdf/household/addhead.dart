@@ -3,13 +3,14 @@ import 'package:dalmia/pages/vdf/household/addfamily.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
-import 'package:dalmia/apis/form_logic.dart';
+
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 class AddHead extends StatefulWidget {
   const AddHead({super.key});
@@ -26,24 +27,29 @@ class _MyFormState extends State<AddHead> {
   String? _selectedGender;
   List<dynamic> genderOptions = [];
   String? _selectedEducation;
+  List<dynamic> educationOptions = [];
+  List<dynamic> primaryEmploymentOptions = [];
+  List<dynamic> secondaryEmploymentOptions = [];
+
   String? _selectedCaste;
   List<dynamic> casteOptions = [];
   String? _selectedPrimaryEmployment;
   String? _selectedSecondaryEmployment;
   bool _validateFields = false;
   // List<String> genderOptions = ['Male', 'Female'];
-  List<String> educationOptions = [
-    'Option 1',
-    'Option 2',
-    'Option 3'
-  ]; // Replace with actual options
+  // List<String> educationOptions = [
+  //   'Option 1',
+  //   'Option 2',
+  //   'Option 3'
+  // ]; // Replace with actual options
   // List<String> casteOptions = [
   //   'Option 1',
   //   'Option 2',
   //   'Option 3'
   // ]; // Replace with actual options
-  List<String> employmentOptions = ['Option 1', 'Option 2', 'Option 3'];
+  // List<String> employmentOptions = ['Option 1', 'Option 2', 'Option 3'];
   // Replace with actual options
+
   Future<void> fetchGenderOptions() async {
     try {
       final response = await http.get(
@@ -66,13 +72,93 @@ class _MyFormState extends State<AddHead> {
     }
   }
 
+  Future<void> fetchCasteOptions() async {
+    const String url = 'http://192.168.1.71:8080/dropdown?titleId=105';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+        List<dynamic> options = commonObject.respBody['options'];
+        setState(() {
+          casteOptions = options;
+        });
+      } else {
+        throw Exception('Failed to load caste options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> fetchEducationOptions() async {
+    const String url = 'http://192.168.1.71:8080/dropdown?titleId=102';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+        List<dynamic> options = commonObject.respBody['options'];
+        setState(() {
+          educationOptions = options;
+        });
+      } else {
+        throw Exception('Failed to load caste options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> fetchPrimaryOptions() async {
+    const String url = 'http://192.168.1.71:8080/dropdown?titleId=103';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+        List<dynamic> options = commonObject.respBody['options'];
+        setState(() {
+          primaryEmploymentOptions = options;
+        });
+      } else {
+        throw Exception('Failed to load caste options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> fetchSecondaryOptions() async {
+    const String url = 'http://192.168.1.71:8080/dropdown?titleId=104';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+        List<dynamic> options = commonObject.respBody['options'];
+        setState(() {
+          secondaryEmploymentOptions = options;
+        });
+      } else {
+        throw Exception('Failed to load caste options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     fetchGenderOptions();
+    fetchCasteOptions();
+    fetchEducationOptions();
+    fetchPrimaryOptions();
+    fetchSecondaryOptions();
   }
 
-  void saveFormDataToJson() {
+  void saveFormDataToJson() async {
     final name = _nameController.text;
     final mobile = _mobileController.text;
     final dob = _dobController.text;
@@ -94,7 +180,14 @@ class _MyFormState extends State<AddHead> {
 
     String jsonData = json.encode({'household': householdData});
 
-    File('form_data.json').writeAsStringSync(jsonData);
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File('${directory.path}/form_data.json');
+      await file.writeAsString(jsonData);
+      print('Data saved to file successfully at: ${file.path}');
+    } catch (e) {
+      print('Error saving data: $e');
+    }
   }
 
   DateTime? selectedDate;
@@ -128,6 +221,8 @@ class _MyFormState extends State<AddHead> {
 
   @override
   Widget build(BuildContext context) {
+    // MediaQueryData mediaQueryData = MediaQuery.of(context);
+    // double screenWidth = mediaQueryData.size.width;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -280,7 +375,7 @@ class _MyFormState extends State<AddHead> {
                             labelText: selectedDate != null
                                 ? '${calculateAge(selectedDate)} yrs'
                                 : 'Age(yrs)',
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                             contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 20.0),
                           ),
@@ -358,13 +453,52 @@ class _MyFormState extends State<AddHead> {
                       return null;
                     },
                   ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  DropdownButtonFormField<String>(
+                    value: _selectedEducation,
+                    items: educationOptions
+                        .map<DropdownMenuItem<String>>((dynamic education) {
+                      return DropdownMenuItem<String>(
+                        value: education['titleData'].toString(),
+                        child: Text(education['titleData'].toString()),
+                      );
+                    }).toList(),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _selectedEducation = newValue;
+                      });
+                    },
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down_sharp,
+                      color: CustomColorTheme.iconColor,
+                    ),
+                    decoration: const InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      labelText: 'Education *',
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Education is required';
+                      }
+                      return null;
+                    },
+                  ),
                   const SizedBox(height: 16),
-                  DropdownButtonFormField(
+                  DropdownButtonFormField<String>(
                     value: _selectedPrimaryEmployment,
-                    items: employmentOptions.map((String employment) {
-                      return DropdownMenuItem(
-                        value: employment,
-                        child: Text(employment),
+                    items: primaryEmploymentOptions
+                        .map<DropdownMenuItem<String>>(
+                            (dynamic primaryemployment) {
+                      return DropdownMenuItem<String>(
+                        value: primaryemployment['titleData'].toString(),
+                        child: Text(primaryemployment['titleData'].toString()),
                       );
                     }).toList(),
                     onChanged: (newValue) {
@@ -393,12 +527,15 @@ class _MyFormState extends State<AddHead> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  DropdownButtonFormField(
+                  DropdownButtonFormField<String>(
                     value: _selectedSecondaryEmployment,
-                    items: employmentOptions.map((String employment) {
-                      return DropdownMenuItem(
-                        value: employment,
-                        child: Text(employment),
+                    items: secondaryEmploymentOptions
+                        .map<DropdownMenuItem<String>>(
+                            (dynamic secondaryemployment) {
+                      return DropdownMenuItem<String>(
+                        value: secondaryemployment['titleData'].toString(),
+                        child:
+                            Text(secondaryemployment['titleData'].toString()),
                       );
                     }).toList(),
                     onChanged: (newValue) {
@@ -414,17 +551,23 @@ class _MyFormState extends State<AddHead> {
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.black),
                       ),
-                      labelText: 'Secondary Employment',
+                      labelText: 'Secondary Employment *',
                       border: OutlineInputBorder(),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Secondary Employment is required';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
                   if (_validateFields &&
                       !(_formKey.currentState?.validate() ?? false))
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 16.0),
                       child: Text(
                         'Please fill all the mandatory fields',
                         style: TextStyle(color: Colors.red),
@@ -435,7 +578,7 @@ class _MyFormState extends State<AddHead> {
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue[900],
+                          backgroundColor: CustomColorTheme.primaryColor,
                         ),
                         onPressed: () {
                           Navigator.of(context).push(
@@ -452,9 +595,9 @@ class _MyFormState extends State<AddHead> {
                             //     builder: (context) => const AddFamily(),
                             //   ),
                             // );
-                            final name = _nameController.text;
-                            final mobile = _mobileController.text;
-                            final dob = _dobController.text;
+                            // final name = _nameController.text;
+                            // final mobile = _mobileController.text;
+                            // final dob = _dobController.text;
                             saveFormDataToJson();
                           }
                         },
@@ -462,6 +605,8 @@ class _MyFormState extends State<AddHead> {
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                          side: BorderSide(
+                              color: CustomColorTheme.primaryColor, width: 1),
                           backgroundColor: Colors.white,
                         ),
                         onPressed: () {
@@ -478,7 +623,8 @@ class _MyFormState extends State<AddHead> {
                         },
                         child: Text(
                           'Save as Draft',
-                          style: TextStyle(color: Colors.blue[900]),
+                          style:
+                              TextStyle(color: CustomColorTheme.primaryColor),
                         ),
                       ),
                     ],

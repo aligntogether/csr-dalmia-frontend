@@ -1,41 +1,52 @@
+import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
-class reportappbar extends StatelessWidget {
+class ReportAppBar extends StatefulWidget {
   final String heading;
-  const reportappbar({
-    required this.heading,
-    super.key,
-  });
+
+  ReportAppBar({required this.heading, Key? key}) : super(key: key);
+
+  @override
+  _ReportAppBarState createState() => _ReportAppBarState();
+}
+
+bool toggle = false;
+
+class _ReportAppBarState extends State<ReportAppBar> {
+  void _openDrawer() {
+    setState(() {
+      toggle = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       titleSpacing: 20,
       backgroundColor: Colors.white,
-      title: const Image(image: AssetImage('images/icon.jpg')),
+      title: Image(image: AssetImage('images/icon.jpg')),
       automaticallyImplyLeading: false,
       actions: <Widget>[
         CircleAvatar(
           backgroundColor: CustomColorTheme.primaryColor,
           child: IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.notifications_none_outlined,
-                color: Colors.white,
-
-                // color: Colors.blue,
-              )),
+            onPressed: () {},
+            icon: Icon(
+              Icons.notifications_none_outlined,
+              color: Colors.white,
+            ),
+          ),
         ),
-        const SizedBox(
+        SizedBox(
           width: 20,
         ),
         IconButton(
           iconSize: 30,
           onPressed: () {
-            // _openDrawer();
+            _openDrawer();
           },
-          icon: const Icon(
+          icon: Icon(
             Icons.menu,
             color: CustomColorTheme.primaryColor,
           ),
@@ -48,10 +59,11 @@ class reportappbar extends StatelessWidget {
           alignment: Alignment.topCenter,
           color: Colors.white,
           child: Text(
-            heading,
+            widget.heading,
             style: TextStyle(
-                fontSize: CustomFontTheme.textSize,
-                fontWeight: CustomFontTheme.headingwt),
+              fontSize: CustomFontTheme.textSize,
+              fontWeight: CustomFontTheme.headingwt,
+            ),
           ),
         ),
       ),

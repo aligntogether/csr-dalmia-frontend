@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class CustomColorTheme {
   static const Color primaryColor = Color(0xFF27528F);
   static const Color secondaryColor = Color(0xFF008CD3);
+  // static const Color inactiveColor = Color(0xFF27528F);
 
   static const Color accentColor = Colors.red;
   static const Color backgroundColor = Colors.white;
@@ -22,7 +23,7 @@ class CustomFontTheme {
 
 class AppTheme {
   static final ThemeData lightTheme = ThemeData(
-    inputDecorationTheme: InputDecorationTheme(
+    inputDecorationTheme: const InputDecorationTheme(
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Colors.black),
       ),

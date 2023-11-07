@@ -37,7 +37,7 @@ class _OtpState extends State<Otp> {
   }
 
   SafeArea otp(BuildContext context) {
-    final TextEditingController _pinEditingController = TextEditingController();
+    final TextEditingController pinEditingController = TextEditingController();
 
     return SafeArea(
       child: Scaffold(
@@ -76,10 +76,8 @@ class _OtpState extends State<Otp> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       if (isContainerVisible)
-                        Container(
-                          child: const Image(
-                            image: AssetImage('images/icon.jpg'),
-                          ),
+                        const Image(
+                          image: AssetImage('images/icon.jpg'),
                         ),
                       // if (isContainerVisible)
                       if (isContainerVisible)
@@ -113,7 +111,7 @@ class _OtpState extends State<Otp> {
                           appContext: context,
                           length: 6,
                           onChanged: (value) {},
-                          controller: _pinEditingController,
+                          controller: pinEditingController,
                           pinTheme: PinTheme(
                               shape: PinCodeFieldShape.underline,
                               borderRadius: BorderRadius.circular(5),

@@ -362,25 +362,24 @@ class _MyFormState extends State<MyForm> {
                           backgroundColor: _selectedPanchayat != null &&
                                   _selectedVillage != null &&
                                   _selectedStreet != null
-                              ? Colors.blue[900]
-                              : Colors.blue[100],
+                              ? CustomColorTheme.primaryColor
+                              : const Color.fromRGBO(39, 82, 143, 0.5),
                         ),
-                        onPressed: _selectedPanchayat != null &&
-                                _selectedVillage != null &&
-                                _selectedStreet != null
-                            ? () {
-                                if (_formKey.currentState?.validate() ??
-                                    false) {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => AddHead(),
-                                    ),
-                                  );
-                                }
-                              }
-                            : null,
+                        onPressed: () {
+                          if (_selectedPanchayat != null &&
+                              _selectedVillage != null &&
+                              _selectedStreet != null) {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => AddHead(),
+                                ),
+                              );
+                            }
+                          }
+                        },
                         child: const Text('Next'),
-                      ),
+                      )
                     ],
                   ),
                 ],
@@ -537,7 +536,7 @@ class _MyFormState extends State<MyForm> {
 //                             borderSide: const BorderSide(),
 //                             borderRadius: BorderRadius.circular(10),
 //                           ),
-//                           focusedBorder: OutlineInputBorder(
+//                           focusedBorder: const OutlineInputBorder(
 //                             borderSide: BorderSide(color: Colors.black),
 //                           ),
 //                         ),
@@ -576,7 +575,7 @@ class _MyFormState extends State<MyForm> {
 //                             ),
 //                             borderRadius: BorderRadius.circular(10),
 //                           ),
-//                           focusedBorder: OutlineInputBorder(
+//                           focusedBorder: const OutlineInputBorder(
 //                             borderSide: BorderSide(
 //                                 color: Colors.black), // Change the color here
 //                           ),
@@ -617,7 +616,7 @@ class _MyFormState extends State<MyForm> {
 //                             ),
 //                             borderRadius: BorderRadius.circular(10),
 //                           ),
-//                           focusedBorder: OutlineInputBorder(
+//                           focusedBorder: const OutlineInputBorder(
 //                             borderSide: BorderSide(color: Colors.black),
 //                             // Change the color here
 //                           ),
@@ -652,7 +651,7 @@ class _MyFormState extends State<MyForm> {
 
 //                                   Navigator.of(context).push(
 //                                     MaterialPageRoute(
-//                                       builder: (context) => AddHead(),
+//                                       builder: (context) => const AddHead(),
 //                                     ),
 //                                   );
 //                                 }

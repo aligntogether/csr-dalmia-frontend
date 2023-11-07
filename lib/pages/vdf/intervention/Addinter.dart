@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:dalmia/pages/vdf/intervention/Details.dart';
+import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -63,7 +65,7 @@ class _AddinterState extends State<Addinter> {
           iconTheme: const IconThemeData(color: Colors.black),
           centerTitle: true,
           title: const Text(
-            'Add Intervention',
+            'Assign Intervention',
             style: TextStyle(color: Colors.black),
           ),
           backgroundColor: Colors.grey[50],
@@ -107,12 +109,12 @@ class _AddinterState extends State<Addinter> {
                         const SizedBox(height: 20),
                         TextField(
                           controller: interventionController,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                           ),
                           decoration: InputDecoration(
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                               labelText: 'Search Intervention name/ID',
                               suffixIcon: IconButton(
                                 onPressed: () {},
@@ -129,7 +131,7 @@ class _AddinterState extends State<Addinter> {
                         if (showListView)
                           Container(
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
+                              borderRadius: const BorderRadius.only(
                                 bottomLeft: Radius.circular(10),
                                 bottomRight: Radius.circular(10),
                               ),
@@ -158,6 +160,7 @@ class _AddinterState extends State<Addinter> {
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
+                            backgroundColor: CustomColorTheme.primaryColor,
                             minimumSize: const Size(350, 50),
                           ),
                           onPressed: () {
@@ -189,7 +192,7 @@ void _confirmitem(BuildContext context) {
       return FractionallySizedBox(
         heightFactor: 0.3,
         child: AlertDialog(
-          title: Column(
+          title: const Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text('What do you wish to do next?'),
@@ -200,10 +203,16 @@ void _confirmitem(BuildContext context) {
             children: [
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   backgroundColor: Colors.white,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const VdfHome(),
+                    ),
+                  );
+                },
                 child: Text(
                   'Save HH as draft and add intervention later ',
                   style: TextStyle(color: Colors.blue[900]),

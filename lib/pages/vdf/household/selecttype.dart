@@ -28,9 +28,10 @@ class _SelectTypeState extends State<SelectType> {
                 onTap: () {
                   Navigator.of(context).pop();
                 },
-                child: Icon(Icons.close),
+                child: const Icon(Icons.close),
               ),
-              Text('Would you like to enroll this household for intervention?'),
+              const Text(
+                  'Would you like to enroll this household for intervention?'),
             ],
           ),
           content: Row(
@@ -51,7 +52,7 @@ class _SelectTypeState extends State<SelectType> {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.white,
+                  backgroundColor: Colors.white,
                   side: const BorderSide(width: 1, color: Colors.blue),
                 ),
                 onPressed: () {
@@ -127,9 +128,9 @@ class _SelectTypeState extends State<SelectType> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Select House Type',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                   ),
@@ -156,7 +157,7 @@ class _SelectTypeState extends State<SelectType> {
                       .orange, // Define the active color for the radio button
                   selectedTileColor: Colors.orange,
                 ),
-                Divider(
+                const Divider(
                   color: Colors.grey, // Add your desired color for the line
                   thickness: 1, // Add the desired thickness for the line
                 ),
@@ -197,13 +198,13 @@ class _SelectTypeState extends State<SelectType> {
                       .iconColor, // Define the active color for the radio button
                   selectedTileColor: CustomColorTheme.iconColor,
                 ),
-                Divider(
+                const Divider(
                   color: Colors.grey, // Add your desired color for the line
                   thickness: 1, // Add the desired thickness for the line
                 ),
                 const SizedBox(height: 20),
-                TextField(
-                  decoration: const InputDecoration(
+                const TextField(
+                  decoration: InputDecoration(
                     labelText: 'Any remarks about this household?',
                     border: OutlineInputBorder(),
                   ),
@@ -229,14 +230,17 @@ class _SelectTypeState extends State<SelectType> {
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         backgroundColor: Colors.white,
-                        side: BorderSide(width: 1, color: Colors.blue),
+                        side: BorderSide(
+                            color: CustomColorTheme.primaryColor, width: 1),
                       ),
                       onPressed: () {
-                        // Perform actions when 'Save as Draft' is clicked
+                        // Perform actions with the field values
+
+                        // Save as draft
                       },
-                      child: const Text(
+                      child: Text(
                         'Save as Draft',
-                        style: TextStyle(color: Colors.blue),
+                        style: TextStyle(color: Colors.blue[900]),
                       ),
                     ),
                   ],
@@ -262,11 +266,11 @@ Widget Rowst(String text) {
           color: Colors.grey,
         ),
       ),
-      SizedBox(
+      const SizedBox(
         width: 45,
         height: 30,
         child: TextField(
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             border: OutlineInputBorder(
               borderSide: BorderSide(
                 width: 2,
