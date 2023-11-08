@@ -22,7 +22,7 @@ class _ApprovalState extends State<Approval> {
           centerTitle: true,
           title: const Text(
             'Add Household',
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Color(0xFF181818)),
           ),
           backgroundColor: Colors.grey[50],
           actions: <Widget>[
@@ -37,7 +37,7 @@ class _ApprovalState extends State<Approval> {
               },
               icon: const Icon(
                 Icons.close,
-                color: Colors.black,
+                color: Color(0xFF181818),
               ),
             ),
           ],
@@ -54,8 +54,8 @@ class _ApprovalState extends State<Approval> {
                 child: Text(
                   'Why do you want to drop this family from intervention?',
                   style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
+                    fontSize: CustomFontTheme.textSize,
+                    fontWeight: CustomFontTheme.headingwt,
                   ),
                 ),
               ),
@@ -64,85 +64,22 @@ class _ApprovalState extends State<Approval> {
               ),
               Column(
                 children: [
-                  RadioListTile<int>(
-                    title: Text(
-                      'Family is financially stable and has accepted to be dropped from DBF intervention.',
-                      style: TextStyle(
-                          color: selectedRadio == 1
-                              ? CustomColorTheme.iconColor
-                              : CustomColorTheme.textColor),
-                    ),
-                    value: 1,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                  ),
-                  RadioListTile<int>(
-                    title: Text(
-                      'Cultivable fields not used directly by owner who stays outstation.',
-                      style: TextStyle(
-                          color: selectedRadio == 2
-                              ? CustomColorTheme.iconColor
-                              : CustomColorTheme.textColor),
-                    ),
-                    value: 2,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                  ),
-                  RadioListTile<int>(
-                    title: Text(
-                      'Family not willing to participate in our intervention.',
-                      style: TextStyle(
-                          color: selectedRadio == 3
-                              ? CustomColorTheme.iconColor
-                              : CustomColorTheme.textColor),
-                    ),
-                    value: 3,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                  ),
-                  RadioListTile<int>(
-                    title: Text(
-                      'Other reason',
-                      style: TextStyle(
-                          color: selectedRadio == 4
-                              ? CustomColorTheme.iconColor
-                              : CustomColorTheme.textColor),
-                    ),
-                    value: 4,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                  ),
-                  const Padding(
+                  RadioElement(
+                      'HH financially stable and agreed to get dropped.', 1),
+                  RadioElement(
+                      'Refused to get enrolled, but financially not stable.',
+                      2),
+                  RadioElement('HH Visibly Rich.', 3),
+                  RadioElement('Works at Dalmia.', 4),
+                  RadioElement('Works in Organized Sector.', 5),
+                  RadioElement('No intervention possible.', 6),
+                  RadioElement('Other reason.', 7),
+                  Padding(
                     padding: EdgeInsets.only(left: 13, right: 13),
                     child: TextField(
-                      enabled: true,
+                      enabled: selectedRadio == 7 ? true : false,
                       decoration: InputDecoration(
                         labelText: 'Please specify the reason',
-                        border: OutlineInputBorder(),
                       ),
                       maxLines:
                           3, // Adjust the number of lines as per your requirement
@@ -156,7 +93,8 @@ class _ApprovalState extends State<Approval> {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue[900],
+                      minimumSize: const Size(350, 50),
+                      backgroundColor: CustomColorTheme.primaryColor,
                     ),
                     onPressed: () {},
                     child: const Text('submit for approval'),
@@ -167,6 +105,31 @@ class _ApprovalState extends State<Approval> {
           ),
         ),
       ),
+    );
+  }
+
+  RadioListTile<int> RadioElement(String title, int radio) {
+    return RadioListTile<int>(
+      title: Text(
+        title,
+        style: TextStyle(
+            color: selectedRadio == radio
+                ? CustomColorTheme.iconColor
+                : CustomColorTheme.textColor,
+            fontSize: CustomFontTheme.textSize,
+            fontWeight: selectedRadio == radio
+                ? CustomFontTheme.labelwt
+                : CustomFontTheme.textwt),
+      ),
+      value: radio,
+      groupValue: selectedRadio,
+      onChanged: (value) {
+        setState(() {
+          selectedRadio = value;
+        });
+      },
+      activeColor: CustomColorTheme.iconColor,
+      selectedTileColor: CustomColorTheme.iconColor,
     );
   }
 }

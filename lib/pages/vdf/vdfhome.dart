@@ -97,7 +97,11 @@ class _VdfHomeState extends State<VdfHome> {
           title: const Image(image: AssetImage('images/icon.jpg')),
           automaticallyImplyLeading: false,
           actions: <Widget>[
-            // Padding(padding: EdgeInsets.only(top: 15.0)),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: 12.0,
+              ),
+            ),
             CircleAvatar(
               backgroundColor: CustomColorTheme.primaryColor,
               child: IconButton(

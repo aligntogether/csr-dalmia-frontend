@@ -51,7 +51,7 @@ class CustomCard extends StatelessWidget {
                 child: Text(
                   subtitle,
                   style: TextStyle(
-                    fontSize: 14.0,
+                    fontSize: 14.5,
                     fontWeight: FontWeight.w500,
                     color: textcolor,
                   ),
@@ -63,7 +63,7 @@ class CustomCard extends StatelessWidget {
                   title,
                   style: TextStyle(
                     color: textcolor,
-                    fontSize: 20.0,
+                    fontSize: 24.0,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

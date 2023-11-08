@@ -233,7 +233,7 @@ class _MyFormState extends State<AddFamily> {
           centerTitle: true,
           title: const Text(
             'Add Household',
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Color(0xFF181818)),
           ),
           leading: GestureDetector(
             onTap: () {
@@ -243,11 +243,11 @@ class _MyFormState extends State<AddFamily> {
               children: [
                 Icon(
                   Icons.keyboard_arrow_left_outlined,
-                  color: Colors.black,
+                  color: Color(0xFF181818),
                 ),
                 Text(
                   'Back',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Color(0xFF181818)),
                 )
               ],
             ),
@@ -265,7 +265,7 @@ class _MyFormState extends State<AddFamily> {
               },
               icon: const Icon(
                 Icons.close,
-                color: Colors.black,
+                color: Color(0xFF181818),
               ),
             ),
           ],
@@ -297,7 +297,7 @@ class _MyFormState extends State<AddFamily> {
                         },
                         title: Text(
                           'Member ${i + 1}',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Color(0xFF181818)),
                         ),
                         children: [
                           Form(
@@ -308,12 +308,7 @@ class _MyFormState extends State<AddFamily> {
                                 TextFormField(
                                   controller: _nameControllers[i],
                                   decoration: const InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.black),
-                                    ),
                                     labelText: 'Member Name *',
-                                    border: OutlineInputBorder(),
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
@@ -334,12 +329,7 @@ class _MyFormState extends State<AddFamily> {
                                   ],
                                   controller: _mobileControllers[i],
                                   decoration: const InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.black),
-                                    ),
                                     labelText: 'Mobile Number *',
-                                    border: OutlineInputBorder(),
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
@@ -354,23 +344,16 @@ class _MyFormState extends State<AddFamily> {
                                 ),
                                 const SizedBox(height: 16),
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    SizedBox(
-                                        width: 240,
+                                    Expanded(
+                                      child: SizedBox(
+                                        width: double.infinity,
                                         child: TextFormField(
                                           controller: _dobControllers[i],
                                           readOnly:
                                               true, // Set the field to be read-only
                                           decoration: InputDecoration(
-                                            focusedBorder:
-                                                const OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.black),
-                                            ),
                                             labelText: 'Date of Birth *',
-                                            border: const OutlineInputBorder(),
                                             contentPadding:
                                                 const EdgeInsets.symmetric(
                                                     horizontal: 16,
@@ -392,7 +375,11 @@ class _MyFormState extends State<AddFamily> {
                                             }
                                             return null;
                                           },
-                                        )),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                        width: 10), // Adjust the width here
                                     Container(
                                       width: 100,
                                       decoration: BoxDecoration(
@@ -406,7 +393,6 @@ class _MyFormState extends State<AddFamily> {
                                           labelText: selectedDate != null
                                               ? '${calculateAge(selectedDate)} yrs'
                                               : 'Age(yrs)',
-                                          border: OutlineInputBorder(),
                                           contentPadding:
                                               const EdgeInsets.symmetric(
                                                   horizontal: 16,
@@ -434,12 +420,7 @@ class _MyFormState extends State<AddFamily> {
                                     });
                                   },
                                   decoration: const InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.black),
-                                    ),
                                     labelText: 'Gender *',
-                                    border: OutlineInputBorder(),
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
@@ -472,12 +453,7 @@ class _MyFormState extends State<AddFamily> {
                                     });
                                   },
                                   decoration: const InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.black),
-                                    ),
                                     labelText: 'Education *',
-                                    border: OutlineInputBorder(),
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
@@ -511,10 +487,10 @@ class _MyFormState extends State<AddFamily> {
                                 //   decoration: const InputDecoration(
                                 //     focusedBorder: OutlineInputBorder(
                                 //       borderSide:
-                                //           BorderSide(color: Colors.black),
+                                //           BorderSide(color: Color(0xFF181818)),
                                 //     ),
                                 //     labelText: 'Education *',
-                                //     border: OutlineInputBorder(),
+                                //
                                 //     contentPadding: EdgeInsets.symmetric(
                                 //         horizontal: 16, vertical: 20.0),
                                 //   ),
@@ -548,12 +524,7 @@ class _MyFormState extends State<AddFamily> {
                                     });
                                   },
                                   decoration: const InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.black),
-                                    ),
                                     labelText: 'Add Relationship',
-                                    border: OutlineInputBorder(),
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
@@ -586,12 +557,7 @@ class _MyFormState extends State<AddFamily> {
                                     color: CustomColorTheme.iconColor,
                                   ),
                                   decoration: const InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.black),
-                                    ),
                                     labelText: 'Primary Employment *',
-                                    border: OutlineInputBorder(),
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
@@ -627,12 +593,7 @@ class _MyFormState extends State<AddFamily> {
                                     color: CustomColorTheme.iconColor,
                                   ),
                                   decoration: const InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.black),
-                                    ),
                                     labelText: 'Secondary Employment',
-                                    border: OutlineInputBorder(),
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
@@ -642,8 +603,8 @@ class _MyFormState extends State<AddFamily> {
                             ),
                           ),
                           Divider(
-                            color: Colors
-                                .grey, // Add your desired color for the line
+                            color: Color(0xFF181818).withOpacity(
+                                0.5), // Add your desired color for the line
                             thickness:
                                 1, // Add the desired thickness for the line
                           ),
@@ -657,7 +618,7 @@ class _MyFormState extends State<AddFamily> {
                     IconButton(
                       icon: const Icon(Icons.add),
                       onPressed: () {
-                        if (_formKey.currentState?.validate() ?? false) {
+                        {
                           addMemberData();
                           setState(() {
                             formCount++;
@@ -684,7 +645,8 @@ class _MyFormState extends State<AddFamily> {
                   children: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue[900],
+                        elevation: 0,
+                        backgroundColor: CustomColorTheme.primaryColor,
                       ),
                       onPressed: () {
                         addMemberData();
@@ -695,10 +657,14 @@ class _MyFormState extends State<AddFamily> {
                           ),
                         );
                       },
-                      child: const Text('Next'),
+                      child: const Text(
+                        'Next',
+                        style: TextStyle(fontSize: CustomFontTheme.textSize),
+                      ),
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
+                          elevation: 0,
                           backgroundColor: Colors.white,
                           side: BorderSide(
                               color: CustomColorTheme.primaryColor, width: 1)),
@@ -716,7 +682,9 @@ class _MyFormState extends State<AddFamily> {
                       },
                       child: Text(
                         'Save as Draft',
-                        style: TextStyle(color: Colors.blue[900]),
+                        style: TextStyle(
+                            color: Colors.blue[900],
+                            fontSize: CustomFontTheme.textSize),
                       ),
                     ),
                   ],

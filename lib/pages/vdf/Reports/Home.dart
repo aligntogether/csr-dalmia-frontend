@@ -92,7 +92,7 @@ class _HomeReportState extends State<HomeReport> {
                         label: const Text(
                           'View other Reports',
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
                         )),

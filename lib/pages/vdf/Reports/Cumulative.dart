@@ -96,26 +96,29 @@ class _CumulativeState extends State<Cumulative> {
                       ],
                     ),
                   ),
-                  TextButton.icon(
-                      style: TextButton.styleFrom(
-                          backgroundColor: const Color(0xFF008CD3),
-                          foregroundColor: Colors.white),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return ReportPopupWidget(context);
-                          },
-                        );
-                      },
-                      icon: const Icon(Icons.folder_outlined),
-                      label: const Text(
-                        'View other Reports',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      )),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: TextButton.icon(
+                        style: TextButton.styleFrom(
+                            backgroundColor: const Color(0xFF008CD3),
+                            foregroundColor: Colors.white),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return ReportPopupWidget(context);
+                            },
+                          );
+                        },
+                        icon: const Icon(Icons.folder_outlined),
+                        label: const Text(
+                          'View other Reports',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        )),
+                  ),
                 ],
               ),
               const SizedBox(height: 20),
@@ -123,9 +126,12 @@ class _CumulativeState extends State<Cumulative> {
                 children: [
                   const Text(
                     'Cumulative Household Details',
+                    style: TextStyle(
+                        fontSize: CustomFontTheme.headingSize,
+                        fontWeight: CustomFontTheme.labelwt),
                   ),
                   const SizedBox(
-                    height: 40,
+                    height: 20,
                   ),
                   Container(
                     child: () {
@@ -191,11 +197,19 @@ class _CumulativeState extends State<Cumulative> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text('<Location name>'),
+          const Text(
+            '<Location name>',
+            style: TextStyle(
+                fontSize: CustomFontTheme.textSize,
+                fontWeight: CustomFontTheme.labelwt),
+          ),
           const SizedBox(
             height: 10,
           ),
-          const Text('Panchayats wise report'),
+          const Text('Panchayats wise report',
+              style: TextStyle(
+                  fontSize: CustomFontTheme.textSize,
+                  fontWeight: CustomFontTheme.labelwt)),
           const SizedBox(
             height: 10,
           ),
@@ -283,8 +297,17 @@ class _CumulativeState extends State<Cumulative> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(selectedPanchayat!),
-          const Text('Village wise report'),
+          Text(selectedPanchayat!,
+              style: TextStyle(
+                  fontSize: CustomFontTheme.textSize,
+                  fontWeight: CustomFontTheme.labelwt)),
+          const Text('Village wise report',
+              style: TextStyle(
+                  fontSize: CustomFontTheme.textSize,
+                  fontWeight: CustomFontTheme.labelwt)),
+          SizedBox(
+            height: 20,
+          ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
@@ -371,8 +394,17 @@ class _CumulativeState extends State<Cumulative> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(selectedVillage!),
-          const Text('Street wise report'),
+          Text(selectedVillage!,
+              style: TextStyle(
+                  fontSize: CustomFontTheme.textSize,
+                  fontWeight: CustomFontTheme.labelwt)),
+          const Text('Street wise report',
+              style: TextStyle(
+                  fontSize: CustomFontTheme.textSize,
+                  fontWeight: CustomFontTheme.labelwt)),
+          SizedBox(
+            height: 20,
+          ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(

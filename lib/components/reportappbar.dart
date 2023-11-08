@@ -61,7 +61,7 @@ class _ReportAppBarState extends State<ReportAppBar> {
           child: Text(
             widget.heading,
             style: TextStyle(
-              fontSize: CustomFontTheme.textSize,
+              fontSize: CustomFontTheme.headingSize,
               fontWeight: CustomFontTheme.headingwt,
             ),
           ),

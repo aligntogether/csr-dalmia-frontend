@@ -52,11 +52,14 @@ class _MyFormState extends State<AddLand> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           elevation: 0,
-          iconTheme: const IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Color(0xFF181818)),
           centerTitle: true,
           title: const Text(
             'Add Household',
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(
+                color: Color(0xFF181818),
+                fontSize: CustomFontTheme.headingSize,
+                fontWeight: CustomFontTheme.headingwt),
           ),
           leading: GestureDetector(
             onTap: () {
@@ -66,11 +69,11 @@ class _MyFormState extends State<AddLand> {
               children: [
                 Icon(
                   Icons.keyboard_arrow_left_outlined,
-                  color: Colors.black,
+                  color: Color(0xFF181818),
                 ),
                 Text(
                   'Back',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Color(0xFF181818)),
                 )
               ],
             ),
@@ -88,7 +91,7 @@ class _MyFormState extends State<AddLand> {
               },
               icon: const Icon(
                 Icons.close,
-                color: Colors.black,
+                color: Color(0xFF181818),
               ),
             ),
           ],
@@ -102,8 +105,8 @@ class _MyFormState extends State<AddLand> {
                 const Text(
                   'Add Land Ownership Details',
                   style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
+                    fontSize: CustomFontTheme.textSize,
+                    fontWeight: CustomFontTheme.headingwt,
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -113,7 +116,9 @@ class _MyFormState extends State<AddLand> {
                   children: [
                     Text(
                       'Rainfed',
-                      style: TextStyle(color: Colors.grey[500], fontSize: 15),
+                      style: TextStyle(
+                          color: Color(0xFF181818).withOpacity(0.80),
+                          fontSize: CustomFontTheme.textSize),
                     ),
                     const SizedBox(height: 16),
                     FractionallySizedBox(
@@ -146,7 +151,9 @@ class _MyFormState extends State<AddLand> {
                   children: [
                     Text(
                       'Irrigated',
-                      style: TextStyle(color: Colors.grey[500], fontSize: 15),
+                      style: TextStyle(
+                          color: Color(0xFF181818).withOpacity(0.80),
+                          fontSize: CustomFontTheme.textSize),
                     ),
                     const SizedBox(height: 16),
                     FractionallySizedBox(
@@ -179,7 +186,7 @@ class _MyFormState extends State<AddLand> {
                   children: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.blue[900],
+                        backgroundColor: CustomColorTheme.primaryColor,
                       ),
                       onPressed: () {
                         Navigator.of(context).push(
@@ -234,6 +241,10 @@ class InputDetail extends StatelessWidget {
         updateSelection(acre);
       },
       style: ElevatedButton.styleFrom(
+        side: isSelectedMap[acre]!
+            ? BorderSide(width: 1, color: CustomColorTheme.iconColor)
+            : BorderSide(width: 1, color: Color(0x99181818)),
+        elevation: 0,
         minimumSize: const Size(85, 38),
         backgroundColor:
             isSelectedMap[acre]! ? const Color(0xFFF15A22) : Colors.white,
@@ -241,7 +252,7 @@ class InputDetail extends StatelessWidget {
       child: Text(
         acre,
         style: TextStyle(
-            color: isSelectedMap[acre]! ? Colors.white : Colors.black),
+            color: isSelectedMap[acre]! ? Colors.white : Color(0xFF181818)),
       ),
     );
   }

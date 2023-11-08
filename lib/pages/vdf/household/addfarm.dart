@@ -23,7 +23,7 @@ class _AddFarmState extends State<AddFarm> {
           centerTitle: true,
           title: const Text(
             'Add Household',
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Color(0xFF181818)),
           ),
           leading: GestureDetector(
             onTap: () {
@@ -38,11 +38,11 @@ class _AddFarmState extends State<AddFarm> {
               children: [
                 Icon(
                   Icons.keyboard_arrow_left_outlined,
-                  color: Colors.black,
+                  color: Color(0xFF181818),
                 ),
                 Text(
                   'Back',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Color(0xFF181818)),
                 )
               ],
             ),
@@ -60,7 +60,7 @@ class _AddFarmState extends State<AddFarm> {
               },
               icon: const Icon(
                 Icons.close,
-                color: Colors.black,
+                color: Color(0xFF181818),
               ),
             ),
           ],
@@ -77,8 +77,8 @@ class _AddFarmState extends State<AddFarm> {
                 child: Text(
                   'Add Farm Equipment Details',
                   style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
+                    fontSize: CustomFontTheme.textSize,
+                    fontWeight: CustomFontTheme.headingwt,
                   ),
                 ),
               ),
@@ -99,7 +99,7 @@ class _AddFarmState extends State<AddFarm> {
                   const SizedBox(height: 20),
                   Rowstock('Harvestor'),
                   const SizedBox(height: 20),
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -111,7 +111,7 @@ class _AddFarmState extends State<AddFarm> {
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.grey),
+                                color: Color(0xFF181818).withOpacity(0.80)),
                           ),
                         ),
                         SizedBox(
@@ -149,7 +149,7 @@ class _AddFarmState extends State<AddFarm> {
                       ],
                     ),
                   ),
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -161,7 +161,7 @@ class _AddFarmState extends State<AddFarm> {
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.grey),
+                                color: Color(0xFF181818).withOpacity(0.80)),
                           ),
                         ),
                         SizedBox(

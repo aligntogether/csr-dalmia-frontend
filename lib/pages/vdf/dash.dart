@@ -57,7 +57,7 @@ class DashTab extends StatelessWidget {
               ],
             ),
             const SizedBox(
-              height: 20,
+              height: 40,
             ),
             Column(
               children: [
@@ -81,20 +81,20 @@ class DashTab extends StatelessWidget {
                           imageUrl: 'images/i_house.png',
                           subtitle: 'Household covered',
                           title: '30',
-                          bg: const Color.fromARGB(144, 161, 255, 211),
+                          bg: Color.fromARGB(204, 185, 255, 223),
                           textcolor: const Color(0xFF0C7243),
                         ),
                         CustomCard(
                           imageUrl: 'images/i_planned.png',
                           title: '100',
                           subtitle: 'Intervention planned',
-                          bg: const Color.fromARGB(144, 161, 255, 211),
+                          bg: const Color.fromARGB(204, 185, 255, 223),
                           textcolor: const Color(0xFF0C7243),
                         ),
                         CustomCard(
                           imageUrl: 'images/icompleted.png',
                           title: '25',
-                          bg: const Color.fromARGB(144, 161, 255, 211),
+                          bg: const Color.fromARGB(204, 185, 255, 223),
                           subtitle: 'Interventions completed',
                           textcolor: const Color(0xFF0C7243),
                         ),
@@ -103,7 +103,7 @@ class DashTab extends StatelessWidget {
               ],
             ),
             const SizedBox(
-              height: 20,
+              height: 40,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,7 +129,7 @@ class DashTab extends StatelessWidget {
                           imageUrl: 'images/overdue.png',
                           subtitle: 'Overdue',
                           title: '1',
-                          bg: const Color.fromARGB(223, 142, 188, 245),
+                          bg: Color.fromARGB(223, 169, 221, 249),
                           textcolor: const Color(0xFF064F96),
                         ),
                       ),
@@ -144,11 +144,14 @@ class DashTab extends StatelessWidget {
                 )
               ],
             ),
+            const SizedBox(
+              height: 40,
+            ),
             Column(
               children: [
                 Container(
                   alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.only(left: 20, bottom: 10, top: 20),
+                  padding: const EdgeInsets.only(left: 20, bottom: 0, top: 0),
                   child: RichText(
                     text: const TextSpan(
                       style: TextStyle(fontSize: 16, color: Colors.black),

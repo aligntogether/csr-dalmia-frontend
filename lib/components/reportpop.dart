@@ -23,15 +23,18 @@ class _ReportPopupWidgetState extends State<ReportPopupWidget> {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       title: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // SizedBox(
-              //   width: 2,
-              // ),
-              const Text('View other Reports'),
+              Padding(
+                padding: const EdgeInsets.only(left: 18),
+                child: Text(
+                  'View other Reports',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).pop();

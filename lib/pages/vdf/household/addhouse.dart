@@ -2,6 +2,7 @@ import 'package:dalmia/apis/commonobject.dart';
 import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -21,21 +22,7 @@ class Panchayat {
   }
 }
 
-// class CommonObject {
-//   final String respCode;
-//   final String respMsg;
-//   final dynamic respBody;
-
-//   CommonObject(this.respCode, this.respMsg, this.respBody);
-
-//   factory CommonObject.fromJson(Map<String, dynamic> json) {
-//     return CommonObject(
-//       json['resp_code'].toString(),
-//       json['resp_msg'].toString(),
-//       json['resp_body'],
-//     );
-//   }
-// }
+final baseUrl = dotenv.env['BASE_URL'];
 
 class Village {
   final String villageid;
@@ -84,7 +71,7 @@ class _MyFormState extends State<MyForm> {
   List<Village> villages = [];
   List<Street> streets = [];
 
-  final String panchayatUrl = 'http://192.168.1.71:8080/list-Panchayat';
+  final String panchayatUrl = 'http://192.168.1.37:8080/list-Panchayat';
 
   Future<List<Panchayat>> fetchPanchayats() async {
     try {
@@ -120,7 +107,7 @@ class _MyFormState extends State<MyForm> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.1.71:8080/list-Village?panchayatId=$panchayatId'),
+            'http://192.168.1.37:8080/list-Village?panchayatId=$panchayatId'),
       );
       if (response.statusCode == 200) {
         CommonObject commonObject =
@@ -141,7 +128,7 @@ class _MyFormState extends State<MyForm> {
   Future<List<Street>> fetchStreets(String villageId) async {
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.1.71:8080/list-Street?villageId=$villageId'),
+        Uri.parse('http://192.168.1.37:8080/list-Street?villageId=$villageId'),
       );
       if (response.statusCode == 200) {
         CommonObject commonObject =
@@ -176,11 +163,14 @@ class _MyFormState extends State<MyForm> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           elevation: 0,
-          iconTheme: const IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Color(0xFF181818)),
           centerTitle: true,
           title: const Text(
             'Add Household',
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(
+                color: Color(0xFF181818),
+                fontSize: CustomFontTheme.headingSize,
+                fontWeight: CustomFontTheme.headingwt),
           ),
           backgroundColor: Colors.grey[50],
           actions: <Widget>[
@@ -191,7 +181,7 @@ class _MyFormState extends State<MyForm> {
               },
               icon: const Icon(
                 Icons.close,
-                color: Colors.black,
+                color: Color(0xFF181818),
               ),
             ),
           ],
@@ -214,9 +204,8 @@ class _MyFormState extends State<MyForm> {
                           'Select Panchayat, Village & Street',
                           textAlign: TextAlign.start,
                           style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                          ),
+                              fontSize: CustomFontTheme.textSize,
+                              fontWeight: FontWeight.w700),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -225,7 +214,12 @@ class _MyFormState extends State<MyForm> {
                         items: panchayats.map((Panchayat panchayat) {
                           return DropdownMenuItem<String>(
                             value: panchayat.panchayatId,
-                            child: Text(panchayat.panchayatName),
+                            child: Text(
+                              panchayat.panchayatName,
+                              style: TextStyle(
+                                fontWeight: CustomFontTheme.textwt,
+                              ),
+                            ),
                           );
                         }).toList(),
                         onChanged: (String? newValue) async {
@@ -248,13 +242,8 @@ class _MyFormState extends State<MyForm> {
                         ),
                         decoration: InputDecoration(
                           labelText: 'Select a Panchayat',
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
+                          labelStyle:
+                              TextStyle(color: CustomColorTheme.labelColor),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -272,7 +261,11 @@ class _MyFormState extends State<MyForm> {
                             .map((Village village) {
                           return DropdownMenuItem<String>(
                             value: village.villageid,
-                            child: Text(village.village),
+                            child: Text(village.village,
+                                style: TextStyle(
+                                  fontWeight: CustomFontTheme.textwt,
+                                  color: Color(0xFF181818),
+                                )),
                           );
                         }).toList(),
                         onChanged: (String? newValue) async {
@@ -294,15 +287,8 @@ class _MyFormState extends State<MyForm> {
                         ),
                         decoration: InputDecoration(
                           labelText: 'Select a Village',
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.grey,
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
+                          labelStyle:
+                              TextStyle(color: CustomColorTheme.labelColor),
                         ),
                         validator: (value) {
                           if (_selectedPanchayat == null ||
@@ -322,7 +308,10 @@ class _MyFormState extends State<MyForm> {
                             .map((Street street) {
                           return DropdownMenuItem<String>(
                             value: street.streetid,
-                            child: Text(street.street),
+                            child: Text(street.street,
+                                style: TextStyle(
+                                    fontWeight: CustomFontTheme.textwt,
+                                    fontSize: CustomFontTheme.textSize)),
                           );
                         }).toList(),
                         onChanged: (String? newValue) {
@@ -336,15 +325,8 @@ class _MyFormState extends State<MyForm> {
                         ),
                         decoration: InputDecoration(
                           labelText: 'Select a Street',
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.grey,
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
+                          labelStyle:
+                              TextStyle(color: CustomColorTheme.labelColor),
                         ),
                         validator: (value) {
                           if (_selectedVillage == null ||
@@ -471,11 +453,11 @@ class _MyFormState extends State<MyForm> {
 //         appBar: AppBar(
 //           automaticallyImplyLeading: false,
 //           elevation: 0,
-//           iconTheme: const IconThemeData(color: Colors.black),
+//           iconTheme: const IconThemeData(color: Color(0xFF181818)),
 //           centerTitle: true,
 //           title: const Text(
 //             'Add Household',
-//             style: TextStyle(color: Colors.black),
+//             style: TextStyle(color: Color(0xFF181818)),
 //           ),
 //           backgroundColor: Colors.grey[50],
 //           actions: <Widget>[
@@ -486,7 +468,7 @@ class _MyFormState extends State<MyForm> {
 //               },
 //               icon: const Icon(
 //                 Icons.close,
-//                 color: Colors.black,
+//                 color: Color(0xFF181818),
 //               ),
 //             ),
 //           ],
@@ -537,7 +519,7 @@ class _MyFormState extends State<MyForm> {
 //                             borderRadius: BorderRadius.circular(10),
 //                           ),
 //                           focusedBorder: const OutlineInputBorder(
-//                             borderSide: BorderSide(color: Colors.black),
+//                             borderSide: BorderSide(color: Color(0xFF181818)),
 //                           ),
 //                         ),
 //                         validator: (value) {
@@ -577,7 +559,8 @@ class _MyFormState extends State<MyForm> {
 //                           ),
 //                           focusedBorder: const OutlineInputBorder(
 //                             borderSide: BorderSide(
-//                                 color: Colors.black), // Change the color here
+//                                 color:
+//                                     Color(0xFF181818)), // Change the color here
 //                           ),
 //                         ),
 //                         validator: (value) {
@@ -617,7 +600,7 @@ class _MyFormState extends State<MyForm> {
 //                             borderRadius: BorderRadius.circular(10),
 //                           ),
 //                           focusedBorder: const OutlineInputBorder(
-//                             borderSide: BorderSide(color: Colors.black),
+//                             borderSide: BorderSide(color: Color(0xFF181818)),
 //                             // Change the color here
 //                           ),
 //                         ),

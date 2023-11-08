@@ -38,8 +38,9 @@ class _SelectTypeState extends State<SelectType> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton(
-                style:
-                    ElevatedButton.styleFrom(backgroundColor: Colors.blue[900]),
+                style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: CustomColorTheme.primaryColor),
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -52,8 +53,10 @@ class _SelectTypeState extends State<SelectType> {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
+                  elevation: 0,
                   backgroundColor: Colors.white,
-                  side: const BorderSide(width: 1, color: Colors.blue),
+                  side: const BorderSide(
+                      width: 1, color: CustomColorTheme.primaryColor),
                 ),
                 onPressed: () {
                   Navigator.of(context).push(
@@ -65,7 +68,7 @@ class _SelectTypeState extends State<SelectType> {
                 },
                 child: const Text(
                   'No',
-                  style: TextStyle(color: Colors.blue),
+                  style: TextStyle(color: CustomColorTheme.primaryColor),
                 ),
               ),
             ],
@@ -84,7 +87,7 @@ class _SelectTypeState extends State<SelectType> {
           centerTitle: true,
           title: const Text(
             'Add Household',
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Color(0xFF181818)),
           ),
           leading: GestureDetector(
             onTap: () {
@@ -94,11 +97,11 @@ class _SelectTypeState extends State<SelectType> {
               children: [
                 Icon(
                   Icons.keyboard_arrow_left_outlined,
-                  color: Colors.black,
+                  color: Color(0xFF181818),
                 ),
                 Text(
                   'Back',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Color(0xFF181818)),
                 ),
               ],
             ),
@@ -116,7 +119,7 @@ class _SelectTypeState extends State<SelectType> {
               },
               icon: const Icon(
                 Icons.close,
-                color: Colors.black,
+                color: Color(0xFF181818),
               ),
             ),
           ],
@@ -131,9 +134,8 @@ class _SelectTypeState extends State<SelectType> {
                 const Text(
                   'Select House Type',
                   style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  ),
+                      fontSize: CustomFontTheme.textSize,
+                      fontWeight: CustomFontTheme.headingwt),
                 ),
                 const SizedBox(height: 20),
                 RadioListTile(
@@ -163,7 +165,13 @@ class _SelectTypeState extends State<SelectType> {
                 ),
                 if (ownChecked) ...[
                   const SizedBox(height: 20),
-                  const Text('Fill at least one choice'),
+                  Text(
+                    'Fill at least one choice',
+                    style: TextStyle(
+                        color: Color(0xFF181818).withOpacity(0.80),
+                        fontSize: 14,
+                        fontWeight: CustomFontTheme.labelwt),
+                  ),
                   const SizedBox(height: 20),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -230,7 +238,7 @@ class _SelectTypeState extends State<SelectType> {
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         backgroundColor: Colors.white,
-                        side: BorderSide(
+                        side: const BorderSide(
                             color: CustomColorTheme.primaryColor, width: 1),
                       ),
                       onPressed: () {
@@ -260,10 +268,10 @@ Widget Rowst(String text) {
     children: [
       Text(
         text,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w600,
-          color: Colors.grey,
+          color: Color(0xFF181818).withOpacity(0.80),
         ),
       ),
       const SizedBox(

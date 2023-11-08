@@ -23,7 +23,7 @@ class _AddCropState extends State<AddCrop> {
           centerTitle: true,
           title: const Text(
             'Add Household',
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Color(0xFF181818)),
           ),
           leading: GestureDetector(
             onTap: () {
@@ -33,11 +33,11 @@ class _AddCropState extends State<AddCrop> {
               children: [
                 Icon(
                   Icons.keyboard_arrow_left_outlined,
-                  color: Colors.black,
+                  color: Color(0xFF181818),
                 ),
                 Text(
                   'Back',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Color(0xFF181818)),
                 )
               ],
             ),
@@ -55,7 +55,7 @@ class _AddCropState extends State<AddCrop> {
               },
               icon: const Icon(
                 Icons.close,
-                color: Colors.black,
+                color: Color(0xFF181818),
               ),
             ),
           ],
@@ -72,8 +72,8 @@ class _AddCropState extends State<AddCrop> {
                 child: Text(
                   'Add Crops Details',
                   style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
+                    fontSize: CustomFontTheme.textSize,
+                    fontWeight: CustomFontTheme.headingwt,
                   ),
                 ),
               ),
@@ -84,7 +84,9 @@ class _AddCropState extends State<AddCrop> {
                 padding: EdgeInsets.only(left: 20, bottom: 20),
                 child: Text(
                   'What are the crops you have cultivated in the past three years? ',
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(
+                      fontSize: CustomFontTheme.textSize,
+                      color: Color(0xFF181818)),
                 ),
               ),
               Row(
@@ -184,7 +186,7 @@ class _AddCropState extends State<AddCrop> {
                     },
                     child: Text(
                       'Save as Draft',
-                      style: TextStyle(color: Colors.blue[900]),
+                      style: TextStyle(color: CustomColorTheme.primaryColor),
                     ),
                   ),
                 ],

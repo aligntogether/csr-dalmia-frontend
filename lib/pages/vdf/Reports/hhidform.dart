@@ -113,26 +113,29 @@ class _HhidFormState extends State<HhidForm> {
                         ],
                       ),
                     ),
-                    TextButton.icon(
-                        style: TextButton.styleFrom(
-                            backgroundColor: const Color(0xFF008CD3),
-                            foregroundColor: Colors.white),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return ReportPopupWidget(context);
-                            },
-                          );
-                        },
-                        icon: const Icon(Icons.folder_outlined),
-                        label: const Text(
-                          'View other Reports',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        )),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: TextButton.icon(
+                          style: TextButton.styleFrom(
+                              backgroundColor: const Color(0xFF008CD3),
+                              foregroundColor: Colors.white),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return ReportPopupWidget(context);
+                              },
+                            );
+                          },
+                          icon: const Icon(Icons.folder_outlined),
+                          label: const Text(
+                            'View other Reports',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          )),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -306,10 +309,11 @@ class _HhidFormState extends State<HhidForm> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              CustomColorTheme.backgroundColor),
-                        ),
+                        style: ElevatedButton.styleFrom(
+                            side: BorderSide(
+                                width: 1, color: CustomColorTheme.primaryColor),
+                            minimumSize: const Size(200, 50),
+                            backgroundColor: CustomColorTheme.backgroundColor),
                         onPressed: () {},
                         child: Row(
                           children: [
@@ -322,10 +326,11 @@ class _HhidFormState extends State<HhidForm> {
                           ],
                         )),
                     ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              CustomColorTheme.backgroundColor),
-                        ),
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(200, 50),
+                            side: BorderSide(
+                                width: 1, color: CustomColorTheme.primaryColor),
+                            backgroundColor: CustomColorTheme.backgroundColor),
                         onPressed: () {},
                         child: Row(
                           children: [

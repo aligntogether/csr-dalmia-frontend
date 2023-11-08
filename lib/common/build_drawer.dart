@@ -1,6 +1,7 @@
 import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/pages/login.dart';
 import 'package:dalmia/pages/vdf/Reports/Home.dart';
+import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -50,7 +51,11 @@ class DrawerWidgetState extends State<DrawerWidget> {
                       onTap: () {
                         _closeDrawer();
                         // Navigator.of(context).pop();
-
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const VdfHome(),
+                          ),
+                        );
                         // Handle item 1 click
                         // Close the drawer
                       },

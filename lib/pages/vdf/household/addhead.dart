@@ -53,7 +53,7 @@ class _MyFormState extends State<AddHead> {
   Future<void> fetchGenderOptions() async {
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.1.71:8080/dropdown?titleId=101'),
+        Uri.parse('http://192.168.1.37:8080/dropdown?titleId=101'),
       );
       if (response.statusCode == 200) {
         CommonObject commonObject =
@@ -73,7 +73,7 @@ class _MyFormState extends State<AddHead> {
   }
 
   Future<void> fetchCasteOptions() async {
-    const String url = 'http://192.168.1.71:8080/dropdown?titleId=105';
+    const String url = 'http://192.168.1.37:8080/dropdown?titleId=105';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -92,7 +92,7 @@ class _MyFormState extends State<AddHead> {
   }
 
   Future<void> fetchEducationOptions() async {
-    const String url = 'http://192.168.1.71:8080/dropdown?titleId=102';
+    const String url = 'http://192.168.1.37:8080/dropdown?titleId=102';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -111,7 +111,7 @@ class _MyFormState extends State<AddHead> {
   }
 
   Future<void> fetchPrimaryOptions() async {
-    const String url = 'http://192.168.1.71:8080/dropdown?titleId=103';
+    const String url = 'http://192.168.1.37:8080/dropdown?titleId=103';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -130,7 +130,7 @@ class _MyFormState extends State<AddHead> {
   }
 
   Future<void> fetchSecondaryOptions() async {
-    const String url = 'http://192.168.1.71:8080/dropdown?titleId=104';
+    const String url = 'http://192.168.1.37:8080/dropdown?titleId=104';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -230,7 +230,10 @@ class _MyFormState extends State<AddHead> {
           centerTitle: true,
           title: const Text(
             'Add Household',
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(
+                color: Color(0xFF181818),
+                fontSize: CustomFontTheme.headingSize,
+                fontWeight: CustomFontTheme.headingwt),
           ),
           leading: GestureDetector(
             onTap: () {
@@ -240,11 +243,12 @@ class _MyFormState extends State<AddHead> {
               children: [
                 Icon(
                   Icons.keyboard_arrow_left_outlined,
-                  color: Colors.black,
+                  color: Color(0xFF181818),
                 ),
                 Text(
                   'Back',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(
+                      color: Color(0xFF181818), fontWeight: FontWeight.w500),
                 )
               ],
             ),
@@ -262,7 +266,7 @@ class _MyFormState extends State<AddHead> {
               },
               icon: const Icon(
                 Icons.close,
-                color: Colors.black,
+                color: Color(0xFF181818),
               ),
             ),
           ],
@@ -288,11 +292,7 @@ class _MyFormState extends State<AddHead> {
                   TextFormField(
                     controller: _nameController,
                     decoration: const InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
                       labelText: 'Head Name *',
-                      border: OutlineInputBorder(),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
@@ -312,11 +312,7 @@ class _MyFormState extends State<AddHead> {
                     ],
                     controller: _mobileController,
                     decoration: const InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
                       labelText: 'Mobile Number *',
-                      border: OutlineInputBorder(),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
@@ -331,19 +327,15 @@ class _MyFormState extends State<AddHead> {
                   ),
                   const SizedBox(height: 16),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                          width: 240,
+                      Expanded(
+                        child: SizedBox(
+                          width: double.infinity,
                           child: TextFormField(
                             controller: _dobController,
                             readOnly: true, // Set the field to be read-only
                             decoration: InputDecoration(
-                              focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                              ),
                               labelText: 'Date of Birth *',
-                              border: const OutlineInputBorder(),
                               contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 20.0),
                               suffixIcon: IconButton(
@@ -362,7 +354,10 @@ class _MyFormState extends State<AddHead> {
                               }
                               return null;
                             },
-                          )),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10), // Adjust the width here
                       Container(
                         width: 100,
                         decoration: BoxDecoration(
@@ -375,7 +370,6 @@ class _MyFormState extends State<AddHead> {
                             labelText: selectedDate != null
                                 ? '${calculateAge(selectedDate)} yrs'
                                 : 'Age(yrs)',
-                            border: const OutlineInputBorder(),
                             contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 20.0),
                           ),
@@ -399,11 +393,7 @@ class _MyFormState extends State<AddHead> {
                       });
                     },
                     decoration: const InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
                       labelText: 'Gender *',
-                      border: OutlineInputBorder(),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
@@ -438,11 +428,7 @@ class _MyFormState extends State<AddHead> {
                       color: CustomColorTheme.iconColor,
                     ),
                     decoration: const InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
                       labelText: 'Caste *',
-                      border: OutlineInputBorder(),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
@@ -475,11 +461,7 @@ class _MyFormState extends State<AddHead> {
                       color: CustomColorTheme.iconColor,
                     ),
                     decoration: const InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
                       labelText: 'Education *',
-                      border: OutlineInputBorder(),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
@@ -511,11 +493,7 @@ class _MyFormState extends State<AddHead> {
                       color: CustomColorTheme.iconColor,
                     ),
                     decoration: const InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
                       labelText: 'Primary Employment *',
-                      border: OutlineInputBorder(),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
@@ -548,11 +526,7 @@ class _MyFormState extends State<AddHead> {
                       color: CustomColorTheme.iconColor,
                     ),
                     decoration: const InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
                       labelText: 'Secondary Employment *',
-                      border: OutlineInputBorder(),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
@@ -578,6 +552,7 @@ class _MyFormState extends State<AddHead> {
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                          elevation: 0,
                           backgroundColor: CustomColorTheme.primaryColor,
                         ),
                         onPressed: () {
@@ -601,10 +576,14 @@ class _MyFormState extends State<AddHead> {
                             saveFormDataToJson();
                           }
                         },
-                        child: const Text('Next'),
+                        child: const Text(
+                          'Next',
+                          style: TextStyle(fontSize: CustomFontTheme.textSize),
+                        ),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                          elevation: 0,
                           side: BorderSide(
                               color: CustomColorTheme.primaryColor, width: 1),
                           backgroundColor: Colors.white,
@@ -623,8 +602,9 @@ class _MyFormState extends State<AddHead> {
                         },
                         child: Text(
                           'Save as Draft',
-                          style:
-                              TextStyle(color: CustomColorTheme.primaryColor),
+                          style: TextStyle(
+                              color: CustomColorTheme.primaryColor,
+                              fontSize: CustomFontTheme.textSize),
                         ),
                       ),
                     ],

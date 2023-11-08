@@ -72,8 +72,8 @@ class _AddStockState extends State<AddStock> {
                 child: Text(
                   'Add Livestock Numbers',
                   style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
+                    fontSize: CustomFontTheme.textSize,
+                    fontWeight: CustomFontTheme.headingwt,
                   ),
                 ),
               ),
@@ -92,7 +92,7 @@ class _AddStockState extends State<AddStock> {
                   const SizedBox(height: 20),
                   Rowstock('Ducks'),
                   const SizedBox(height: 20),
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -104,7 +104,7 @@ class _AddStockState extends State<AddStock> {
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.grey),
+                                color: Color(0xFF181818).withOpacity(0.80)),
                           ),
                         ),
                         SizedBox(
@@ -142,7 +142,7 @@ class _AddStockState extends State<AddStock> {
                       ],
                     ),
                   ),
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -154,7 +154,7 @@ class _AddStockState extends State<AddStock> {
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.grey),
+                                color: Color(0xFF181818).withOpacity(0.80)),
                           ),
                         ),
                         SizedBox(
@@ -228,7 +228,7 @@ class _AddStockState extends State<AddStock> {
                     },
                     child: Text(
                       'Save as Draft',
-                      style: TextStyle(color: Colors.blue[900]),
+                      style: TextStyle(color: CustomColorTheme.primaryColor),
                     ),
                   ),
                 ],
@@ -251,8 +251,10 @@ Widget Rowstock(String text) {
           width: 90,
           child: Text(
             text,
-            style: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.w600, color: Colors.grey),
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF181818).withOpacity(0.80)),
           ),
         ),
         const SizedBox(

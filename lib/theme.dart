@@ -5,20 +5,20 @@ class CustomColorTheme {
   static const Color secondaryColor = Color(0xFF008CD3);
   // static const Color inactiveColor = Color(0xFF27528F);
 
-  static const Color accentColor = Colors.red;
   static const Color backgroundColor = Colors.white;
-  static const Color textColor = Colors.black;
-  static const Color labelColor = Colors.grey;
+  static const Color textColor = Color(0xFF181818);
+  static const Color labelColor = Color.fromRGBO(24, 24, 24, 0.7);
+
   static const Color iconColor = Color(0xFFF15A22);
 }
 
 class CustomFontTheme {
-  static const FontWeight headingwt = FontWeight.w600;
+  static const FontWeight headingwt = FontWeight.w700;
   static const FontWeight labelwt = FontWeight.w500;
   static const FontWeight textwt = FontWeight.w400;
 
   static const double headingSize = 18.0;
-  static const double textSize = 16.0;
+  static const double textSize = 16.5;
 }
 
 class AppTheme {

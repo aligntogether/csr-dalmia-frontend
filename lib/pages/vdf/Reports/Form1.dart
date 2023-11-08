@@ -6,6 +6,7 @@ import 'package:dalmia/pages/vdf/Draft/draft.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:dalmia/theme.dart';
 
 import 'package:flutter/material.dart';
 import 'dart:math';
@@ -69,9 +70,9 @@ class _Form1State extends State<Form1> {
             )),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.only(top: 20, left: 20, bottom: 20),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
@@ -94,123 +95,143 @@ class _Form1State extends State<Form1> {
                         ],
                       ),
                     ),
-                    TextButton.icon(
-                        style: TextButton.styleFrom(
-                            backgroundColor: const Color(0xFF008CD3),
-                            foregroundColor: Colors.white),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return ReportPopupWidget(context);
-                            },
-                          );
-                        },
-                        icon: const Icon(Icons.folder_outlined),
-                        label: const Text(
-                          'View other Reports',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        )),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: TextButton.icon(
+                          style: TextButton.styleFrom(
+                              backgroundColor: const Color(0xFF008CD3),
+                              foregroundColor: Colors.white),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return ReportPopupWidget(context);
+                              },
+                            );
+                          },
+                          icon: const Icon(Icons.folder_outlined),
+                          label: const Text(
+                            'View other Reports',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          )),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
-                Center(
-                  child: Column(
-                    children: [
-                      const Text('Form 1 Gram Parivartan'),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: DataTable(
-                          headingRowColor: MaterialStateColor.resolveWith(
-                              (states) => Colors.blue),
-                          columns: const <DataColumn>[
-                            DataColumn(
-                              label: Text(
-                                'Panchayat',
-                                style: TextStyle(color: Colors.white),
-                              ),
+                Column(
+                  children: [
+                    const Text(
+                      'Form 1 Gram Parivartan',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(
+                        headingRowColor: MaterialStateColor.resolveWith(
+                            (states) => Colors.blue),
+                        columns: const <DataColumn>[
+                          DataColumn(
+                            label: Text(
+                              'Panchayat',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: CustomFontTheme.headingwt),
                             ),
-                            DataColumn(
-                              label: Text(
-                                'Village',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Household',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Population',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ],
-                          rows: List<DataRow>.generate(
-                            11,
-                            (index) {
-                              if (index < 10) {
-                                return DataRow(
-                                  color: MaterialStateColor.resolveWith(
-                                    (states) {
-                                      // Alternating row colors
-                                      return index.isOdd
-                                          ? Colors.lightBlue[50] as Color
-                                          : Colors.white;
-                                    },
-                                  ),
-                                  cells: <DataCell>[
-                                    DataCell(Text('Panchayat $index')),
-                                    DataCell(Text('Village $index')),
-                                    DataCell(Text('${householdList[index]}')),
-                                    DataCell(Text('${populationList[index]}')),
-                                  ],
-                                );
-                              } else {
-                                final totalHouseholds =
-                                    householdList.reduce((a, b) => a + b);
-                                final totalPopulation =
-                                    populationList.reduce((a, b) => a + b);
-                                return DataRow(
-                                  cells: <DataCell>[
-                                    const DataCell(Text('')),
-                                    const DataCell(Text(
-                                      'Total',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    )),
-                                    DataCell(
-                                      Text(
-                                        '$totalHouseholds',
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    DataCell(
-                                      Text(
-                                        '$totalPopulation',
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              }
-                            },
                           ),
+                          DataColumn(
+                            label: Text(
+                              'Village',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: CustomFontTheme.headingwt),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'Household',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: CustomFontTheme.headingwt),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'Population',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: CustomFontTheme.headingwt),
+                            ),
+                          ),
+                        ],
+                        rows: List<DataRow>.generate(
+                          11,
+                          (index) {
+                            if (index < 10) {
+                              return DataRow(
+                                color: MaterialStateColor.resolveWith(
+                                  (states) {
+                                    // Alternating row colors
+                                    return index.isOdd
+                                        ? Colors.lightBlue[50] as Color
+                                        : Colors.white;
+                                  },
+                                ),
+                                cells: <DataCell>[
+                                  DataCell(Text(
+                                    'Panchayat $index',
+                                    style: TextStyle(fontSize: 14),
+                                  )),
+                                  DataCell(Text('Village $index',
+                                      style: TextStyle(fontSize: 14))),
+                                  DataCell(Text('${householdList[index]}',
+                                      style: TextStyle(fontSize: 14))),
+                                  DataCell(Text('${populationList[index]}',
+                                      style: TextStyle(fontSize: 14))),
+                                ],
+                              );
+                            } else {
+                              final totalHouseholds =
+                                  householdList.reduce((a, b) => a + b);
+                              final totalPopulation =
+                                  populationList.reduce((a, b) => a + b);
+                              return DataRow(
+                                cells: <DataCell>[
+                                  const DataCell(Text('')),
+                                  const DataCell(Text(
+                                    'Total',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  )),
+                                  DataCell(
+                                    Text(
+                                      '$totalHouseholds',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  DataCell(
+                                    Text(
+                                      '$totalPopulation',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                          },
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 )
               ],
             ),
