@@ -49,53 +49,7 @@ class _MyFormState extends State<AddLand> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          iconTheme: const IconThemeData(color: Color(0xFF181818)),
-          centerTitle: true,
-          title: const Text(
-            'Add Household',
-            style: TextStyle(
-                color: Color(0xFF181818),
-                fontSize: CustomFontTheme.headingSize,
-                fontWeight: CustomFontTheme.headingwt),
-          ),
-          leading: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: const Row(
-              children: [
-                Icon(
-                  Icons.keyboard_arrow_left_outlined,
-                  color: Color(0xFF181818),
-                ),
-                Text(
-                  'Back',
-                  style: TextStyle(color: Color(0xFF181818)),
-                )
-              ],
-            ),
-          ),
-          backgroundColor: Colors.grey[50],
-          actions: <Widget>[
-            IconButton(
-              iconSize: 30,
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const VdfHome(),
-                  ),
-                );
-              },
-              icon: const Icon(
-                Icons.close,
-                color: Color(0xFF181818),
-              ),
-            ),
-          ],
-        ),
+        appBar: houseappbar(context),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.only(left: 20, top: 10),

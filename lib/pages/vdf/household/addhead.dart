@@ -3,6 +3,7 @@ import 'package:dalmia/pages/vdf/household/addfamily.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
+import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
@@ -53,7 +54,7 @@ class _MyFormState extends State<AddHead> {
   Future<void> fetchGenderOptions() async {
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.1.37:8080/dropdown?titleId=101'),
+        Uri.parse('$base/dropdown?titleId=101'),
       );
       if (response.statusCode == 200) {
         CommonObject commonObject =
@@ -73,7 +74,7 @@ class _MyFormState extends State<AddHead> {
   }
 
   Future<void> fetchCasteOptions() async {
-    const String url = 'http://192.168.1.37:8080/dropdown?titleId=105';
+    String url = '$base/dropdown?titleId=105';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -92,7 +93,7 @@ class _MyFormState extends State<AddHead> {
   }
 
   Future<void> fetchEducationOptions() async {
-    const String url = 'http://192.168.1.37:8080/dropdown?titleId=102';
+    String url = '$base/dropdown?titleId=102';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -111,7 +112,7 @@ class _MyFormState extends State<AddHead> {
   }
 
   Future<void> fetchPrimaryOptions() async {
-    const String url = 'http://192.168.1.37:8080/dropdown?titleId=103';
+    String url = '$base/dropdown?titleId=103';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -130,7 +131,7 @@ class _MyFormState extends State<AddHead> {
   }
 
   Future<void> fetchSecondaryOptions() async {
-    const String url = 'http://192.168.1.37:8080/dropdown?titleId=104';
+    String url = '$base/dropdown?titleId=104';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -225,52 +226,7 @@ class _MyFormState extends State<AddHead> {
     // double screenWidth = mediaQueryData.size.width;
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          centerTitle: true,
-          title: const Text(
-            'Add Household',
-            style: TextStyle(
-                color: Color(0xFF181818),
-                fontSize: CustomFontTheme.headingSize,
-                fontWeight: CustomFontTheme.headingwt),
-          ),
-          leading: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: const Row(
-              children: [
-                Icon(
-                  Icons.keyboard_arrow_left_outlined,
-                  color: Color(0xFF181818),
-                ),
-                Text(
-                  'Back',
-                  style: TextStyle(
-                      color: Color(0xFF181818), fontWeight: FontWeight.w500),
-                )
-              ],
-            ),
-          ),
-          backgroundColor: Colors.grey[50],
-          actions: <Widget>[
-            IconButton(
-              iconSize: 30,
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const VdfHome(),
-                  ),
-                );
-              },
-              icon: const Icon(
-                Icons.close,
-                color: Color(0xFF181818),
-              ),
-            ),
-          ],
-        ),
+        appBar: houseappbar(context),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -618,4 +574,54 @@ class _MyFormState extends State<AddHead> {
       ),
     );
   }
+}
+
+AppBar houseappbar(BuildContext context) {
+  return AppBar(
+    elevation: 0,
+    centerTitle: true,
+    automaticallyImplyLeading: false,
+    title: const Text(
+      'Add Household',
+      style: TextStyle(
+          color: Color(0xFF181818),
+          fontSize: CustomFontTheme.headingSize,
+          fontWeight: CustomFontTheme.headingwt),
+    ),
+    leading: GestureDetector(
+      onTap: () {
+        Navigator.of(context).pop();
+      },
+      child: const Row(
+        children: [
+          Icon(
+            Icons.keyboard_arrow_left_outlined,
+            color: Color(0xFF181818),
+          ),
+          Text(
+            'Back',
+            style: TextStyle(
+                color: Color(0xFF181818), fontWeight: FontWeight.w500),
+          )
+        ],
+      ),
+    ),
+    backgroundColor: Colors.grey[50],
+    actions: <Widget>[
+      IconButton(
+        iconSize: 30,
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const VdfHome(),
+            ),
+          );
+        },
+        icon: const Icon(
+          Icons.close,
+          color: Color(0xFF181818),
+        ),
+      ),
+    ],
+  );
 }

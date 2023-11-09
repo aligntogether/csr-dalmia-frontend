@@ -1,4 +1,5 @@
 import 'package:dalmia/pages/vdf/household/addfarm.dart';
+import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/household/addland.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
@@ -18,48 +19,7 @@ class _AddStockState extends State<AddStock> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          centerTitle: true,
-          title: const Text(
-            'Add Household',
-            style: TextStyle(color: Colors.black),
-          ),
-          leading: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: const Row(
-              children: [
-                Icon(
-                  Icons.keyboard_arrow_left_outlined,
-                  color: Colors.black,
-                ),
-                Text(
-                  'Back',
-                  style: TextStyle(color: Colors.black),
-                )
-              ],
-            ),
-          ),
-          backgroundColor: Colors.grey[50],
-          actions: <Widget>[
-            IconButton(
-              iconSize: 30,
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const VdfHome(),
-                  ),
-                );
-              },
-              icon: const Icon(
-                Icons.close,
-                color: Colors.black,
-              ),
-            ),
-          ],
-        ),
+        appBar: houseappbar(context),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

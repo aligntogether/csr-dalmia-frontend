@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:http/http.dart' as http;
 import 'package:dalmia/Controllers/family.dart';
 import 'package:dalmia/apis/commonobject.dart';
@@ -70,7 +71,7 @@ class _MyFormState extends State<AddFamily> {
   Future<void> fetchGenderOptions() async {
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.1.71:8080/dropdown?titleId=101'),
+        Uri.parse('$base/dropdown?titleId=101'),
       );
       if (response.statusCode == 200) {
         CommonObject commonObject =
@@ -90,7 +91,7 @@ class _MyFormState extends State<AddFamily> {
   }
 
   Future<void> fetchRelationOptions() async {
-    const String url = 'http://192.168.1.71:8080/dropdown?titleId=111';
+    String url = '$base/dropdown?titleId=111';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -110,7 +111,7 @@ class _MyFormState extends State<AddFamily> {
   }
 
   Future<void> fetchEducationOptions() async {
-    const String url = 'http://192.168.1.71:8080/dropdown?titleId=102';
+    String url = '$base/dropdown?titleId=102';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -130,7 +131,7 @@ class _MyFormState extends State<AddFamily> {
   }
 
   Future<void> fetchPrimaryOptions() async {
-    const String url = 'http://192.168.1.71:8080/dropdown?titleId=103';
+    String url = '$base/dropdown?titleId=103';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -150,7 +151,7 @@ class _MyFormState extends State<AddFamily> {
   }
 
   Future<void> fetchSecondaryOptions() async {
-    const String url = 'http://192.168.1.71:8080/dropdown?titleId=104';
+    String url = '$base/dropdown?titleId=104';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -228,47 +229,8 @@ class _MyFormState extends State<AddFamily> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          centerTitle: true,
-          title: const Text(
-            'Add Household',
-            style: TextStyle(color: Color(0xFF181818)),
-          ),
-          leading: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: const Row(
-              children: [
-                Icon(
-                  Icons.keyboard_arrow_left_outlined,
-                  color: Color(0xFF181818),
-                ),
-                Text(
-                  'Back',
-                  style: TextStyle(color: Color(0xFF181818)),
-                )
-              ],
-            ),
-          ),
-          backgroundColor: Colors.grey[50],
-          actions: <Widget>[
-            IconButton(
-              iconSize: 30,
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const VdfHome(),
-                  ),
-                );
-              },
-              icon: const Icon(
-                Icons.close,
-                color: Color(0xFF181818),
-              ),
-            ),
-          ],
+        appBar: houseappbar(
+          context,
         ),
         body: SingleChildScrollView(
           child: Padding(

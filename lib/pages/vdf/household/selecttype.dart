@@ -214,7 +214,6 @@ class _SelectTypeState extends State<SelectType> {
                 const TextField(
                   decoration: InputDecoration(
                     labelText: 'Any remarks about this household?',
-                    border: OutlineInputBorder(),
                   ),
                   maxLines:
                       3, // Adjust the number of lines as per your requirement

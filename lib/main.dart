@@ -7,13 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:flutter_config/flutter_config.dart';
 
-void main() {
-  // Directory directory = Directory.current;
-  // String filePath = directory.path + '/form_data.json';
+Future<void> main() async {
+  await dotenv.load(fileName: "lib/.env");
 
-  // print('File saved at: $filePath');
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await FlutterConfig.loadEnvVariables();
   runApp(const MyWidget());
 }
 

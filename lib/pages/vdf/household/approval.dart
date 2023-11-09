@@ -1,10 +1,9 @@
-import 'package:dalmia/pages/vdf/household/addfarm.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
 class Approval extends StatefulWidget {
-  const Approval({Key? key}) : super(key: key);
+  const Approval({super.key});
 
   @override
   State<Approval> createState() => _ApprovalState();
@@ -19,6 +18,7 @@ class _ApprovalState extends State<Approval> {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
+          automaticallyImplyLeading: false,
           centerTitle: true,
           title: const Text(
             'Add Household',
@@ -78,6 +78,7 @@ class _ApprovalState extends State<Approval> {
                     padding: EdgeInsets.only(left: 13, right: 13),
                     child: TextField(
                       enabled: selectedRadio == 7 ? true : false,
+
                       decoration: InputDecoration(
                         labelText: 'Please specify the reason',
                       ),

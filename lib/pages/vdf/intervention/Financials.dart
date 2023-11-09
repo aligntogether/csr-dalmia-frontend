@@ -1,4 +1,5 @@
 import 'package:dalmia/pages/vdf/intervention/Followup.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -142,53 +143,55 @@ void _successmsg(BuildContext context) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      return AlertDialog(
-        title: const SizedBox(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+      return SizedBox(
+        child: AlertDialog(
+          title: const SizedBox(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 40,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                    'Intervention 1 is added successfully. What do you wish to do next?'),
+              ],
+            ),
+          ),
+          content: Column(
+            // mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Icon(
-                Icons.check_circle,
-                color: Colors.green,
-                size: 40,
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: Colors.white,
+                  side: const BorderSide(width: 1, color: Colors.blue),
+                ),
+                onPressed: () {},
+                child: const Text(
+                  'Add another intervention',
+                  style: TextStyle(color: Colors.blue),
+                ),
               ),
-              SizedBox(
-                height: 20,
+              const SizedBox(
+                height: 10,
               ),
-              Text(
-                  'Intervention 1 is added successfully. What do you wish to do next?'),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: CustomColorTheme.primaryColor,
+                  maximumSize: const Size(250, 50),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Save and Close'),
+              ),
             ],
           ),
-        ),
-        content: Column(
-          // mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                backgroundColor: Colors.white,
-                side: const BorderSide(width: 1, color: Colors.blue),
-              ),
-              onPressed: () {},
-              child: const Text(
-                'Add another intervention',
-                style: TextStyle(color: Colors.blue),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[900],
-                minimumSize: const Size(250, 50),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Save and Close'),
-            ),
-          ],
         ),
       );
     },

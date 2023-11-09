@@ -350,38 +350,41 @@ class _HhidFormState extends State<HhidForm> {
         ),
         bottomNavigationBar: BottomAppBar(
           elevation: 10,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              CustomTabItem(
-                imagePath: 'images/Dashboard_Outline.svg',
-                label: "Dashboard",
-                index: 0,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-              CustomTabItem(
-                imagePath: 'images/Household_Outline.svg',
-                label: "Add Household",
-                index: 1,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-              CustomTabItem(
-                imagePath: 'images/Street_Outline.svg',
-                label: "Add Street",
-                index: 2,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-              CustomTabItem(
-                imagePath: 'images/Drafts_Outline.svg',
-                label: "Drafts",
-                index: 3,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-            ],
+          child: SizedBox(
+            height: 67,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                CustomTabItem(
+                  imagePath: 'images/Dashboard_Outline.svg',
+                  label: "Dashboard",
+                  index: 0,
+                  selectedIndex: 5,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Household_Outline.svg',
+                  label: "Add Household",
+                  index: 1,
+                  selectedIndex: 5,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Street_Outline.svg',
+                  label: "Add Street",
+                  index: 2,
+                  selectedIndex: 5,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Drafts_Outline.svg',
+                  label: "Drafts",
+                  index: 3,
+                  selectedIndex: 5,
+                  onTabTapped: _onTabTapped,
+                ),
+              ],
+            ),
           ),
         ),
       ),

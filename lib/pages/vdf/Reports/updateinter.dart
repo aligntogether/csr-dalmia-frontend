@@ -1,26 +1,16 @@
 import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/components/reportappbar.dart';
-import 'package:dalmia/components/reportpop.dart';
+
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
 
-import 'package:dalmia/pages/vdf/Reports/cumulative.dart';
-import 'package:dalmia/pages/vdf/Reports/form1.dart';
-
-import 'package:dalmia/pages/vdf/Reports/leverwise.dart';
-
-import 'package:dalmia/pages/vdf/Reports/top20.dart';
-import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
-import 'package:dalmia/pages/vdf/intervention/Addinter.dart';
-import 'package:dalmia/pages/vdf/intervention/Followup.dart';
+
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:math';
-
-import 'package:flutter_svg/svg.dart';
 
 class UpdateIntervention extends StatefulWidget {
   const UpdateIntervention({Key? key}) : super(key: key);
@@ -277,418 +267,47 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
         ),
         bottomNavigationBar: BottomAppBar(
           elevation: 10,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              CustomTabItem(
-                imagePath: 'images/Dashboard_Outline.svg',
-                label: "Dashboard",
-                index: 0,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
+          child: SizedBox(
+            height: 67,
+            child: SizedBox(
+              height: 67,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  CustomTabItem(
+                    imagePath: 'images/Dashboard_Outline.svg',
+                    label: "Dashboard",
+                    index: 0,
+                    selectedIndex: 5,
+                    onTabTapped: _onTabTapped,
+                  ),
+                  CustomTabItem(
+                    imagePath: 'images/Household_Outline.svg',
+                    label: "Add Household",
+                    index: 1,
+                    selectedIndex: 5,
+                    onTabTapped: _onTabTapped,
+                  ),
+                  CustomTabItem(
+                    imagePath: 'images/Street_Outline.svg',
+                    label: "Add Street",
+                    index: 2,
+                    selectedIndex: 5,
+                    onTabTapped: _onTabTapped,
+                  ),
+                  CustomTabItem(
+                    imagePath: 'images/Drafts_Outline.svg',
+                    label: "Drafts",
+                    index: 3,
+                    selectedIndex: 5,
+                    onTabTapped: _onTabTapped,
+                  ),
+                ],
               ),
-              CustomTabItem(
-                imagePath: 'images/Household_Outline.svg',
-                label: "Add Household",
-                index: 1,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-              CustomTabItem(
-                imagePath: 'images/Street_Outline.svg',
-                label: "Add Street",
-                index: 2,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-              CustomTabItem(
-                imagePath: 'images/Drafts_Outline.svg',
-                label: "Drafts",
-                index: 3,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-            ],
+            ),
           ),
         ),
       ),
-    );
-  }
-
-  void _takeaction(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, setState) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'What action do you wish to \n take for HHID - AROKSKTS001',
-                        style: TextStyle(
-                            fontSize: CustomFontTheme.textSize,
-                            fontWeight: CustomFontTheme.headingwt),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Icon(Icons.close),
-                      ),
-                    ],
-                  ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'Add Intervention',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          color: CustomColorTheme.textColor),
-                    ),
-                    value: 1,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'Update Completion Date',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          color: CustomColorTheme.textColor),
-                    ),
-                    value: 2,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'Add Additional Income',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          color: CustomColorTheme.textColor),
-                    ),
-                    value: 3,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'Update Household Details',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          color: CustomColorTheme.textColor),
-                    ),
-                    value: 4,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              content: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: CustomColorTheme.primaryColor),
-                      onPressed: () {
-                        if (selectedRadio == 1) {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => Addinter(),
-                            ),
-                          );
-                        } else if (selectedRadio == 2) {
-                          Navigator.of(context).pop();
-                          _updatecompletion(context);
-                        } else if (selectedRadio == 3) {
-                          Navigator.of(context).pop();
-                          Addadditional(
-                              context); // Navigate to the corresponding tab
-                        } else if (selectedRadio == 4) {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const AddHead(),
-                            ),
-                          );
-                          // Navigate to the corresponding tab
-                        }
-                      },
-                      child: const Text('Continue'),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  void _updatecompletion(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, setState) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('AROKSKTS001'),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Icon(Icons.close),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Text(
-                    'Update Completion Date',
-                    style: TextStyle(
-                        fontSize: CustomFontTheme.textSize,
-                        fontWeight: CustomFontTheme.headingwt),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'int.1    Mushroom Cultivation',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          fontWeight: CustomFontTheme.headingwt,
-                          color: CustomColorTheme.textColor),
-                    ),
-                    value: 1,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'int.4    Vermicompost Unit',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          fontWeight: CustomFontTheme.headingwt,
-                          color: CustomColorTheme.textColor),
-                    ),
-                    value: 2,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'int.6    Azolla Units',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          fontWeight: CustomFontTheme.headingwt,
-                          color: CustomColorTheme.textColor),
-                    ),
-                    value: 3,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              content: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: CustomColorTheme.primaryColor),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => Followup(),
-                          ),
-                        );
-                      },
-                      child: const Text('Continue'),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  void Addadditional(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, setState) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('AROKSKTS001'),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Icon(Icons.close),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Text(
-                    'Add Additional Income ',
-                    style: TextStyle(
-                        fontSize: CustomFontTheme.textSize,
-                        fontWeight: CustomFontTheme.headingwt),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'int.1    Goat Farming',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          fontWeight: CustomFontTheme.headingwt,
-                          color: CustomColorTheme.textColor),
-                    ),
-                    value: 1,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'int.4    DIC linked Micro Enterprise',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          fontWeight: CustomFontTheme.headingwt,
-                          color: CustomColorTheme.textColor),
-                    ),
-                    value: 2,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'int.6    Farm Pond',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          fontWeight: CustomFontTheme.headingwt,
-                          color: CustomColorTheme.textColor),
-                    ),
-                    value: 3,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              content: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: CustomColorTheme.primaryColor),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => Followup(),
-                          ),
-                        );
-                      },
-                      child: const Text('Continue'),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
     );
   }
 }

@@ -194,81 +194,84 @@ class _LeverwiseState extends State<Leverwise> {
         ),
         bottomNavigationBar: BottomAppBar(
           elevation: 10,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              CustomTabItem(
-                imagePath: 'images/Dashboard_Outline.svg',
-                label: "Dashboard",
-                index: 0,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-              CustomTabItem(
-                imagePath: 'images/Household_Outline.svg',
-                label: "Add Household",
-                index: 1,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-              CustomTabItem(
-                imagePath: 'images/Street_Outline.svg',
-                label: "Add Street",
-                index: 2,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-              CustomTabItem(
-                imagePath: 'images/Drafts_Outline.svg',
-                label: "Drafts",
-                index: 3,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-            ],
+          child: SizedBox(
+            height: 67,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                CustomTabItem(
+                  imagePath: 'images/Dashboard_Outline.svg',
+                  label: "Dashboard",
+                  index: 0,
+                  selectedIndex: 5,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Household_Outline.svg',
+                  label: "Add Household",
+                  index: 1,
+                  selectedIndex: 5,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Street_Outline.svg',
+                  label: "Add Street",
+                  index: 2,
+                  selectedIndex: 5,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Drafts_Outline.svg',
+                  label: "Drafts",
+                  index: 3,
+                  selectedIndex: 5,
+                  onTabTapped: _onTabTapped,
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget buildTabItem(IconData icon, String label, int index) {
-    final isSelected = index == 0;
-    final color = isSelected ? Colors.blue : Colors.black;
+  // Widget buildTabItem(IconData icon, String label, int index) {
+  //   final isSelected = index == 0;
+  //   final color = isSelected ? Colors.blue : Colors.black;
 
-    return InkWell(
-      onTap: () {
-        _onTabTapped(index);
-        if (index == 1) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => MyForm(),
-            ),
-          );
-        }
-        if (index == 2) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => AddStreet(),
-            ),
-          );
-        }
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            color: color,
-          ),
-          Text(
-            label,
-            style: TextStyle(
-              color: color,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  //   return InkWell(
+  //     onTap: () {
+  //       _onTabTapped(index);
+  //       if (index == 1) {
+  //         Navigator.of(context).push(
+  //           MaterialPageRoute(
+  //             builder: (context) => MyForm(),
+  //           ),
+  //         );
+  //       }
+  //       if (index == 2) {
+  //         Navigator.of(context).push(
+  //           MaterialPageRoute(
+  //             builder: (context) => AddStreet(),
+  //           ),
+  //         );
+  //       }
+  //     },
+  //     child: Column(
+  //       mainAxisSize: MainAxisSize.min,
+  //       children: [
+  //         Icon(
+  //           icon,
+  //           color: color,
+  //         ),
+  //         Text(
+  //           label,
+  //           style: TextStyle(
+  //             color: color,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 }

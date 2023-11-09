@@ -5,6 +5,7 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 String selectedPanchayat = "";
 String selectedVillage = "";
@@ -25,6 +26,8 @@ class Panchayat {
     );
   }
 }
+
+String? base = dotenv.env['BASE_URL'];
 
 class Village {
   final String villageid;
@@ -55,7 +58,7 @@ class _AddStreetState extends State<AddStreet> {
   List<Panchayat> panchayats = [];
   List<Village> villages = [];
 
-  final String panchayatUrl = 'http://192.168.1.71:8080/list-Panchayat';
+  final String panchayatUrl = '$base/list-Panchayat';
 
   Future<List<Panchayat>> fetchPanchayats() async {
     try {
@@ -87,8 +90,7 @@ class _AddStreetState extends State<AddStreet> {
   Future<List<Village>> fetchVillages(String panchayatId) async {
     try {
       final response = await http.get(
-        Uri.parse(
-            'http://192.168.1.71:8080/list-Village?panchayatId=$panchayatId'),
+        Uri.parse('$base/list-Village?panchayatId=$panchayatId'),
       );
       if (response.statusCode == 200) {
         CommonObject commonObject =

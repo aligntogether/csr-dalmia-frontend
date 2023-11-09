@@ -1,8 +1,9 @@
 import 'package:dalmia/apis/commonobject.dart';
 import 'package:dalmia/pages/vdf/household/addhead.dart';
+import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -21,8 +22,6 @@ class Panchayat {
     );
   }
 }
-
-final baseUrl = dotenv.env['BASE_URL'];
 
 class Village {
   final String villageid;
@@ -71,7 +70,7 @@ class _MyFormState extends State<MyForm> {
   List<Village> villages = [];
   List<Street> streets = [];
 
-  final String panchayatUrl = 'http://192.168.1.37:8080/list-Panchayat';
+  final String panchayatUrl = '$base/list-Panchayat';
 
   Future<List<Panchayat>> fetchPanchayats() async {
     try {
@@ -89,10 +88,7 @@ class _MyFormState extends State<MyForm> {
         List<Panchayat> panchayats = panchayatsData
             .map((model) => Panchayat.fromJson(model as Map<String, dynamic>))
             .toList();
-        // print("asdfasdf" + commonObject.respBody);
-        // Iterable list = json.decode(commonObject.respBody)[0];
-        // List<Panchayat> panchayats = List<Panchayat>.from(
-        //     list.map((model) => Panchayat.fromJson(model)));
+
         return panchayats;
       } else {
         throw Exception('Failed to load panchayats: ${response.statusCode}');
@@ -106,8 +102,7 @@ class _MyFormState extends State<MyForm> {
   Future<List<Village>> fetchVillages(String panchayatId) async {
     try {
       final response = await http.get(
-        Uri.parse(
-            'http://192.168.1.37:8080/list-Village?panchayatId=$panchayatId'),
+        Uri.parse('$base/list-Village?panchayatId=$panchayatId'),
       );
       if (response.statusCode == 200) {
         CommonObject commonObject =
@@ -128,7 +123,7 @@ class _MyFormState extends State<MyForm> {
   Future<List<Street>> fetchStreets(String villageId) async {
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.1.37:8080/list-Street?villageId=$villageId'),
+        Uri.parse('$base/list-Street?villageId=$villageId'),
       );
       if (response.statusCode == 200) {
         CommonObject commonObject =

@@ -1,5 +1,6 @@
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class CustomCard extends StatelessWidget {
   final String imageUrl;
@@ -33,21 +34,13 @@ class CustomCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Container(
-                margin: const EdgeInsets.only(left: 10),
-                height: 30.0,
-                width: 30.0, // Adjust the image height as needed
-
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image:
-                        AssetImage(imageUrl), // or AssetImage for local image
-                    fit: BoxFit.contain, // You can adjust the BoxFit as needed
-                  ),
-                ),
+              SvgPicture.asset(
+                imageUrl,
+                width: 35,
+                height: 28,
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(0.0),
                 child: Text(
                   subtitle,
                   style: TextStyle(
@@ -58,7 +51,7 @@ class CustomCard extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(0.0),
                 child: Text(
                   title,
                   style: TextStyle(

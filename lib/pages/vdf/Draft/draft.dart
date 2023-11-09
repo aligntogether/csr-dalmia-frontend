@@ -14,6 +14,8 @@ class Draft extends StatefulWidget {
   State<Draft> createState() => _DraftState();
 }
 
+int selectedIndex = 0;
+
 class _DraftState extends State<Draft> {
   void _onTabTapped(int index) {
     setState(() {
@@ -46,7 +48,6 @@ class _DraftState extends State<Draft> {
     }
   }
 
-  int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -187,38 +188,41 @@ class _DraftState extends State<Draft> {
         ),
         bottomNavigationBar: BottomAppBar(
           elevation: 10,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              CustomTabItem(
-                imagePath: 'images/Dashboard_Outline.svg',
-                label: "Dashboard",
-                index: 0,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-              CustomTabItem(
-                imagePath: 'images/Household_Outline.svg',
-                label: "Add Household",
-                index: 1,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-              CustomTabItem(
-                imagePath: 'images/Street_Outline.svg',
-                label: "Add Street",
-                index: 2,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-              CustomTabItem(
-                imagePath: 'images/Drafts_Outline.svg',
-                label: "Drafts",
-                index: 3,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-            ],
+          child: SizedBox(
+            height: 67,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                CustomTabItem(
+                  imagePath: 'images/Dashboard_Outline.svg',
+                  label: "Dashboard",
+                  index: 0,
+                  selectedIndex: 3,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Household_Outline.svg',
+                  label: "Add Household",
+                  index: 1,
+                  selectedIndex: 3,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Street_Outline.svg',
+                  label: "Add Street",
+                  index: 2,
+                  selectedIndex: 3,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Drafts_filled.svg',
+                  label: "Drafts",
+                  index: 3,
+                  selectedIndex: 3,
+                  onTabTapped: _onTabTapped,
+                ),
+              ],
+            ),
           ),
         ),
       ),

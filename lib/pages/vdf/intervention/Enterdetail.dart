@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:dalmia/pages/vdf/intervention/Followup.dart';
+import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class EnterDetail extends StatefulWidget {
   @override
@@ -11,15 +15,33 @@ class EnterDetail extends StatefulWidget {
 class _EnterDetailState extends State<EnterDetail> {
   final TextEditingController _completeController = TextEditingController();
   String? selectedName;
+  List<String> memberNames = [];
+  String? selectedMemberId;
+  Map<String, String> memberIdNameMap = {};
 
-  List<String> dummyNames = [
-    'John Doe',
-    'Jane Doe',
-    'Michael Smith',
-    'Jennifer Johnson',
-    'William Davis',
-    'Jessica Wilson'
-  ];
+  Future<void> fetchFamilyMembers() async {
+    final apiUrl = '$base/get-familymembers?householdId=1';
+
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      final respBody = jsonResponse['resp_body'];
+
+      setState(() {
+        memberIdNameMap = {
+          for (var member in respBody)
+            member['memberId'].toString(): member['memberName'].toString()
+        };
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    fetchFamilyMembers();
+    super.initState();
+  }
 
   DateTime? selectedDate;
 
@@ -39,7 +61,7 @@ class _EnterDetailState extends State<EnterDetail> {
 
   @override
   Widget build(BuildContext context) {
-    bool isButtonEnabled = selectedName != null;
+    bool isButtonEnabled = selectedMemberId != null;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -76,16 +98,16 @@ class _EnterDetailState extends State<EnterDetail> {
                   height: 20,
                 ),
                 DropdownButtonFormField<String>(
-                  value: selectedName,
-                  items: dummyNames.map((String value) {
+                  value: selectedMemberId,
+                  items: memberIdNameMap.keys.map((String key) {
                     return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
+                      value: key,
+                      child: Text(memberIdNameMap[key]!),
                     );
                   }).toList(),
                   onChanged: (String? newValue) {
                     setState(() {
-                      selectedName = newValue;
+                      selectedMemberId = newValue;
                     });
                   },
                   icon: const Icon(
@@ -93,13 +115,6 @@ class _EnterDetailState extends State<EnterDetail> {
                   ),
                   decoration: InputDecoration(
                     labelText: 'Select the Beneficiary *',
-                    border: OutlineInputBorder(
-                      borderSide: const BorderSide(),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
                   ),
                 ),
                 const SizedBox(
@@ -108,11 +123,7 @@ class _EnterDetailState extends State<EnterDetail> {
                 TextFormField(
                   controller: _completeController,
                   decoration: InputDecoration(
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
                     labelText: 'Date of Completion',
-                    border: const OutlineInputBorder(),
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 20.0),
                     suffixIcon: IconButton(
@@ -120,6 +131,7 @@ class _EnterDetailState extends State<EnterDetail> {
                         _selectDate(context);
                       },
                       icon: const Icon(Icons.calendar_month_outlined),
+                      color: CustomColorTheme.iconColor,
                     ),
                   ),
                   validator: (value) {
@@ -135,8 +147,8 @@ class _EnterDetailState extends State<EnterDetail> {
                 const TextField(
                   decoration: InputDecoration(
                     labelText: 'Any remarks about this household?',
-                    border: OutlineInputBorder(),
                   ),
+                  maxLines: 3,
                 ),
                 const SizedBox(
                   height: 40,
@@ -146,11 +158,10 @@ class _EnterDetailState extends State<EnterDetail> {
                   children: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(350, 50),
-                        backgroundColor: isButtonEnabled
-                            ? CustomColorTheme.primaryColor
-                            : Colors.lightBlue,
-                      ),
+                          minimumSize: const Size(350, 50),
+                          backgroundColor: isButtonEnabled
+                              ? CustomColorTheme.primaryColor
+                              : CustomColorTheme.primaryColor.withOpacity(0.5)),
                       onPressed: isButtonEnabled
                           ? () {
                               if (_completeController.text.isNotEmpty) {

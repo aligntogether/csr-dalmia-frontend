@@ -1,7 +1,3 @@
-import 'package:dalmia/pages/vdf/Draft/draft.dart';
-import 'package:dalmia/pages/vdf/household/addhouse.dart';
-import 'package:dalmia/pages/vdf/street/Addstreet.dart';
-import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -13,7 +9,8 @@ class CustomTabItem extends StatefulWidget {
   final int selectedIndex;
   final Function(int) onTabTapped;
 
-  CustomTabItem({
+  const CustomTabItem({
+    super.key,
     required this.imagePath,
     required this.label,
     required this.index,
@@ -46,9 +43,9 @@ class _CustomTabItemState extends State<CustomTabItem> {
           Text(
             widget.label,
             style: TextStyle(
-              // color: isSelected ? CustomColorTheme.primaryColor : Colors.black,
+              color: isSelected ? Color(0xFF0054A6) : Colors.black,
               fontSize: 15,
-              fontWeight: FontWeight.w400,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
             ),
           ),
         ],

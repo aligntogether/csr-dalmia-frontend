@@ -1,7 +1,10 @@
+import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
+import 'package:dalmia/pages/vdf/Draft/draft.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
+import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
@@ -14,12 +17,37 @@ class BusinessPlan extends StatefulWidget {
 
 class _BusinessPlanState extends State<BusinessPlan> {
   int? selectedRadio;
-  int _selectedIndex = 0; // Track the currently selected tab index
+  int selectedIndex = 0; // Track the currently selected tab index
 
   void _onTabTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      selectedIndex = index;
     });
+    if (selectedIndex == 0) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const VdfHome(),
+        ),
+      );
+    } else if (selectedIndex == 1) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => MyForm(),
+        ),
+      );
+    } else if (selectedIndex == 2) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => AddStreet(),
+        ),
+      );
+    } else if (selectedIndex == 3) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const Draft(),
+        ),
+      );
+    }
   }
 
   @override
@@ -152,56 +180,43 @@ class _BusinessPlanState extends State<BusinessPlan> {
         ),
         bottomNavigationBar: BottomAppBar(
           elevation: 10,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              buildTabItem(Icons.dashboard_customize_outlined, "Dashboard", 0),
-              buildTabItem(Icons.home_sharp, "Add Household", 1),
-              buildTabItem(Icons.streetview_outlined, "Add Street", 2),
-              buildTabItem(Icons.drafts_outlined, "Drafts", 3),
-            ],
+          child: SizedBox(
+            height: 67,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                CustomTabItem(
+                  imagePath: 'images/Dashboard_Outline.svg',
+                  label: "Dashboard",
+                  index: 0,
+                  selectedIndex: 5,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Household_Outline.svg',
+                  label: "Add Household",
+                  index: 1,
+                  selectedIndex: 5,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Street_Outline.svg',
+                  label: "Add Street",
+                  index: 2,
+                  selectedIndex: 5,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Drafts_Outline.svg',
+                  label: "Drafts",
+                  index: 3,
+                  selectedIndex: 5,
+                  onTabTapped: _onTabTapped,
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget buildTabItem(IconData icon, String label, int index) {
-    final isSelected = index == 0;
-    final color = isSelected ? Colors.blue : Colors.black;
-
-    return InkWell(
-      onTap: () {
-        _onTabTapped(index);
-        if (index == 1) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => MyForm(),
-            ),
-          );
-        }
-        if (index == 2) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => AddStreet(),
-            ),
-          );
-        }
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            color: color,
-          ),
-          Text(
-            label,
-            style: TextStyle(
-              color: color,
-            ),
-          ),
-        ],
       ),
     );
   }

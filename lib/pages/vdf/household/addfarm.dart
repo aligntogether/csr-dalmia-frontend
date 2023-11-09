@@ -1,3 +1,4 @@
+import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/household/addlivestock.dart';
 import 'package:dalmia/pages/vdf/household/selecttype.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
@@ -18,53 +19,7 @@ class _AddFarmState extends State<AddFarm> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          centerTitle: true,
-          title: const Text(
-            'Add Household',
-            style: TextStyle(color: Color(0xFF181818)),
-          ),
-          leading: GestureDetector(
-            onTap: () {
-              // Navigator.of(context).push(
-              //   MaterialPageRoute(
-              //     builder: (context) => AddLand(),
-              //   ),
-              // );
-              Navigator.of(context).pop();
-            },
-            child: const Row(
-              children: [
-                Icon(
-                  Icons.keyboard_arrow_left_outlined,
-                  color: Color(0xFF181818),
-                ),
-                Text(
-                  'Back',
-                  style: TextStyle(color: Color(0xFF181818)),
-                )
-              ],
-            ),
-          ),
-          backgroundColor: Colors.grey[50],
-          actions: <Widget>[
-            IconButton(
-              iconSize: 30,
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const VdfHome(),
-                  ),
-                );
-              },
-              icon: const Icon(
-                Icons.close,
-                color: Color(0xFF181818),
-              ),
-            ),
-          ],
-        ),
+        appBar: houseappbar(context),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

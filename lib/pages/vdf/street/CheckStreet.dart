@@ -57,8 +57,7 @@ class _CheckStreetState extends State<CheckStreet> {
   List<StreetData> streetData = [];
 
   Future<void> fetchData() async {
-    String url =
-        'http://192.168.1.71:8080/view-streets?villageId=${widget.selectedVillagId}';
+    String url = '$base/view-streets?villageId=${widget.selectedVillagId}';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {

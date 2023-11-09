@@ -1,4 +1,5 @@
 import 'package:dalmia/pages/vdf/intervention/Financials.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -164,11 +165,7 @@ class _FollowupState extends State<Followup> {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black),
-        ),
         labelText: labeltext,
-        border: const OutlineInputBorder(),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
         suffixIcon: IconButton(
@@ -176,6 +173,7 @@ class _FollowupState extends State<Followup> {
             _selectDate(context, controller);
           },
           icon: const Icon(Icons.calendar_month_outlined),
+          color: CustomColorTheme.iconColor,
         ),
       ),
     );
