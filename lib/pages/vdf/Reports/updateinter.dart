@@ -227,40 +227,45 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
                 SizedBox(
                   height: 20,
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(350, 50),
-                      backgroundColor: CustomColorTheme.primaryColor),
-                  onPressed: () {
-                    // Navigator.of(context).push(
-                    //   MaterialPageRoute(
-                    //     builder: (context) => const AddHead(),
-                    //   ),
-                    // );
-                  },
-                  child: const Text(
-                    'Save Update',
-                    style: TextStyle(fontSize: CustomFontTheme.textSize),
+                Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(350, 50),
+                        backgroundColor: CustomColorTheme.primaryColor),
+                    onPressed: () {
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(
+                      //     builder: (context) => const AddHead(),
+                      //   ),
+                      // );
+                    },
+                    child: const Text(
+                      'Save Update',
+                      style: TextStyle(fontSize: CustomFontTheme.textSize),
+                    ),
                   ),
                 ),
                 SizedBox(
                   height: 20,
                 ),
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        side: BorderSide(
-                            color: CustomColorTheme.primaryColor, width: 1),
-                        minimumSize: const Size(350, 50),
-                        backgroundColor: CustomColorTheme.backgroundColor),
-                    onPressed: () {},
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        'Call Beneficiary',
-                        style: TextStyle(color: CustomColorTheme.primaryColor),
-                      ),
-                    )),
+                Center(
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          side: BorderSide(
+                              color: CustomColorTheme.primaryColor, width: 1),
+                          minimumSize: const Size(350, 50),
+                          backgroundColor: CustomColorTheme.backgroundColor),
+                      onPressed: () {},
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Call Beneficiary',
+                          style:
+                              TextStyle(color: CustomColorTheme.primaryColor),
+                        ),
+                      )),
+                ),
               ],
             ),
           ),

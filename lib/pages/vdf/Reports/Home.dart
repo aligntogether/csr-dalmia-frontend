@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/common/build_drawer.dart';
@@ -11,6 +13,8 @@ import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class HomeReport extends StatefulWidget {
   const HomeReport({super.key});
@@ -52,6 +56,63 @@ class _HomeReportState extends State<HomeReport> {
     }
   }
 
+  Map<String, dynamic>? reportData;
+
+  Future<void> fetchReportData(
+      // DateTime startDate, DateTime endDate
+      ) async {
+    // final formattedStartDate = DateFormat('dd-MM-yyyy').format(startDate);
+    // final formattedEndDate = DateFormat('dd-MM-yyyy').format(endDate);
+
+    final apiUrl =
+        // 'http://192.168.1.28:8080/vdf-report?vdfId=10001&fromDate=$formattedStartDate&toDate=$formattedEndDate';
+        'http://192.168.1.28:8080/vdf-report?vdfId=10001&fromDate=23-09-2023&toDate=24-12-2023';
+
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      final respBody = jsonResponse['resp_body'];
+
+      setState(() {
+        reportData = respBody;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    fetchReportData(
+        // _startDate!, _endDate!
+        );
+    super.initState();
+  }
+
+  DateTime? _startDate;
+  DateTime? _endDate;
+
+  Future<void> _selectDateRange(BuildContext context) async {
+    final picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2025),
+      initialDateRange: _startDate != null && _endDate != null
+          ? DateTimeRange(start: _startDate!, end: _endDate!)
+          : null,
+    );
+
+    if (picked != null && picked.start != null && picked.end != null) {
+      setState(() {
+        _startDate = picked.start;
+        _endDate = picked.end;
+      });
+    }
+  }
+
+  String _formatDate(DateTime date) {
+    return DateFormat('dd-MM-yyyy').format(date);
+  }
+
   int selectedIndex = 0;
 
   @override
@@ -76,26 +137,7 @@ class _HomeReportState extends State<HomeReport> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    TextButton.icon(
-                        style: TextButton.styleFrom(
-                            backgroundColor: const Color(0xFF008CD3),
-                            foregroundColor: Colors.white),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return ReportPopupWidget(context);
-                            },
-                          );
-                        },
-                        icon: const Icon(Icons.folder_outlined),
-                        label: const Text(
-                          'View other Reports',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        )),
+                    viewotherbtn(context),
                     const SizedBox(height: 00),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,16 +181,19 @@ class _HomeReportState extends State<HomeReport> {
                                 ),
                               ),
                               TextButton.icon(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    Icons.calendar_month_outlined,
-                                    color: CustomColorTheme.iconColor,
-                                  ),
-                                  label: const Text(
-                                    '01 Jan 2021 - 01 Jan 2023',
-                                    style: TextStyle(
-                                        color: CustomColorTheme.primaryColor),
-                                  )),
+                                onPressed: () => _selectDateRange(context),
+                                icon: const Icon(
+                                  Icons.calendar_month_outlined,
+                                  color: CustomColorTheme.iconColor,
+                                ),
+                                label: Text(
+                                  _startDate != null && _endDate != null
+                                      ? '${_formatDate(_startDate!)} - ${_formatDate(_endDate!)}'
+                                      : 'Select Date Range',
+                                  style: TextStyle(
+                                      color: CustomColorTheme.primaryColor),
+                                ),
+                              ),
                               const Divider(
                                 color: Colors
                                     .grey, // Add your desired color for the line
@@ -174,29 +219,39 @@ class _HomeReportState extends State<HomeReport> {
                                 ],
                                 rows: <DataRow>[
                                   celldata('Total Households in working area',
-                                      '2473'),
-                                  celldata('Total Households mapped', '2473'),
+                                      reportData?['totalHouseholdsInWorkArea']),
+                                  celldata('Total Households mapped',
+                                      reportData?['totalHouseholdsMapped']),
                                   celldata(
                                       'Total Households selected for Intervention',
-                                      '2473'),
+                                      reportData?[
+                                          'totalHouseholdsSelectedForIntervention']),
+                                  celldata('Total Interventions planned',
+                                      reportData?['totalInterventionsPlanned']),
                                   celldata(
-                                      'Total Interventions planned', '2473'),
-                                  celldata(
-                                      'Total Interventions completed', '2473'),
+                                      'Total Interventions completed',
+                                      reportData?[
+                                          'totalInterventionsCompleted']),
                                   celldata(
                                       'Households earning additional income',
-                                      '2473'),
-
+                                      reportData == null
+                                          ? '000'
+                                          : reportData![
+                                              'householdsEarningAdditionalIncome']),
+                                  celldata('Zero addl. income',
+                                      reportData?['zeroAdditionalIncome']),
+                                  celldata('Rs.25K - Rs.50K addl. income',
+                                      reportData?['between25KTO50KIncome']),
+                                  celldata('Rs.50K - Rs.75K addl. income',
+                                      reportData?['between50KTO75KIncome']),
+                                  celldata('Rs.75K - Rs.1L addl. income',
+                                      reportData?['between75KTO1LIncome']),
+                                  celldata('More than Rs.1L addl. income',
+                                      reportData?['moreThan1LIncome']),
                                   celldata(
-                                      'Rs.25K - Rs.50K addl. income', '2473'),
-                                  celldata(
-                                      'Rs.50K - Rs.75K addl. income', '2473'),
-                                  celldata(
-                                      'Rs.75K - Rs.1L addl. income', '2473'),
-                                  celldata(
-                                      'More than Rs.1L addl. income', '2473'),
-                                  celldata(
-                                      'Aggregated additional income', '2473'),
+                                      'Aggregated additional income',
+                                      reportData?['aggregatedAdditionalIncome']
+                                          .toString()),
 
                                   // Add more rows as needed
                                 ],
@@ -257,7 +312,7 @@ class _HomeReportState extends State<HomeReport> {
   }
 }
 
-DataRow celldata(String left, String right) {
+DataRow celldata(String left, Object? right) {
   return DataRow(
     cells: <DataCell>[
       DataCell(
@@ -270,12 +325,48 @@ DataRow celldata(String left, String right) {
       ),
       DataCell(
         Text(
-          right,
+          right != null ? right.toString() : "0000",
           style: const TextStyle(
               fontSize: CustomFontTheme.textSize,
               fontWeight: CustomFontTheme.headingwt),
         ),
       ),
     ],
+  );
+}
+
+Container viewotherbtn(BuildContext context) {
+  return Container(
+    decoration: ShapeDecoration(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+      shadows: [
+        BoxShadow(
+          color: Color(0x19000000),
+          blurRadius: 10,
+          offset: Offset(0, 5),
+          spreadRadius: 0,
+        )
+      ],
+    ),
+    child: TextButton.icon(
+        style: TextButton.styleFrom(
+            backgroundColor: const Color(0xFF008CD3),
+            foregroundColor: Colors.white),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return ReportPopupWidget(context);
+            },
+          );
+        },
+        icon: const Icon(Icons.folder_outlined),
+        label: const Text(
+          'View other Reports',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        )),
   );
 }

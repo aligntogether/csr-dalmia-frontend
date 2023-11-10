@@ -20,8 +20,8 @@ class CustomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 120,
-      height: 160,
+      width: 110,
+      height: 150,
       child: Card(
         color: bg,
         // elevation: 4.0,

@@ -143,7 +143,10 @@ class _VdfHomeState extends State<VdfHome> {
       ),
       body: Stack(
         children: [
-          Center(child: DashTab()),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: DashTab(),
+          ),
           // Add the drawer as a positioned widget
           if (toggle == true) const DrawerWidget()
 

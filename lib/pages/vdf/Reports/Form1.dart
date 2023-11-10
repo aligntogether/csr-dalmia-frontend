@@ -2,6 +2,7 @@ import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
+import 'package:dalmia/pages/vdf/Reports/home.dart';
 
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
@@ -96,28 +97,8 @@ class _Form1State extends State<Form1> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: TextButton.icon(
-                          style: TextButton.styleFrom(
-                              backgroundColor: const Color(0xFF008CD3),
-                              foregroundColor: Colors.white),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return ReportPopupWidget(context);
-                              },
-                            );
-                          },
-                          icon: const Icon(Icons.folder_outlined),
-                          label: const Text(
-                            'View other Reports',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          )),
-                    ),
+                        padding: const EdgeInsets.only(right: 20),
+                        child: viewotherbtn(context)),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -134,100 +115,115 @@ class _Form1State extends State<Form1> {
                     ),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        headingRowColor: MaterialStateColor.resolveWith(
-                            (states) => Colors.blue),
-                        columns: const <DataColumn>[
-                          DataColumn(
-                            label: Text(
-                              'Panchayat',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: CustomFontTheme.headingwt),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        elevation: 5,
+                        child: DataTable(
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF008CD3),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
                             ),
                           ),
-                          DataColumn(
-                            label: Text(
-                              'Village',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: CustomFontTheme.headingwt),
+                          // headingRowColor: MaterialStateColor.resolveWith(
+                          //     (states) => Color(0xFF008CD3)),
+                          columns: const <DataColumn>[
+                            DataColumn(
+                              label: Text(
+                                'Panchayat',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: CustomFontTheme.headingwt),
+                              ),
                             ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'Household',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: CustomFontTheme.headingwt),
+                            DataColumn(
+                              label: Text(
+                                'Village',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: CustomFontTheme.headingwt),
+                              ),
                             ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'Population',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: CustomFontTheme.headingwt),
+                            DataColumn(
+                              label: Text(
+                                'Household',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: CustomFontTheme.headingwt),
+                              ),
                             ),
-                          ),
-                        ],
-                        rows: List<DataRow>.generate(
-                          11,
-                          (index) {
-                            if (index < 10) {
-                              return DataRow(
-                                color: MaterialStateColor.resolveWith(
-                                  (states) {
-                                    // Alternating row colors
-                                    return index.isOdd
-                                        ? Colors.lightBlue[50] as Color
-                                        : Colors.white;
-                                  },
-                                ),
-                                cells: <DataCell>[
-                                  DataCell(Text(
-                                    'Panchayat $index',
-                                    style: TextStyle(fontSize: 14),
-                                  )),
-                                  DataCell(Text('Village $index',
-                                      style: TextStyle(fontSize: 14))),
-                                  DataCell(Text('${householdList[index]}',
-                                      style: TextStyle(fontSize: 14))),
-                                  DataCell(Text('${populationList[index]}',
-                                      style: TextStyle(fontSize: 14))),
-                                ],
-                              );
-                            } else {
-                              final totalHouseholds =
-                                  householdList.reduce((a, b) => a + b);
-                              final totalPopulation =
-                                  populationList.reduce((a, b) => a + b);
-                              return DataRow(
-                                cells: <DataCell>[
-                                  const DataCell(Text('')),
-                                  const DataCell(Text(
-                                    'Total',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  )),
-                                  DataCell(
-                                    Text(
-                                      '$totalHouseholds',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
+                            DataColumn(
+                              label: Text(
+                                'Population',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: CustomFontTheme.headingwt),
+                              ),
+                            ),
+                          ],
+                          rows: List<DataRow>.generate(
+                            11,
+                            (index) {
+                              if (index < 10) {
+                                return DataRow(
+                                  color: MaterialStateColor.resolveWith(
+                                    (states) {
+                                      // Alternating row colors
+                                      return index.isOdd
+                                          ? Colors.blue.shade50
+                                          : Colors.white;
+                                    },
                                   ),
-                                  DataCell(
-                                    Text(
-                                      '$totalPopulation',
-                                      style: const TextStyle(
+                                  cells: <DataCell>[
+                                    DataCell(Text(
+                                      'Panchayat $index',
+                                      style: TextStyle(fontSize: 14),
+                                    )),
+                                    DataCell(Text('Village $index',
+                                        style: TextStyle(fontSize: 14))),
+                                    DataCell(Text('${householdList[index]}',
+                                        style: TextStyle(fontSize: 14))),
+                                    DataCell(Text('${populationList[index]}',
+                                        style: TextStyle(fontSize: 14))),
+                                  ],
+                                );
+                              } else {
+                                final totalHouseholds =
+                                    householdList.reduce((a, b) => a + b);
+                                final totalPopulation =
+                                    populationList.reduce((a, b) => a + b);
+                                return DataRow(
+                                  color: MaterialStateColor.resolveWith(
+                                      (states) => Colors.white),
+                                  cells: <DataCell>[
+                                    const DataCell(Text('')),
+                                    const DataCell(Text(
+                                      'Total',
+                                      style: TextStyle(
                                           fontWeight: FontWeight.bold),
+                                    )),
+                                    DataCell(
+                                      Text(
+                                        '$totalHouseholds',
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              );
-                            }
-                          },
+                                    DataCell(
+                                      Text(
+                                        '$totalPopulation',
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }
+                            },
+                          ),
                         ),
                       ),
                     )
@@ -239,38 +235,41 @@ class _Form1State extends State<Form1> {
         ),
         bottomNavigationBar: BottomAppBar(
           elevation: 10,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              CustomTabItem(
-                imagePath: 'images/Dashboard_Outline.svg',
-                label: "Dashboard",
-                index: 0,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-              CustomTabItem(
-                imagePath: 'images/Household_Outline.svg',
-                label: "Add Household",
-                index: 1,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-              CustomTabItem(
-                imagePath: 'images/Street_Outline.svg',
-                label: "Add Street",
-                index: 2,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-              CustomTabItem(
-                imagePath: 'images/Drafts_Outline.svg',
-                label: "Drafts",
-                index: 3,
-                selectedIndex: selectedIndex,
-                onTabTapped: _onTabTapped,
-              ),
-            ],
+          child: SizedBox(
+            height: 67,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                CustomTabItem(
+                  imagePath: 'images/Dashboard_Outline.svg',
+                  label: "Dashboard",
+                  index: 0,
+                  selectedIndex: 5,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Household_Outline.svg',
+                  label: "Add Household",
+                  index: 1,
+                  selectedIndex: 5,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Street_Outline.svg',
+                  label: "Add Street",
+                  index: 2,
+                  selectedIndex: 5,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Drafts_Outline.svg',
+                  label: "Drafts",
+                  index: 3,
+                  selectedIndex: 5,
+                  onTabTapped: _onTabTapped,
+                ),
+              ],
+            ),
           ),
         ),
       ),

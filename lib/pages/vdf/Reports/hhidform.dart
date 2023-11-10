@@ -5,6 +5,7 @@ import 'package:dalmia/pages/vdf/Draft/draft.dart';
 
 import 'package:dalmia/pages/vdf/Reports/cumulative.dart';
 import 'package:dalmia/pages/vdf/Reports/form1.dart';
+import 'package:dalmia/pages/vdf/Reports/home.dart';
 
 import 'package:dalmia/pages/vdf/Reports/leverwise.dart';
 
@@ -113,29 +114,7 @@ class _HhidFormState extends State<HhidForm> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: TextButton.icon(
-                          style: TextButton.styleFrom(
-                              backgroundColor: const Color(0xFF008CD3),
-                              foregroundColor: Colors.white),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return ReportPopupWidget(context);
-                              },
-                            );
-                          },
-                          icon: const Icon(Icons.folder_outlined),
-                          label: const Text(
-                            'View other Reports',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          )),
-                    ),
+                    viewotherbtn(context),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -153,156 +132,168 @@ class _HhidFormState extends State<HhidForm> {
                       ),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        child: DataTable(
-                          columns: const <DataColumn>[
-                            DataColumn(
-                              label: Text(
-                                'HHID',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          elevation: 5,
+                          child: DataTable(
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
                               ),
                             ),
-                            DataColumn(
-                              label: Text(
-                                'Selected',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
+                            columns: const <DataColumn>[
+                              DataColumn(
+                                label: Text(
+                                  'HHID',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
                               ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Names',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
+                              DataColumn(
+                                label: Text(
+                                  'Selected',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
                               ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Intervention planned',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
+                              DataColumn(
+                                label: Text(
+                                  'Names',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
                               ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Intervention completed',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
+                              DataColumn(
+                                label: Text(
+                                  'Intervention planned',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
                               ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Expected additional income p/a',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
+                              DataColumn(
+                                label: Text(
+                                  'Intervention completed',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
                               ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Actual annual income',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
+                              DataColumn(
+                                label: Text(
+                                  'Expected additional income p/a',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
                               ),
-                            ),
-                            DataColumn(
-                              label: Row(
-                                children: [
-                                  Text(
-                                    'Follow ups for income update',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
+                              DataColumn(
+                                label: Text(
+                                  'Actual annual income',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Row(
+                                  children: [
+                                    Text(
+                                      'Follow ups for income update',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text('int.1',
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                        Text('int.2',
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                        Text('int.3',
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                        Text('int.4',
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                        Text('int.5',
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                            headingRowColor: MaterialStateColor.resolveWith(
+                                (states) => Color(0xFF008CD3)),
+                            rows: <DataRow>[
+                              DataRow(
+                                cells: <DataCell>[
+                                  DataCell(
+                                    InkWell(
+                                      onTap: () {
+                                        _takeaction(context);
+                                      },
+                                      child: const Text(
+                                        'AROKSKTS001',
+                                        style: TextStyle(
+                                          color: CustomColorTheme.iconColor,
+                                          decoration: TextDecoration.underline,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                  Row(
-                                    children: [
-                                      Text('int.1',
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                      Text('int.2',
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                      Text('int.3',
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                      Text('int.4',
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                      Text('int.5',
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                    ],
-                                  ),
+                                  const DataCell(Text('Yes')),
+                                  const DataCell(Text('John Doe')),
+                                  const DataCell(Text('Intervention 1')),
+                                  const DataCell(Text('Yes')),
+                                  const DataCell(Text('500')),
+                                  const DataCell(Text('600')),
+                                  const DataCell(Text('')),
                                 ],
                               ),
-                            ),
-                          ],
-                          headingRowColor: MaterialStateColor.resolveWith(
-                              (states) => CustomColorTheme.secondaryColor),
-                          rows: <DataRow>[
-                            DataRow(
-                              cells: <DataCell>[
-                                DataCell(
-                                  InkWell(
-                                    onTap: () {
-                                      _takeaction(context);
-                                    },
-                                    child: const Text(
-                                      'AROKSKTS001',
-                                      style: TextStyle(
-                                        color: CustomColorTheme.iconColor,
-                                        decoration: TextDecoration.underline,
-                                        fontWeight: FontWeight.bold,
+                              DataRow(
+                                cells: <DataCell>[
+                                  DataCell(
+                                    InkWell(
+                                      onTap: () {},
+                                      child: const Text(
+                                        'AROKSKTS002',
+                                        style: TextStyle(
+                                          color: CustomColorTheme.iconColor,
+                                          decoration: TextDecoration.underline,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                const DataCell(Text('Yes')),
-                                const DataCell(Text('John Doe')),
-                                const DataCell(Text('Intervention 1')),
-                                const DataCell(Text('Yes')),
-                                const DataCell(Text('500')),
-                                const DataCell(Text('600')),
-                                const DataCell(Text('')),
-                              ],
-                            ),
-                            DataRow(
-                              cells: <DataCell>[
-                                DataCell(
-                                  InkWell(
-                                    onTap: () {},
-                                    child: const Text(
-                                      'AROKSKTS002',
-                                      style: TextStyle(
-                                        color: CustomColorTheme.iconColor,
-                                        decoration: TextDecoration.underline,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const DataCell(Text('No')),
-                                const DataCell(Text('Jane Smith')),
-                                const DataCell(Text('Intervention 2')),
-                                const DataCell(Text('No')),
-                                const DataCell(Text('300')),
-                                const DataCell(Text('400')),
-                                const DataCell(Text('')),
-                              ],
-                            ),
-                          ],
+                                  const DataCell(Text('No')),
+                                  const DataCell(Text('Jane Smith')),
+                                  const DataCell(Text('Intervention 2')),
+                                  const DataCell(Text('No')),
+                                  const DataCell(Text('300')),
+                                  const DataCell(Text('400')),
+                                  const DataCell(Text('')),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       )
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Row(
@@ -310,9 +301,9 @@ class _HhidFormState extends State<HhidForm> {
                   children: [
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            side: BorderSide(
+                            side: const BorderSide(
                                 width: 1, color: CustomColorTheme.primaryColor),
-                            minimumSize: const Size(200, 50),
+                            minimumSize: const Size(80, 50),
                             backgroundColor: CustomColorTheme.backgroundColor),
                         onPressed: () {},
                         child: Row(
@@ -327,8 +318,8 @@ class _HhidFormState extends State<HhidForm> {
                         )),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(200, 50),
-                            side: BorderSide(
+                            minimumSize: const Size(80, 50),
+                            side: const BorderSide(
                                 width: 1, color: CustomColorTheme.primaryColor),
                             backgroundColor: CustomColorTheme.backgroundColor),
                         onPressed: () {},
@@ -401,16 +392,18 @@ class _HhidFormState extends State<HhidForm> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
               title: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                // crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'What action do you wish to \n take for HHID - AROKSKTS001',
-                        style: TextStyle(
+                      const Expanded(
+                        child: Text(
+                          'What action do you wish to take for HHID - AROKSKTS001',
+                          style: TextStyle(
                             fontSize: CustomFontTheme.textSize,
-                            fontWeight: CustomFontTheme.headingwt),
+                            fontWeight: CustomFontTheme.headingwt,
+                          ),
+                        ),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -752,7 +745,7 @@ class _HhidFormState extends State<HhidForm> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => UpdateIntervention(),
+                            builder: (context) => const UpdateIntervention(),
                           ),
                         );
                       },

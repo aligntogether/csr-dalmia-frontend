@@ -2,10 +2,12 @@ import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
+import 'package:dalmia/pages/vdf/Reports/home.dart';
 
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
@@ -95,66 +97,58 @@ class _LivehoodPlanState extends State<LivehoodPlan> {
                         ],
                       ),
                     ),
-                    TextButton.icon(
-                        style: TextButton.styleFrom(
-                            backgroundColor: const Color(0xFF008CD3),
-                            foregroundColor: Colors.white),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return ReportPopupWidget(context);
-                            },
-                          );
-                        },
-                        icon: const Icon(Icons.folder_outlined),
-                        label: const Text(
-                          'View other Reports',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        )),
+                    viewotherbtn(context),
                   ],
                 ),
                 const SizedBox(height: 20),
                 Center(
                   child: Column(
                     children: [
-                      const Text(' Livelihood Funds Utilization'),
+                      const Text(
+                        ' Livelihood Funds Utilization',
+                        style: TextStyle(
+                            fontSize: CustomFontTheme.textSize,
+                            fontWeight: FontWeight.w700),
+                      ),
                       const SizedBox(
                         height: 20,
                       ),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        child: DataTable(
-                          headingRowHeight: 0.0,
-                          columns: const <DataColumn>[
-                            DataColumn(label: Text('Sno.')),
-                            DataColumn(label: Text('Business Plan Titles')),
-                          ],
-                          rows: List<DataRow>.generate(
-                            3,
-                            (index) {
-                              return DataRow(
-                                color: MaterialStateColor.resolveWith(
-                                  (states) {
-                                    // Alternating row colors
-                                    return index.isOdd
-                                        ? Colors.lightBlue[50] as Color
-                                        : Colors.white as Color;
-                                  },
-                                ),
-                                cells: const <DataCell>[
-                                  DataCell(Text('Allocated(Rs.)')),
-                                  DataCell(Text('5000')),
-                                ],
-                              );
-                            },
+                        child: Card(
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          child: DataTable(
+                            headingRowHeight: 0.0,
+                            columns: const <DataColumn>[
+                              DataColumn(label: Text('Sno.')),
+                              DataColumn(label: Text('Business Plan Titles')),
+                            ],
+                            rows: List<DataRow>.generate(
+                              3,
+                              (index) {
+                                return DataRow(
+                                  color: MaterialStateColor.resolveWith(
+                                    (states) {
+                                      // Alternating row colors
+                                      return index.isOdd
+                                          ? Colors.lightBlue[50] as Color
+                                          : Colors.white as Color;
+                                    },
+                                  ),
+                                  cells: const <DataCell>[
+                                    DataCell(Text('Allocated(Rs.)')),
+                                    DataCell(Text('5000')),
+                                  ],
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),
-                      const Text('Last updated on:12/07/23')
+                      // const Text('Last updated on:12/07/23')
                     ],
                   ),
                 )

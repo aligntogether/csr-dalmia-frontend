@@ -2,9 +2,11 @@ import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
+import 'package:dalmia/pages/vdf/Reports/home.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
@@ -94,81 +96,78 @@ class _BusinessPlanState extends State<BusinessPlan> {
                         ],
                       ),
                     ),
-                    TextButton.icon(
-                        style: TextButton.styleFrom(
-                            backgroundColor: const Color(0xFF008CD3),
-                            foregroundColor: Colors.white),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return ReportPopupWidget(context);
-                            },
-                          );
-                        },
-                        icon: const Icon(Icons.folder_outlined),
-                        label: const Text(
-                          'View other Reports',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        )),
+                    viewotherbtn(context),
                   ],
                 ),
                 const SizedBox(height: 20),
                 Center(
                   child: Column(
                     children: [
-                      const Text(' Business Plans Engaged'),
+                      const Text(
+                        ' Business Plans Engaged',
+                        style: TextStyle(
+                            fontSize: CustomFontTheme.textSize,
+                            fontWeight: FontWeight.w700),
+                      ),
                       const SizedBox(
                         height: 20,
                       ),
                       SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
-                          child: DataTable(
-                            headingRowColor: MaterialStateColor.resolveWith(
-                                (states) => Colors.blue),
-                            columns: const [
-                              DataColumn(
-                                label: Text(
-                                  'Sno.',
-                                  style: TextStyle(color: Colors.white),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            elevation: 5,
+                            child: DataTable(
+                              decoration: const BoxDecoration(
+                                color: Color(0xFF008CD3),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10),
                                 ),
                               ),
-                              DataColumn(
-                                label: Text(
-                                  'Business Plan Titles',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  'Total HHs',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ],
-                            rows: List<DataRow>.generate(
-                              10,
-                              (index) {
-                                return DataRow(
-                                  color: MaterialStateColor.resolveWith(
-                                    (states) {
-                                      // Alternating row colors
-                                      return index.isOdd
-                                          ? Colors.lightBlue[50] as Color
-                                          : Colors.white as Color;
-                                    },
+                              columns: const [
+                                DataColumn(
+                                  label: Text(
+                                    'Sno.',
+                                    style: TextStyle(color: Colors.white),
                                   ),
-                                  cells: <DataCell>[
-                                    DataCell(Text(' $index')),
-                                    DataCell(Text('Village $index')),
-                                    DataCell(Text('${householdList[index]}')),
-                                    // Assuming incomeList is the list of average income per interaction
-                                  ],
-                                );
-                              },
+                                ),
+                                DataColumn(
+                                  label: Text(
+                                    'Business Plan Titles',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: Text(
+                                    'Total HHs',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                              rows: List<DataRow>.generate(
+                                10,
+                                (index) {
+                                  return DataRow(
+                                    color: MaterialStateColor.resolveWith(
+                                      (states) {
+                                        // Alternating row colors
+                                        return index.isOdd
+                                            ? Colors.lightBlue[50] as Color
+                                            : Colors.white as Color;
+                                      },
+                                    ),
+                                    cells: <DataCell>[
+                                      DataCell(Text(' $index')),
+                                      DataCell(Text('Village $index')),
+                                      DataCell(Text('${householdList[index]}')),
+                                      // Assuming incomeList is the list of average income per interaction
+                                    ],
+                                  );
+                                },
+                              ),
                             ),
                           ))
                     ],

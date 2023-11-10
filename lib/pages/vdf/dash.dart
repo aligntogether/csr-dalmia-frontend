@@ -35,8 +35,8 @@ class DashTab extends StatelessWidget {
                           imageUrl: 'images/t_house.svg',
                           subtitle: 'Total Household',
                           title: '150',
-                          bg: Color(0xFFB94216).withOpacity(0.4),
-                          // bg: const Color.fromARGB(255, 252, 215, 184),
+
+                          bg: const Color.fromARGB(255, 252, 215, 184),
                           // bg: Colors.white,
                           textcolor: const Color(0xFFB94216),
                         ),
@@ -171,13 +171,13 @@ class DashTab extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.only(left: 10),
+                  padding: const EdgeInsets.only(left: 00),
                   child: FractionallySizedBox(
                     widthFactor: 1.0,
                     child: Wrap(
-                      alignment: WrapAlignment.spaceEvenly,
-                      spacing: 10,
-                      runSpacing: 20, // Adjust this value as needed
+                      alignment: WrapAlignment.spaceAround,
+                      // spacing: 10,
+                      // runSpacing: 20, // Adjust this value as needed
                       children: [
                         CustomCard(
                           imageUrl: 'images/income.svg',

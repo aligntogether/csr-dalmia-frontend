@@ -2,6 +2,7 @@ import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
+import 'package:dalmia/pages/vdf/Reports/home.dart';
 
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
@@ -96,26 +97,7 @@ class _Top20State extends State<Top20> {
                         ],
                       ),
                     ),
-                    TextButton.icon(
-                        style: TextButton.styleFrom(
-                            backgroundColor: const Color(0xFF008CD3),
-                            foregroundColor: Colors.white),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return ReportPopupWidget(context);
-                            },
-                          );
-                        },
-                        icon: const Icon(Icons.folder_outlined),
-                        label: const Text(
-                          'View other Reports',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        )),
+                    viewotherbtn(context),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -133,49 +115,60 @@ class _Top20State extends State<Top20> {
                       ),
                       SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
-                          child: DataTable(
-                            headingRowColor: MaterialStateColor.resolveWith(
-                                (states) => Colors.blue),
-                            columns: const [
-                              DataColumn(
-                                label: Text(
-                                  'Code',
-                                  style: TextStyle(color: Colors.white),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            elevation: 5,
+                            child: DataTable(
+                              decoration: const BoxDecoration(
+                                color: Color(0xFF008CD3),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10),
                                 ),
                               ),
-                              DataColumn(
-                                label: Text(
-                                  'Name',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  'Actual annual updated so far',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ],
-                            rows: List<DataRow>.generate(
-                              10,
-                              (index) {
-                                return DataRow(
-                                  color: MaterialStateColor.resolveWith(
-                                    (states) {
-                                      // Alternating row colors
-                                      return index.isOdd
-                                          ? Colors.lightBlue[50] as Color
-                                          : Colors.white;
-                                    },
+                              columns: const [
+                                DataColumn(
+                                  label: Text(
+                                    'Code',
+                                    style: TextStyle(color: Colors.white),
                                   ),
-                                  cells: <DataCell>[
-                                    DataCell(Text('Panchayat $index')),
-                                    DataCell(Text('Village $index')),
-                                    DataCell(Text('${householdList[index]}')),
-                                    // Assuming incomeList is the list of average income per interaction
-                                  ],
-                                );
-                              },
+                                ),
+                                DataColumn(
+                                  label: Text(
+                                    'Name',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: Text(
+                                    'Actual annual updated so far',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                              rows: List<DataRow>.generate(
+                                10,
+                                (index) {
+                                  return DataRow(
+                                    color: MaterialStateColor.resolveWith(
+                                      (states) {
+                                        // Alternating row colors
+                                        return index.isOdd
+                                            ? Colors.lightBlue[50] as Color
+                                            : Colors.white;
+                                      },
+                                    ),
+                                    cells: <DataCell>[
+                                      DataCell(Text('Panchayat $index')),
+                                      DataCell(Text('Village $index')),
+                                      DataCell(Text('${householdList[index]}')),
+                                      // Assuming incomeList is the list of average income per interaction
+                                    ],
+                                  );
+                                },
+                              ),
                             ),
                           ))
                     ],
