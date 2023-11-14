@@ -72,74 +72,84 @@ class _DraftState extends State<Draft> {
               const SizedBox(
                 height: 20,
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  headingRowColor:
-                      MaterialStateColor.resolveWith((states) => Colors.blue),
-                  columns: const <DataColumn>[
-                    DataColumn(
-                      label: Text(
-                        ' ',
-                        style: TextStyle(color: Colors.white),
+              Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
                       ),
                     ),
-                    DataColumn(
-                      label:
-                          Text('Date', style: TextStyle(color: Colors.white)),
+                    headingRowColor: MaterialStateColor.resolveWith(
+                      (states) => Color(0xFF008CD3),
                     ),
-                    DataColumn(
-                      label: Text('Head Name',
-                          style: TextStyle(color: Colors.white)),
-                    ),
-                    DataColumn(
-                      label:
-                          Text('Street', style: TextStyle(color: Colors.white)),
-                    ),
-                    DataColumn(
-                      label: Text('Village',
-                          style: TextStyle(color: Colors.white)),
-                    ),
-                  ],
-                  rows: <DataRow>[
-                    DataRow(
-                      cells: <DataCell>[
-                        DataCell(
-                          Checkbox(
-                            value: false,
-                            onChanged: (value) {},
-                          ),
+                    columns: const <DataColumn>[
+                      DataColumn(
+                        label: Text(
+                          ' ',
+                          style: TextStyle(color: Colors.white),
                         ),
-                        const DataCell(Text(
-                            '2023-10-31')), // Placeholder date, replace with actual data
-                        const DataCell(Text(
-                            'John Doe')), // Placeholder name, replace with actual data
-                        const DataCell(Text(
-                            'Main Street')), // Placeholder street, replace with actual data
-                        const DataCell(Text('Rural Village')),
-                      ],
-                    ),
-                    DataRow(
-                      color: MaterialStateColor.resolveWith(
-                          (states) => Colors.lightBlue[50]!),
-                      cells: <DataCell>[
-                        DataCell(
-                          Checkbox(
-                            value: false,
-                            onChanged: (value) {},
+                      ),
+                      DataColumn(
+                        label:
+                            Text('Date', style: TextStyle(color: Colors.white)),
+                      ),
+                      DataColumn(
+                        label: Text('Family\n Head Name',
+                            style: TextStyle(color: Colors.white)),
+                      ),
+                      DataColumn(
+                        label: Text('Street',
+                            style: TextStyle(color: Colors.white)),
+                      ),
+                      DataColumn(
+                        label: Text('Village',
+                            style: TextStyle(color: Colors.white)),
+                      ),
+                    ],
+                    rows: <DataRow>[
+                      DataRow(
+                        cells: <DataCell>[
+                          DataCell(
+                            Checkbox(
+                              value: false,
+                              onChanged: (value) {},
+                            ),
                           ),
-                        ),
-                        const DataCell(Text(
-                            '2023-10-31')), // Placeholder date, replace with actual data
-                        const DataCell(Text(
-                            'John Doe')), // Placeholder name, replace with actual data
-                        const DataCell(Text(
-                            'Main Street')), // Placeholder street, replace with actual data
-                        const DataCell(Text('Rural Village')),
-                      ],
-                    ),
-                    // Add more DataRows as needed
-                  ],
+                          const DataCell(Text(
+                              '2023-10-31')), // Placeholder date, replace with actual data
+                          const DataCell(Text(
+                              'John Doe')), // Placeholder name, replace with actual data
+                          const DataCell(Text(
+                              'Main Street')), // Placeholder street, replace with actual data
+                          const DataCell(Text('Rural Village')),
+                        ],
+                      ),
+                      DataRow(
+                        color: MaterialStateColor.resolveWith(
+                            (states) => Colors.lightBlue[50]!),
+                        cells: <DataCell>[
+                          DataCell(
+                            Checkbox(
+                              value: false,
+                              onChanged: (value) {},
+                            ),
+                          ),
+                          const DataCell(Text(
+                              '2023-10-31')), // Placeholder date, replace with actual data
+                          const DataCell(Text(
+                              'John Doe')), // Placeholder name, replace with actual data
+                          const DataCell(Text(
+                              'Main Street')), // Placeholder street, replace with actual data
+                          const DataCell(Text('Rural Village')),
+                        ],
+                      ),
+                      // Add more DataRows as needed
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(
@@ -215,7 +225,7 @@ class _DraftState extends State<Draft> {
                   onTabTapped: _onTabTapped,
                 ),
                 CustomTabItem(
-                  imagePath: 'images/Drafts_filled.svg',
+                  imagePath: 'images/draftfill.svg',
                   label: "Drafts",
                   index: 3,
                   selectedIndex: 3,

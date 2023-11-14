@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
@@ -9,6 +11,7 @@ import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:http/http.dart' as http;
 
 class BusinessPlan extends StatefulWidget {
   const BusinessPlan({Key? key}) : super(key: key);
@@ -52,16 +55,37 @@ class _BusinessPlanState extends State<BusinessPlan> {
     }
   }
 
+  List<Map<String, dynamic>> businessData = []; // List to store API data
+
+  @override
+  void initState() {
+    super.initState();
+    fetchbusinessData(); // Call the method to fetch API data when the page initializes
+  }
+
+  Future<void> fetchbusinessData() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'http://192.168.1.24:8080/get-business-plans-engaged?vdfId=10001'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        setState(() {
+          businessData = List<Map<String, dynamic>>.from(jsonData['resp_body']);
+        });
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Random random = Random();
-    final List<int> householdList =
-        List.generate(10, (index) => random.nextInt(100));
-    // final List<int> populationList =
-    //     List.generate(10, (index) => random.nextInt(100));
-    // final List<int> incomeList =
-    //     List.generate(10, (index) => random.nextInt(100));
-    ;
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
@@ -113,63 +137,64 @@ class _BusinessPlanState extends State<BusinessPlan> {
                         height: 20,
                       ),
                       SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            elevation: 5,
-                            child: DataTable(
-                              decoration: const BoxDecoration(
-                                color: Color(0xFF008CD3),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10),
-                                ),
-                              ),
-                              columns: const [
-                                DataColumn(
-                                  label: Text(
-                                    'Sno.',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                DataColumn(
-                                  label: Text(
-                                    'Business Plan Titles',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                DataColumn(
-                                  label: Text(
-                                    'Total HHs',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ],
-                              rows: List<DataRow>.generate(
-                                10,
-                                (index) {
-                                  return DataRow(
-                                    color: MaterialStateColor.resolveWith(
-                                      (states) {
-                                        // Alternating row colors
-                                        return index.isOdd
-                                            ? Colors.lightBlue[50] as Color
-                                            : Colors.white as Color;
-                                      },
-                                    ),
-                                    cells: <DataCell>[
-                                      DataCell(Text(' $index')),
-                                      DataCell(Text('Village $index')),
-                                      DataCell(Text('${householdList[index]}')),
-                                      // Assuming incomeList is the list of average income per interaction
-                                    ],
-                                  );
-                                },
+                        scrollDirection: Axis.horizontal,
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          elevation: 5,
+                          child: DataTable(
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF008CD3),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
                               ),
                             ),
-                          ))
+                            columns: const [
+                              DataColumn(
+                                label: Text(
+                                  'Sno.',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Business Plan Titles',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Total HHs',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ],
+                            rows: businessData.map<DataRow>((data) {
+                              return DataRow(
+                                color: MaterialStateColor.resolveWith(
+                                  (states) {
+                                    // Alternating row colors
+                                    return businessData.indexOf(data).isOdd
+                                        ? Colors.lightBlue[50] as Color
+                                        : Colors.white as Color;
+                                  },
+                                ),
+                                cells: <DataCell>[
+                                  DataCell(Text((businessData.indexOf(data) + 1)
+                                      .toString())),
+                                  DataCell(
+                                      Text(data['interventionName'] ?? '')),
+                                  DataCell(Text(
+                                      data['householdCount']?.toString() ??
+                                          '')),
+                                ],
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 )

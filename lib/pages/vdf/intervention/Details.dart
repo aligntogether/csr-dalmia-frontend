@@ -5,7 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+String interventionname = '';
+
 class Details extends StatefulWidget {
+  final String? interventionname;
+
+  const Details({
+    super.key,
+    this.interventionname,
+  });
+
   @override
   _DetailsState createState() => _DetailsState();
 }

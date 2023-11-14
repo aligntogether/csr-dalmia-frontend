@@ -12,7 +12,7 @@ String selectedVillage = "";
 String selectedVillageId = "";
 
 class Panchayat {
-  final String panchayatId;
+  String panchayatId;
   final String clusterId;
   final String panchayatName;
 
@@ -128,8 +128,11 @@ class _AddStreetState extends State<AddStreet> {
           iconTheme: const IconThemeData(color: Colors.black),
           centerTitle: true,
           title: const Text(
-            'Add Household',
-            style: TextStyle(color: Colors.black),
+            'Add Street',
+            style: TextStyle(
+                color: CustomColorTheme.textColor,
+                fontSize: CustomFontTheme.headingSize,
+                fontWeight: CustomFontTheme.headingwt),
           ),
           backgroundColor: Colors.grey[50],
           actions: <Widget>[
@@ -197,13 +200,6 @@ class _AddStreetState extends State<AddStreet> {
                         ),
                         decoration: InputDecoration(
                           labelText: 'Select a Panchayat',
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -235,15 +231,6 @@ class _AddStreetState extends State<AddStreet> {
                         ),
                         decoration: InputDecoration(
                           labelText: 'Select a Village',
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.grey,
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
                         ),
                         validator: (value) {
                           if (_selectedPanchayat == null ||
@@ -257,21 +244,16 @@ class _AddStreetState extends State<AddStreet> {
                       const SizedBox(height: 20),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(350, 50),
-                          backgroundColor: _selectedPanchayat != null &&
-                                  _selectedVillage != null
-                              ? CustomColorTheme.primaryColor
-                              : const Color.fromRGBO(39, 82, 143, 0.5),
-                        ),
+                            minimumSize: const Size(350, 50),
+                            backgroundColor: _selectedPanchayat == null &&
+                                    _selectedVillage == null
+                                ? CustomColorTheme.primaryColor.withOpacity(0.7)
+                                : CustomColorTheme.primaryColor),
                         onPressed: _selectedPanchayat != null &&
                                 _selectedVillage != null
                             ? () {
                                 if (_formKey.currentState?.validate() ??
                                     false) {
-                                  // All fields are valid, you can process the data
-                                  // Perform actions with the field values
-
-                                  // Retrieve the selected panchayat and village
                                   String selectedPanchayatName = panchayats
                                       .firstWhere((element) =>
                                           element.panchayatId ==

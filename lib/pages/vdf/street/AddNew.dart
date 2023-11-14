@@ -1,18 +1,29 @@
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 class Addnew extends StatefulWidget {
+  final String? village;
+  final String? panchayat;
+  final String? villagId;
+
   const Addnew({
     super.key,
+    this.village,
+    this.panchayat,
+    this.villagId,
   });
-
   @override
   _AddnewState createState() => _AddnewState();
 }
 
 class _AddnewState extends State<Addnew> {
+  String? streetName;
+  String? streetCode;
+  int? numberOfHouseholds;
+  bool streetpresent = false;
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -59,7 +70,10 @@ class _AddnewState extends State<Addnew> {
                         color: Color.fromARGB(255, 232, 253, 233)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Text('Panchayat } '), Text('Village}')],
+                      children: [
+                        Text('Panchayat:  '),
+                        Text('Village   ${widget.village} ')
+                      ],
                     ),
                   ),
                   const SizedBox(
@@ -68,9 +82,14 @@ class _AddnewState extends State<Addnew> {
                   const SizedBox(
                     height: 20,
                   ),
-                  const SizedBox(
+                  SizedBox(
                     width: 300,
                     child: TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          streetName = value;
+                        });
+                      },
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           label: Text('Enter Street Name')),
@@ -79,9 +98,14 @@ class _AddnewState extends State<Addnew> {
                   const SizedBox(
                     height: 20,
                   ),
-                  const SizedBox(
+                  SizedBox(
                     width: 300,
                     child: TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          streetCode = value;
+                        });
+                      },
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           label: Text('Enter Street Code')),
@@ -90,9 +114,16 @@ class _AddnewState extends State<Addnew> {
                   const SizedBox(
                     height: 20,
                   ),
-                  const SizedBox(
+                  SizedBox(
                     width: 300,
                     child: TextField(
+                      //  keyboardType: TextInputType.streetAddress,
+                      onChanged: (value) {
+                        setState(() {
+                          numberOfHouseholds = int.tryParse(value) ?? 0;
+                        });
+                      },
+
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           label: Text('Enter Number of Households')),
@@ -103,48 +134,54 @@ class _AddnewState extends State<Addnew> {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(350, 50),
-                      backgroundColor: Colors.blue[900],
-                    ),
+                        minimumSize: const Size(350, 50),
+                        backgroundColor: streetName != null &&
+                                streetCode != null
+                            ? CustomColorTheme.primaryColor
+                            : CustomColorTheme.primaryColor.withOpacity(0.7)),
                     onPressed: () {
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder: (context) => AddFarm(),
-                      //   ),
-                      // );
-                      _confirmbox(context);
+                      if (streetName != null && streetCode != null) {
+                        _addStreetAPI(
+                            streetName!, numberOfHouseholds!, streetCode!);
+                        _confirmbox(context, streetName!);
+                      }
                     },
-                    child: const Text('Add Street'),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 40),
-                    child: Text(
-                      'This street name and street code are already added to the village.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: CustomFontTheme.textSize,
-                        color: Colors.red,
-                      ),
+                    child: const Text(
+                      'Add Street',
+                      style: TextStyle(fontSize: CustomFontTheme.textSize),
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 35),
-                    child: Text(
-                      'Check all streets added to the village here',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        fontSize: CustomFontTheme.textSize,
-                        color: Colors.red,
+                  if (streetpresent) ...[
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 40),
+                      child: Text(
+                        'This street name and street code are already added to the village.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          color: Color(0xFFEC2828),
+                        ),
                       ),
                     ),
-                  )
+                    SizedBox(
+                      height: 20,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 35),
+                      child: Text(
+                        'Check all streets added to the village here',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          fontSize: CustomFontTheme.textSize,
+                          color: Color(0xFFEC2828),
+                        ),
+                      ),
+                    )
+                  ]
                 ],
               ),
             ),
@@ -153,12 +190,12 @@ class _AddnewState extends State<Addnew> {
   }
 }
 
-void _confirmbox(BuildContext context) {
+void _confirmbox(BuildContext context, String streetName) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const SizedBox(
+        title: SizedBox(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -171,7 +208,7 @@ void _confirmbox(BuildContext context) {
                 height: 20,
               ),
               Text(
-                  '“<Street name>” is added successfully. What do you wish to do next?'),
+                  '"$streetName" is added successfully. What do you wish to do next?'),
             ],
           ),
         ),
@@ -231,4 +268,25 @@ void _confirmbox(BuildContext context) {
       );
     },
   );
+}
+
+Future<void> _addStreetAPI(
+    String streetName, int householdCount, String streetCode) async {
+  final apiUrl =
+      'https://s82wf372-8080.inc1.devtunnels.ms:443/add-streets?villageId=10001&streetName=$streetName&householdCount=$householdCount&streetCode=$streetCode';
+  try {
+    final response = await http.put(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      // Handle successful response
+      print('Street added successfully');
+    } else {
+      // Handle error response
+      print('Failed to add street. Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+    }
+  } catch (error) {
+    // Handle network or other errors
+    print('Error: $error');
+  }
 }

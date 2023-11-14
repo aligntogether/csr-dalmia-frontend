@@ -35,8 +35,10 @@ class DashTab extends StatelessWidget {
                           imageUrl: 'images/t_house.svg',
                           subtitle: 'Total Household',
                           title: '150',
+                          bordercolor:
+                              Colors.black.withOpacity(0.10000000149011612),
+                          bg: Color(0xFFF2D4C9),
 
-                          bg: const Color.fromARGB(255, 252, 215, 184),
                           // bg: Colors.white,
                           textcolor: const Color(0xFFB94216),
                         ),
@@ -44,14 +46,18 @@ class DashTab extends StatelessWidget {
                           imageUrl: 'images/m_house.svg',
                           title: '150',
                           subtitle: 'Mapped Household',
-                          bg: const Color.fromARGB(255, 252, 215, 184),
+                          bordercolor:
+                              Colors.black.withOpacity(0.10000000149011612),
+                          bg: Color(0xFFF2D4C9),
                           textcolor: const Color(0xFFB94216),
                         ),
                         CustomCard(
                           imageUrl: 'images/s_house.svg',
                           title: '130',
                           subtitle: 'Selected for Intervention',
-                          bg: const Color.fromARGB(255, 252, 215, 184),
+                          bordercolor:
+                              Colors.black.withOpacity(0.10000000149011612),
+                          bg: Color(0xFFF2D4C9),
                           textcolor: const Color(0xFFB94216),
                         ),
                       ],
@@ -82,21 +88,27 @@ class DashTab extends StatelessWidget {
                         CustomCard(
                           imageUrl: 'images/i_house.svg',
                           subtitle: 'Household covered',
+                          bordercolor:
+                              Colors.black.withOpacity(0.10000000149011612),
                           title: '30',
-                          bg: Color.fromARGB(204, 185, 255, 223),
+                          bg: Color(0xFFC2D7CD),
                           textcolor: const Color(0xFF0C7243),
                         ),
                         CustomCard(
                           imageUrl: 'images/i_planned.svg',
                           title: '100',
+                          bordercolor:
+                              Colors.black.withOpacity(0.10000000149011612),
                           subtitle: 'Intervention planned',
-                          bg: const Color.fromARGB(204, 185, 255, 223),
+                          bg: Color(0xFFC2D7CD),
                           textcolor: const Color(0xFF0C7243),
                         ),
                         CustomCard(
                           imageUrl: 'images/icompleted.svg',
                           title: '25',
-                          bg: const Color.fromARGB(204, 185, 255, 223),
+                          bordercolor:
+                              Colors.black.withOpacity(0.10000000149011612),
+                          bg: Color(0xFFC2D7CD),
                           subtitle: 'Interventions completed',
                           textcolor: const Color(0xFF0C7243),
                         ),
@@ -130,8 +142,10 @@ class DashTab extends StatelessWidget {
                         child: CustomCard(
                           imageUrl: 'images/overdue.svg',
                           subtitle: 'Overdue',
+                          bordercolor:
+                              Colors.black.withOpacity(0.10000000149011612),
                           title: '1',
-                          bg: Color.fromARGB(223, 169, 221, 249),
+                          bg: Color(0xFFC2D3E3),
                           textcolor: const Color(0xFF064F96),
                         ),
                       ),
@@ -183,35 +197,54 @@ class DashTab extends StatelessWidget {
                           imageUrl: 'images/income.svg',
                           subtitle: 'Less than 25k',
                           title: '70',
-                          bg: const Color.fromARGB(255, 174, 218, 240),
+                          bordercolor:
+                              Colors.black.withOpacity(0.10000000149011612),
+                          bg: const Color(0xFFC2DEEC),
                           textcolor: const Color(0xFF0374AD),
                         ),
                         CustomCard(
                           imageUrl: 'images/income.svg',
                           title: '40',
+                          bordercolor:
+                              Colors.black.withOpacity(0.10000000149011612),
                           subtitle: '25k to 50k',
-                          bg: const Color.fromARGB(255, 174, 218, 240),
+                          bg: const Color(0xFFC2DEEC),
                           textcolor: const Color(0xFF0374AD),
                         ),
                         CustomCard(
                           imageUrl: 'images/income.svg',
                           title: '10',
                           subtitle: '50k to 75k',
-                          bg: const Color.fromARGB(255, 174, 218, 240),
+                          bg: const Color(0xFFC2DEEC),
+                          bordercolor:
+                              Colors.black.withOpacity(0.10000000149011612),
                           textcolor: const Color(0xFF0374AD),
                         ),
                         CustomCard(
                           imageUrl: 'images/income.svg',
                           title: '10',
                           subtitle: '50k to 75k',
-                          bg: const Color.fromARGB(255, 174, 218, 240),
+                          bordercolor:
+                              Colors.black.withOpacity(0.10000000149011612),
+                          bg: const Color(0xFFC2DEEC),
                           textcolor: const Color(0xFF0374AD),
                         ),
                         CustomCard(
                           imageUrl: 'images/income.svg',
                           title: '10',
                           subtitle: 'More than 1L',
-                          bg: const Color.fromARGB(255, 174, 218, 240),
+                          bordercolor:
+                              Colors.black.withOpacity(0.10000000149011612),
+                          bg: const Color(0xFFC2DEEC),
+                          textcolor: const Color(0xFF0374AD),
+                        ),
+                        CustomCard(
+                          imageUrl: 'images/income.svg',
+                          title: '0',
+                          subtitle: 'Zero Income',
+                          bordercolor:
+                              Colors.black.withOpacity(0.10000000149011612),
+                          bg: const Color(0xFFC2DEEC),
                           textcolor: const Color(0xFF0374AD),
                         ),
                       ],

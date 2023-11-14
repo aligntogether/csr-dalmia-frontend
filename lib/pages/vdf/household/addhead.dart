@@ -252,12 +252,6 @@ class _MyFormState extends State<AddHead> {
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
-                    validator: (value) {
-                      if (value?.isEmpty ?? true) {
-                        return 'Head Name is required';
-                      }
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
@@ -273,9 +267,7 @@ class _MyFormState extends State<AddHead> {
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
                     validator: (value) {
-                      if (value?.isEmpty ?? true) {
-                        return 'Mobile Number is required';
-                      } else if (value!.length != 10) {
+                      if (value!.length != 10) {
                         return 'Mobile Number should be 10 digits';
                       }
                       return null;
@@ -304,12 +296,6 @@ class _MyFormState extends State<AddHead> {
                                 ),
                               ),
                             ),
-                            validator: (value) {
-                              if (value?.isEmpty ?? true) {
-                                return 'Date of Birth is required';
-                              }
-                              return null;
-                            },
                           ),
                         ),
                       ),
@@ -357,12 +343,6 @@ class _MyFormState extends State<AddHead> {
                       Icons.keyboard_arrow_down_sharp,
                       color: CustomColorTheme.iconColor,
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Gender is required';
-                      }
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
@@ -388,12 +368,6 @@ class _MyFormState extends State<AddHead> {
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Caste is required';
-                      }
-                      return null;
-                    },
                   ),
                   const SizedBox(
                     height: 16,
@@ -421,12 +395,6 @@ class _MyFormState extends State<AddHead> {
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Education is required';
-                      }
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
@@ -453,12 +421,6 @@ class _MyFormState extends State<AddHead> {
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Primary Employment is required';
-                      }
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
@@ -486,21 +448,23 @@ class _MyFormState extends State<AddHead> {
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Secondary Employment is required';
-                      }
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 16),
                   if (_validateFields &&
                       !(_formKey.currentState?.validate() ?? false))
                     const Padding(
-                      padding: EdgeInsets.only(top: 16.0),
-                      child: Text(
-                        'Please fill all the mandatory fields',
-                        style: TextStyle(color: Colors.red),
+                      padding: EdgeInsets.only(top: 16.0, bottom: 16),
+                      child: Center(
+                        child: Text(
+                          'Please fill all the mandatory fields',
+                          style: TextStyle(
+                            color: Color(0xFFEC2828),
+                            fontSize: 14,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w500,
+                            height: 0.10,
+                          ),
+                        ),
                       ),
                     ),
                   Row(

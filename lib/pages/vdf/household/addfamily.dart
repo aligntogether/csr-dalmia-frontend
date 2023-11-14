@@ -251,7 +251,8 @@ class _MyFormState extends State<AddFamily> {
                       const SizedBox(height: 16),
                       ExpansionTile(
                         iconColor: CustomColorTheme.iconColor,
-                        initiallyExpanded: formExpandStateList[i],
+                        initiallyExpanded:
+                            i == 0 ? true : formExpandStateList[i],
                         onExpansionChanged: (newState) {
                           setState(() {
                             formExpandStateList[i] = newState;
@@ -274,12 +275,6 @@ class _MyFormState extends State<AddFamily> {
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
-                                  validator: (value) {
-                                    if (value?.isEmpty ?? true) {
-                                      return 'Member Name is required';
-                                    }
-                                    return null;
-                                  },
                                 ),
                                 const SizedBox(height: 20),
                                 TextFormField(
@@ -296,9 +291,7 @@ class _MyFormState extends State<AddFamily> {
                                         horizontal: 16, vertical: 20.0),
                                   ),
                                   validator: (value) {
-                                    if (value?.isEmpty ?? true) {
-                                      return 'Mobile Number is required';
-                                    } else if (value!.length != 10) {
+                                    if (value!.length != 10) {
                                       return 'Mobile Number should be 10 digits';
                                     }
                                     return null;
@@ -331,12 +324,6 @@ class _MyFormState extends State<AddFamily> {
                                               ),
                                             ),
                                           ),
-                                          validator: (value) {
-                                            if (value?.isEmpty ?? true) {
-                                              return 'Date of Birth is required';
-                                            }
-                                            return null;
-                                          },
                                         ),
                                       ),
                                     ),
@@ -390,12 +377,6 @@ class _MyFormState extends State<AddFamily> {
                                     Icons.keyboard_arrow_down_sharp,
                                     color: CustomColorTheme.iconColor,
                                   ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Gender is required';
-                                    }
-                                    return null;
-                                  },
                                 ),
                                 const SizedBox(height: 16),
                                 DropdownButtonFormField<String>(
@@ -423,50 +404,7 @@ class _MyFormState extends State<AddFamily> {
                                     Icons.keyboard_arrow_down_sharp,
                                     color: CustomColorTheme.iconColor,
                                   ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Education is required';
-                                    }
-                                    return null;
-                                  },
                                 ),
-                                // const SizedBox(height: 16),
-                                // DropdownButtonFormField(
-                                //   value: _selectedEducations[i],
-                                //   items:
-                                //       educationOptions.map((String education) {
-                                //     return DropdownMenuItem(
-                                //       value: education,
-                                //       child: Text(education),
-                                //     );
-                                //   }).toList(),
-                                //   onChanged: (newValue) {
-                                //     setState(() {
-                                //       _selectedEducations[i] =
-                                //           newValue as String?;
-                                //     });
-                                //   },
-                                //   decoration: const InputDecoration(
-                                //     focusedBorder: OutlineInputBorder(
-                                //       borderSide:
-                                //           BorderSide(color: Color(0xFF181818)),
-                                //     ),
-                                //     labelText: 'Education *',
-                                //
-                                //     contentPadding: EdgeInsets.symmetric(
-                                //         horizontal: 16, vertical: 20.0),
-                                //   ),
-                                //   icon: const Icon(
-                                //     Icons.keyboard_arrow_down_sharp,
-                                //     color: CustomColorTheme.iconColor,
-                                //   ),
-                                //   validator: (value) {
-                                //     if (value == null || value.isEmpty) {
-                                //       return 'Education is required';
-                                //     }
-                                //     return null;
-                                //   },
-                                // ),
                                 const SizedBox(height: 16),
                                 DropdownButtonFormField(
                                   value: _selectedRelation[i],
@@ -496,7 +434,6 @@ class _MyFormState extends State<AddFamily> {
                                   ),
                                 ),
                                 const SizedBox(height: 16),
-
                                 DropdownButtonFormField<String>(
                                   value: _selectedPrimaryEmployments[i],
                                   items: primaryEmploymentOptions
@@ -523,12 +460,6 @@ class _MyFormState extends State<AddFamily> {
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Primary Employment is required';
-                                    }
-                                    return null;
-                                  },
                                 ),
                                 const SizedBox(height: 16),
                                 DropdownButtonFormField<String>(
@@ -608,6 +539,8 @@ class _MyFormState extends State<AddFamily> {
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 25, vertical: 15),
                         backgroundColor: CustomColorTheme.primaryColor,
                       ),
                       onPressed: () {
@@ -621,13 +554,18 @@ class _MyFormState extends State<AddFamily> {
                       },
                       child: const Text(
                         'Next',
-                        style: TextStyle(fontSize: CustomFontTheme.textSize),
+                        style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          letterSpacing: 0.84,
+                        ),
                       ),
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           elevation: 0,
                           backgroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 15),
                           side: BorderSide(
                               color: CustomColorTheme.primaryColor, width: 1)),
                       onPressed: () {
@@ -645,8 +583,10 @@ class _MyFormState extends State<AddFamily> {
                       child: Text(
                         'Save as Draft',
                         style: TextStyle(
-                            color: Colors.blue[900],
-                            fontSize: CustomFontTheme.textSize),
+                          color: Colors.blue[900],
+                          fontSize: CustomFontTheme.textSize,
+                          letterSpacing: 0.84,
+                        ),
                       ),
                     ),
                   ],

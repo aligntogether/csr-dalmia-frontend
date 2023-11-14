@@ -2,13 +2,10 @@ import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
-
 import 'package:dalmia/pages/vdf/Reports/cumulative.dart';
 import 'package:dalmia/pages/vdf/Reports/form1.dart';
 import 'package:dalmia/pages/vdf/Reports/home.dart';
-
 import 'package:dalmia/pages/vdf/Reports/leverwise.dart';
-
 import 'package:dalmia/pages/vdf/Reports/top20.dart';
 import 'package:dalmia/pages/vdf/Reports/updateinter.dart';
 import 'package:dalmia/pages/vdf/household/addhead.dart';
@@ -19,16 +16,9 @@ import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
-// import 'package:data_table_2/data_table_2.dart';
-// import 'package:flutter/services.dart';
-// import 'package:pdf/widgets.dart' as pw;
-// import 'package:open_file/open_file.dart';
-// import 'package:path_provider/path_provider.dart';
-// import 'package:excel/excel.dart';
-
 import 'dart:math';
-
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
 
 class HhidForm extends StatefulWidget {
   const HhidForm({Key? key}) : super(key: key);
@@ -202,34 +192,38 @@ class _HhidFormState extends State<HhidForm> {
                                 ),
                               ),
                               DataColumn(
-                                label: Row(
-                                  children: [
-                                    Text(
-                                      'Follow ups for income update',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text('int.1',
-                                            style:
-                                                TextStyle(color: Colors.white)),
-                                        Text('int.2',
-                                            style:
-                                                TextStyle(color: Colors.white)),
-                                        Text('int.3',
-                                            style:
-                                                TextStyle(color: Colors.white)),
-                                        Text('int.4',
-                                            style:
-                                                TextStyle(color: Colors.white)),
-                                        Text('int.5',
-                                            style:
-                                                TextStyle(color: Colors.white)),
-                                      ],
-                                    ),
-                                  ],
+                                label: Expanded(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        'Follow ups for income update',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text('int.1',
+                                              style: TextStyle(
+                                                  color: Colors.white)),
+                                          Text('int.2',
+                                              style: TextStyle(
+                                                  color: Colors.white)),
+                                          Text('int.3',
+                                              style: TextStyle(
+                                                  color: Colors.white)),
+                                          Text('int.4',
+                                              style: TextStyle(
+                                                  color: Colors.white)),
+                                          Text('int.5',
+                                              style: TextStyle(
+                                                  color: Colors.white)),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],

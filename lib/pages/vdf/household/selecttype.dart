@@ -247,7 +247,7 @@ class _SelectTypeState extends State<SelectType> {
                       },
                       child: Text(
                         'Save as Draft',
-                        style: TextStyle(color: Colors.blue[900]),
+                        style: TextStyle(color: CustomColorTheme.primaryColor),
                       ),
                     ),
                   ],

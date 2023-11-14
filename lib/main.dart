@@ -1,15 +1,23 @@
-import 'dart:io';
-
 import 'package:dalmia/pages/login.dart';
 import 'package:dalmia/theme.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:flutter_config/flutter_config.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: "lib/.env");
 
+  WidgetsFlutterBinding
+      .ensureInitialized(); // Ensure that bindings are initialized
+
+  await SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp]); // Set preferred orientations if needed
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: CustomColorTheme.primaryColor, // Set the status bar color
+    // statusBarIconBrightness: Brightness.light, // Set the status bar icon color
+  ));
   runApp(const MyWidget());
 }
 

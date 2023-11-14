@@ -526,6 +526,7 @@ class _MyFormState extends State<MyForm> {
 //                       ),
 //                       const SizedBox(height: 20),
 //                       DropdownButtonFormField<String>(
+//                         // alignment: AlignmentDirectional.bottomEnd,
 //                         value: _selectedVillage,
 //                         items: villages
 //                             .where((village) =>
@@ -624,9 +625,6 @@ class _MyFormState extends State<MyForm> {
 //                             ? () {
 //                                 if (_formKey.currentState?.validate() ??
 //                                     false) {
-//                                   // All fields are valid, you can process the data
-//                                   // Perform actions with the field values
-
 //                                   Navigator.of(context).push(
 //                                     MaterialPageRoute(
 //                                       builder: (context) => const AddHead(),

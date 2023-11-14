@@ -1,9 +1,14 @@
+import 'dart:convert';
+
+import 'package:dalmia/apis/commonobject.dart';
 import 'package:dalmia/pages/vdf/household/addfarm.dart';
 import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/household/addland.dart';
+import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class AddStock extends StatefulWidget {
   const AddStock({Key? key}) : super(key: key);
@@ -14,7 +19,32 @@ class AddStock extends StatefulWidget {
 
 class _AddStockState extends State<AddStock> {
   List<bool> cropCheckList = List.filled(16, false);
+  // List<dynamic> livestockOptions = [];
 
+//   Future<void> fetchlivestockOptions() async {
+//     String url = '$base/dropdown?titleId=106';
+//     try {
+//       final response = await http.get(Uri.parse(url));
+//       if (response.statusCode == 200) {
+//         CommonObject commonObject =
+//             CommonObject.fromJson(json.decode(response.body));
+//         List<dynamic> options = commonObject.respBody['options'];
+//         setState(() {
+//           livestockOptions = options;
+//         });
+//       } else {
+//         throw Exception(
+//             'Failed to load Livestock options: ${response.statusCode}');
+//       }
+//     } catch (e) {
+//       throw Exception('Error: $e');
+//     }
+//   }
+// @override
+// void initState() {
+//   fetchlivestockOptions();
+//   super.initState();
+// }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -71,8 +101,10 @@ class _AddStockState extends State<AddStock> {
                           width: 90,
                           height: 40,
                           child: TextField(
+                            maxLength: 15,
                             decoration: InputDecoration(
                               label: Text('Specify'),
+                              counterText: '',
                               contentPadding:
                                   EdgeInsets.symmetric(horizontal: 10),
                               border: OutlineInputBorder(
@@ -87,6 +119,7 @@ class _AddStockState extends State<AddStock> {
                           width: 50,
                           height: 30,
                           child: TextField(
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               label: Text('No.'),
                               contentPadding:
@@ -121,7 +154,9 @@ class _AddStockState extends State<AddStock> {
                           width: 90,
                           height: 40,
                           child: TextField(
+                            maxLength: 15,
                             decoration: InputDecoration(
+                              counterText: '',
                               label: Text('Specify'),
                               contentPadding:
                                   EdgeInsets.symmetric(horizontal: 10),
@@ -137,6 +172,7 @@ class _AddStockState extends State<AddStock> {
                           width: 50,
                           height: 30,
                           child: TextField(
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               label: Text('No.'),
                               contentPadding:

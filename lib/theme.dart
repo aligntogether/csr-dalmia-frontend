@@ -7,7 +7,7 @@ class CustomColorTheme {
 
   static const Color backgroundColor = Colors.white;
   static const Color textColor = Color(0xFF181818);
-  static const Color labelColor = Color.fromRGBO(24, 24, 24, 0.7);
+  static Color labelColor = Color(0xFF181818).withOpacity(0.7);
 
   static const Color iconColor = Color(0xFFF15A22);
 }
@@ -23,10 +23,7 @@ class CustomFontTheme {
 
 class AppTheme {
   static final ThemeData lightTheme = ThemeData(
-    inputDecorationTheme: const InputDecorationTheme(
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.black),
-      ),
+    inputDecorationTheme: InputDecorationTheme(
       labelStyle: TextStyle(color: CustomColorTheme.labelColor),
     ),
 

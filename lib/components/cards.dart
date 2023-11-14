@@ -8,12 +8,14 @@ class CustomCard extends StatelessWidget {
   final String subtitle;
   final Color bg;
   final Color textcolor;
+  final Color bordercolor;
 
   CustomCard({
     required this.imageUrl,
     required this.title,
     required this.subtitle,
     required this.bg,
+    required this.bordercolor,
     required this.textcolor,
   });
 
@@ -22,10 +24,25 @@ class CustomCard extends StatelessWidget {
     return Container(
       width: 110,
       height: 150,
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(),
+        shadows: [
+          BoxShadow(
+            color: Color(0x11000000),
+            blurRadius: 20,
+            offset: Offset(0, 10),
+            spreadRadius: 0,
+          )
+        ],
+      ),
       child: Card(
         color: bg,
         // elevation: 4.0,
         shape: RoundedRectangleBorder(
+          side: BorderSide(
+            width: 1,
+            color: bordercolor,
+          ),
           borderRadius: BorderRadius.circular(10.0),
         ),
         child: Container(

@@ -13,6 +13,8 @@ class Intervention {
   Intervention(this.id, this.name);
 }
 
+String intervention = '';
+
 class Addinter extends StatefulWidget {
   @override
   _AddinterState createState() => _AddinterState();
@@ -27,6 +29,7 @@ class _AddinterState extends State<Addinter> {
   // RegExp reg = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
   // String Function(Match) mathFunc = (Match match) => '${match[1]},';
   void filterInterventions(String query) async {
+    intervention = query;
     if (query.isNotEmpty) {
       var url = Uri.parse(
           '$base/get-matching-interventions?interventionPatternName=$query');
@@ -168,7 +171,9 @@ class _AddinterState extends State<Addinter> {
                           onPressed: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => Details(),
+                                builder: (context) => Details(
+                                  interventionname: intervention,
+                                ),
                               ),
                             );
                           },

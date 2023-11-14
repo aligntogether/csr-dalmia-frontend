@@ -1,12 +1,15 @@
 import 'package:dalmia/common/common.dart';
+import 'package:dalmia/pages/login.dart';
 
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
+import 'package:dalmia/pages/vdf/Reports/home.dart';
 
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/dash.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,6 +34,14 @@ class VdfHome extends StatefulWidget {
 }
 
 class _VdfHomeState extends State<VdfHome> {
+  bool isMenuOpen = false;
+
+  void _toggleMenu() {
+    setState(() {
+      isMenuOpen = !isMenuOpen;
+    });
+  }
+
   void _onTabTapped(int index) {
     setState(() {
       selectedIndex = index;
@@ -65,93 +76,69 @@ class _VdfHomeState extends State<VdfHome> {
   int selectedIndex = 0;
   bool toggle = false;
 
-  // void _openDrawer() {
-  //   setState(() {
-  //     _toggle = true;
-  //   });
-  // }
-
-  // void _closeDrawer() {
-  //   setState(() {
-  //     _toggle = false;
-  //   });
-  // }
-  void _openDrawer() {
-    setState(() {
-      toggle = true;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100),
-        child: AppBar(
-          titleSpacing: 20,
-          backgroundColor: Colors.white,
-          title: const Image(image: AssetImage('images/icon.jpg')),
-          automaticallyImplyLeading: false,
-          actions: <Widget>[
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 12.0,
-              ),
-            ),
-            CircleAvatar(
-              backgroundColor: CustomColorTheme.primaryColor,
-              child: IconButton(
-                  onPressed: () {},
+        preferredSize: isMenuOpen ? Size.fromHeight(150) : Size.fromHeight(100),
+        child: Stack(
+          children: [
+            AppBar(
+              titleSpacing: 20,
+              backgroundColor: Colors.white,
+              title: Image(image: AssetImage('images/icon.jpg')),
+              centerTitle: false,
+              automaticallyImplyLeading: false,
+              actions: <Widget>[
+                CircleAvatar(
+                  backgroundColor: CustomColorTheme.primaryColor,
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.notifications_none_outlined,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                IconButton(
+                  iconSize: 30,
+                  onPressed: () {
+                    _toggleMenu();
+                  },
                   icon: const Icon(
-                    Icons.notifications_none_outlined,
-                    color: Colors.white,
-
-                    // color: Colors.blue,
-                  )),
-            ),
-            const SizedBox(
-              width: 20,
-            ),
-            IconButton(
-              iconSize: 30,
-              onPressed: () {
-                _openDrawer();
-              },
-              icon: const Icon(
-                Icons.menu,
-                color: CustomColorTheme.primaryColor,
+                    Icons.menu,
+                    color: CustomColorTheme.primaryColor,
+                  ),
+                ),
+              ],
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(50),
+                child: Container(
+                  padding: const EdgeInsets.only(left: 30, bottom: 10),
+                  alignment: Alignment.topLeft,
+                  color: Colors.white,
+                  child: Text(
+                    'Welcome Suresh!',
+                    style: TextStyle(
+                      color: Colors.grey.shade700,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
               ),
             ),
+            if (isMenuOpen) navmenu(context, _toggleMenu),
           ],
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(50),
-            child: Container(
-              padding: const EdgeInsets.only(left: 30, bottom: 10),
-              alignment: Alignment.topLeft,
-              color: Colors.white,
-              child: Text(
-                'Welcome Suresh!',
-                style: TextStyle(
-                    color: Colors.grey.shade700,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500),
-              ),
-            ),
-          ),
         ),
       ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: DashTab(),
-          ),
-          // Add the drawer as a positioned widget
-          if (toggle == true) const DrawerWidget()
-
-          // if (_selectedIndex == 2) _buildDrawer2()
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: DashTab(),
       ),
       bottomNavigationBar: BottomAppBar(
         elevation: 10,
@@ -171,21 +158,21 @@ class _VdfHomeState extends State<VdfHome> {
                 imagePath: 'images/Household_Outline.svg',
                 label: "Add Household",
                 index: 1,
-                selectedIndex: selectedIndex,
+                selectedIndex: 0,
                 onTabTapped: _onTabTapped,
               ),
               CustomTabItem(
                 imagePath: 'images/Street_Outline.svg',
                 label: "Add Street",
                 index: 2,
-                selectedIndex: selectedIndex,
+                selectedIndex: 0,
                 onTabTapped: _onTabTapped,
               ),
               CustomTabItem(
                 imagePath: 'images/Drafts_Outline.svg',
                 label: "Drafts",
                 index: 3,
-                selectedIndex: selectedIndex,
+                selectedIndex: 0,
                 onTabTapped: _onTabTapped,
               ),
             ],

@@ -1,8 +1,6 @@
 import 'dart:convert';
 
-import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/common/bottombar.dart';
-import 'package:dalmia/common/build_drawer.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
@@ -66,7 +64,7 @@ class _HomeReportState extends State<HomeReport> {
 
     final apiUrl =
         // 'http://192.168.1.28:8080/vdf-report?vdfId=10001&fromDate=$formattedStartDate&toDate=$formattedEndDate';
-        'http://192.168.1.28:8080/vdf-report?vdfId=10001&fromDate=23-09-2023&toDate=24-12-2023';
+        '$base/vdf-report?vdfId=10001&fromDate=23-09-2023&toDate=24-12-2023';
 
     final response = await http.get(Uri.parse(apiUrl));
 
@@ -114,6 +112,13 @@ class _HomeReportState extends State<HomeReport> {
   }
 
   int selectedIndex = 0;
+  // bool isReportMenuOpen = false;
+
+  // void toggleReportMenu() {
+  //   setState(() {
+  //     isReportMenuOpen = !isReportMenuOpen;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -123,150 +128,138 @@ class _HomeReportState extends State<HomeReport> {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(100),
+          preferredSize: Size.fromHeight(100),
           child: ReportAppBar(
             heading: 'Reports',
           ),
         ),
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.start,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                viewotherbtn(context),
+                const SizedBox(height: 00),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    viewotherbtn(context),
-                    const SizedBox(height: 00),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 20),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          width: screenWidth,
-
-                          // decoration: BoxDecoration(
-
-                          //     borderRadius: BorderRadius.circular(20),
-                          //     color: Colors.white60),
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            shadows: const [
-                              BoxShadow(
-                                color: Color(0x19000000),
-                                blurRadius: 20,
-                                offset: Offset(0, 10),
-                                spreadRadius: 0,
-                              )
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.only(left: 10),
-                                child: Text(
-                                  'Report of Balamurugan',
-                                  style: TextStyle(
-                                      fontSize: CustomFontTheme.textSize,
-                                      fontWeight: CustomFontTheme.headingwt),
-                                ),
-                              ),
-                              TextButton.icon(
-                                onPressed: () => _selectDateRange(context),
-                                icon: const Icon(
-                                  Icons.calendar_month_outlined,
-                                  color: CustomColorTheme.iconColor,
-                                ),
-                                label: Text(
-                                  _startDate != null && _endDate != null
-                                      ? '${_formatDate(_startDate!)} - ${_formatDate(_endDate!)}'
-                                      : 'Select Date Range',
-                                  style: TextStyle(
-                                      color: CustomColorTheme.primaryColor),
-                                ),
-                              ),
-                              const Divider(
-                                color: Colors
-                                    .grey, // Add your desired color for the line
-                                thickness:
-                                    1, // Add the desired thickness for the line
-                              ),
-                              DataTable(
-                                // horizontalMargin: 50.0,
-                                dividerThickness: 0.0,
-                                columns: const <DataColumn>[
-                                  DataColumn(
-                                    label: Text(
-                                      '',
-                                      // style: TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Text(
-                                      '',
-                                      // style: TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
-                                rows: <DataRow>[
-                                  celldata('Total Households in working area',
-                                      reportData?['totalHouseholdsInWorkArea']),
-                                  celldata('Total Households mapped',
-                                      reportData?['totalHouseholdsMapped']),
-                                  celldata(
-                                      'Total Households selected for Intervention',
-                                      reportData?[
-                                          'totalHouseholdsSelectedForIntervention']),
-                                  celldata('Total Interventions planned',
-                                      reportData?['totalInterventionsPlanned']),
-                                  celldata(
-                                      'Total Interventions completed',
-                                      reportData?[
-                                          'totalInterventionsCompleted']),
-                                  celldata(
-                                      'Households earning additional income',
-                                      reportData == null
-                                          ? '000'
-                                          : reportData![
-                                              'householdsEarningAdditionalIncome']),
-                                  celldata('Zero addl. income',
-                                      reportData?['zeroAdditionalIncome']),
-                                  celldata('Rs.25K - Rs.50K addl. income',
-                                      reportData?['between25KTO50KIncome']),
-                                  celldata('Rs.50K - Rs.75K addl. income',
-                                      reportData?['between50KTO75KIncome']),
-                                  celldata('Rs.75K - Rs.1L addl. income',
-                                      reportData?['between75KTO1LIncome']),
-                                  celldata('More than Rs.1L addl. income',
-                                      reportData?['moreThan1LIncome']),
-                                  celldata(
-                                      'Aggregated additional income',
-                                      reportData?['aggregatedAdditionalIncome']
-                                          .toString()),
-
-                                  // Add more rows as needed
-                                ],
-                              ),
-                            ],
-                          ),
+                    const SizedBox(height: 20),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      width: screenWidth,
+                      decoration: ShapeDecoration(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                      ],
+                        shadows: const [
+                          BoxShadow(
+                            color: Color(0x19000000),
+                            blurRadius: 20,
+                            offset: Offset(0, 10),
+                            spreadRadius: 0,
+                          )
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 10),
+                            child: Text(
+                              'Report of Balamurugan',
+                              style: TextStyle(
+                                  fontSize: CustomFontTheme.textSize,
+                                  fontWeight: CustomFontTheme.headingwt),
+                            ),
+                          ),
+                          TextButton.icon(
+                            onPressed: () => _selectDateRange(context),
+                            icon: const Icon(
+                              Icons.calendar_month_outlined,
+                              color: CustomColorTheme.iconColor,
+                            ),
+                            label: Text(
+                              _startDate != null && _endDate != null
+                                  ? '${_formatDate(_startDate!)} - ${_formatDate(_endDate!)}'
+                                  : 'Select Date Range',
+                              style: const TextStyle(
+                                  color: CustomColorTheme.primaryColor),
+                            ),
+                          ),
+                          const Divider(
+                            color: Colors
+                                .grey, // Add your desired color for the line
+                            thickness:
+                                1, // Add the desired thickness for the line
+                          ),
+                          DataTable(
+                            // horizontalMargin: 50.0,
+                            dividerThickness: 0.0,
+                            columns: const <DataColumn>[
+                              DataColumn(
+                                label: Text(
+                                  '',
+                                  // style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  '',
+                                  // style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                            rows: <DataRow>[
+                              celldata('Total Households in working area',
+                                  reportData?['totalHouseholdsInWorkArea']),
+                              celldata('Total Households mapped',
+                                  reportData?['totalHouseholdsMapped']),
+                              celldata(
+                                  'Total Households selected for Intervention',
+                                  reportData?[
+                                      'totalHouseholdsSelectedForIntervention']),
+                              celldata('Total Interventions planned',
+                                  reportData?['totalInterventionsPlanned']),
+                              celldata('Total Interventions completed',
+                                  reportData?['totalInterventionsCompleted']),
+                              celldata(
+                                  'Households earning additional income',
+                                  reportData == null
+                                      ? '000'
+                                      : reportData![
+                                          'householdsEarningAdditionalIncome']),
+                              celldata('Zero addl. income',
+                                  reportData?['zeroAdditionalIncome']),
+                              celldata('Rs.25K - Rs.50K addl. income',
+                                  reportData?['between25KTO50KIncome']),
+                              celldata('Rs.50K - Rs.75K addl. income',
+                                  reportData?['between50KTO75KIncome']),
+                              celldata('Rs.75K - Rs.1L addl. income',
+                                  reportData?['between75KTO1LIncome']),
+                              celldata('More than Rs.1L addl. income',
+                                  reportData?['moreThan1LIncome']),
+                              celldata(
+                                  'Aggregated additional income',
+                                  reportData?['aggregatedAdditionalIncome']
+                                      .toString()),
+
+                              // Add more rows as needed
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
+              ],
             ),
-            // if (toggle == true) DrawerWidget()
-          ],
+          ),
         ),
         bottomNavigationBar: BottomAppBar(
           elevation: 10,
@@ -340,7 +333,7 @@ Container viewotherbtn(BuildContext context) {
     decoration: ShapeDecoration(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       shadows: [
-        BoxShadow(
+        const BoxShadow(
           color: Color(0x19000000),
           blurRadius: 10,
           offset: Offset(0, 5),

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
@@ -8,7 +10,7 @@ import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:math';
 
@@ -20,6 +22,35 @@ class Form1 extends StatefulWidget {
 }
 
 class _Form1State extends State<Form1> {
+  List<Map<String, dynamic>> apiData = []; // List to store API data
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData(); // Call the method to fetch API data when the page initializes
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'https://s82wf372-8080.inc1.devtunnels.ms:443/report-form1?vdfId=10001'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        setState(() {
+          apiData = List<Map<String, dynamic>>.from(jsonData['resp_body']);
+        });
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   int? selectedRadio;
   int selectedIndex = 0; // Track the currently selected tab index
 
@@ -165,13 +196,12 @@ class _Form1State extends State<Form1> {
                             ),
                           ],
                           rows: List<DataRow>.generate(
-                            11,
+                            apiData.length + 1,
                             (index) {
-                              if (index < 10) {
+                              if (index < apiData.length) {
                                 return DataRow(
                                   color: MaterialStateColor.resolveWith(
                                     (states) {
-                                      // Alternating row colors
                                       return index.isOdd
                                           ? Colors.blue.shade50
                                           : Colors.white;
@@ -179,44 +209,67 @@ class _Form1State extends State<Form1> {
                                   ),
                                   cells: <DataCell>[
                                     DataCell(Text(
-                                      'Panchayat $index',
+                                      apiData.isNotEmpty
+                                          ? apiData[index]['panchayatName']
+                                              .toString()
+                                          : '000',
                                       style: TextStyle(fontSize: 14),
                                     )),
-                                    DataCell(Text('Village $index',
-                                        style: TextStyle(fontSize: 14))),
-                                    DataCell(Text('${householdList[index]}',
-                                        style: TextStyle(fontSize: 14))),
-                                    DataCell(Text('${populationList[index]}',
-                                        style: TextStyle(fontSize: 14))),
+                                    DataCell(Text(
+                                      apiData[index]['villageName'].toString(),
+                                      style: TextStyle(fontSize: 14),
+                                    )),
+                                    DataCell(Text(
+                                      apiData.isNotEmpty
+                                          ? apiData[index]['householdCount']
+                                              .toString()
+                                          : '000',
+                                      style: TextStyle(fontSize: 14),
+                                    )),
+                                    DataCell(Text(
+                                      apiData.isNotEmpty
+                                          ? apiData[index]['populationCount']
+                                              .toString()
+                                          : '000',
+                                      style: TextStyle(fontSize: 14),
+                                    )),
                                   ],
                                 );
                               } else {
-                                final totalHouseholds =
-                                    householdList.reduce((a, b) => a + b);
-                                final totalPopulation =
-                                    populationList.reduce((a, b) => a + b);
+                                final totalHouseholds = apiData
+                                    .map<int>((e) => e['householdCount'] as int)
+                                    .reduce((a, b) => a + b);
+                                final totalPopulation = apiData
+                                    .map<int>(
+                                        (e) => e['populationCount'] as int)
+                                    .reduce((a, b) => a + b);
+
                                 return DataRow(
                                   color: MaterialStateColor.resolveWith(
-                                      (states) => Colors.white),
+                                    (states) => Colors.white,
+                                  ),
                                   cells: <DataCell>[
                                     const DataCell(Text('')),
                                     const DataCell(Text(
                                       'Total',
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     )),
                                     DataCell(
                                       Text(
                                         '$totalHouseholds',
                                         style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                     DataCell(
                                       Text(
                                         '$totalPopulation',
                                         style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -272,46 +325,6 @@ class _Form1State extends State<Form1> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget buildTabItem(IconData icon, String label, int index) {
-    final isSelected = index == 0;
-    final color = isSelected ? Colors.blue : Colors.black;
-
-    return InkWell(
-      onTap: () {
-        _onTabTapped(index);
-        if (index == 1) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => MyForm(),
-            ),
-          );
-        }
-        if (index == 2) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => AddStreet(),
-            ),
-          );
-        }
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            color: color,
-          ),
-          Text(
-            label,
-            style: TextStyle(
-              color: color,
-            ),
-          ),
-        ],
       ),
     );
   }

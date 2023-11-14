@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:dalmia/pages/vdf/street/Addnew.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-String selectedPanchayat = "";
-String selectedVillage = "";
+// String selectedPanchayat = "";
+// String selectedVillage = "";
 
 class StreetData {
   final String streetName;
@@ -126,13 +127,44 @@ class _CheckStreetState extends State<CheckStreet> {
                   Container(
                     width: 300,
                     height: 100,
-                    decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 232, 253, 233)),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: const Color(0xFF006838).withOpacity(0.1)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Panchayat : ${widget.selectedPanchayat} '),
-                        Text('Village:  ${widget.selectedVillage}')
+                        RichText(
+                          text: TextSpan(
+                            style: const TextStyle(
+                                fontSize: CustomFontTheme.textSize,
+                                color: Color(0xFF006838)),
+                            children: [
+                              const TextSpan(
+                                text: 'Panchayat :',
+                                style: TextStyle(
+                                  fontWeight: CustomFontTheme.labelwt,
+                                ),
+                              ),
+                              TextSpan(text: '  ${widget.selectedPanchayat} '),
+                            ],
+                          ),
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            style: const TextStyle(
+                                fontSize: CustomFontTheme.textSize,
+                                color: Color(0xFF006838)),
+                            children: [
+                              const TextSpan(
+                                text: 'Village:',
+                                style: TextStyle(
+                                  fontWeight: CustomFontTheme.labelwt,
+                                ),
+                              ),
+                              TextSpan(text: '  ${widget.selectedVillage}'),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -146,37 +178,47 @@ class _CheckStreetState extends State<CheckStreet> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Container(
-                    decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 221, 236, 248)),
-                    child: DataTable(
-                      dividerThickness: 0.0,
-                      columns: const <DataColumn>[
-                        DataColumn(
-                          label: Text(
-                            'Street Name',
-                            style: TextStyle(),
-                          ),
-                        ),
-                        DataColumn(
-                          label: Text(
-                            'No. of Family/ \n No. of Household',
-                            style: TextStyle(),
-                          ),
-                        ),
-                      ],
-                      rows: streetData
-                          .map(
-                            (data) => DataRow(
-                              cells: <DataCell>[
-                                DataCell(Text(
-                                    '${data.streetName}(${data.streetCode})')),
-                                DataCell(Text(
-                                    '${data.familyCount}/${data.householdCount}')),
-                              ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Container(
+                      width: 400,
+                      decoration: const BoxDecoration(
+                        color: Color(0x19008CD3),
+                      ),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          showBottomBorder: false,
+                          dividerThickness: 0.0,
+                          columns: const <DataColumn>[
+                            DataColumn(
+                              label: Text(
+                                'Street Name',
+                                style: TextStyle(),
+                              ),
                             ),
-                          )
-                          .toList(),
+                            DataColumn(
+                              label: Text(
+                                'No. of Family/ \n No. of Household',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(),
+                              ),
+                            ),
+                          ],
+                          rows: streetData
+                              .map(
+                                (data) => DataRow(
+                                  cells: <DataCell>[
+                                    DataCell(Text(
+                                        '${data.streetName}(${data.streetCode})')),
+                                    DataCell(Text(
+                                        '${data.familyCount}/${data.householdCount}')),
+                                  ],
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(
@@ -185,24 +227,27 @@ class _CheckStreetState extends State<CheckStreet> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(350, 50),
-                      backgroundColor: Colors.blue[900],
+                      backgroundColor: CustomColorTheme.primaryColor,
                     ),
                     onPressed: () {
-                      String selectedPanchayatName = selectedPanchayat;
-
-                      String selectedVillageName = selectedVillage;
-                      // String selectedVillagId = villages
-                      //     .firstWhere((element) =>
-                      //         element.villageid == _selectedVillage)
-                      //     .villageid;
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => Addnew(),
+                          builder: (context) => Addnew(
+                            panchayat: widget.selectedPanchayat,
+                            village: widget.selectedVillage,
+                            villagId: widget.selectedVillagId,
+                          ),
                         ),
                       );
                     },
-                    child: const Text('Next'),
+                    child: const Text(
+                      'Add New Street',
+                      style: TextStyle(fontSize: CustomFontTheme.textSize),
+                    ),
                   ),
+                  SizedBox(
+                    height: 20,
+                  )
                 ],
               ),
             ),
