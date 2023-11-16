@@ -199,8 +199,9 @@ class _AddStockState extends State<AddStock> {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue[900],
-                    ),
+                        elevation: 0,
+                        minimumSize: const Size(130, 50),
+                        backgroundColor: CustomColorTheme.primaryColor),
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -208,11 +209,17 @@ class _AddStockState extends State<AddStock> {
                         ),
                       );
                     },
-                    child: const Text('Next'),
+                    child: const Text(
+                      'Next',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.labelwt),
+                    ),
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
+                      minimumSize: const Size(130, 50),
                       backgroundColor: Colors.white,
                       side: BorderSide(
                           color: CustomColorTheme.primaryColor, width: 1),
@@ -224,7 +231,10 @@ class _AddStockState extends State<AddStock> {
                     },
                     child: Text(
                       'Save as Draft',
-                      style: TextStyle(color: CustomColorTheme.primaryColor),
+                      style: TextStyle(
+                          color: CustomColorTheme.primaryColor,
+                          fontWeight: CustomFontTheme.labelwt,
+                          fontSize: CustomFontTheme.textSize),
                     ),
                   ),
                 ],

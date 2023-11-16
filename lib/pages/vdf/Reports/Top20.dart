@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dalmia/common/bottombar.dart';
+import 'package:dalmia/common/navmenu.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
@@ -22,6 +23,13 @@ class Top20 extends StatefulWidget {
 }
 
 class _Top20State extends State<Top20> {
+  bool isreportMenuOpen = false;
+  void _toggleMenu() {
+    setState(() {
+      isreportMenuOpen = !isreportMenuOpen;
+    });
+  }
+
   int? selectedRadio;
   int selectedIndex = 0; // Track the currently selected tab index
 
@@ -67,8 +75,7 @@ class _Top20State extends State<Top20> {
   Future<void> fetchtop20Data() async {
     try {
       final response = await http.get(
-        Uri.parse(
-            'http://192.168.1.24:8080/get-income-wise-top-households?vdfId=10001'),
+        Uri.parse('$base/get-income-wise-top-households?vdfId=10001'),
       );
 
       if (response.statusCode == 200) {
@@ -98,10 +105,60 @@ class _Top20State extends State<Top20> {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(100),
-            child: ReportAppBar(
-              heading: 'Reports',
-            )),
+          preferredSize: Size.fromHeight(isreportMenuOpen ? 150 : 100),
+          child: Stack(
+            children: [
+              AppBar(
+                titleSpacing: 20,
+                backgroundColor: Colors.white,
+                title: const Image(image: AssetImage('images/icon.jpg')),
+                automaticallyImplyLeading: false,
+                actions: <Widget>[
+                  CircleAvatar(
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.notifications_none_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  IconButton(
+                    iconSize: 30,
+                    onPressed: () {
+                      _toggleMenu();
+                    },
+                    icon: const Icon(Icons.menu,
+                        color: CustomColorTheme
+                            .primaryColor // Update with your color
+                        ),
+                  ),
+                ],
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(50),
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 30, bottom: 10),
+                    alignment: Alignment.topCenter,
+                    color: Colors.white,
+                    child: Text(
+                      'Reports',
+                      style: const TextStyle(
+                        fontSize: CustomFontTheme.headingSize,
+
+                        // Adjust the font size
+                        fontWeight:
+                            CustomFontTheme.headingwt, // Adjust the font weight
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              if (isreportMenuOpen) navmenu(context, _toggleMenu),
+            ],
+          ),
+        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -153,6 +210,7 @@ class _Top20State extends State<Top20> {
                           ),
                           elevation: 5,
                           child: DataTable(
+                            dividerThickness: 00,
                             decoration: const BoxDecoration(
                               color: Color(0xFF008CD3),
                               borderRadius: BorderRadius.only(

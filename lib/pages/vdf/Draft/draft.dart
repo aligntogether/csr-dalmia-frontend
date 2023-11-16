@@ -1,5 +1,6 @@
 import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/common/bottombar.dart';
+import 'package:dalmia/common/navmenu.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
@@ -17,6 +18,13 @@ class Draft extends StatefulWidget {
 int selectedIndex = 0;
 
 class _DraftState extends State<Draft> {
+  bool isdraftMenuOpen = false;
+  void _toggleMenu() {
+    setState(() {
+      isdraftMenuOpen = !isdraftMenuOpen;
+    });
+  }
+
   void _onTabTapped(int index) {
     setState(() {
       selectedIndex = index;
@@ -53,8 +61,60 @@ class _DraftState extends State<Draft> {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(100),
-            child: ReportAppBar(heading: 'Drafts')),
+          preferredSize: Size.fromHeight(isdraftMenuOpen ? 150 : 100),
+          child: Stack(
+            children: [
+              AppBar(
+                titleSpacing: 20,
+                backgroundColor: Colors.white,
+                title: const Image(image: AssetImage('images/icon.jpg')),
+                automaticallyImplyLeading: false,
+                actions: <Widget>[
+                  CircleAvatar(
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.notifications_none_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  IconButton(
+                    iconSize: 30,
+                    onPressed: () {
+                      _toggleMenu();
+                    },
+                    icon: const Icon(Icons.menu,
+                        color: CustomColorTheme
+                            .primaryColor // Update with your color
+                        ),
+                  ),
+                ],
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(50),
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 30, bottom: 10),
+                    alignment: Alignment.topCenter,
+                    color: Colors.white,
+                    child: Text(
+                      'Drafts',
+                      style: const TextStyle(
+                        fontSize: CustomFontTheme.headingSize,
+
+                        // Adjust the font size
+                        fontWeight:
+                            CustomFontTheme.headingwt, // Adjust the font weight
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              if (isdraftMenuOpen) navmenu(context, _toggleMenu),
+            ],
+          ),
+        ),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,

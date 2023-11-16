@@ -12,8 +12,7 @@ Future<void> main() async {
   WidgetsFlutterBinding
       .ensureInitialized(); // Ensure that bindings are initialized
 
-  await SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp]); // Set preferred orientations if needed
+  // Set preferred orientations if needed
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: CustomColorTheme.primaryColor, // Set the status bar color
     // statusBarIconBrightness: Brightness.light, // Set the status bar icon color

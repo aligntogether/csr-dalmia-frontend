@@ -1,3 +1,4 @@
+import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:http/http.dart' as http;
@@ -66,12 +67,12 @@ class _AddnewState extends State<Addnew> {
                   Container(
                     width: 300,
                     height: 100,
-                    decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 232, 253, 233)),
+                    decoration: BoxDecoration(
+                        color: Color(0xFF006838).withOpacity(0.1)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Panchayat:  '),
+                        Text('Panchayat:  ${widget.village} '),
                         Text('Village   ${widget.village} ')
                       ],
                     ),
@@ -188,6 +189,27 @@ class _AddnewState extends State<Addnew> {
           )),
     );
   }
+
+  Future<void> _addStreetAPI(
+      String streetName, int householdCount, String streetCode) async {
+    final apiUrl =
+        '$base/add-streets?villageId=${widget.villagId}&streetName=$streetName&householdCount=$householdCount&streetCode=$streetCode';
+    try {
+      final response = await http.put(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        // Handle successful response
+        print('Street added successfully');
+      } else {
+        // Handle error response
+        print('Failed to add street. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (error) {
+      // Handle network or other errors
+      print('Error: $error');
+    }
+  }
 }
 
 void _confirmbox(BuildContext context, String streetName) {
@@ -228,7 +250,7 @@ void _confirmbox(BuildContext context, String streetName) {
               },
               child: const Text(
                 'Add another street in same village',
-                style: TextStyle(color: Colors.blue),
+                style: TextStyle(color: CustomColorTheme.primaryColor),
               ),
             ),
             const SizedBox(
@@ -238,7 +260,8 @@ void _confirmbox(BuildContext context, String streetName) {
               style: ElevatedButton.styleFrom(
                 elevation: 0,
                 backgroundColor: Colors.white,
-                side: const BorderSide(width: 1, color: Colors.blue),
+                side: const BorderSide(
+                    width: 1, color: CustomColorTheme.primaryColor),
               ),
               onPressed: () {
                 // Perform actions with the field values
@@ -247,7 +270,7 @@ void _confirmbox(BuildContext context, String streetName) {
               },
               child: const Text(
                 'Add household details for this street',
-                style: TextStyle(color: Colors.blue),
+                style: TextStyle(color: CustomColorTheme.primaryColor),
               ),
             ),
             const SizedBox(
@@ -268,25 +291,4 @@ void _confirmbox(BuildContext context, String streetName) {
       );
     },
   );
-}
-
-Future<void> _addStreetAPI(
-    String streetName, int householdCount, String streetCode) async {
-  final apiUrl =
-      'https://s82wf372-8080.inc1.devtunnels.ms:443/add-streets?villageId=10001&streetName=$streetName&householdCount=$householdCount&streetCode=$streetCode';
-  try {
-    final response = await http.put(Uri.parse(apiUrl));
-
-    if (response.statusCode == 200) {
-      // Handle successful response
-      print('Street added successfully');
-    } else {
-      // Handle error response
-      print('Failed to add street. Status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-    }
-  } catch (error) {
-    // Handle network or other errors
-    print('Error: $error');
-  }
 }

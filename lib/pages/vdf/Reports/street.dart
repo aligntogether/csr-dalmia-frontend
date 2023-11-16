@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:dalmia/common/bottombar.dart';
+import 'package:dalmia/common/navmenu.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
@@ -23,6 +24,13 @@ class StreetReport extends StatefulWidget {
 }
 
 class _StreetReportState extends State<StreetReport> {
+  bool isreportMenuOpen = false;
+  void _toggleMenu() {
+    setState(() {
+      isreportMenuOpen = !isreportMenuOpen;
+    });
+  }
+
   String? selectedPanchayat;
   String? selectedVillage;
   int _selectedpanchayatindex = 0;
@@ -62,24 +70,24 @@ class _StreetReportState extends State<StreetReport> {
   @override
   void initState() {
     super.initState();
-    fetchPanchayatData(); // Call the method to fetch API data when the page initializes
+    fetchStreetData(); // Call the method to fetch API data when the page initializes
   }
 
-  List<Map<String, dynamic>> panchayatData = [];
-  Future<void> fetchPanchayatData() async {
+  List<Map<String, dynamic>> streetData = [];
+  Future<void> fetchStreetData() async {
     try {
       final response = await http.get(
-        Uri.parse('$base/report-panchayat-wise?vdfId=10001'),
+        Uri.parse('$base/report-street-wise?vdfId=10001'),
       );
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(response.body);
 
         setState(() {
-          panchayatData = [
+          streetData = [
             for (var entry in jsonData['resp_body'].entries)
               {
-                'panchayatName': entry.key,
+                'streetName': entry.key,
                 'incomeFollowUpDue': entry.value['incomeFollowUpDue'],
                 'selectedHHWithoutIntervention':
                     entry.value['selectedHHWithoutIntervention'],
@@ -103,9 +111,58 @@ class _StreetReportState extends State<StreetReport> {
     return SafeArea(
         child: Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100),
-        child: ReportAppBar(
-          heading: 'Reports',
+        preferredSize: Size.fromHeight(isreportMenuOpen ? 150 : 100),
+        child: Stack(
+          children: [
+            AppBar(
+              titleSpacing: 20,
+              backgroundColor: Colors.white,
+              title: const Image(image: AssetImage('images/icon.jpg')),
+              automaticallyImplyLeading: false,
+              actions: <Widget>[
+                CircleAvatar(
+                  backgroundColor: CustomColorTheme.primaryColor,
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.notifications_none_outlined,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 20),
+                IconButton(
+                  iconSize: 30,
+                  onPressed: () {
+                    _toggleMenu();
+                  },
+                  icon: const Icon(Icons.menu,
+                      color: CustomColorTheme
+                          .primaryColor // Update with your color
+                      ),
+                ),
+              ],
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(50),
+                child: Container(
+                  padding: const EdgeInsets.only(left: 30, bottom: 10),
+                  alignment: Alignment.topCenter,
+                  color: Colors.white,
+                  child: Text(
+                    'Reports',
+                    style: const TextStyle(
+                      fontSize: CustomFontTheme.headingSize,
+
+                      // Adjust the font size
+                      fontWeight:
+                          CustomFontTheme.headingwt, // Adjust the font weight
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            if (isreportMenuOpen) navmenu(context, _toggleMenu),
+          ],
         ),
       ),
       body: SingleChildScrollView(
@@ -162,7 +219,7 @@ class _StreetReportState extends State<StreetReport> {
                     //     return streettab(random);
                     //   } else {
                     //     return
-                    child: villagetab(random)
+                    child: streettab(random)
                     // }
                     // }()
                     ,
@@ -215,123 +272,13 @@ class _StreetReportState extends State<StreetReport> {
     ));
   }
 
-  Widget villagetab(Random random) {
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(selectedPanchayat!,
-              style: TextStyle(
-                  fontSize: CustomFontTheme.textSize,
-                  fontWeight: CustomFontTheme.labelwt)),
-          const Text('Village wise report',
-              style: TextStyle(
-                  fontSize: CustomFontTheme.textSize,
-                  fontWeight: CustomFontTheme.labelwt)),
-          SizedBox(
-            height: 20,
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              elevation: 5,
-              child: DataTable(
-                decoration: const BoxDecoration(
-                  color: Color(0xFF008CD3),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10),
-                  ),
-                ),
-                dividerThickness: 2,
-                columnSpacing: 15,
-                columns: const <DataColumn>[
-                  DataColumn(
-                    label: Text(
-                      'Village Name',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      'Income follow up Overdue',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      'Number of selected HHs without intervention',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      'No. of Interventions started but not completed',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
-                rows: List<DataRow>.generate(
-                  10,
-                  (index) {
-                    return DataRow(
-                      color: MaterialStateColor.resolveWith((states) {
-                        // Alternating row colors
-                        return index.isOdd
-                            ? Colors.lightBlue[50]!
-                            : Colors.white;
-                      }),
-                      cells: <DataCell>[
-                        DataCell(
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                selectedVillage = 'Village ${index + 1}';
-                                _selectedvillagetindex = index;
-                                selectedPanchayat = '0';
-                                // _selectedVillageindex = index;
-
-                                // selectedVillage =
-                                //     'Village ${_selectedVillageindex + 1}';
-                              });
-                            },
-                            child: Text(
-                              'Village ${index + 1}',
-                              style: const TextStyle(
-                                color: CustomColorTheme.iconColor,
-                                decoration: TextDecoration.underline,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        DataCell(Text(
-                          '${random.nextInt(100)}',
-                        )),
-                        DataCell(Text('${random.nextInt(100)}')),
-                        DataCell(Text('${random.nextInt(100)}')),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
   Widget streettab(Random random) {
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-              'dgf'
+              'village Name'
               // selectedVillage!
               ,
               style: TextStyle(
@@ -359,7 +306,7 @@ class _StreetReportState extends State<StreetReport> {
                     topRight: Radius.circular(10),
                   ),
                 ),
-                dividerThickness: 2,
+                dividerThickness: 0,
                 columnSpacing: 15,
                 columns: const <DataColumn>[
                   DataColumn(
@@ -387,45 +334,50 @@ class _StreetReportState extends State<StreetReport> {
                     ),
                   ),
                 ],
-                rows: List<DataRow>.generate(
-                  10,
-                  (index) {
-                    return DataRow(
-                      color: MaterialStateColor.resolveWith((states) {
-                        // Alternating row colors
-                        return index.isOdd
-                            ? Colors.lightBlue[50]!
-                            : Colors.white;
-                      }),
-                      cells: <DataCell>[
-                        DataCell(
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const HhidForm(),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              'Street ${index + 1}',
-                              style: const TextStyle(
-                                color: CustomColorTheme.iconColor,
-                                decoration: TextDecoration.underline,
-                                fontWeight: FontWeight.bold,
-                              ),
+                rows: streetData.map<DataRow>((street) {
+                  return DataRow(
+                    color: MaterialStateColor.resolveWith((states) {
+                      // Alternating row colors
+                      return streetData.indexOf(street) % 2 == 0
+                          ? Colors.lightBlue[50]!
+                          : Colors.white;
+                    }),
+                    cells: <DataCell>[
+                      DataCell(
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              // selectedVillage = street['Name'];
+                            });
+
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => HhidForm()),
+                            );
+                          },
+                          child: Text(
+                            street['streetName'] ?? '',
+                            style: const TextStyle(
+                              color: CustomColorTheme.iconColor,
+                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                        DataCell(Text(
-                          '${random.nextInt(100)}',
-                        )),
-                        DataCell(Text('${random.nextInt(100)}')),
-                        DataCell(Text('${random.nextInt(100)}')),
-                      ],
-                    );
-                  },
-                ),
+                      ),
+                      DataCell(
+                        Text('${street['incomeFollowUpDue'] ?? 0}'),
+                      ),
+                      DataCell(
+                        Text('${street['selectedHHWithoutIntervention'] ?? 0}'),
+                      ),
+                      DataCell(
+                        Text(
+                            '${street['interventionStartedButNotCompleted'] ?? 0}'),
+                      ),
+                    ],
+                  );
+                }).toList(),
               ),
             ),
           )

@@ -14,7 +14,10 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 class AddHead extends StatefulWidget {
-  const AddHead({super.key});
+  final String? vdfid;
+
+  final String? id;
+  const AddHead({super.key, this.vdfid, this.id});
 
   @override
   _MyFormState createState() => _MyFormState();
@@ -473,6 +476,7 @@ class _MyFormState extends State<AddHead> {
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
+                          minimumSize: const Size(130, 50),
                           backgroundColor: CustomColorTheme.primaryColor,
                         ),
                         onPressed: () {
@@ -498,12 +502,15 @@ class _MyFormState extends State<AddHead> {
                         },
                         child: const Text(
                           'Next',
-                          style: TextStyle(fontSize: CustomFontTheme.textSize),
+                          style: TextStyle(
+                              fontSize: CustomFontTheme.textSize,
+                              fontWeight: CustomFontTheme.labelwt),
                         ),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
+                          minimumSize: const Size(130, 50),
                           side: BorderSide(
                               color: CustomColorTheme.primaryColor, width: 1),
                           backgroundColor: Colors.white,
@@ -524,7 +531,8 @@ class _MyFormState extends State<AddHead> {
                           'Save as Draft',
                           style: TextStyle(
                               color: CustomColorTheme.primaryColor,
-                              fontSize: CustomFontTheme.textSize),
+                              fontSize: CustomFontTheme.textSize,
+                              fontWeight: CustomFontTheme.labelwt),
                         ),
                       ),
                     ],

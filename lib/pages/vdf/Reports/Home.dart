@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dalmia/common/bottombar.dart';
+import 'package:dalmia/common/navmenu.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
@@ -22,6 +23,13 @@ class HomeReport extends StatefulWidget {
 }
 
 class _HomeReportState extends State<HomeReport> {
+  bool isreportMenuOpen = false;
+  void _toggleMenu() {
+    setState(() {
+      isreportMenuOpen = !isreportMenuOpen;
+    });
+  }
+
   int? selectedRadio;
   void _onTabTapped(int index) {
     setState(() {
@@ -128,9 +136,58 @@ class _HomeReportState extends State<HomeReport> {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100),
-          child: ReportAppBar(
-            heading: 'Reports',
+          preferredSize: Size.fromHeight(isreportMenuOpen ? 150 : 100),
+          child: Stack(
+            children: [
+              AppBar(
+                titleSpacing: 20,
+                backgroundColor: Colors.white,
+                title: const Image(image: AssetImage('images/icon.jpg')),
+                automaticallyImplyLeading: false,
+                actions: <Widget>[
+                  CircleAvatar(
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.notifications_none_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  IconButton(
+                    iconSize: 30,
+                    onPressed: () {
+                      _toggleMenu();
+                    },
+                    icon: const Icon(Icons.menu,
+                        color: CustomColorTheme
+                            .primaryColor // Update with your color
+                        ),
+                  ),
+                ],
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(50),
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 30, bottom: 10),
+                    alignment: Alignment.topCenter,
+                    color: Colors.white,
+                    child: Text(
+                      'Reports',
+                      style: const TextStyle(
+                        fontSize: CustomFontTheme.headingSize,
+
+                        // Adjust the font size
+                        fontWeight:
+                            CustomFontTheme.headingwt, // Adjust the font weight
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              if (isreportMenuOpen) navmenu(context, _toggleMenu),
+            ],
           ),
         ),
         body: SingleChildScrollView(
@@ -216,38 +273,63 @@ class _HomeReportState extends State<HomeReport> {
                               ),
                             ],
                             rows: <DataRow>[
-                              celldata('Total Households in working area',
-                                  reportData?['totalHouseholdsInWorkArea']),
-                              celldata('Total Households mapped',
-                                  reportData?['totalHouseholdsMapped']),
+                              celldata(
+                                  'Total Households in working area',
+                                  reportData?['totalHouseholdsInWorkArea'],
+                                  Colors.white),
+                              celldata(
+                                  'Total Households mapped',
+                                  reportData?['totalHouseholdsMapped'],
+                                  Colors.white),
                               celldata(
                                   'Total Households selected for Intervention',
                                   reportData?[
-                                      'totalHouseholdsSelectedForIntervention']),
-                              celldata('Total Interventions planned',
-                                  reportData?['totalInterventionsPlanned']),
-                              celldata('Total Interventions completed',
-                                  reportData?['totalInterventionsCompleted']),
+                                      'totalHouseholdsSelectedForIntervention'],
+                                  Colors.white),
+                              celldata(
+                                  'Total Interventions planned',
+                                  reportData?['totalInterventionsPlanned'],
+                                  Colors.white),
+                              celldata(
+                                  'Total Interventions completed',
+                                  reportData?['totalInterventionsCompleted'],
+                                  Colors.white),
                               celldata(
                                   'Households earning additional income',
                                   reportData == null
                                       ? '000'
                                       : reportData![
-                                          'householdsEarningAdditionalIncome']),
-                              celldata('Zero addl. income',
-                                  reportData?['zeroAdditionalIncome']),
-                              celldata('Rs.25K - Rs.50K addl. income',
-                                  reportData?['between25KTO50KIncome']),
-                              celldata('Rs.50K - Rs.75K addl. income',
-                                  reportData?['between50KTO75KIncome']),
-                              celldata('Rs.75K - Rs.1L addl. income',
-                                  reportData?['between75KTO1LIncome']),
-                              celldata('More than Rs.1L addl. income',
-                                  reportData?['moreThan1LIncome']),
+                                          'householdsEarningAdditionalIncome'],
+                                  Colors.white),
+                              celldata(
+                                  'Zero addl. income',
+                                  reportData?['zeroAdditionalIncome'],
+                                  Color(0xFF008CD3).withOpacity(0.1)),
+                              celldata(
+                                  'Less than Rs.25K addl. income',
+                                  reportData?['zeroAdditionalIncome'],
+                                  Color(0xFF008CD3).withOpacity(0.1)),
+                              celldata(
+                                  'Rs.25K - Rs.50K addl. income',
+                                  reportData?['between25KTO50KIncome'],
+                                  Color(0xFF008CD3).withOpacity(0.1)),
+                              celldata(
+                                  'Rs.50K - Rs.75K addl. income',
+                                  reportData?['between50KTO75KIncome'],
+                                  Color(0xFF008CD3).withOpacity(0.1)),
+                              celldata(
+                                  'Rs.75K - Rs.1L addl. income',
+                                  reportData?['between75KTO1LIncome'],
+                                  Color(0xFF008CD3).withOpacity(0.1)),
+                              celldata(
+                                  'More than Rs.1L addl. income',
+                                  reportData?['moreThan1LIncome'],
+                                  Color(0xFF008CD3).withOpacity(0.1)),
                               celldata(
                                   'Aggregated additional income',
                                   reportData?['aggregatedAdditionalIncome']
-                                      .toString()),
+                                      .toString(),
+                                  Colors.white),
 
                               // Add more rows as needed
                             ],
@@ -305,8 +387,9 @@ class _HomeReportState extends State<HomeReport> {
   }
 }
 
-DataRow celldata(String left, Object? right) {
+DataRow celldata(String left, Object? right, Color color) {
   return DataRow(
+    color: MaterialStateColor.resolveWith((states) => color),
     cells: <DataCell>[
       DataCell(
         Text(

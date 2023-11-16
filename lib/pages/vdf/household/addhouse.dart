@@ -120,6 +120,50 @@ class _MyFormState extends State<MyForm> {
     }
   }
 
+  Future<void> _addHouseholdAPI(
+      String vdfid, String streetid, String ishouseholdint) async {
+    final apiUrl = '$base/add-household';
+    final Map<String, dynamic> requestData = {
+      'street_id': streetid,
+      'vdf_id': vdfid,
+      'is_household_intervention': ishouseholdint,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(requestData),
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 400) {
+        // Handle successful response
+        final Map<String, dynamic> responseBody = json.decode(response.body);
+        final String id = responseBody['resp_body']['id'].toString();
+        print('Household Created Successfully with ID: $id');
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => AddHead(
+              vdfid: '10001',
+              id: id,
+            ),
+          ),
+        );
+        // Return the extracted ID
+      } else {
+        // Handle error response
+        print(
+            'Failed to create household. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (error) {
+      // Handle network or other errors
+      print('Error: $error');
+    }
+  }
+
   Future<List<Street>> fetchStreets(String villageId) async {
     try {
       final response = await http.get(
@@ -181,187 +225,197 @@ class _MyFormState extends State<MyForm> {
             ),
           ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Container(
-              padding: const EdgeInsets.only(top: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+        body: SingleChildScrollView(child: dropdowns(context)),
+      ),
+    );
+  }
+
+  Padding dropdowns(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Form(
+        key: _formKey,
+        child: Container(
+          padding: const EdgeInsets.only(top: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              Column(
                 children: [
-                  const SizedBox(height: 20),
-                  Column(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.only(right: 100.0),
-                        child: Text(
-                          'Select Panchayat, Village & Street',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              fontSize: CustomFontTheme.textSize,
-                              fontWeight: FontWeight.w700),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      DropdownButtonFormField<String>(
-                        value: _selectedPanchayat,
-                        items: panchayats.map((Panchayat panchayat) {
-                          return DropdownMenuItem<String>(
-                            value: panchayat.panchayatId,
-                            child: Text(
-                              panchayat.panchayatName,
-                              style: TextStyle(
-                                fontWeight: CustomFontTheme.textwt,
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) async {
-                          if (newValue != null) {
-                            setState(() {
-                              _selectedPanchayat = newValue;
-                              _selectedVillage = null;
-                              _selectedStreet = null;
-                              fetchVillages(newValue).then((value) {
-                                setState(() {
-                                  villages = value;
-                                });
-                              });
-                            });
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.keyboard_arrow_down_sharp,
-                          color: CustomColorTheme.iconColor,
-                        ),
-                        decoration: InputDecoration(
-                          labelText: 'Select a Panchayat',
-                          labelStyle:
-                              TextStyle(color: CustomColorTheme.labelColor),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Panchayat is required';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      DropdownButtonFormField<String>(
-                        value: _selectedVillage,
-                        items: villages
-                            // .where((village) =>
-                            //     village.panchayatId == _selectedPanchayat)
-                            .map((Village village) {
-                          return DropdownMenuItem<String>(
-                            value: village.villageid,
-                            child: Text(village.village,
-                                style: TextStyle(
-                                  fontWeight: CustomFontTheme.textwt,
-                                  color: Color(0xFF181818),
-                                )),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) async {
-                          if (newValue != null) {
-                            setState(() {
-                              _selectedVillage = newValue;
-                              _selectedStreet = null;
-                              fetchStreets(newValue).then((value) {
-                                setState(() {
-                                  streets = value;
-                                });
-                              });
-                            });
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.keyboard_arrow_down_sharp,
-                          color: CustomColorTheme.iconColor,
-                        ),
-                        decoration: InputDecoration(
-                          labelText: 'Select a Village',
-                          labelStyle:
-                              TextStyle(color: CustomColorTheme.labelColor),
-                        ),
-                        validator: (value) {
-                          if (_selectedPanchayat == null ||
-                              value == null ||
-                              value.isEmpty) {
-                            return 'Village is required';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      DropdownButtonFormField<String>(
-                        value: _selectedStreet,
-                        items: streets
-                            // .where((street) =>
-                            //     street.villageId == _selectedVillage)
-                            .map((Street street) {
-                          return DropdownMenuItem<String>(
-                            value: street.streetid,
-                            child: Text(street.street,
-                                style: TextStyle(
-                                    fontWeight: CustomFontTheme.textwt,
-                                    fontSize: CustomFontTheme.textSize)),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _selectedStreet = newValue;
-                          });
-                        },
-                        icon: const Icon(
-                          Icons.keyboard_arrow_down_sharp,
-                          color: CustomColorTheme.iconColor,
-                        ),
-                        decoration: InputDecoration(
-                          labelText: 'Select a Street',
-                          labelStyle:
-                              TextStyle(color: CustomColorTheme.labelColor),
-                        ),
-                        validator: (value) {
-                          if (_selectedVillage == null ||
-                              value == null ||
-                              value.isEmpty) {
-                            return 'Street is required';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(350, 50),
-                          backgroundColor: _selectedPanchayat != null &&
-                                  _selectedVillage != null &&
-                                  _selectedStreet != null
-                              ? CustomColorTheme.primaryColor
-                              : const Color.fromRGBO(39, 82, 143, 0.5),
-                        ),
-                        onPressed: () {
-                          if (_selectedPanchayat != null &&
-                              _selectedVillage != null &&
-                              _selectedStreet != null) {
-                            if (_formKey.currentState?.validate() ?? false) {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => AddHead(),
-                                ),
-                              );
-                            }
-                          }
-                        },
-                        child: const Text('Next'),
-                      )
-                    ],
+                  const Padding(
+                    padding: EdgeInsets.only(right: 100.0),
+                    child: Text(
+                      'Select Panchayat, Village & Street',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: FontWeight.w700),
+                    ),
                   ),
+                  const SizedBox(height: 20),
+                  DropdownButtonFormField<String>(
+                    value: _selectedPanchayat,
+                    items: panchayats.map((Panchayat panchayat) {
+                      return DropdownMenuItem<String>(
+                        value: panchayat.panchayatId,
+                        child: Text(
+                          panchayat.panchayatName,
+                          style: TextStyle(
+                            color: Color(0xFF181818),
+                            fontWeight:
+                                _selectedPanchayat == panchayat.panchayatId
+                                    ? CustomFontTheme
+                                        .labelwt // FontWeight for selected item
+                                    : CustomFontTheme
+                                        .textwt, // FontWeight for other items
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) async {
+                      if (newValue != null) {
+                        setState(() {
+                          _selectedPanchayat = newValue;
+                          _selectedVillage = null;
+                          _selectedStreet = null;
+                          fetchVillages(newValue).then((value) {
+                            setState(() {
+                              villages = value;
+                            });
+                          });
+                        });
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down_sharp,
+                      color: CustomColorTheme.iconColor,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: 'Select a Panchayat',
+                      labelStyle: TextStyle(color: CustomColorTheme.labelColor),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Panchayat is required';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  DropdownButtonFormField<String>(
+                    value: _selectedVillage,
+                    items: villages
+                        // .where((village) =>
+                        //     village.panchayatId == _selectedPanchayat)
+                        .map((Village village) {
+                      return DropdownMenuItem<String>(
+                        value: village.villageid,
+                        child: Text(village.village,
+                            style: TextStyle(
+                              fontWeight: _selectedVillage == village.villageid
+                                  ? CustomFontTheme
+                                      .labelwt // FontWeight for selected item
+                                  : CustomFontTheme.textwt,
+                              color: Color(0xFF181818),
+                            )),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) async {
+                      if (newValue != null) {
+                        setState(() {
+                          _selectedVillage = newValue;
+                          _selectedStreet = null;
+                          fetchStreets(newValue).then((value) {
+                            setState(() {
+                              streets = value;
+                            });
+                          });
+                        });
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down_sharp,
+                      color: CustomColorTheme.iconColor,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: 'Select a Village',
+                      labelStyle: TextStyle(color: CustomColorTheme.labelColor),
+                    ),
+                    validator: (value) {
+                      if (_selectedPanchayat == null ||
+                          value == null ||
+                          value.isEmpty) {
+                        return 'Village is required';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  DropdownButtonFormField<String>(
+                    value: _selectedStreet,
+                    items: streets
+                        // .where((street) =>
+                        //     street.villageId == _selectedVillage)
+                        .map((Street street) {
+                      return DropdownMenuItem<String>(
+                        value: street.streetid,
+                        child: Text(street.street,
+                            style: TextStyle(
+                              color: Color(0xFF181818),
+                              fontWeight: _selectedStreet == street.streetid
+                                  ? CustomFontTheme
+                                      .labelwt // FontWeight for selected item
+                                  : CustomFontTheme.textwt,
+                            )),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedStreet = newValue;
+                      });
+                    },
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down_sharp,
+                      color: CustomColorTheme.iconColor,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: 'Select a Street',
+                      labelStyle: TextStyle(color: CustomColorTheme.labelColor),
+                    ),
+                    validator: (value) {
+                      if (_selectedVillage == null ||
+                          value == null ||
+                          value.isEmpty) {
+                        return 'Street is required';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(350, 50),
+                      backgroundColor: _selectedPanchayat != null &&
+                              _selectedVillage != null &&
+                              _selectedStreet != null
+                          ? CustomColorTheme.primaryColor
+                          : const Color.fromRGBO(39, 82, 143, 0.5),
+                    ),
+                    onPressed: () {
+                      if (_selectedPanchayat != null &&
+                          _selectedVillage != null &&
+                          _selectedStreet != null) {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          _addHouseholdAPI('10001', _selectedStreet!, '0');
+                        }
+                      }
+                    },
+                    child: const Text('Next'),
+                  )
                 ],
               ),
-            ),
+            ],
           ),
         ),
       ),

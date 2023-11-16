@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:dalmia/common/bottombar.dart';
+import 'package:dalmia/common/navmenu.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
@@ -25,6 +26,13 @@ class VillageReport extends StatefulWidget {
 }
 
 class _VillageReportState extends State<VillageReport> {
+  bool isreportMenuOpen = false;
+  void _toggleMenu() {
+    setState(() {
+      isreportMenuOpen = !isreportMenuOpen;
+    });
+  }
+
   String? selectedPanchayat;
   String? selectedVillage;
   // int _selectedpanchayatindex = 0;
@@ -71,7 +79,7 @@ class _VillageReportState extends State<VillageReport> {
   Future<void> fetchvillageData() async {
     try {
       final response = await http.get(
-        Uri.parse('$base/report-panchayat-wise?vdfId=10001'),
+        Uri.parse('$base/report-village-wise?vdfId=10001'),
       );
 
       if (response.statusCode == 200) {
@@ -81,7 +89,7 @@ class _VillageReportState extends State<VillageReport> {
           villagetData = [
             for (var entry in jsonData['resp_body'].entries)
               {
-                'panchayatName': entry.key,
+                'villageName': entry.key,
                 'incomeFollowUpDue': entry.value['incomeFollowUpDue'],
                 'selectedHHWithoutIntervention':
                     entry.value['selectedHHWithoutIntervention'],
@@ -105,9 +113,58 @@ class _VillageReportState extends State<VillageReport> {
     return SafeArea(
         child: Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100),
-        child: ReportAppBar(
-          heading: 'Reports',
+        preferredSize: Size.fromHeight(isreportMenuOpen ? 150 : 100),
+        child: Stack(
+          children: [
+            AppBar(
+              titleSpacing: 20,
+              backgroundColor: Colors.white,
+              title: const Image(image: AssetImage('images/icon.jpg')),
+              automaticallyImplyLeading: false,
+              actions: <Widget>[
+                CircleAvatar(
+                  backgroundColor: CustomColorTheme.primaryColor,
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.notifications_none_outlined,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 20),
+                IconButton(
+                  iconSize: 30,
+                  onPressed: () {
+                    _toggleMenu();
+                  },
+                  icon: const Icon(Icons.menu,
+                      color: CustomColorTheme
+                          .primaryColor // Update with your color
+                      ),
+                ),
+              ],
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(50),
+                child: Container(
+                  padding: const EdgeInsets.only(left: 30, bottom: 10),
+                  alignment: Alignment.topCenter,
+                  color: Colors.white,
+                  child: Text(
+                    'Reports',
+                    style: const TextStyle(
+                      fontSize: CustomFontTheme.headingSize,
+
+                      // Adjust the font size
+                      fontWeight:
+                          CustomFontTheme.headingwt, // Adjust the font weight
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            if (isreportMenuOpen) navmenu(context, _toggleMenu),
+          ],
         ),
       ),
       body: SingleChildScrollView(
@@ -248,7 +305,7 @@ class _VillageReportState extends State<VillageReport> {
                     topRight: Radius.circular(10),
                   ),
                 ),
-                dividerThickness: 2,
+                dividerThickness: 0,
                 columnSpacing: 15,
                 columns: const <DataColumn>[
                   DataColumn(
@@ -276,54 +333,51 @@ class _VillageReportState extends State<VillageReport> {
                     ),
                   ),
                 ],
-                rows: List<DataRow>.generate(
-                  10,
-                  (index) {
-                    return DataRow(
-                      color: MaterialStateColor.resolveWith((states) {
-                        // Alternating row colors
-                        return index.isOdd
-                            ? Colors.lightBlue[50]!
-                            : Colors.white;
-                      }),
-                      cells: <DataCell>[
-                        DataCell(
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => StreetReport(),
-                                ),
-                              );
-                              setState(() {
-                                selectedVillage = 'Village ${index + 1}';
-                                // _selectedvillagetindex = index;
-                                selectedPanchayat = '0';
-                                // _selectedVillageindex = index;
+                rows: villagetData.map<DataRow>((village) {
+                  return DataRow(
+                    color: MaterialStateColor.resolveWith((states) {
+                      // Alternating row colors
+                      return villagetData.indexOf(village) % 2 == 0
+                          ? Colors.lightBlue[50]!
+                          : Colors.white;
+                    }),
+                    cells: <DataCell>[
+                      DataCell(
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              selectedPanchayat = village['panchayatName'];
+                            });
 
-                                // selectedVillage =
-                                //     'Village ${_selectedVillageindex + 1}';
-                              });
-                            },
-                            child: Text(
-                              'Village ${index + 1}',
-                              style: const TextStyle(
-                                color: CustomColorTheme.iconColor,
-                                decoration: TextDecoration.underline,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => StreetReport()),
+                            );
+                          },
+                          child: Text(
+                            village['villageName'] ?? '',
+                            style: const TextStyle(
+                              color: CustomColorTheme.iconColor,
+                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                        DataCell(Text(
-                          '${random.nextInt(100)}',
-                        )),
-                        DataCell(Text('${random.nextInt(100)}')),
-                        DataCell(Text('${random.nextInt(100)}')),
-                      ],
-                    );
-                  },
-                ),
+                      ),
+                      DataCell(
+                        Text('${village['incomeFollowUpDue'] ?? 0}'),
+                      ),
+                      DataCell(
+                        Text(
+                            '${village['selectedHHWithoutIntervention'] ?? 0}'),
+                      ),
+                      DataCell(
+                        Text(
+                            '${village['interventionStartedButNotCompleted'] ?? 0}'),
+                      ),
+                    ],
+                  );
+                }).toList(),
               ),
             ),
           )

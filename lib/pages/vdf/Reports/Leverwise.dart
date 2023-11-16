@@ -1,4 +1,5 @@
 import 'package:dalmia/common/bottombar.dart';
+import 'package:dalmia/common/navmenu.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
@@ -19,6 +20,13 @@ class Leverwise extends StatefulWidget {
 }
 
 class _LeverwiseState extends State<Leverwise> {
+  bool isreportMenuOpen = false;
+  void _toggleMenu() {
+    setState(() {
+      isreportMenuOpen = !isreportMenuOpen;
+    });
+  }
+
   int? selectedRadio;
   int selectedIndex = 0; // Track the currently selected tab index
 
@@ -65,10 +73,60 @@ class _LeverwiseState extends State<Leverwise> {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(100),
-            child: ReportAppBar(
-              heading: 'Reports',
-            )),
+          preferredSize: Size.fromHeight(isreportMenuOpen ? 150 : 100),
+          child: Stack(
+            children: [
+              AppBar(
+                titleSpacing: 20,
+                backgroundColor: Colors.white,
+                title: const Image(image: AssetImage('images/icon.jpg')),
+                automaticallyImplyLeading: false,
+                actions: <Widget>[
+                  CircleAvatar(
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.notifications_none_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  IconButton(
+                    iconSize: 30,
+                    onPressed: () {
+                      _toggleMenu();
+                    },
+                    icon: const Icon(Icons.menu,
+                        color: CustomColorTheme
+                            .primaryColor // Update with your color
+                        ),
+                  ),
+                ],
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(50),
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 30, bottom: 10),
+                    alignment: Alignment.topCenter,
+                    color: Colors.white,
+                    child: Text(
+                      'Reports',
+                      style: const TextStyle(
+                        fontSize: CustomFontTheme.headingSize,
+
+                        // Adjust the font size
+                        fontWeight:
+                            CustomFontTheme.headingwt, // Adjust the font weight
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              if (isreportMenuOpen) navmenu(context, _toggleMenu),
+            ],
+          ),
+        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -114,75 +172,74 @@ class _LeverwiseState extends State<Leverwise> {
                       ),
                       SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                          child: DataTable(
+                            dividerThickness: 00,
+                            // border: TableBorder(
+                            //     borderRadius:
+                            //         BorderRadius.all(Radius.circular(10))),
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF008CD3),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                              ),
                             ),
-                            elevation: 5,
-                            child: DataTable(
-                              decoration: const BoxDecoration(
-                                color: Color(0xFF008CD3),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10),
+                            columns: const [
+                              DataColumn(
+                                label: Text(
+                                  'Levers',
+                                  style: TextStyle(color: Colors.white),
                                 ),
                               ),
-                              columns: const [
-                                DataColumn(
-                                  label: Text(
-                                    'Levers',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
+                              DataColumn(
+                                label: Text(
+                                  'NO. of HH',
+                                  style: TextStyle(color: Colors.white),
                                 ),
-                                DataColumn(
-                                  label: Text(
-                                    'NO. of HH',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                DataColumn(
-                                  label: Text(
-                                    'NO. of int.',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                DataColumn(
-                                  label: Text(
-                                    'Annual Income Reported',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                DataColumn(
-                                  label: Text(
-                                    'Avg. income/int.',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ],
-                              rows: List<DataRow>.generate(
-                                10,
-                                (index) {
-                                  return DataRow(
-                                    color: MaterialStateColor.resolveWith(
-                                      (states) {
-                                        // Alternating row colors
-                                        return index.isOdd
-                                            ? Colors.lightBlue[50] as Color
-                                            : Colors.white;
-                                      },
-                                    ),
-                                    cells: <DataCell>[
-                                      DataCell(Text('Panchayat $index')),
-                                      DataCell(Text('Village $index')),
-                                      DataCell(Text('${householdList[index]}')),
-                                      DataCell(
-                                          Text('${populationList[index]}')),
-                                      DataCell(Text(
-                                          '${incomeList[index]}')), // Assuming incomeList is the list of average income per interaction
-                                    ],
-                                  );
-                                },
                               ),
+                              DataColumn(
+                                label: Text(
+                                  'NO. of int.',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Annual Income Reported',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Avg. income/int.',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ],
+                            rows: List<DataRow>.generate(
+                              10,
+                              (index) {
+                                return DataRow(
+                                  color: MaterialStateColor.resolveWith(
+                                    (states) {
+                                      // Alternating row colors
+                                      return index.isOdd
+                                          ? Colors.lightBlue[50] as Color
+                                          : Colors.white;
+                                    },
+                                  ),
+                                  cells: <DataCell>[
+                                    DataCell(Text(
+                                      'Panchayat $index',
+                                    )),
+                                    DataCell(Text('Village $index')),
+                                    DataCell(Text('${householdList[index]}')),
+                                    DataCell(Text('${populationList[index]}')),
+                                    DataCell(Text(
+                                        '${incomeList[index]}')), // Assuming incomeList is the list of average income per interaction
+                                  ],
+                                );
+                              },
                             ),
                           ))
                     ],

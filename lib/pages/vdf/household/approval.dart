@@ -80,6 +80,9 @@ class _ApprovalState extends State<Approval> {
                       enabled: selectedRadio == 7 ? true : false,
 
                       decoration: InputDecoration(
+                        alignLabelWithHint: true,
+                        labelStyle:
+                            TextStyle(color: CustomColorTheme.labelColor),
                         labelText: 'Please specify the reason',
                       ),
                       maxLines:
@@ -98,7 +101,12 @@ class _ApprovalState extends State<Approval> {
                       backgroundColor: CustomColorTheme.primaryColor,
                     ),
                     onPressed: () {},
-                    child: const Text('submit for approval'),
+                    child: const Text(
+                      'submit for approval',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.labelwt),
+                    ),
                   ),
                 ],
               ),

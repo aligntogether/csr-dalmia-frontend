@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:dalmia/common/bottombar.dart';
+import 'package:dalmia/common/navmenu.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
@@ -24,6 +25,13 @@ class Cumulative extends StatefulWidget {
 }
 
 class _CumulativeState extends State<Cumulative> {
+  bool isreportMenuOpen = false;
+  void _toggleMenu() {
+    setState(() {
+      isreportMenuOpen = !isreportMenuOpen;
+    });
+  }
+
   String? selectedPanchayat;
   String? selectedVillage;
   int _selectedpanchayatindex = 0;
@@ -104,9 +112,58 @@ class _CumulativeState extends State<Cumulative> {
     return SafeArea(
         child: Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100),
-        child: ReportAppBar(
-          heading: 'Reports',
+        preferredSize: Size.fromHeight(isreportMenuOpen ? 150 : 100),
+        child: Stack(
+          children: [
+            AppBar(
+              titleSpacing: 20,
+              backgroundColor: Colors.white,
+              title: const Image(image: AssetImage('images/icon.jpg')),
+              automaticallyImplyLeading: false,
+              actions: <Widget>[
+                CircleAvatar(
+                  backgroundColor: CustomColorTheme.primaryColor,
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.notifications_none_outlined,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 20),
+                IconButton(
+                  iconSize: 30,
+                  onPressed: () {
+                    _toggleMenu();
+                  },
+                  icon: const Icon(Icons.menu,
+                      color: CustomColorTheme
+                          .primaryColor // Update with your color
+                      ),
+                ),
+              ],
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(50),
+                child: Container(
+                  padding: const EdgeInsets.only(left: 30, bottom: 10),
+                  alignment: Alignment.topCenter,
+                  color: Colors.white,
+                  child: Text(
+                    'Reports',
+                    style: const TextStyle(
+                      fontSize: CustomFontTheme.headingSize,
+
+                      // Adjust the font size
+                      fontWeight:
+                          CustomFontTheme.headingwt, // Adjust the font weight
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            if (isreportMenuOpen) navmenu(context, _toggleMenu),
+          ],
         ),
       ),
       body: SingleChildScrollView(
@@ -245,6 +302,7 @@ class _CumulativeState extends State<Cumulative> {
               ),
               elevation: 5,
               child: DataTable(
+                dividerThickness: 00,
                 decoration: const BoxDecoration(
                   color: Color(0xFF008CD3),
                   borderRadius: BorderRadius.only(
@@ -252,7 +310,6 @@ class _CumulativeState extends State<Cumulative> {
                     topRight: Radius.circular(10),
                   ),
                 ),
-                dividerThickness: 2,
                 columnSpacing: 15,
                 columns: const <DataColumn>[
                   DataColumn(

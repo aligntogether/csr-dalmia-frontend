@@ -1,12 +1,12 @@
+import 'dart:convert';
+
 import 'package:dalmia/common/bottombar.dart';
-import 'package:dalmia/components/reportappbar.dart';
-import 'package:dalmia/components/reportpop.dart';
+import 'package:dalmia/common/navmenu.dart';
+
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
-import 'package:dalmia/pages/vdf/Reports/cumulative.dart';
-import 'package:dalmia/pages/vdf/Reports/form1.dart';
+
 import 'package:dalmia/pages/vdf/Reports/home.dart';
-import 'package:dalmia/pages/vdf/Reports/leverwise.dart';
-import 'package:dalmia/pages/vdf/Reports/top20.dart';
+
 import 'package:dalmia/pages/vdf/Reports/updateinter.dart';
 import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
@@ -60,7 +60,88 @@ class _HhidFormState extends State<HhidForm> {
     }
   }
 
+  bool isreportMenuOpen = false;
+  void _toggleMenu() {
+    setState(() {
+      isreportMenuOpen = !isreportMenuOpen;
+    });
+  }
+
   int selectedIndex = 0;
+  List<Map<String, dynamic>> addincomeData = [];
+
+  Future<List<Map<String, dynamic>>> fetchaddincomeData(String hhid) async {
+    final String apiUrl =
+        'https://mobiledevcloud.dalmiabharat.com:443/csr/interventions-additional-income-active?hhid=$hhid';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        if (jsonData['resp_code'] == 200) {
+          final List<dynamic> respBody = jsonData['resp_body'];
+
+          List<Map<String, String>> extractedData = [];
+
+          for (var data in respBody) {
+            // Extracting each entry in resp_body
+            Map<String, String> entry = {};
+            entry[data.keys.first.toString()] = data.values.first.toString();
+            extractedData.add(entry);
+          }
+
+          return extractedData;
+        } else {
+          throw Exception(
+              'API request failed with status ${jsonData['resp_code']}');
+        }
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+      throw e; // Rethrow the exception to handle it elsewhere if needed
+    }
+  }
+
+  List<Map<String, dynamic>> updatecompletionData = [];
+  Future<List<Map<String, dynamic>>> fetchupdateData(String hhid) async {
+    final String apiUrl =
+        'https://mobiledevcloud.dalmiabharat.com:443/csr/interventions-completion-date-active?hhid=$hhid';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        if (jsonData['resp_code'] == 200) {
+          final List<dynamic> respBody = jsonData['resp_body'];
+
+          List<Map<String, String>> extractedData = [];
+
+          for (var data in respBody) {
+            // Extracting each entry in resp_body
+            Map<String, String> entry = {};
+            entry[data.keys.first.toString()] = data.values.first.toString();
+            extractedData.add(entry);
+          }
+
+          return extractedData;
+        } else {
+          throw Exception(
+              'API request failed with status ${jsonData['resp_code']}');
+        }
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+      throw e; // Rethrow the exception to handle it elsewhere if needed
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,10 +154,60 @@ class _HhidFormState extends State<HhidForm> {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(100),
-            child: ReportAppBar(
-              heading: 'Reports',
-            )),
+          preferredSize: Size.fromHeight(isreportMenuOpen ? 150 : 100),
+          child: Stack(
+            children: [
+              AppBar(
+                titleSpacing: 20,
+                backgroundColor: Colors.white,
+                title: const Image(image: AssetImage('images/icon.jpg')),
+                automaticallyImplyLeading: false,
+                actions: <Widget>[
+                  CircleAvatar(
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.notifications_none_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  IconButton(
+                    iconSize: 30,
+                    onPressed: () {
+                      _toggleMenu();
+                    },
+                    icon: const Icon(Icons.menu,
+                        color: CustomColorTheme
+                            .primaryColor // Update with your color
+                        ),
+                  ),
+                ],
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(50),
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 30, bottom: 10),
+                    alignment: Alignment.topCenter,
+                    color: Colors.white,
+                    child: Text(
+                      'Reports',
+                      style: const TextStyle(
+                        fontSize: CustomFontTheme.headingSize,
+
+                        // Adjust the font size
+                        fontWeight:
+                            CustomFontTheme.headingwt, // Adjust the font weight
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              if (isreportMenuOpen) navmenu(context, _toggleMenu),
+            ],
+          ),
+        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -128,6 +259,7 @@ class _HhidFormState extends State<HhidForm> {
                           ),
                           elevation: 5,
                           child: DataTable(
+                            dividerThickness: 00,
                             decoration: const BoxDecoration(
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(10),
@@ -235,10 +367,10 @@ class _HhidFormState extends State<HhidForm> {
                                   DataCell(
                                     InkWell(
                                       onTap: () {
-                                        _takeaction(context);
+                                        _takeaction(context, 'DPKDMKS003');
                                       },
                                       child: const Text(
-                                        'AROKSKTS001',
+                                        'DPKDMKS003',
                                         style: TextStyle(
                                           color: CustomColorTheme.iconColor,
                                           decoration: TextDecoration.underline,
@@ -260,9 +392,11 @@ class _HhidFormState extends State<HhidForm> {
                                 cells: <DataCell>[
                                   DataCell(
                                     InkWell(
-                                      onTap: () {},
+                                      onTap: () {
+                                        _takeaction(context, 'DPKDMKS003');
+                                      },
                                       child: const Text(
-                                        'AROKSKTS002',
+                                        'DPKDMKS003',
                                         style: TextStyle(
                                           color: CustomColorTheme.iconColor,
                                           decoration: TextDecoration.underline,
@@ -376,27 +510,32 @@ class _HhidFormState extends State<HhidForm> {
     );
   }
 
-  void _takeaction(BuildContext context) {
+  Future<void> _takeaction(BuildContext context, String hhid) async {
+    addincomeData = await fetchaddincomeData(hhid);
+    updatecompletionData = await fetchupdateData(hhid);
+    bool additionalinactive = addincomeData.isEmpty;
+    bool updateinactive = updatecompletionData.isEmpty;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, setState) {
             return AlertDialog(
+              // contentPadding: EdgeInsets.all(70),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
               title: Column(
-                // crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  Wrap(
                     children: [
-                      const Expanded(
-                        child: Text(
-                          'What action do you wish to take for HHID - AROKSKTS001',
-                          style: TextStyle(
-                            fontSize: CustomFontTheme.textSize,
-                            fontWeight: CustomFontTheme.headingwt,
-                          ),
+                      Text(
+                        'What action do you wish to take for HHID -$hhid',
+                        // textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt,
                         ),
                       ),
                       GestureDetector(
@@ -410,8 +549,8 @@ class _HhidFormState extends State<HhidForm> {
                   RadioListTile<int>(
                     activeColor: CustomColorTheme.iconColor,
                     selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'Add Intervention',
+                    title: Text(
+                      'Add Interventions',
                       style: TextStyle(
                           fontSize: CustomFontTheme.textSize,
                           color: CustomColorTheme.textColor),
@@ -424,39 +563,50 @@ class _HhidFormState extends State<HhidForm> {
                       });
                     },
                   ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'Update Completion Date',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          color: CustomColorTheme.textColor),
+                  IgnorePointer(
+                    ignoring: updateinactive,
+                    child: RadioListTile<int>(
+                      activeColor: CustomColorTheme.iconColor,
+                      selectedTileColor: CustomColorTheme.iconColor,
+                      title: Text(
+                        'Update Completion Date',
+                        style: TextStyle(
+                            fontSize: CustomFontTheme.textSize,
+                            color: updateinactive
+                                ? CustomColorTheme.labelColor
+                                : CustomColorTheme.textColor),
+                      ),
+                      value: 2,
+                      groupValue: selectedRadio,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedRadio = value;
+                        });
+                      },
                     ),
-                    value: 2,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
                   ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'Add Additional Income',
-                      style: TextStyle(
+                  IgnorePointer(
+                    ignoring: additionalinactive,
+                    child: RadioListTile<int>(
+                      activeColor: CustomColorTheme.iconColor,
+                      selectedTileColor: CustomColorTheme.iconColor,
+                      title: Text(
+                        'Add Additional Income',
+                        style: TextStyle(
                           fontSize: CustomFontTheme.textSize,
-                          color: CustomColorTheme.textColor),
+                          color: additionalinactive
+                              ? CustomColorTheme.labelColor
+                              : CustomColorTheme.textColor,
+                        ),
+                      ),
+                      value: 3,
+                      groupValue: selectedRadio,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedRadio = value;
+                        });
+                      },
                     ),
-                    value: 3,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
                   ),
                   RadioListTile<int>(
                     activeColor: CustomColorTheme.iconColor,
@@ -478,12 +628,14 @@ class _HhidFormState extends State<HhidForm> {
                 ],
               ),
               content: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: CustomColorTheme.primaryColor),
+                        backgroundColor: CustomColorTheme.primaryColor,
+                        minimumSize: const Size(250, 50),
+                      ),
                       onPressed: () {
                         if (selectedRadio == 1) {
                           Navigator.of(context).push(
@@ -493,11 +645,11 @@ class _HhidFormState extends State<HhidForm> {
                           );
                         } else if (selectedRadio == 2) {
                           Navigator.of(context).pop();
-                          _updatecompletion(context);
+                          _updatecompletion(context, hhid);
                         } else if (selectedRadio == 3) {
                           Navigator.of(context).pop();
-                          Addadditional(
-                              context); // Navigate to the corresponding tab
+                          Addadditional(context,
+                              hhid); // Navigate to the corresponding tab
                         } else if (selectedRadio == 4) {
                           Navigator.of(context).push(
                             MaterialPageRoute(
@@ -519,7 +671,7 @@ class _HhidFormState extends State<HhidForm> {
     );
   }
 
-  void _updatecompletion(BuildContext context) {
+  void _updatecompletion(BuildContext context, String hhid) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -534,7 +686,7 @@ class _HhidFormState extends State<HhidForm> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('AROKSKTS001'),
+                      Text(hhid),
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).pop();
@@ -555,60 +707,31 @@ class _HhidFormState extends State<HhidForm> {
                   const SizedBox(
                     height: 10,
                   ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'int.1    Mushroom Cultivation',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          fontWeight: CustomFontTheme.headingwt,
-                          color: CustomColorTheme.textColor),
+                  SingleChildScrollView(
+                    child: Column(
+                      children: updatecompletionData.map<Widget>((data) {
+                        return RadioListTile<int>(
+                          activeColor: CustomColorTheme.iconColor,
+                          selectedTileColor: CustomColorTheme.iconColor,
+                          title: Text(
+                            'int.${data.keys.first}    ${data.values.first}',
+                            style: TextStyle(
+                              fontSize: CustomFontTheme.textSize,
+                              fontWeight: CustomFontTheme.headingwt,
+                              color: CustomColorTheme.textColor,
+                            ),
+                          ),
+                          value: int.parse(data.keys.first),
+                          groupValue: selectedRadio,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedRadio = value;
+                            });
+                          },
+                        );
+                      }).toList(),
                     ),
-                    value: 1,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'int.4    Vermicompost Unit',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          fontWeight: CustomFontTheme.headingwt,
-                          color: CustomColorTheme.textColor),
-                    ),
-                    value: 2,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'int.6    Azolla Units',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          fontWeight: CustomFontTheme.headingwt,
-                          color: CustomColorTheme.textColor),
-                    ),
-                    value: 3,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
+                  )
                 ],
               ),
               content: Row(
@@ -617,6 +740,7 @@ class _HhidFormState extends State<HhidForm> {
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(250, 50),
                           backgroundColor: CustomColorTheme.primaryColor),
                       onPressed: () {
                         Navigator.of(context).push(
@@ -637,7 +761,9 @@ class _HhidFormState extends State<HhidForm> {
     );
   }
 
-  void Addadditional(BuildContext context) {
+  void Addadditional(BuildContext context, String hhid) {
+    String? interventionid;
+    String? interventiontype;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -652,7 +778,7 @@ class _HhidFormState extends State<HhidForm> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('AROKSKTS001'),
+                      Text(hhid),
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).pop();
@@ -673,60 +799,31 @@ class _HhidFormState extends State<HhidForm> {
                   const SizedBox(
                     height: 10,
                   ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'int.1    Goat Farming',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          fontWeight: CustomFontTheme.headingwt,
-                          color: CustomColorTheme.textColor),
-                    ),
-                    value: 1,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'int.4    DIC linked Micro Enterprise',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          fontWeight: CustomFontTheme.headingwt,
-                          color: CustomColorTheme.textColor),
-                    ),
-                    value: 2,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<int>(
-                    activeColor: CustomColorTheme.iconColor,
-                    selectedTileColor: CustomColorTheme.iconColor,
-                    title: const Text(
-                      'int.6    Farm Pond',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          fontWeight: CustomFontTheme.headingwt,
-                          color: CustomColorTheme.textColor),
-                    ),
-                    value: 3,
-                    groupValue: selectedRadio,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRadio = value;
-                      });
-                    },
-                  ),
+                  Column(
+                    children: addincomeData.map<Widget>((data) {
+                      interventionid = data.keys.first;
+                      interventiontype = data.values.first;
+                      return RadioListTile<int>(
+                        activeColor: CustomColorTheme.iconColor,
+                        selectedTileColor: CustomColorTheme.iconColor,
+                        title: Text(
+                          'int.${data.keys.first}    ${data.values.first}',
+                          style: TextStyle(
+                            fontSize: CustomFontTheme.textSize,
+                            fontWeight: CustomFontTheme.headingwt,
+                            color: CustomColorTheme.textColor,
+                          ),
+                        ),
+                        value: int.parse(data.keys.first),
+                        groupValue: selectedRadio,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedRadio = value;
+                          });
+                        },
+                      );
+                    }).toList(),
+                  )
                 ],
               ),
               content: Row(
@@ -735,11 +832,16 @@ class _HhidFormState extends State<HhidForm> {
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(250, 50),
                           backgroundColor: CustomColorTheme.primaryColor),
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const UpdateIntervention(),
+                            builder: (context) => UpdateIntervention(
+                              hhid: hhid,
+                              interventionid: interventionid,
+                              interventiontype: interventiontype,
+                            ),
                           ),
                         );
                       },

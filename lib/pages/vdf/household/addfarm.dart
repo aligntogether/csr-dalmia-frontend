@@ -165,7 +165,9 @@ class _AddFarmState extends State<AddFarm> {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue[900],
+                      elevation: 0,
+                      minimumSize: const Size(130, 50),
+                      backgroundColor: CustomColorTheme.primaryColor,
                     ),
                     onPressed: () {
                       Navigator.of(context).push(
@@ -174,11 +176,17 @@ class _AddFarmState extends State<AddFarm> {
                         ),
                       );
                     },
-                    child: const Text('Next'),
+                    child: const Text(
+                      'Next',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.labelwt),
+                    ),
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
+                      minimumSize: const Size(130, 50),
                       backgroundColor: Colors.white,
                       side: BorderSide(
                           color: CustomColorTheme.primaryColor, width: 1),
@@ -190,7 +198,10 @@ class _AddFarmState extends State<AddFarm> {
                     },
                     child: Text(
                       'Save as Draft',
-                      style: TextStyle(color: Colors.blue[900]),
+                      style: TextStyle(
+                          color: CustomColorTheme.primaryColor,
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.labelwt),
                     ),
                   ),
                 ],

@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:dalmia/common/bottombar.dart';
+import 'package:dalmia/common/navmenu.dart';
 import 'package:dalmia/components/reportappbar.dart';
 import 'package:dalmia/components/reportpop.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
 import 'package:dalmia/pages/vdf/Reports/home.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
@@ -19,6 +23,47 @@ class LivehoodPlan extends StatefulWidget {
 }
 
 class _LivehoodPlanState extends State<LivehoodPlan> {
+  bool isreportMenuOpen = false;
+  void _toggleMenu() {
+    setState(() {
+      isreportMenuOpen = !isreportMenuOpen;
+    });
+  }
+
+  List<Map<String, dynamic>> livehoodData = []; // List to store API data
+
+  @override
+  void initState() {
+    super.initState();
+    fetchLivehoodData(); // Call the method to fetch API data when the page initializes
+  }
+
+  Future<void> fetchLivehoodData() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$base/get-livelihood-funds-utilization?vdfId=10001'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        setState(() {
+          livehoodData = [
+            {
+              'allocated': jsonData['resp_body']['allocated'] ?? 0,
+              'spent': jsonData['resp_body']['spent'] ?? 0,
+              'balance': jsonData['resp_body']['balance'] ?? 0,
+            },
+          ];
+        });
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   int? selectedRadio;
   int selectedIndex = 0; // Track the currently selected tab index
 
@@ -55,21 +100,64 @@ class _LivehoodPlanState extends State<LivehoodPlan> {
 
   @override
   Widget build(BuildContext context) {
-    final Random random = Random();
-    // final List<int> householdList =
-    //     List.generate(10, (index) => random.nextInt(100));
-    // final List<int> populationList =
-    //     List.generate(10, (index) => random.nextInt(100));
-    // final List<int> incomeList =
-    //     List.generate(10, (index) => random.nextInt(100));
     // ;
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-            preferredSize: Size.fromHeight(100),
-            child: ReportAppBar(
-              heading: 'Reports',
-            )),
+          preferredSize: Size.fromHeight(isreportMenuOpen ? 150 : 100),
+          child: Stack(
+            children: [
+              AppBar(
+                titleSpacing: 20,
+                backgroundColor: Colors.white,
+                title: const Image(image: AssetImage('images/icon.jpg')),
+                automaticallyImplyLeading: false,
+                actions: <Widget>[
+                  CircleAvatar(
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.notifications_none_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  IconButton(
+                    iconSize: 30,
+                    onPressed: () {
+                      _toggleMenu();
+                    },
+                    icon: const Icon(Icons.menu,
+                        color: CustomColorTheme
+                            .primaryColor // Update with your color
+                        ),
+                  ),
+                ],
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(50),
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 30, bottom: 10),
+                    alignment: Alignment.topCenter,
+                    color: Colors.white,
+                    child: Text(
+                      'Reports',
+                      style: const TextStyle(
+                        fontSize: CustomFontTheme.headingSize,
+
+                        // Adjust the font size
+                        fontWeight:
+                            CustomFontTheme.headingwt, // Adjust the font weight
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              if (isreportMenuOpen) navmenu(context, _toggleMenu),
+            ],
+          ),
+        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -121,30 +209,56 @@ class _LivehoodPlanState extends State<LivehoodPlan> {
                             borderRadius: BorderRadius.circular(15.0),
                           ),
                           child: DataTable(
+                            dividerThickness: 00,
                             headingRowHeight: 0.0,
                             columns: const <DataColumn>[
-                              DataColumn(label: Text('Sno.')),
-                              DataColumn(label: Text('Business Plan Titles')),
+                              DataColumn(label: Text('Details')),
+                              DataColumn(label: Text('Values')),
                             ],
-                            rows: List<DataRow>.generate(
-                              3,
-                              (index) {
-                                return DataRow(
-                                  color: MaterialStateColor.resolveWith(
-                                    (states) {
-                                      // Alternating row colors
-                                      return index.isOdd
-                                          ? Colors.lightBlue[50] as Color
-                                          : Colors.white as Color;
-                                    },
-                                  ),
-                                  cells: const <DataCell>[
-                                    DataCell(Text('Allocated(Rs.)')),
-                                    DataCell(Text('5000')),
-                                  ],
-                                );
-                              },
-                            ),
+                            rows: livehoodData.map<DataRow>((data) {
+                                  return DataRow(
+                                    color: MaterialStateColor.resolveWith(
+                                      (states) {
+                                        return livehoodData.indexOf(data).isOdd
+                                            ? Colors.lightBlue[50] as Color
+                                            : Colors.white;
+                                      },
+                                    ),
+                                    cells: <DataCell>[
+                                      DataCell(Text('Allocated (Rs.)')),
+                                      DataCell(Text(
+                                          data['allocated']?.toString() ?? '')),
+                                    ],
+                                  );
+                                }).toList() +
+                                livehoodData.map<DataRow>((data) {
+                                  return DataRow(
+                                    color: MaterialStateColor.resolveWith(
+                                      (states) {
+                                        return Colors.lightBlue[50] as Color;
+                                      },
+                                    ),
+                                    cells: <DataCell>[
+                                      DataCell(Text('Spent (Rs.)')),
+                                      DataCell(Text(
+                                          data['spent']?.toString() ?? '')),
+                                    ],
+                                  );
+                                }).toList() +
+                                livehoodData.map<DataRow>((data) {
+                                  return DataRow(
+                                    color: MaterialStateColor.resolveWith(
+                                      (states) {
+                                        return Colors.white as Color;
+                                      },
+                                    ),
+                                    cells: <DataCell>[
+                                      DataCell(Text('Balance (Rs.)')),
+                                      DataCell(Text(
+                                          data['balance']?.toString() ?? '')),
+                                    ],
+                                  );
+                                }).toList(),
                           ),
                         ),
                       ),

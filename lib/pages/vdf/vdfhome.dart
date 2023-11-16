@@ -1,15 +1,10 @@
 import 'package:dalmia/common/common.dart';
-import 'package:dalmia/pages/login.dart';
-
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
-import 'package:dalmia/pages/vdf/Reports/home.dart';
-
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/dash.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 void main() {
   runApp(const MyApp());
@@ -151,7 +146,7 @@ class _VdfHomeState extends State<VdfHome> {
                 imagePath: 'images/fill_dash.svg',
                 label: "Dashboard",
                 index: 0,
-                selectedIndex: selectedIndex,
+                selectedIndex: 0,
                 onTabTapped: _onTabTapped,
               ),
               CustomTabItem(

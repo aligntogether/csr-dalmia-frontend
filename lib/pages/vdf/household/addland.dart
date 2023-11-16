@@ -140,6 +140,8 @@ class _MyFormState extends State<AddLand> {
                   children: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        minimumSize: const Size(130, 50),
                         backgroundColor: CustomColorTheme.primaryColor,
                       ),
                       onPressed: () {
@@ -149,11 +151,17 @@ class _MyFormState extends State<AddLand> {
                           ),
                         );
                       },
-                      child: Text('Next'),
+                      child: Text(
+                        'Next',
+                        style: TextStyle(
+                            fontSize: CustomFontTheme.textSize,
+                            fontWeight: CustomFontTheme.labelwt),
+                      ),
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
+                        minimumSize: const Size(130, 50),
                         side: BorderSide(
                             color: CustomColorTheme.primaryColor, width: 1),
                         backgroundColor: Colors.white,
@@ -165,7 +173,10 @@ class _MyFormState extends State<AddLand> {
                       },
                       child: Text(
                         'Save as Draft',
-                        style: TextStyle(color: Colors.blue[900]),
+                        style: TextStyle(
+                            color: CustomColorTheme.primaryColor,
+                            fontSize: CustomFontTheme.textSize,
+                            fontWeight: CustomFontTheme.labelwt),
                       ),
                     ),
                   ],

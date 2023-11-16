@@ -250,7 +250,7 @@ class _MyFormState extends State<AddFamily> {
                     children: [
                       const SizedBox(height: 16),
                       ExpansionTile(
-                        iconColor: CustomColorTheme.iconColor,
+                        iconColor: CustomColorTheme.labelColor,
                         initiallyExpanded:
                             i == 0 ? true : formExpandStateList[i],
                         onExpansionChanged: (newState) {
@@ -495,12 +495,6 @@ class _MyFormState extends State<AddFamily> {
                               ],
                             ),
                           ),
-                          Divider(
-                            color: Color(0xFF181818).withOpacity(
-                                0.5), // Add your desired color for the line
-                            thickness:
-                                1, // Add the desired thickness for the line
-                          ),
                         ],
                       ),
                     ],
@@ -539,8 +533,7 @@ class _MyFormState extends State<AddFamily> {
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                        minimumSize: const Size(130, 50),
                         backgroundColor: CustomColorTheme.primaryColor,
                       ),
                       onPressed: () {
@@ -563,9 +556,8 @@ class _MyFormState extends State<AddFamily> {
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           elevation: 0,
+                          minimumSize: const Size(130, 50),
                           backgroundColor: Colors.white,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 15),
                           side: BorderSide(
                               color: CustomColorTheme.primaryColor, width: 1)),
                       onPressed: () {

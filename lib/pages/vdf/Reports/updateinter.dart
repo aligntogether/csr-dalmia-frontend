@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:dalmia/common/bottombar.dart';
+import 'package:dalmia/common/navmenu.dart';
 import 'package:dalmia/components/reportappbar.dart';
 
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 
@@ -13,13 +17,24 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class UpdateIntervention extends StatefulWidget {
-  const UpdateIntervention({Key? key}) : super(key: key);
+  final String? interventiontype;
+  final String? interventionid;
+  final String? hhid;
+  const UpdateIntervention(
+      {super.key, this.interventionid, this.hhid, this.interventiontype});
 
   @override
   State<UpdateIntervention> createState() => _UpdateInterventionState();
 }
 
 class _UpdateInterventionState extends State<UpdateIntervention> {
+  bool isreportMenuOpen = false;
+  void _toggleMenu() {
+    setState(() {
+      isreportMenuOpen = !isreportMenuOpen;
+    });
+  }
+
   int? selectedRadio;
   void _onTabTapped(int index) {
     setState(() {
@@ -53,10 +68,37 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
   }
 
   int selectedIndex = 0;
+  List<Map<String, dynamic>> updateData = []; // List to store API data
+
+  @override
+  void initState() {
+    super.initState();
+    fetchupdateData(); // Call the method to fetch API data when the page initializes
+  }
+
+  Future<void> fetchupdateData() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            '$base/get-income-followup-dates?hhid=${widget.hhid}&interventionId=${widget.interventionid}'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        setState(() {
+          updateData = List<Map<String, dynamic>>.from(jsonData['resp_body']);
+        });
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final Random random = Random();
     // final List<int> householdList =
     //     List.generate(10, (index) => random.nextInt(100));
     // final List<int> populationList =
@@ -65,10 +107,60 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(100),
-            child: ReportAppBar(
-              heading: 'Update Intervention',
-            )),
+          preferredSize: Size.fromHeight(isreportMenuOpen ? 150 : 100),
+          child: Stack(
+            children: [
+              AppBar(
+                titleSpacing: 20,
+                backgroundColor: Colors.white,
+                title: const Image(image: AssetImage('images/icon.jpg')),
+                automaticallyImplyLeading: false,
+                actions: <Widget>[
+                  CircleAvatar(
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.notifications_none_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  IconButton(
+                    iconSize: 30,
+                    onPressed: () {
+                      _toggleMenu();
+                    },
+                    icon: const Icon(Icons.menu,
+                        color: CustomColorTheme
+                            .primaryColor // Update with your color
+                        ),
+                  ),
+                ],
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(50),
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 30, bottom: 10),
+                    alignment: Alignment.topCenter,
+                    color: Colors.white,
+                    child: Text(
+                      'Update Intervention',
+                      style: const TextStyle(
+                        fontSize: CustomFontTheme.headingSize,
+
+                        // Adjust the font size
+                        fontWeight:
+                            CustomFontTheme.headingwt, // Adjust the font weight
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              if (isreportMenuOpen) navmenu(context, _toggleMenu),
+            ],
+          ),
+        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -80,14 +172,14 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
                 Center(
                   child: Column(
                     children: [
-                      const Text(
-                        'AROSKMTS001',
+                      Text(
+                        '${widget.hhid}',
                         style: TextStyle(
                             fontSize: CustomFontTheme.textSize,
                             fontWeight: CustomFontTheme.headingwt),
                       ),
-                      const Text(
-                        'Vermicompost-Permanent \n structure New 10ft x 2ft',
+                      Text(
+                        '${widget.interventiontype}',
                         style: TextStyle(
                             fontSize: CustomFontTheme.textSize,
                             fontWeight: CustomFontTheme.labelwt),
@@ -97,128 +189,58 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
                       ),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        child: DataTable(
-                          columns: const <DataColumn>[
-                            DataColumn(
-                              label: Text(
-                                'Details',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
+                        child: Card(
+                          // shape: RoundedRectangleBorder(
+                          //   // borderRadius: BorderRadius.circular(10.0),
+                          // ),
+                          elevation: 5,
+                          child: DataTable(
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
                               ),
                             ),
-                            DataColumn(
-                              label: Text(
-                                'Selected',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Names',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Intervention planned',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Intervention completed',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Expected additional income p/a',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Actual annual income',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Row(
-                                children: [
-                                  Text(
-                                    'Follow ups for income update',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text('int.1',
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                      Text('int.2',
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                      Text('int.3',
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                      Text('int.4',
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                      Text('int.5',
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                          headingRowColor: MaterialStateColor.resolveWith(
-                              (states) => CustomColorTheme.secondaryColor),
-                          rows: const <DataRow>[
-                            DataRow(
-                              cells: <DataCell>[
-                                DataCell(Text('Follow up 1')),
-                                DataCell(Text('Yes')),
-                                DataCell(Text('John Doe')),
-                                DataCell(Text('Intervention 1')),
-                                DataCell(Text('Yes')),
-                                DataCell(Text('500')),
-                                DataCell(Text('600')),
-                                DataCell(Text('')),
-                              ],
-                            ),
-                            DataRow(
-                              cells: <DataCell>[
-                                DataCell(
-                                  Text(
-                                    'Follow up 2',
-                                  ),
+                            dividerThickness: 00,
+                            columns: const <DataColumn>[
+                              DataColumn(
+                                label: Text(
+                                  'Details',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
                                 ),
-                                DataCell(Text('No')),
-                                DataCell(Text('Jane Smith')),
-                                DataCell(Text('Intervention 2')),
-                                DataCell(Text('No')),
-                                DataCell(Text('300')),
-                                DataCell(Text('400')),
-                                DataCell(Text('')),
-                              ],
-                            ),
-                          ],
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Proposed',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Additional income (Rs.)',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ],
+                            headingRowColor: MaterialStateColor.resolveWith(
+                                (states) => Color(0xFF008CD3)),
+                            rows: updateData.map<DataRow>((data) {
+                              return DataRow(
+                                cells: <DataCell>[
+                                  DataCell(Text('Follow up ${data['id']}')),
+                                  DataCell(Text('${data['followUpDate']}')),
+                                  DataCell(Text(
+                                      '${data['followUpAmount'] ?? 'N/A'}')),
+                                ],
+                              );
+                            }).toList(),
+                          ),
                         ),
                       )
                     ],
