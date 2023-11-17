@@ -1,18 +1,57 @@
+import 'dart:convert';
+
 import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/household/approval.dart';
 import 'package:dalmia/pages/vdf/intervention/Addinter.dart';
+import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class SelectType extends StatefulWidget {
-  const SelectType({Key? key}) : super(key: key);
+  final String? id;
+  const SelectType({Key? key, this.id}) : super(key: key);
 
   @override
   State<SelectType> createState() => _SelectTypeState();
 }
 
 class _SelectTypeState extends State<SelectType> {
+  Future<void> addFarmData() async {
+    final apiUrl = '$base/add-household';
+
+    // Replace these values with the actual data you want to send
+    final Map<String, dynamic> requestData = {
+      "id": widget.id,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          "Content-Type": "application/json",
+          // Add any additional headers if needed
+        },
+        body: jsonEncode(requestData),
+      );
+
+      if (response.statusCode == 200) {
+        // Successful response
+        print(" land Data added successfully");
+        // Handle success as needed
+      } else {
+        // Handle error response
+        print("Failed to add land data: ${response.statusCode}");
+        print(response.body);
+        // Handle error as needed
+      }
+    } catch (e) {
+      // Handle network errors
+      print("Error: $e");
+    }
+  }
+
   List<bool> cropCheckList = List.filled(16, false);
   bool ownChecked = false;
   bool rentedChecked = false;

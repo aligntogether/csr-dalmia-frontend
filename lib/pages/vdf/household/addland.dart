@@ -1,52 +1,139 @@
+import 'dart:convert';
+
 import 'package:dalmia/pages/vdf/household/addcrops.dart';
 import 'package:dalmia/pages/vdf/household/addhead.dart';
-import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class AddLand extends StatefulWidget {
+  final String? id;
+
+  const AddLand({Key? key, this.id}) : super(key: key);
+
   @override
   _MyFormState createState() => _MyFormState();
 }
 
 class _MyFormState extends State<AddLand> {
+  Map<String, String> selectedRainfedMap = {};
+  Map<String, String> selectedIrrigatedMap = {};
+  List<String>? rainfedOptions;
+  List<String>? irrigatedOptions;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchRainfedOptions().then((options) {
+      setState(() {
+        rainfedOptions = options;
+      });
+    });
+    fetchIrrigatedOptions().then((options) {
+      setState(() {
+        irrigatedOptions = options;
+      });
+    });
+  }
+
   void updateRainfedSelection(String selectedAcre) {
     setState(() {
-      for (var key in selectedRainfedMap.keys) {
-        selectedRainfedMap[key] = key == selectedAcre;
-      }
+      // Update the selectedRainfedMap with the actual selected string value
+      selectedRainfedMap.clear();
+      selectedRainfedMap[selectedAcre] = selectedAcre;
     });
   }
 
   void updateIrrigatedSelection(String selectedAcre) {
     setState(() {
-      for (var key in selectedIrrigatedMap.keys) {
-        selectedIrrigatedMap[key] = key == selectedAcre;
-      }
+      // Update the selectedIrrigatedMap with the actual selected string value
+      selectedIrrigatedMap.clear();
+      selectedIrrigatedMap[selectedAcre] = selectedAcre;
     });
   }
 
-  final Map<String, bool> selectedRainfedMap = {
-    '1 acres': false,
-    '2 acres': false,
-    '3 acres': false,
-    '4 acres': false,
-    '5 acres': false,
-    '5 & above': false,
-  };
+  Future<void> addlandData() async {
+    final apiUrl = '$base/add-household';
 
-  final Map<String, bool> selectedIrrigatedMap = {
-    '1 acres': false,
-    '2 acres': false,
-    '3 acres': false,
-    '4 acres': false,
-    '5 acres': false,
-    '5 & above': false,
-  };
-  final _formKey = GlobalKey<FormState>();
+    // Replace these values with the actual data you want to send
+    final Map<String, dynamic> requestData = {
+      "id": widget.id,
+      "irrigated_land": selectedIrrigatedMap.values.toList(),
+      "rainfed_land": selectedRainfedMap.values.toList(),
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          "Content-Type": "application/json",
+          // Add any additional headers if needed
+        },
+        body: jsonEncode(requestData),
+      );
+
+      if (response.statusCode == 200) {
+        // Successful response
+        print(" land Data added successfully");
+        // Handle success as needed
+      } else {
+        // Handle error response
+        print("Failed to add land data: ${response.statusCode}");
+        print(response.body);
+        // Handle error as needed
+      }
+    } catch (e) {
+      // Handle network errors
+      print("Error: $e");
+    }
+  }
+
+  Future<List<String>> fetchRainfedOptions() async {
+    final apiUrl = '$base/dropdown?titleId=112';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final responseData =
+            json.decode(response.body)['resp_body']['options'] as List<dynamic>;
+        return responseData
+            .map((option) => option['titleData'] as String)
+            .toList();
+      } else {
+        throw Exception(
+            'Failed to load rainfed options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<List<String>> fetchIrrigatedOptions() async {
+    final apiUrl = '$base/dropdown?titleId=113';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final responseData =
+            json.decode(response.body)['resp_body']['options'] as List<dynamic>;
+        return responseData
+            .map((option) => option['titleData'] as String)
+            .toList();
+      } else {
+        throw Exception(
+            'Failed to load irrigated options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    print(irrigatedOptions);
     return SafeArea(
       child: Scaffold(
         appBar: houseappbar(context),
@@ -71,8 +158,9 @@ class _MyFormState extends State<AddLand> {
                     Text(
                       'Rainfed',
                       style: TextStyle(
-                          color: Color(0xFF181818).withOpacity(0.80),
-                          fontSize: CustomFontTheme.textSize),
+                        color: Color(0xFF181818).withOpacity(0.80),
+                        fontSize: CustomFontTheme.textSize,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     FractionallySizedBox(
@@ -82,18 +170,13 @@ class _MyFormState extends State<AddLand> {
                         runSpacing: 20,
                         spacing: 20,
                         children: [
-                          InputDetail('1 acres', selectedRainfedMap,
-                              updateRainfedSelection),
-                          InputDetail('2 acres', selectedRainfedMap,
-                              updateRainfedSelection),
-                          InputDetail('3 acres', selectedRainfedMap,
-                              updateRainfedSelection),
-                          InputDetail('4 acres', selectedRainfedMap,
-                              updateRainfedSelection),
-                          InputDetail('5 acres', selectedRainfedMap,
-                              updateRainfedSelection),
-                          InputDetail('5 & above', selectedRainfedMap,
-                              updateRainfedSelection),
+                          if (rainfedOptions != null)
+                            for (var option in rainfedOptions!)
+                              InputDetail(
+                                option,
+                                selectedRainfedMap,
+                                updateRainfedSelection,
+                              ),
                         ],
                       ),
                     )
@@ -106,8 +189,9 @@ class _MyFormState extends State<AddLand> {
                     Text(
                       'Irrigated',
                       style: TextStyle(
-                          color: Color(0xFF181818).withOpacity(0.80),
-                          fontSize: CustomFontTheme.textSize),
+                        color: Color(0xFF181818).withOpacity(0.80),
+                        fontSize: CustomFontTheme.textSize,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     FractionallySizedBox(
@@ -117,18 +201,13 @@ class _MyFormState extends State<AddLand> {
                         runSpacing: 20,
                         spacing: 20,
                         children: [
-                          InputDetail('1 acres', selectedIrrigatedMap,
-                              updateIrrigatedSelection),
-                          InputDetail('2 acres', selectedIrrigatedMap,
-                              updateIrrigatedSelection),
-                          InputDetail('3 acres', selectedIrrigatedMap,
-                              updateIrrigatedSelection),
-                          InputDetail('4 acres', selectedIrrigatedMap,
-                              updateIrrigatedSelection),
-                          InputDetail('5 acres', selectedIrrigatedMap,
-                              updateIrrigatedSelection),
-                          InputDetail('5 & above', selectedIrrigatedMap,
-                              updateIrrigatedSelection),
+                          if (irrigatedOptions != null)
+                            for (var option in irrigatedOptions!)
+                              InputDetail(
+                                option,
+                                selectedIrrigatedMap,
+                                updateIrrigatedSelection,
+                              ),
                         ],
                       ),
                     )
@@ -145,17 +224,24 @@ class _MyFormState extends State<AddLand> {
                         backgroundColor: CustomColorTheme.primaryColor,
                       ),
                       onPressed: () {
+                        // Call the function to add household data
+                        addlandData();
+
+                        // Navigate to the next screen if needed
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const AddCrop(),
+                            builder: (context) => AddCrop(
+                              id: widget.id,
+                            ),
                           ),
                         );
                       },
                       child: Text(
                         'Next',
                         style: TextStyle(
-                            fontSize: CustomFontTheme.textSize,
-                            fontWeight: CustomFontTheme.labelwt),
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.labelwt,
+                        ),
                       ),
                     ),
                     ElevatedButton(
@@ -163,7 +249,9 @@ class _MyFormState extends State<AddLand> {
                         elevation: 0,
                         minimumSize: const Size(130, 50),
                         side: BorderSide(
-                            color: CustomColorTheme.primaryColor, width: 1),
+                          color: CustomColorTheme.primaryColor,
+                          width: 1,
+                        ),
                         backgroundColor: Colors.white,
                       ),
                       onPressed: () {
@@ -174,9 +262,10 @@ class _MyFormState extends State<AddLand> {
                       child: Text(
                         'Save as Draft',
                         style: TextStyle(
-                            color: CustomColorTheme.primaryColor,
-                            fontSize: CustomFontTheme.textSize,
-                            fontWeight: CustomFontTheme.labelwt),
+                          color: CustomColorTheme.primaryColor,
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.labelwt,
+                        ),
                       ),
                     ),
                   ],
@@ -192,12 +281,15 @@ class _MyFormState extends State<AddLand> {
 
 class InputDetail extends StatelessWidget {
   final String acre;
-  final Map<String, bool> isSelectedMap;
+  final Map<String, String> isSelectedMap;
   final Function(String) updateSelection;
 
-  const InputDetail(this.acre, this.isSelectedMap, this.updateSelection,
-      {Key? key})
-      : super(key: key);
+  const InputDetail(
+    this.acre,
+    this.isSelectedMap,
+    this.updateSelection, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -206,18 +298,23 @@ class InputDetail extends StatelessWidget {
         updateSelection(acre);
       },
       style: ElevatedButton.styleFrom(
-        side: isSelectedMap[acre]!
+        side: isSelectedMap[acre] != null && isSelectedMap[acre]!.isNotEmpty
             ? BorderSide(width: 1, color: CustomColorTheme.iconColor)
             : BorderSide(width: 1, color: Color(0x99181818)),
         elevation: 0,
         minimumSize: const Size(85, 38),
         backgroundColor:
-            isSelectedMap[acre]! ? const Color(0xFFF15A22) : Colors.white,
+            isSelectedMap[acre] != null && isSelectedMap[acre]!.isNotEmpty
+                ? const Color(0xFFF15A22)
+                : Colors.white,
       ),
       child: Text(
         acre,
         style: TextStyle(
-            color: isSelectedMap[acre]! ? Colors.white : Color(0xFF181818)),
+          color: isSelectedMap[acre] != null && isSelectedMap[acre]!.isNotEmpty
+              ? Colors.white
+              : Color(0xFF181818),
+        ),
       ),
     );
   }

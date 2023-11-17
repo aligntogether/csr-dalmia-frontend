@@ -20,14 +20,70 @@ import 'dart:math';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 
+class Panchayat {
+  final String panchayatId;
+  final String clusterId;
+  final String panchayatName;
+
+  Panchayat(this.panchayatId, this.clusterId, this.panchayatName);
+
+  factory Panchayat.fromJson(Map<String, dynamic> json) {
+    return Panchayat(
+      json['panchayatId'].toString(),
+      json['clusterId'].toString(),
+      json['panchayatName'].toString(),
+    );
+  }
+}
+
+class Village {
+  final String villageid;
+  final String village;
+  final String panchayatId;
+
+  Village(this.villageid, this.village, this.panchayatId);
+
+  factory Village.fromJson(Map<String, dynamic> json) {
+    return Village(
+      json['villageId'].toString(),
+      json['villageName'].toString(),
+      json['panchayatId'].toString(),
+    );
+  }
+}
+
+class Street {
+  final String streetid;
+  final String street;
+  final String villageId;
+
+  Street(this.streetid, this.street, this.villageId);
+
+  factory Street.fromJson(Map<String, dynamic> json) {
+    return Street(
+      json['streetId'].toString(),
+      json['streetName'].toString(),
+      json['villageId'].toString(),
+    );
+  }
+}
+
 class HhidForm extends StatefulWidget {
-  const HhidForm({Key? key}) : super(key: key);
+  const HhidForm({super.key});
 
   @override
   State<HhidForm> createState() => _HhidFormState();
 }
 
 class _HhidFormState extends State<HhidForm> {
+  final _formKey = GlobalKey<FormState>();
+  String? _selectedPanchayat;
+  String? _selectedVillage;
+  String? _selectedStreet;
+
+  List<Panchayat> panchayats = [];
+  List<Village> villages = [];
+  List<Street> streets = [];
   int? selectedRadio;
   void _onTabTapped(int index) {
     setState(() {
@@ -145,12 +201,6 @@ class _HhidFormState extends State<HhidForm> {
 
   @override
   Widget build(BuildContext context) {
-    final Random random = Random();
-    // final List<int> householdList =
-    //     List.generate(10, (index) => random.nextInt(100));
-    // final List<int> populationList =
-    //     List.generate(10, (index) => random.nextInt(100));
-
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
@@ -250,6 +300,173 @@ class _HhidFormState extends State<HhidForm> {
                       ),
                       const SizedBox(
                         height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Form(
+                          key: _formKey,
+                          child: Container(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 20),
+                                Column(
+                                  children: [
+                                    const SizedBox(height: 20),
+                                    DropdownButtonFormField<String>(
+                                      value: _selectedPanchayat,
+                                      items:
+                                          panchayats.map((Panchayat panchayat) {
+                                        return DropdownMenuItem<String>(
+                                          value: panchayat.panchayatId,
+                                          child: Text(
+                                            panchayat.panchayatName,
+                                            style: TextStyle(
+                                              color: Color(0xFF181818),
+                                              fontWeight: _selectedPanchayat ==
+                                                      panchayat.panchayatId
+                                                  ? CustomFontTheme
+                                                      .labelwt // FontWeight for selected item
+                                                  : CustomFontTheme
+                                                      .textwt, // FontWeight for other items
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) async {
+                                        if (newValue != null) {
+                                          setState(() {
+                                            _selectedPanchayat = newValue;
+                                            _selectedVillage = null;
+                                            _selectedStreet = null;
+                                            fetchVillages(newValue)
+                                                .then((value) {
+                                              setState(() {
+                                                villages =
+                                                    value.cast<Village>();
+                                              });
+                                            });
+                                          });
+                                        }
+                                      },
+                                      icon: const Icon(
+                                        Icons.keyboard_arrow_down_sharp,
+                                        color: CustomColorTheme.iconColor,
+                                      ),
+                                      decoration: InputDecoration(
+                                        labelText: 'Select a Panchayat',
+                                        labelStyle: TextStyle(
+                                            color: CustomColorTheme.labelColor),
+                                      ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Panchayat is required';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    const SizedBox(height: 20),
+                                    DropdownButtonFormField<String>(
+                                      value: _selectedVillage,
+                                      items: villages
+                                          // .where((village) =>
+                                          //     village.panchayatId == _selectedPanchayat)
+                                          .map((Village village) {
+                                        return DropdownMenuItem<String>(
+                                          value: village.villageid,
+                                          child: Text(village.village,
+                                              style: TextStyle(
+                                                fontWeight: _selectedVillage ==
+                                                        village.villageid
+                                                    ? CustomFontTheme
+                                                        .labelwt // FontWeight for selected item
+                                                    : CustomFontTheme.textwt,
+                                                color: Color(0xFF181818),
+                                              )),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) async {
+                                        if (newValue != null) {
+                                          setState(() {
+                                            _selectedVillage = newValue;
+                                            _selectedStreet = null;
+                                            fetchStreets(newValue)
+                                                .then((value) {
+                                              setState(() {
+                                                streets = value.cast<Street>();
+                                              });
+                                            });
+                                          });
+                                        }
+                                      },
+                                      icon: const Icon(
+                                        Icons.keyboard_arrow_down_sharp,
+                                        color: CustomColorTheme.iconColor,
+                                      ),
+                                      decoration: InputDecoration(
+                                        labelText: 'Select a Village',
+                                        labelStyle: TextStyle(
+                                            color: CustomColorTheme.labelColor),
+                                      ),
+                                      validator: (value) {
+                                        if (_selectedPanchayat == null ||
+                                            value == null ||
+                                            value.isEmpty) {
+                                          return 'Village is required';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    const SizedBox(height: 20),
+                                    DropdownButtonFormField<String>(
+                                      value: _selectedStreet,
+                                      items: streets
+                                          // .where((street) =>
+                                          //     street.villageId == _selectedVillage)
+                                          .map((Street street) {
+                                        return DropdownMenuItem<String>(
+                                          value: street.streetid,
+                                          child: Text(street.street,
+                                              style: TextStyle(
+                                                color: Color(0xFF181818),
+                                                fontWeight: _selectedStreet ==
+                                                        street.streetid
+                                                    ? CustomFontTheme
+                                                        .labelwt // FontWeight for selected item
+                                                    : CustomFontTheme.textwt,
+                                              )),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          _selectedStreet = newValue;
+                                        });
+                                      },
+                                      icon: const Icon(
+                                        Icons.keyboard_arrow_down_sharp,
+                                        color: CustomColorTheme.iconColor,
+                                      ),
+                                      decoration: InputDecoration(
+                                        labelText: 'Select a Street',
+                                        labelStyle: TextStyle(
+                                            color: CustomColorTheme.labelColor),
+                                      ),
+                                      validator: (value) {
+                                        if (_selectedVillage == null ||
+                                            value == null ||
+                                            value.isEmpty) {
+                                          return 'Street is required';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,

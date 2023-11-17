@@ -8,10 +8,12 @@ import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 class AddStock extends StatefulWidget {
-  const AddStock({Key? key}) : super(key: key);
+  final String? id;
+  const AddStock({super.key, this.id});
 
   @override
   State<AddStock> createState() => _AddStockState();
@@ -19,32 +21,41 @@ class AddStock extends StatefulWidget {
 
 class _AddStockState extends State<AddStock> {
   List<bool> cropCheckList = List.filled(16, false);
-  // List<dynamic> livestockOptions = [];
 
-//   Future<void> fetchlivestockOptions() async {
-//     String url = '$base/dropdown?titleId=106';
-//     try {
-//       final response = await http.get(Uri.parse(url));
-//       if (response.statusCode == 200) {
-//         CommonObject commonObject =
-//             CommonObject.fromJson(json.decode(response.body));
-//         List<dynamic> options = commonObject.respBody['options'];
-//         setState(() {
-//           livestockOptions = options;
-//         });
-//       } else {
-//         throw Exception(
-//             'Failed to load Livestock options: ${response.statusCode}');
-//       }
-//     } catch (e) {
-//       throw Exception('Error: $e');
-//     }
-//   }
-// @override
-// void initState() {
-//   fetchlivestockOptions();
-//   super.initState();
-// }
+  Future<void> addstockData() async {
+    final apiUrl = '$base/add-household';
+
+    // Replace these values with the actual data you want to send
+    final Map<String, dynamic> requestData = {
+      "id": widget.id,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          "Content-Type": "application/json",
+          // Add any additional headers if needed
+        },
+        body: jsonEncode(requestData),
+      );
+
+      if (response.statusCode == 200) {
+        // Successful response
+        print(" land Data added successfully");
+        // Handle success as needed
+      } else {
+        // Handle error response
+        print("Failed to add land data: ${response.statusCode}");
+        print(response.body);
+        // Handle error as needed
+      }
+    } catch (e) {
+      // Handle network errors
+      print("Error: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -83,7 +94,8 @@ class _AddStockState extends State<AddStock> {
                   Rowstock('Ducks'),
                   const SizedBox(height: 20),
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -94,10 +106,11 @@ class _AddStockState extends State<AddStock> {
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFF181818).withOpacity(0.80)),
+                                color:
+                                    const Color(0xFF181818).withOpacity(0.80)),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 90,
                           height: 40,
                           child: TextField(
@@ -119,8 +132,13 @@ class _AddStockState extends State<AddStock> {
                           width: 50,
                           height: 30,
                           child: TextField(
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
+                            keyboardType: TextInputType
+                                .number, // Allow only numeric keyboard
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')), // Allow only digits
+                            ],
+                            decoration: const InputDecoration(
                               label: Text('No.'),
                               contentPadding:
                                   EdgeInsets.symmetric(horizontal: 10),
@@ -136,7 +154,8 @@ class _AddStockState extends State<AddStock> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -147,10 +166,11 @@ class _AddStockState extends State<AddStock> {
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFF181818).withOpacity(0.80)),
+                                color:
+                                    const Color(0xFF181818).withOpacity(0.80)),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 90,
                           height: 40,
                           child: TextField(
@@ -172,8 +192,13 @@ class _AddStockState extends State<AddStock> {
                           width: 50,
                           height: 30,
                           child: TextField(
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
+                            keyboardType: TextInputType
+                                .number, // Allow only numeric keyboard
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')), // Allow only digits
+                            ],
+                            decoration: const InputDecoration(
                               label: Text('No.'),
                               contentPadding:
                                   EdgeInsets.symmetric(horizontal: 10),
@@ -205,7 +230,7 @@ class _AddStockState extends State<AddStock> {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => const AddFarm(),
+                          builder: (context) => AddFarm(id: widget.id),
                         ),
                       );
                     },
@@ -221,7 +246,7 @@ class _AddStockState extends State<AddStock> {
                       elevation: 0,
                       minimumSize: const Size(130, 50),
                       backgroundColor: Colors.white,
-                      side: BorderSide(
+                      side: const BorderSide(
                           color: CustomColorTheme.primaryColor, width: 1),
                     ),
                     onPressed: () {
@@ -229,7 +254,7 @@ class _AddStockState extends State<AddStock> {
 
                       // Save as draft
                     },
-                    child: Text(
+                    child: const Text(
                       'Save as Draft',
                       style: TextStyle(
                           color: CustomColorTheme.primaryColor,
@@ -260,14 +285,19 @@ Widget Rowstock(String text) {
             style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF181818).withOpacity(0.80)),
+                color: const Color(0xFF181818).withOpacity(0.80)),
           ),
         ),
-        const SizedBox(
+        SizedBox(
           width: 50,
           height: 30,
           child: TextField(
-            decoration: InputDecoration(
+            keyboardType: TextInputType.number, // Allow only numeric keyboard
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(
+                  RegExp(r'[0-9]')), // Allow only digits
+            ],
+            decoration: const InputDecoration(
               contentPadding: EdgeInsets.symmetric(horizontal: 10),
               border: OutlineInputBorder(
                 borderSide: BorderSide(

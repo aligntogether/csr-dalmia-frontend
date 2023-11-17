@@ -34,8 +34,7 @@ class _Form1State extends State<Form1> {
   Future<void> fetchData() async {
     try {
       final response = await http.get(
-        Uri.parse(
-            'https://s82wf372-8080.inc1.devtunnels.ms:443/report-form1?vdfId=10001'),
+        Uri.parse('$base/report-form1?vdfId=10001'),
       );
 
       if (response.statusCode == 200) {

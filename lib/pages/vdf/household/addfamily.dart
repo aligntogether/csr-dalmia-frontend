@@ -1,20 +1,21 @@
 import 'dart:convert';
-import 'dart:io';
+
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:http/http.dart' as http;
-import 'package:dalmia/Controllers/family.dart';
+
 import 'package:dalmia/apis/commonobject.dart';
 import 'package:dalmia/pages/vdf/household/addhead.dart';
-import 'package:dalmia/pages/vdf/household/addhouse.dart';
+
 import 'package:dalmia/pages/vdf/household/addland.dart';
-import 'package:dalmia/pages/vdf/vdfhome.dart';
+
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class AddFamily extends StatefulWidget {
-  const AddFamily({Key? key}) : super(key: key);
+  final String? id;
+  const AddFamily({Key? key, this.id}) : super(key: key);
 
   @override
   _MyFormState createState() => _MyFormState();
@@ -24,21 +25,6 @@ class _MyFormState extends State<AddFamily> {
   final _formKey = GlobalKey<FormState>();
   List<Widget> forms = [];
   int formCount = 1;
-
-  void addMemberData() {
-    Map<String, dynamic> familyData = {
-      'name': _nameControllers[formCount - 1].text,
-      'mobile': _mobileControllers[formCount - 1].text,
-      'dob': _dobControllers[formCount - 1].text,
-      'gender': _selectedGenders[formCount - 1],
-      'education': _selectedEducations[formCount - 1],
-      'relation': _selectedRelation[formCount - 1],
-      'caste': _selectedCastes[formCount - 1],
-      'primaryEmployment': _selectedPrimaryEmployments[formCount - 1],
-      'secondaryEmployment': _selectedSecondaryEmployments[formCount - 1],
-    };
-    appendFamilyDataToJsonFile(familyData, formCount);
-  }
 
   Map<String, dynamic> jsonData = {};
   final List<TextEditingController> _nameControllers = [];
@@ -58,12 +44,6 @@ class _MyFormState extends State<AddFamily> {
   List<dynamic> primaryEmploymentOptions = [];
   List<dynamic> secondaryEmploymentOptions = [];
   List<dynamic> relationOptions = [];
-
-  // List<String> genderOptions = ['Male', 'Female'];
-  // List<String> educationOptions = ['Option 1', 'Option 2', 'Option 3'];
-  // List<String> relationOptions = ['Wife', 'Son', 'Daughter'];
-  // List<String> casteOptions = ['Option 1', 'Option 2', 'Option 3'];
-  // List<String> employmentOptions = ['Option 1', 'Option 2', 'Option 3'];
 
   List<bool> formExpandStateList = [];
   List<bool> formFilledStateList = [];
@@ -223,6 +203,27 @@ class _MyFormState extends State<AddFamily> {
       age--;
     }
     return age;
+  }
+
+  Future<void> sendFamilyData(List<Map<String, dynamic>> familyData) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$base/add-member?houseHoldId=${widget.id}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(familyData),
+      );
+
+      if (response.statusCode == 200) {
+        // Handle the response from the API if needed
+        print('Data sent successfully');
+      } else {
+        throw Exception('Failed to send data: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
   }
 
   @override
@@ -506,7 +507,6 @@ class _MyFormState extends State<AddFamily> {
                       icon: const Icon(Icons.add),
                       onPressed: () {
                         {
-                          addMemberData();
                           setState(() {
                             formCount++;
                             formExpandStateList.add(false);
@@ -537,11 +537,29 @@ class _MyFormState extends State<AddFamily> {
                         backgroundColor: CustomColorTheme.primaryColor,
                       ),
                       onPressed: () {
-                        addMemberData();
+                        List<Map<String, dynamic>> familyData = [];
 
+                        // Collect data for each family member
+                        for (int i = 0; i < formCount; i++) {
+                          familyData.add({
+                            'memberName': _nameControllers[i].text,
+
+                            'gender': _selectedGenders[i],
+                            'mobile': _mobileControllers[i].text,
+                            'isFamilyHead': 0,
+                            // Add other fields as needed
+                          });
+                        }
+                        // print(familyData);
+                        // Send data to the API
+                        // sendFamilyData(familyData);
+
+                        // Navigate to the next screen or perform other actions
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => AddLand(),
+                            builder: (context) => AddLand(
+                              id: widget.id,
+                            ),
                           ),
                         );
                       },
@@ -561,16 +579,7 @@ class _MyFormState extends State<AddFamily> {
                           side: BorderSide(
                               color: CustomColorTheme.primaryColor, width: 1)),
                       onPressed: () {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          // All fields are valid, you can process the data
-                          // final name = _nameController.text;
-                          // final mobile = _mobileController.text;
-                          // final dob = _dobController.text;
-
-                          // Perform actions with the field values
-
-                          // Save as draft
-                        }
+                        if (_formKey.currentState?.validate() ?? false) {}
                       },
                       child: Text(
                         'Save as Draft',

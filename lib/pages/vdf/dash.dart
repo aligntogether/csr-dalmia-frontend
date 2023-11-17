@@ -1,8 +1,60 @@
+import 'dart:convert';
+
 import 'package:dalmia/components/cards.dart';
+import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-class DashTab extends StatelessWidget {
+class DashTab extends StatefulWidget {
+  @override
+  State<DashTab> createState() => _DashTabState();
+}
+
+class _DashTabState extends State<DashTab> {
+  Map<String, dynamic> apiData = {
+    "totalHouseholds": 0,
+    "mappedHouseholds": 0,
+    "selectedHouseholds": 0,
+    "householdsCovered": 0,
+    "interventionPlanned": 0,
+    "interventionCompleted": 0,
+    "overdue": 0,
+    "equalToZero": 0,
+    "lessThan25K": 0,
+    "between25KTo50K": 0,
+    "between50KTo75K": 0,
+    "between75KTo1L": 0,
+    "moreThan1L": 0,
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    fetchApiData();
+  }
+
+  Future<void> fetchApiData() async {
+    final apiUrl = '$base/get-home-page-data?vdfId=10001';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final responseData =
+            json.decode(response.body)['resp_body'] as Map<String, dynamic>;
+
+        setState(() {
+          apiData = responseData;
+        });
+      } else {
+        throw Exception('Failed to load API data: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -34,7 +86,7 @@ class DashTab extends StatelessWidget {
                         CustomCard(
                           imageUrl: 'images/t_house.svg',
                           subtitle: 'Total Household',
-                          title: '150',
+                          title: apiData['totalHouseholds'].toString(),
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
                           bg: Color(0xFFF2D4C9),
@@ -44,7 +96,7 @@ class DashTab extends StatelessWidget {
                         ),
                         CustomCard(
                           imageUrl: 'images/m_house.svg',
-                          title: '150',
+                          title: apiData['mappedHouseholds'].toString(),
                           subtitle: 'Mapped Household',
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
@@ -53,7 +105,7 @@ class DashTab extends StatelessWidget {
                         ),
                         CustomCard(
                           imageUrl: 'images/s_house.svg',
-                          title: '130',
+                          title: apiData['selectedHouseholds'].toString(),
                           subtitle: 'Selected for Intervention',
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
@@ -90,13 +142,13 @@ class DashTab extends StatelessWidget {
                           subtitle: 'Household covered',
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
-                          title: '30',
+                          title: apiData['householdsCovered'].toString(),
                           bg: Color(0xFFC2D7CD),
                           textcolor: const Color(0xFF0C7243),
                         ),
                         CustomCard(
                           imageUrl: 'images/i_planned.svg',
-                          title: '100',
+                          title: apiData['interventionPlanned'].toString(),
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
                           subtitle: 'Intervention planned',
@@ -105,7 +157,7 @@ class DashTab extends StatelessWidget {
                         ),
                         CustomCard(
                           imageUrl: 'images/icompleted.svg',
-                          title: '25',
+                          title: apiData['interventionCompleted'].toString(),
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
                           bg: Color(0xFFC2D7CD),
@@ -144,7 +196,7 @@ class DashTab extends StatelessWidget {
                           subtitle: 'Overdue',
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
-                          title: '1',
+                          title: apiData['overdue'].toString(),
                           bg: Color(0xFFC2D3E3),
                           textcolor: const Color(0xFF064F96),
                         ),
@@ -196,7 +248,7 @@ class DashTab extends StatelessWidget {
                         CustomCard(
                           imageUrl: 'images/income.svg',
                           subtitle: 'Less than 25k',
-                          title: '70',
+                          title: apiData['lessThan25K'].toString(),
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
                           bg: const Color(0xFFC2DEEC),
@@ -204,7 +256,7 @@ class DashTab extends StatelessWidget {
                         ),
                         CustomCard(
                           imageUrl: 'images/income.svg',
-                          title: '40',
+                          title: apiData['between25KTo50K'].toString(),
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
                           subtitle: '25k to 50k',
@@ -213,7 +265,7 @@ class DashTab extends StatelessWidget {
                         ),
                         CustomCard(
                           imageUrl: 'images/income.svg',
-                          title: '10',
+                          title: apiData['between50KTo75K'].toString(),
                           subtitle: '50k to 75k',
                           bg: const Color(0xFFC2DEEC),
                           bordercolor:
@@ -222,8 +274,8 @@ class DashTab extends StatelessWidget {
                         ),
                         CustomCard(
                           imageUrl: 'images/income.svg',
-                          title: '10',
-                          subtitle: '50k to 75k',
+                          title: apiData['between75KTo1L'].toString(),
+                          subtitle: '75k to 1L',
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
                           bg: const Color(0xFFC2DEEC),
@@ -231,7 +283,7 @@ class DashTab extends StatelessWidget {
                         ),
                         CustomCard(
                           imageUrl: 'images/income.svg',
-                          title: '10',
+                          title: apiData['moreThan1L'].toString(),
                           subtitle: 'More than 1L',
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
@@ -240,7 +292,7 @@ class DashTab extends StatelessWidget {
                         ),
                         CustomCard(
                           imageUrl: 'images/income.svg',
-                          title: '0',
+                          title: apiData['equalToZero'].toString(),
                           subtitle: 'Zero Income',
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),

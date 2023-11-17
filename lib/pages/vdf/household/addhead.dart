@@ -162,38 +162,6 @@ class _MyFormState extends State<AddHead> {
     fetchSecondaryOptions();
   }
 
-  void saveFormDataToJson() async {
-    final name = _nameController.text;
-    final mobile = _mobileController.text;
-    final dob = _dobController.text;
-
-    Map<String, dynamic> headData = {
-      'name': name,
-      'mobile': mobile,
-      'dob': dob,
-      'gender': {'value': _selectedGender},
-      'education': {'value': _selectedEducation},
-      'caste': {'value': _selectedCaste},
-      'primaryEmployment': {'value': _selectedPrimaryEmployment},
-      'secondaryEmployment': {'value': _selectedSecondaryEmployment},
-    };
-
-    Map<String, dynamic> householdData = {
-      'head': headData,
-    };
-
-    String jsonData = json.encode({'household': householdData});
-
-    try {
-      final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/form_data.json');
-      await file.writeAsString(jsonData);
-      print('Data saved to file successfully at: ${file.path}');
-    } catch (e) {
-      print('Error saving data: $e');
-    }
-  }
-
   DateTime? selectedDate;
 
   Future<void> _selectDate(BuildContext context) async {
@@ -221,6 +189,41 @@ class _MyFormState extends State<AddHead> {
       age--;
     }
     return age;
+  }
+
+  Future<void> addMember() async {
+    try {
+      final response = await http.put(
+        Uri.parse('$base/add-member?houseHoldId=${widget.id}'),
+        headers: {
+          'accept': '*/*',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode([
+          {
+            'memberName': _nameController.text,
+            'mobile': int.parse(_mobileController.text),
+            'dob': selectedDate?.toIso8601String(),
+            'gender': _selectedGender,
+            'education': 0, // You may replace this with the actual value
+            'isFamilyHead': 1, // You may replace this with the actual value
+            // You may replace this with the actual value
+            'primaryEducation': 0, // You may replace this with the actual value
+            'relationship': 0, // You may replace this with the actual value
+            'secondaryEducation':
+                0, // You may replace this with the actual value
+          }
+        ]),
+      );
+      if (response.statusCode == 200) {
+        // Handle the success response
+        print('Member added successfully!');
+      } else {
+        throw Exception('Failed to add member: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   @override
@@ -480,15 +483,18 @@ class _MyFormState extends State<AddHead> {
                           backgroundColor: CustomColorTheme.primaryColor,
                         ),
                         onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const AddFamily(),
-                            ),
-                          );
                           setState(() {
                             _validateFields = true;
                           });
                           if (_formKey.currentState?.validate() ?? false) {
+                            addMember();
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => AddFamily(
+                                  id: widget.id,
+                                ),
+                              ),
+                            );
                             // Navigator.of(context).push(
                             //   MaterialPageRoute(
                             //     builder: (context) => const AddFamily(),
@@ -497,7 +503,6 @@ class _MyFormState extends State<AddHead> {
                             // final name = _nameController.text;
                             // final mobile = _mobileController.text;
                             // final dob = _dobController.text;
-                            saveFormDataToJson();
                           }
                         },
                         child: const Text(

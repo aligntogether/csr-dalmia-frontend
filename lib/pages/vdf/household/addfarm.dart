@@ -1,18 +1,58 @@
+import 'dart:convert';
+
 import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/household/addlivestock.dart';
 import 'package:dalmia/pages/vdf/household/selecttype.dart';
+import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 class AddFarm extends StatefulWidget {
-  const AddFarm({Key? key}) : super(key: key);
+  final String? id;
+  const AddFarm({Key? key, this.id}) : super(key: key);
 
   @override
   State<AddFarm> createState() => _AddFarmState();
 }
 
 class _AddFarmState extends State<AddFarm> {
+  Future<void> addFarmData() async {
+    final apiUrl = '$base/add-household';
+
+    // Replace these values with the actual data you want to send
+    final Map<String, dynamic> requestData = {
+      "id": widget.id,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          "Content-Type": "application/json",
+          // Add any additional headers if needed
+        },
+        body: jsonEncode(requestData),
+      );
+
+      if (response.statusCode == 200) {
+        // Successful response
+        print(" land Data added successfully");
+        // Handle success as needed
+      } else {
+        // Handle error response
+        print("Failed to add land data: ${response.statusCode}");
+        print(response.body);
+        // Handle error as needed
+      }
+    } catch (e) {
+      // Handle network errors
+      print("Error: $e");
+    }
+  }
+
   List<bool> cropCheckList = List.filled(16, false);
 
   @override
@@ -89,6 +129,12 @@ class _AddFarmState extends State<AddFarm> {
                           width: 50,
                           height: 30,
                           child: TextField(
+                            keyboardType: TextInputType
+                                .number, // Allow only numeric keyboard
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')), // Allow only digits
+                            ],
                             decoration: InputDecoration(
                               label: Text('No.'),
                               contentPadding:
@@ -139,6 +185,12 @@ class _AddFarmState extends State<AddFarm> {
                           width: 50,
                           height: 30,
                           child: TextField(
+                            keyboardType: TextInputType
+                                .number, // Allow only numeric keyboard
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')), // Allow only digits
+                            ],
                             decoration: InputDecoration(
                               label: Text('No.'),
                               contentPadding:
@@ -172,7 +224,7 @@ class _AddFarmState extends State<AddFarm> {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => const SelectType(),
+                          builder: (context) => SelectType(id: widget.id),
                         ),
                       );
                     },

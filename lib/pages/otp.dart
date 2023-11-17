@@ -41,104 +41,95 @@ class _OtpState extends State<Otp> {
 
     return SafeArea(
       child: Scaffold(
-        body: Stack(
+        body: ListView(
           children: [
-            const Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: FractionallySizedBox(
-                widthFactor: 1.0,
-                child: Image(
-                  image: AssetImage('images/home.png'),
-                  fit: BoxFit.fill,
-                ),
+            FractionallySizedBox(
+              widthFactor: 1.0,
+              child: Image(
+                image: AssetImage('images/home.png'),
+                fit: BoxFit.fill,
               ),
             ),
-            Positioned(
-              top: 250,
-              left: 0,
-              right: 0,
-              child: FractionallySizedBox(
-                widthFactor: 1.0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                    border: Border.all(color: Colors.white, width: 2.0),
+            FractionallySizedBox(
+              widthFactor: 1.0,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
                   ),
-                  alignment: Alignment.topCenter,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      if (isContainerVisible)
-                        const Image(
-                          image: AssetImage('images/icon.jpg'),
-                        ),
-                      // if (isContainerVisible)
-                      if (isContainerVisible)
-                        Container(
-                          padding: const EdgeInsets.all(20.0),
-                          margin: const EdgeInsets.only(bottom: 20.0),
-                          child: const Text(
-                            'Gram Parivartan Project',
-                            style: TextStyle(
-                              color: Color(0xff0054a6),
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
+                  border: Border.all(color: Colors.white, width: 2.0),
+                ),
+                alignment: Alignment.topCenter,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (isContainerVisible)
+                      const Image(
+                        image: AssetImage('images/icon.jpg'),
+                      ),
+                    // if (isContainerVisible)
+                    if (isContainerVisible)
                       Container(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 20.0),
+                        padding: const EdgeInsets.all(20.0),
+                        margin: const EdgeInsets.only(bottom: 20.0),
                         child: const Text(
-                          'Please enter the OTP',
+                          'Gram Parivartan Project',
                           style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
+                            color: Color(0xff0054a6),
+                            fontSize: 25.0,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
                       ),
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 40.0),
-                        width: 300.0,
-                        child: PinCodeTextField(
-                          appContext: context,
-                          length: 6,
-                          onChanged: (value) {},
-                          controller: pinEditingController,
-                          pinTheme: PinTheme(
-                              shape: PinCodeFieldShape.underline,
-                              borderRadius: BorderRadius.circular(5),
-                              fieldHeight: 50,
-                              fieldWidth: 40,
-                              inactiveColor: Colors.grey,
-                              activeColor: Colors.black),
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                          obscureText: true,
-                          obscuringCharacter: '*',
-                          focusNode: textFieldFocusNode,
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 20.0),
+                      child: const Text(
+                        'Please enter the OTP',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 20.0),
-                      SubmitButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const VdfHome(),
-                            ),
-                          );
-                        },
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 40.0),
+                      width: 300.0,
+                      child: PinCodeTextField(
+                        appContext: context,
+                        length: 6,
+                        onChanged: (value) {},
+                        controller: pinEditingController,
+                        pinTheme: PinTheme(
+                            shape: PinCodeFieldShape.underline,
+                            borderRadius: BorderRadius.circular(5),
+                            fieldHeight: 50,
+                            fieldWidth: 40,
+                            inactiveColor: Colors.grey,
+                            activeColor: Colors.black),
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        obscureText: true,
+                        obscuringCharacter: '*',
+                        focusNode: textFieldFocusNode,
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 20.0),
+                    SubmitButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const VdfHome(),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 20.0),
+                  ],
                 ),
               ),
             ),

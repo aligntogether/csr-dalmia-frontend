@@ -68,6 +68,7 @@ class _CumulativeState extends State<Cumulative> {
     }
   }
 
+  String? panchayatid;
   @override
   void initState() {
     super.initState();
@@ -92,6 +93,7 @@ class _CumulativeState extends State<Cumulative> {
                 'incomeFollowUpDue': entry.value['incomeFollowUpDue'],
                 'selectedHHWithoutIntervention':
                     entry.value['selectedHHWithoutIntervention'],
+                'panchayatid': entry.value['panchayatId'],
                 'interventionStartedButNotCompleted':
                     entry.value['interventionStartedButNotCompleted'],
               }
@@ -155,8 +157,7 @@ class _CumulativeState extends State<Cumulative> {
                       fontSize: CustomFontTheme.headingSize,
 
                       // Adjust the font size
-                      fontWeight:
-                          CustomFontTheme.headingwt, // Adjust the font weight
+                      fontWeight: CustomFontTheme.headingwt,
                     ),
                   ),
                 ),
@@ -210,16 +211,6 @@ class _CumulativeState extends State<Cumulative> {
                     height: 20,
                   ),
                   Container(
-                    // child: () {
-                    //   if (selectedPanchayat ==
-                    //       _selectedpanchayatindex.toInt()) {
-                    //     return villagetab(random);
-                    //   } else if (selectedVillage ==
-                    //           'Village ${_selectedvillagetindex + 1}' &&
-                    //       selectedPanchayat == null) {
-                    //     return streettab(random);
-                    //   } else {
-                    //     return
                     child: panchayattab(random)
                     // }
                     // }()
@@ -351,15 +342,16 @@ class _CumulativeState extends State<Cumulative> {
                           onTap: () {
                             setState(() {
                               selectedPanchayat = panchayat['panchayatName'];
-                            });
-
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => VillageReport(
-                                  selectedPanchayat: selectedPanchayat,
+                              panchayatid = panchayat['pannchayatid'];
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => VillageReport(
+                                    selectedPanchayat: selectedPanchayat,
+                                    selectedPanchayatid: panchayatid,
+                                  ),
                                 ),
-                              ),
-                            );
+                              );
+                            });
                           },
                           child: Text(
                             panchayat['panchayatName'] ?? '',
@@ -372,7 +364,9 @@ class _CumulativeState extends State<Cumulative> {
                         ),
                       ),
                       DataCell(
-                        Text('${panchayat['incomeFollowUpDue'] ?? 0}'),
+                        Text(
+                          '${panchayat['incomeFollowUpDue'] ?? 0}',
+                        ),
                       ),
                       DataCell(
                         Text(
@@ -392,220 +386,4 @@ class _CumulativeState extends State<Cumulative> {
       ),
     );
   }
-
-  // Widget villagetab(Random random) {
-  //   return Center(
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.center,
-  //       children: [
-  //         Text(selectedPanchayat!,
-  //             style: TextStyle(
-  //                 fontSize: CustomFontTheme.textSize,
-  //                 fontWeight: CustomFontTheme.labelwt)),
-  //         const Text('Village wise report',
-  //             style: TextStyle(
-  //                 fontSize: CustomFontTheme.textSize,
-  //                 fontWeight: CustomFontTheme.labelwt)),
-  //         SizedBox(
-  //           height: 20,
-  //         ),
-  //         SingleChildScrollView(
-  //           scrollDirection: Axis.horizontal,
-  //           child: Card(
-  //             shape: RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(10.0),
-  //             ),
-  //             elevation: 5,
-  //             child: DataTable(
-  //               decoration: const BoxDecoration(
-  //                 color: Color(0xFF008CD3),
-  //                 borderRadius: BorderRadius.only(
-  //                   topLeft: Radius.circular(10),
-  //                   topRight: Radius.circular(10),
-  //                 ),
-  //               ),
-  //               dividerThickness: 2,
-  //               columnSpacing: 15,
-  //               columns: const <DataColumn>[
-  //                 DataColumn(
-  //                   label: Text(
-  //                     'Village Name',
-  //                     style: TextStyle(color: Colors.white),
-  //                   ),
-  //                 ),
-  //                 DataColumn(
-  //                   label: Text(
-  //                     'Income follow up Overdue',
-  //                     style: TextStyle(color: Colors.white),
-  //                   ),
-  //                 ),
-  //                 DataColumn(
-  //                   label: Text(
-  //                     'Number of selected HHs without intervention',
-  //                     style: TextStyle(color: Colors.white),
-  //                   ),
-  //                 ),
-  //                 DataColumn(
-  //                   label: Text(
-  //                     'No. of Interventions started but not completed',
-  //                     style: TextStyle(color: Colors.white),
-  //                   ),
-  //                 ),
-  //               ],
-  //               rows: List<DataRow>.generate(
-  //                 10,
-  //                 (index) {
-  //                   return DataRow(
-  //                     color: MaterialStateColor.resolveWith((states) {
-  //                       // Alternating row colors
-  //                       return index.isOdd
-  //                           ? Colors.lightBlue[50]!
-  //                           : Colors.white;
-  //                     }),
-  //                     cells: <DataCell>[
-  //                       DataCell(
-  //                         InkWell(
-  //                           onTap: () {
-  //                             setState(() {
-  //                               selectedVillage = 'Village ${index + 1}';
-  //                               _selectedvillagetindex = index;
-  //                               selectedPanchayat = '0';
-  //                               // _selectedVillageindex = index;
-
-  //                               // selectedVillage =
-  //                               //     'Village ${_selectedVillageindex + 1}';
-  //                             });
-  //                           },
-  //                           child: Text(
-  //                             'Village ${index + 1}',
-  //                             style: const TextStyle(
-  //                               color: CustomColorTheme.iconColor,
-  //                               decoration: TextDecoration.underline,
-  //                               fontWeight: FontWeight.bold,
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       DataCell(Text(
-  //                         '${random.nextInt(100)}',
-  //                       )),
-  //                       DataCell(Text('${random.nextInt(100)}')),
-  //                       DataCell(Text('${random.nextInt(100)}')),
-  //                     ],
-  //                   );
-  //                 },
-  //               ),
-  //             ),
-  //           ),
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // Widget streettab(Random random) {
-  //   return Center(
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.center,
-  //       children: [
-  //         Text(selectedVillage!,
-  //             style: TextStyle(
-  //                 fontSize: CustomFontTheme.textSize,
-  //                 fontWeight: CustomFontTheme.labelwt)),
-  //         const Text('Street wise report',
-  //             style: TextStyle(
-  //                 fontSize: CustomFontTheme.textSize,
-  //                 fontWeight: CustomFontTheme.labelwt)),
-  //         SizedBox(
-  //           height: 20,
-  //         ),
-  //         SingleChildScrollView(
-  //           scrollDirection: Axis.horizontal,
-  //           child: Card(
-  //             shape: RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(10.0),
-  //             ),
-  //             elevation: 5,
-  //             child: DataTable(
-  //               decoration: const BoxDecoration(
-  //                 color: Color(0xFF008CD3),
-  //                 borderRadius: BorderRadius.only(
-  //                   topLeft: Radius.circular(10),
-  //                   topRight: Radius.circular(10),
-  //                 ),
-  //               ),
-  //               dividerThickness: 2,
-  //               columnSpacing: 15,
-  //               columns: const <DataColumn>[
-  //                 DataColumn(
-  //                   label: Text(
-  //                     'Street Name',
-  //                     style: TextStyle(color: Colors.white),
-  //                   ),
-  //                 ),
-  //                 DataColumn(
-  //                   label: Text(
-  //                     'Income follow up Overdue',
-  //                     style: TextStyle(color: Colors.white),
-  //                   ),
-  //                 ),
-  //                 DataColumn(
-  //                   label: Text(
-  //                     'Number of selected HHs without intervention',
-  //                     style: TextStyle(color: Colors.white),
-  //                   ),
-  //                 ),
-  //                 DataColumn(
-  //                   label: Text(
-  //                     'No. of Interventions started but not completed',
-  //                     style: TextStyle(color: Colors.white),
-  //                   ),
-  //                 ),
-  //               ],
-  //               rows: List<DataRow>.generate(
-  //                 10,
-  //                 (index) {
-  //                   return DataRow(
-  //                     color: MaterialStateColor.resolveWith((states) {
-  //                       // Alternating row colors
-  //                       return index.isOdd
-  //                           ? Colors.lightBlue[50]!
-  //                           : Colors.white;
-  //                     }),
-  //                     cells: <DataCell>[
-  //                       DataCell(
-  //                         InkWell(
-  //                           onTap: () {
-  //                             Navigator.of(context).push(
-  //                               MaterialPageRoute(
-  //                                 builder: (context) => const HhidForm(),
-  //                               ),
-  //                             );
-  //                           },
-  //                           child: Text(
-  //                             'Street ${index + 1}',
-  //                             style: const TextStyle(
-  //                               color: CustomColorTheme.iconColor,
-  //                               decoration: TextDecoration.underline,
-  //                               fontWeight: FontWeight.bold,
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       DataCell(Text(
-  //                         '${random.nextInt(100)}',
-  //                       )),
-  //                       DataCell(Text('${random.nextInt(100)}')),
-  //                       DataCell(Text('${random.nextInt(100)}')),
-  //                     ],
-  //                   );
-  //                 },
-  //               ),
-  //             ),
-  //           ),
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
 }

@@ -1,18 +1,88 @@
-import 'package:dalmia/pages/vdf/household/addland.dart';
+import 'dart:convert';
+
 import 'package:dalmia/pages/vdf/household/addlivestock.dart';
+import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class AddCrop extends StatefulWidget {
-  const AddCrop({Key? key}) : super(key: key);
+  final String? id;
+  const AddCrop({super.key, this.id});
 
   @override
   State<AddCrop> createState() => _AddCropState();
 }
 
 class _AddCropState extends State<AddCrop> {
-  List<bool> cropCheckList = List.filled(16, false);
+  List<bool> cropCheckList = [];
+  List<String> cropOptions = [];
+  List<int> selectedDataIds = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCropOptions();
+  }
+
+  Future<void> addcropData() async {
+    final apiUrl = '$base/add-household';
+
+    // Replace these values with the actual data you want to send
+    final Map<String, dynamic> requestData = {
+      "id": widget.id,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          "Content-Type": "application/json",
+          // Add any additional headers if needed
+        },
+        body: jsonEncode(requestData),
+      );
+
+      if (response.statusCode == 200) {
+        // Successful response
+        print(" land Data added successfully");
+        // Handle success as needed
+      } else {
+        // Handle error response
+        print("Failed to add land data: ${response.statusCode}");
+        print(response.body);
+        // Handle error as needed
+      }
+    } catch (e) {
+      // Handle network errors
+      print("Error: $e");
+    }
+  }
+
+  Future<void> fetchCropOptions() async {
+    final apiUrl = '$base/dropdown?titleId=114';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final responseData =
+            json.decode(response.body)['resp_body']['options'] as List<dynamic>;
+
+        setState(() {
+          cropOptions = responseData
+              .map((option) => option['titleData'].toString())
+              .toList();
+          cropCheckList = List.filled(cropOptions.length, false);
+        });
+      } else {
+        throw Exception('Failed to load crop options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +155,9 @@ class _AddCropState extends State<AddCrop> {
                 child: Text(
                   'What are the crops you have cultivated in the past three years? ',
                   style: TextStyle(
-                      fontSize: CustomFontTheme.textSize,
-                      color: Color(0xFF181818)),
+                    fontSize: CustomFontTheme.textSize,
+                    color: Color(0xFF181818),
+                  ),
                 ),
               ),
               Row(
@@ -95,14 +166,8 @@ class _AddCropState extends State<AddCrop> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      cropRow('Paddy', 0),
-                      cropRow('Sugarcane', 1),
-                      cropRow('Maize, Corn', 2),
-                      cropRow('Chilli', 3),
-                      cropRow('Millet', 4),
-                      cropRow('Fodder', 5),
-                      cropRow('Gingilee', 6),
-                      cropRow('Bengalgram', 7),
+                      for (int i = 0; i < cropOptions.length / 2; i++)
+                        cropRow(cropOptions[i], i),
                       const SizedBox(height: 16),
                       SizedBox(
                         width: 120,
@@ -123,14 +188,10 @@ class _AddCropState extends State<AddCrop> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      cropRow('Paddy', 8),
-                      cropRow('Sugarcane', 9),
-                      cropRow('Maize, Corn', 10),
-                      cropRow('Chilli', 11),
-                      cropRow('Millet', 12),
-                      cropRow('Fodder', 13),
-                      cropRow('Gingilee', 14),
-                      cropRow('Bengalgram', 15),
+                      for (int i = cropOptions.length ~/ 2;
+                          i < cropOptions.length;
+                          i++)
+                        cropRow(cropOptions[i], i),
                       const SizedBox(height: 16),
                       SizedBox(
                         width: 120,
@@ -161,22 +222,25 @@ class _AddCropState extends State<AddCrop> {
                       backgroundColor: CustomColorTheme.primaryColor,
                     ),
                     onPressed: () {
+                      // Extract selected dataIds
+                      for (int i = 0; i < cropCheckList.length; i++) {
+                        if (cropCheckList[i]) {
+                          selectedDataIds.add(i);
+                        }
+                      }
+
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => AddStock(),
+                          builder: (context) => AddStock(id: widget.id),
                         ),
                       );
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder: (context) => AddCrop(),
-                      //   ),
-                      // );
                     },
                     child: const Text(
                       'Next',
                       style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          fontWeight: CustomFontTheme.labelwt),
+                        fontSize: CustomFontTheme.textSize,
+                        fontWeight: CustomFontTheme.labelwt,
+                      ),
                     ),
                   ),
                   ElevatedButton(
@@ -197,9 +261,10 @@ class _AddCropState extends State<AddCrop> {
                     child: Text(
                       'Save as Draft',
                       style: TextStyle(
-                          color: CustomColorTheme.primaryColor,
-                          fontSize: CustomFontTheme.textSize,
-                          fontWeight: CustomFontTheme.labelwt),
+                        color: CustomColorTheme.primaryColor,
+                        fontSize: CustomFontTheme.textSize,
+                        fontWeight: CustomFontTheme.labelwt,
+                      ),
                     ),
                   ),
                 ],

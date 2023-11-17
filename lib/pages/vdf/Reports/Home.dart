@@ -275,24 +275,37 @@ class _HomeReportState extends State<HomeReport> {
                             rows: <DataRow>[
                               celldata(
                                   'Total Households in working area',
-                                  reportData?['totalHouseholdsInWorkArea'],
+                                  reportData == null
+                                      ? '000'
+                                      : reportData![
+                                          'totalHouseholdsInWorkArea'],
                                   Colors.white),
                               celldata(
                                   'Total Households mapped',
-                                  reportData?['totalHouseholdsMapped'],
+                                  reportData == null
+                                      ? '000'
+                                      : reportData!['totalHouseholdsMapped'],
                                   Colors.white),
                               celldata(
                                   'Total Households selected for Intervention',
-                                  reportData?[
-                                      'totalHouseholdsSelectedForIntervention'],
+                                  reportData == null
+                                      ? '000'
+                                      : reportData![
+                                          'totalHouseholdsSelectedForIntervention'],
                                   Colors.white),
                               celldata(
                                   'Total Interventions planned',
-                                  reportData?['totalInterventionsPlanned'],
+                                  reportData == null
+                                      ? '000'
+                                      : reportData![
+                                          'totalInterventionsPlanned'],
                                   Colors.white),
                               celldata(
                                   'Total Interventions completed',
-                                  reportData?['totalInterventionsCompleted'],
+                                  reportData == null
+                                      ? '000'
+                                      : reportData![
+                                          'totalInterventionsCompleted'],
                                   Colors.white),
                               celldata(
                                   'Households earning additional income',
@@ -303,32 +316,47 @@ class _HomeReportState extends State<HomeReport> {
                                   Colors.white),
                               celldata(
                                   'Zero addl. income',
-                                  reportData?['zeroAdditionalIncome'],
+                                  reportData == null
+                                      ? '000'
+                                      : reportData!['zeroAdditionalIncome'],
                                   Color(0xFF008CD3).withOpacity(0.1)),
                               celldata(
                                   'Less than Rs.25K addl. income',
-                                  reportData?['zeroAdditionalIncome'],
+                                  reportData == null
+                                      ? '000'
+                                      : reportData!['zeroAdditionalIncome'],
                                   Color(0xFF008CD3).withOpacity(0.1)),
                               celldata(
                                   'Rs.25K - Rs.50K addl. income',
-                                  reportData?['between25KTO50KIncome'],
+                                  reportData == null
+                                      ? '000'
+                                      : reportData!['between25KTO50KIncome'],
                                   Color(0xFF008CD3).withOpacity(0.1)),
                               celldata(
                                   'Rs.50K - Rs.75K addl. income',
-                                  reportData?['between50KTO75KIncome'],
+                                  reportData == null
+                                      ? '000'
+                                      : reportData!['between50KTO75KIncome'],
                                   Color(0xFF008CD3).withOpacity(0.1)),
                               celldata(
                                   'Rs.75K - Rs.1L addl. income',
-                                  reportData?['between75KTO1LIncome'],
+                                  reportData == null
+                                      ? '000'
+                                      : reportData!['between75KTO1LIncome'],
                                   Color(0xFF008CD3).withOpacity(0.1)),
                               celldata(
                                   'More than Rs.1L addl. income',
-                                  reportData?['moreThan1LIncome'],
+                                  reportData == null
+                                      ? '000'
+                                      : reportData!['moreThan1LIncome'],
                                   Color(0xFF008CD3).withOpacity(0.1)),
                               celldata(
                                   'Aggregated additional income',
-                                  reportData?['aggregatedAdditionalIncome']
-                                      .toString(),
+                                  reportData == null
+                                      ? '000'
+                                      : reportData![
+                                              'aggregatedAdditionalIncome']
+                                          .toString(),
                                   Colors.white),
 
                               // Add more rows as needed

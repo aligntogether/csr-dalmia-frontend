@@ -19,7 +19,9 @@ import 'package:flutter/material.dart';
 
 class VillageReport extends StatefulWidget {
   final String? selectedPanchayat;
-  const VillageReport({super.key, this.selectedPanchayat});
+  final String? selectedPanchayatid;
+  const VillageReport(
+      {super.key, this.selectedPanchayat, this.selectedPanchayatid});
 
   @override
   State<VillageReport> createState() => _VillageReportState();
@@ -79,7 +81,8 @@ class _VillageReportState extends State<VillageReport> {
   Future<void> fetchvillageData() async {
     try {
       final response = await http.get(
-        Uri.parse('$base/report-village-wise?vdfId=10001'),
+        Uri.parse(
+            '$base/report-village-wise?vdfId=10001&panchayatId=${widget.selectedPanchayatid}'),
       );
 
       if (response.statusCode == 200) {
@@ -95,10 +98,12 @@ class _VillageReportState extends State<VillageReport> {
                     entry.value['selectedHHWithoutIntervention'],
                 'interventionStartedButNotCompleted':
                     entry.value['interventionStartedButNotCompleted'],
+                'villageid': ['villageId']
               }
           ];
         });
       } else {
+        print('${widget.selectedPanchayatid}');
         throw Exception('Failed to load data: ${response.statusCode}');
       }
     } catch (e) {

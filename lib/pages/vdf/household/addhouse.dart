@@ -55,6 +55,76 @@ class Street {
   }
 }
 
+final String panchayatUrl = '$base/list-Panchayat';
+Future<List<Panchayat>> fetchPanchayats() async {
+  try {
+    final response = await http.get(
+      Uri.parse(panchayatUrl),
+      headers: <String, String>{
+        'vdfId': '10001',
+      },
+    );
+    if (response.statusCode == 200) {
+      CommonObject commonObject =
+          CommonObject.fromJson(json.decode(response.body));
+      print(commonObject.respBody);
+      List<dynamic> panchayatsData = commonObject.respBody as List<dynamic>;
+      List<Panchayat> panchayats = panchayatsData
+          .map((model) => Panchayat.fromJson(model as Map<String, dynamic>))
+          .toList();
+
+      return panchayats;
+    } else {
+      throw Exception('Failed to load panchayats: ${response.statusCode}');
+    }
+  } catch (e) {
+    print(e);
+    throw Exception('Error: $e');
+  }
+}
+
+Future<List<Village>> fetchVillages(String panchayatId) async {
+  try {
+    final response = await http.get(
+      Uri.parse('$base/list-Village?panchayatId=$panchayatId'),
+    );
+    if (response.statusCode == 200) {
+      CommonObject commonObject =
+          CommonObject.fromJson(json.decode(response.body));
+
+      Iterable list = commonObject.respBody;
+      List<Village> villages =
+          List<Village>.from(list.map((model) => Village.fromJson(model)));
+      return villages;
+    } else {
+      throw Exception('Failed to load villages: ${response.statusCode}');
+    }
+  } catch (e) {
+    throw Exception('Error: $e');
+  }
+}
+
+Future<List<Street>> fetchStreets(String villageId) async {
+  try {
+    final response = await http.get(
+      Uri.parse('$base/list-Street?villageId=$villageId'),
+    );
+    if (response.statusCode == 200) {
+      CommonObject commonObject =
+          CommonObject.fromJson(json.decode(response.body));
+      Iterable list = commonObject.respBody;
+      List<Street> fetchedStreets =
+          List<Street>.from(list.map((model) => Street.fromJson(model)));
+      print('Fetched streets: $fetchedStreets');
+      return fetchedStreets;
+    } else {
+      throw Exception('Failed to load streets: ${response.statusCode}');
+    }
+  } catch (e) {
+    throw Exception('Error: $e');
+  }
+}
+
 class MyForm extends StatefulWidget {
   @override
   _MyFormState createState() => _MyFormState();
@@ -69,56 +139,6 @@ class _MyFormState extends State<MyForm> {
   List<Panchayat> panchayats = [];
   List<Village> villages = [];
   List<Street> streets = [];
-
-  final String panchayatUrl = '$base/list-Panchayat';
-
-  Future<List<Panchayat>> fetchPanchayats() async {
-    try {
-      final response = await http.get(
-        Uri.parse(panchayatUrl),
-        headers: <String, String>{
-          'vdfId': '10001',
-        },
-      );
-      if (response.statusCode == 200) {
-        CommonObject commonObject =
-            CommonObject.fromJson(json.decode(response.body));
-        print(commonObject.respBody);
-        List<dynamic> panchayatsData = commonObject.respBody as List<dynamic>;
-        List<Panchayat> panchayats = panchayatsData
-            .map((model) => Panchayat.fromJson(model as Map<String, dynamic>))
-            .toList();
-
-        return panchayats;
-      } else {
-        throw Exception('Failed to load panchayats: ${response.statusCode}');
-      }
-    } catch (e) {
-      print(e);
-      throw Exception('Error: $e');
-    }
-  }
-
-  Future<List<Village>> fetchVillages(String panchayatId) async {
-    try {
-      final response = await http.get(
-        Uri.parse('$base/list-Village?panchayatId=$panchayatId'),
-      );
-      if (response.statusCode == 200) {
-        CommonObject commonObject =
-            CommonObject.fromJson(json.decode(response.body));
-
-        Iterable list = commonObject.respBody;
-        List<Village> villages =
-            List<Village>.from(list.map((model) => Village.fromJson(model)));
-        return villages;
-      } else {
-        throw Exception('Failed to load villages: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error: $e');
-    }
-  }
 
   Future<void> _addHouseholdAPI(
       String vdfid, String streetid, String ishouseholdint) async {
@@ -161,27 +181,6 @@ class _MyFormState extends State<MyForm> {
     } catch (error) {
       // Handle network or other errors
       print('Error: $error');
-    }
-  }
-
-  Future<List<Street>> fetchStreets(String villageId) async {
-    try {
-      final response = await http.get(
-        Uri.parse('$base/list-Street?villageId=$villageId'),
-      );
-      if (response.statusCode == 200) {
-        CommonObject commonObject =
-            CommonObject.fromJson(json.decode(response.body));
-        Iterable list = commonObject.respBody;
-        List<Street> fetchedStreets =
-            List<Street>.from(list.map((model) => Street.fromJson(model)));
-        print('Fetched streets: $fetchedStreets');
-        return fetchedStreets;
-      } else {
-        throw Exception('Failed to load streets: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error: $e');
     }
   }
 
