@@ -24,7 +24,7 @@ class _DetailsState extends State<Details> {
 
   Future<void> fetchInterventionData() async {
     final apiUrl =
-        '$base/get-intervention?interventionName=Mushroom%20a%202x2%20level%20roof';
+        '$base/get-intervention?interventionName=${widget.interventionname}';
 
     final response = await http.get(Uri.parse(apiUrl));
 

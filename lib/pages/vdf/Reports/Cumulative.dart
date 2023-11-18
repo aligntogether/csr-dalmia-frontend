@@ -34,8 +34,7 @@ class _CumulativeState extends State<Cumulative> {
 
   String? selectedPanchayat;
   String? selectedVillage;
-  int _selectedpanchayatindex = 0;
-  int _selectedvillagetindex = 0;
+
   int? selectedRadio;
   void _onTabTapped(int index) {
     setState(() {
