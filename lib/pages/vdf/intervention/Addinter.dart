@@ -22,6 +22,7 @@ class Addinter extends StatefulWidget {
 
 class _AddinterState extends State<Addinter> {
   final _formKey = GlobalKey<FormState>();
+  bool isButtonEnabled = false;
   List<Intervention> interventions = [];
   List<Intervention> filteredInterventions = [];
   TextEditingController interventionController = TextEditingController();
@@ -34,7 +35,10 @@ class _AddinterState extends State<Addinter> {
       var url = Uri.parse(
           '$base/get-matching-interventions?interventionPatternName=$query');
       var response = await http.get(url);
-
+      // setState(() {
+      //   isButtonEnabled =
+      //       true; // Enable the button when an intervention is selected
+      // });
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         if (data != null && data['resp_body'] != null) {
@@ -46,6 +50,8 @@ class _AddinterState extends State<Addinter> {
               .toList();
           setState(() {
             filteredInterventions = interventionsList;
+
+            showListView = true;
           });
         } else {
           print("API response is null or empty.");
@@ -56,6 +62,7 @@ class _AddinterState extends State<Addinter> {
     } else {
       setState(() {
         filteredInterventions = interventions;
+        isButtonEnabled = false;
       });
     }
   }
@@ -154,6 +161,7 @@ class _AddinterState extends State<Addinter> {
                                       interventionController.text =
                                           filteredInterventions[index].name;
                                       showListView = false;
+                                      isButtonEnabled = true;
                                     });
                                   },
                                 );
@@ -165,18 +173,24 @@ class _AddinterState extends State<Addinter> {
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: CustomColorTheme.primaryColor,
+                            backgroundColor: isButtonEnabled
+                                ? CustomColorTheme.primaryColor
+                                : Colors
+                                    .lightBlue, // Set the color based on enabled/disabled state
                             minimumSize: const Size(350, 50),
                           ),
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => Details(
-                                  interventionname: intervention,
-                                ),
-                              ),
-                            );
-                          },
+                          onPressed: isButtonEnabled
+                              ? () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => Details(
+                                        interventionname:
+                                            interventionController.text,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              : null,
                           child: const Text('Confirm'),
                         ),
                       ],
@@ -194,18 +208,19 @@ class _AddinterState extends State<Addinter> {
 
 void _confirmitem(BuildContext context) {
   showDialog(
+    barrierDismissible: false,
     context: context,
     builder: (BuildContext context) {
-      return FractionallySizedBox(
-        heightFactor: 0.3,
-        child: AlertDialog(
-          title: const Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text('What do you wish to do next?'),
-            ],
-          ),
-          content: Column(
+      return AlertDialog(
+        title: const Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text('What do you wish to do next?'),
+          ],
+        ),
+        content: SizedBox(
+          height: 100,
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton(
@@ -222,13 +237,15 @@ void _confirmitem(BuildContext context) {
                 },
                 child: Text(
                   'Save HH as draft and add intervention later ',
-                  style: TextStyle(color: Colors.blue[900]),
+                  style: TextStyle(color: CustomColorTheme.primaryColor),
                 ),
               ),
               ElevatedButton(
-                style:
-                    ElevatedButton.styleFrom(backgroundColor: Colors.blue[900]),
-                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: CustomColorTheme.primaryColor),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
                 child: const Text('Continue adding Intervention'),
               ),
             ],

@@ -550,9 +550,9 @@ class _MyFormState extends State<AddFamily> {
                             // Add other fields as needed
                           });
                         }
-                        // print(familyData);
-                        // Send data to the API
-                        // sendFamilyData(familyData);
+                        print(familyData);
+                      
+                        sendFamilyData(familyData);
 
                         // Navigate to the next screen or perform other actions
                         Navigator.of(context).push(
@@ -584,7 +584,7 @@ class _MyFormState extends State<AddFamily> {
                       child: Text(
                         'Save as Draft',
                         style: TextStyle(
-                          color: Colors.blue[900],
+                          color: CustomColorTheme.primaryColor,
                           fontSize: CustomFontTheme.textSize,
                           letterSpacing: 0.84,
                         ),

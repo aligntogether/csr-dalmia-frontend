@@ -37,19 +37,17 @@ class _MyFormState extends State<AddLand> {
     });
   }
 
-  void updateRainfedSelection(String selectedAcre) {
+  void updateRainfedSelection(String selectedAcre, String titleId) {
     setState(() {
-      // Update the selectedRainfedMap with the actual selected string value
       selectedRainfedMap.clear();
-      selectedRainfedMap[selectedAcre] = selectedAcre;
+      selectedRainfedMap[selectedAcre] = titleId;
     });
   }
 
-  void updateIrrigatedSelection(String selectedAcre) {
+  void updateIrrigatedSelection(String selectedAcre, String titleId) {
     setState(() {
-      // Update the selectedIrrigatedMap with the actual selected string value
       selectedIrrigatedMap.clear();
-      selectedIrrigatedMap[selectedAcre] = selectedAcre;
+      selectedIrrigatedMap[selectedAcre] = titleId;
     });
   }
 
@@ -59,8 +57,8 @@ class _MyFormState extends State<AddLand> {
     // Replace these values with the actual data you want to send
     final Map<String, dynamic> requestData = {
       "id": widget.id,
-      "irrigated_land": selectedIrrigatedMap.values.toList(),
-      "rainfed_land": selectedRainfedMap.values.toList(),
+      "irrigated_land": selectedIrrigatedMap.entries,
+      "rainfed_land": selectedRainfedMap.entries,
     };
 
     try {
@@ -75,7 +73,7 @@ class _MyFormState extends State<AddLand> {
 
       if (response.statusCode == 200) {
         // Successful response
-        print(" land Data added successfully");
+        print("Land Data added successfully");
         // Handle success as needed
       } else {
         // Handle error response
@@ -133,7 +131,6 @@ class _MyFormState extends State<AddLand> {
 
   @override
   Widget build(BuildContext context) {
-    print(irrigatedOptions);
     return SafeArea(
       child: Scaffold(
         appBar: houseappbar(context),
@@ -282,7 +279,7 @@ class _MyFormState extends State<AddLand> {
 class InputDetail extends StatelessWidget {
   final String acre;
   final Map<String, String> isSelectedMap;
-  final Function(String) updateSelection;
+  final Function(String, String) updateSelection;
 
   const InputDetail(
     this.acre,
@@ -295,7 +292,10 @@ class InputDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        updateSelection(acre);
+        // Call the function to fetch the titleId based on the selected acre
+        fetchTitleId(acre).then((dataId) {
+          updateSelection(acre, dataId.toString());
+        });
       },
       style: ElevatedButton.styleFrom(
         side: isSelectedMap[acre] != null && isSelectedMap[acre]!.isNotEmpty
@@ -317,5 +317,36 @@ class InputDetail extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<int> fetchTitleId(String acre) async {
+    // Fetch the dataId based on the selected acre
+    final apiUrl = '$base/dropdown?titleId=${acre == 'Rainfed' ? 112 : 113}';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final responseData =
+            json.decode(response.body)['resp_body'] as Map<int, dynamic>;
+
+        // Check if the dataId is present and not null
+        final dataId = responseData['dataId'];
+        if (dataId != null && dataId is int) {
+          print('DataId: $dataId');
+          return dataId;
+        } else {
+          print('DataId is null or not a String in the response');
+          return 0;
+        }
+      } else {
+        print('Failed to load dataId: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        return 0;
+      }
+    } catch (e) {
+      print('Error fetching dataId: $e');
+      return 0;
+    }
   }
 }
