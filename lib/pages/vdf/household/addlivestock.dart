@@ -21,11 +21,18 @@ class AddStock extends StatefulWidget {
 
 class _AddStockState extends State<AddStock> {
   List<bool> cropCheckList = List.filled(16, false);
-  Map<String, int> livestockData = {};
+  Map<String?, int> livestockData = {};
+  MapEntry<String?, int> other1 = const MapEntry(null, 12);
+  MapEntry<String?, int> other2 = const MapEntry(null, 12);
 
   Future<void> addstockData() async {
     final apiUrl = '$base/add-household';
-
+    if (other1.key != null || other1.key != "") {
+      livestockData.addEntries([other1]);
+    }
+    if (other2.key != null || other2.key != "") {
+      livestockData.addEntries([other2]);
+    }
     // Replace these values with the actual data you want to send
     final Map<String, dynamic> requestData = {
       "id": widget.id,
@@ -121,12 +128,15 @@ class _AddStockState extends State<AddStock> {
                                     const Color(0xFF181818).withOpacity(0.80)),
                           ),
                         ),
-                        const SizedBox(
+                        SizedBox(
                           width: 90,
                           height: 40,
                           child: TextField(
                             maxLength: 15,
-                            decoration: InputDecoration(
+                            onChanged: (value) {
+                              other1 = MapEntry(value, other1.value);
+                            },
+                            decoration: const InputDecoration(
                               label: Text('Specify'),
                               counterText: '',
                               contentPadding:
@@ -149,6 +159,13 @@ class _AddStockState extends State<AddStock> {
                               FilteringTextInputFormatter.allow(
                                   RegExp(r'[0-9]')), // Allow only digits
                             ],
+                            onChanged: (value) {
+                              int intVal = 0;
+                              try {
+                                intVal = int.parse(value);
+                              } catch (e) {}
+                              other1 = MapEntry(other1.key, intVal);
+                            },
                             decoration: const InputDecoration(
                               label: Text('No.'),
                               contentPadding:
@@ -181,12 +198,15 @@ class _AddStockState extends State<AddStock> {
                                     const Color(0xFF181818).withOpacity(0.80)),
                           ),
                         ),
-                        const SizedBox(
+                        SizedBox(
                           width: 90,
                           height: 40,
                           child: TextField(
                             maxLength: 15,
-                            decoration: InputDecoration(
+                            onChanged: (value) {
+                              other2 = MapEntry(value, other2.value);
+                            },
+                            decoration: const InputDecoration(
                               counterText: '',
                               label: Text('Specify'),
                               contentPadding:
@@ -209,6 +229,13 @@ class _AddStockState extends State<AddStock> {
                               FilteringTextInputFormatter.allow(
                                   RegExp(r'[0-9]')), // Allow only digits
                             ],
+                            onChanged: (value) {
+                              int intVal = 0;
+                              try {
+                                intVal = int.parse(value);
+                              } catch (e) {}
+                              other1 = MapEntry(other2.key, intVal);
+                            },
                             decoration: const InputDecoration(
                               label: Text('No.'),
                               contentPadding:
