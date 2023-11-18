@@ -142,7 +142,7 @@ class _DraftState extends State<Draft> {
               ),
               const Center(
                   child: Text(
-                'Select a row to edit or delete draft HH',
+                'Select a row to  delete draft HH',
                 style: TextStyle(
                     fontSize: CustomFontTheme.textSize,
                     fontWeight: CustomFontTheme.headingwt),

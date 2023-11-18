@@ -153,8 +153,8 @@ class _EnterDetailState extends State<EnterDetail> {
                 const SizedBox(
                   height: 40,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Wrap(
+                  alignment: WrapAlignment.center,
                   children: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(

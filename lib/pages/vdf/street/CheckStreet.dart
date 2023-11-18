@@ -226,7 +226,7 @@ class _CheckStreetState extends State<CheckStreet> {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(350, 50),
+                      minimumSize: const Size(300, 50),
                       backgroundColor: CustomColorTheme.primaryColor,
                     ),
                     onPressed: () {

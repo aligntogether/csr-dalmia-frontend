@@ -52,6 +52,41 @@ class _SelectTypeState extends State<SelectType> {
     }
   }
 
+  Future<void> addhouse(int value) async {
+    final apiUrl = '$base/add-household';
+
+    final Map<String, dynamic> requestData = {
+      "id": widget.id,
+      "is_household_intervention": value,
+      "is_draft": 0
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          "Content-Type": "application/json",
+          // Add any additional headers if needed
+        },
+        body: jsonEncode(requestData),
+      );
+
+      if (response.statusCode == 200) {
+        // Successful response
+        print("successfull");
+        // Handle success as needed
+      } else {
+        // Handle error response
+        print("Failed to add data: ${response.statusCode}");
+        print(response.body);
+        // Handle error as needed
+      }
+    } catch (e) {
+      // Handle network errors
+      print("Error: $e");
+    }
+  }
+
   List<bool> cropCheckList = List.filled(16, false);
   bool ownChecked = false;
   bool rentedChecked = false;
@@ -83,6 +118,7 @@ class _SelectTypeState extends State<SelectType> {
                     elevation: 0,
                     backgroundColor: CustomColorTheme.primaryColor),
                 onPressed: () {
+                  addhouse(1);
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => Addinter(),
@@ -106,9 +142,12 @@ class _SelectTypeState extends State<SelectType> {
                       width: 1, color: CustomColorTheme.primaryColor),
                 ),
                 onPressed: () {
+                  addhouse(0);
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const Approval(),
+                      builder: (context) => Approval(
+                        id: widget.id,
+                      ),
                     ),
                   );
                   // Perform actions when 'No' is clicked

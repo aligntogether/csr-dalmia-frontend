@@ -1,5 +1,7 @@
+import 'package:dalmia/pages/vdf/intervention/Addinter.dart';
 import 'package:dalmia/pages/vdf/intervention/Enterdetail.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
+import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -63,7 +65,7 @@ class _DetailsState extends State<Details> {
               IconButton(
                 iconSize: 30,
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  _confirmitem(context);
                 },
                 icon: const Icon(
                   Icons.close,
@@ -91,51 +93,49 @@ class _DetailsState extends State<Details> {
                   SizedBox(
                     height: 10,
                   ),
-                  Text(
-                    interventionData!['interventionName'].toString(),
-                    style: TextStyle(
-                      fontSize: CustomFontTheme.textSize,
-                      fontWeight: FontWeight.w600,
+                  FractionallySizedBox(
+                    widthFactor: 0.8,
+                    child: Text(
+                      interventionData!['interventionName'].toString(),
+                      style: TextStyle(
+                        fontSize: CustomFontTheme.textSize,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Text('Lever',
                           style: TextStyle(
                               fontSize: CustomFontTheme.textSize,
                               fontWeight: FontWeight.w600)),
-                      SizedBox(
-                        width: 100,
-                      ),
                       Text(interventionData!['lever'].toString()),
                     ],
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Text('Expected additional income p/a',
                           style: TextStyle(
                               fontSize: CustomFontTheme.textSize,
                               fontWeight: FontWeight.w600)),
-                      SizedBox(
-                        width: 100,
-                      ),
                       Text(
                         'Rs. ${interventionData!['expectedIncomeGeneration']}',
                       ),
                     ],
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Text('No. of days required to complete the intervention',
+                      Text(
+                          'No. of days required \n to complete the intervention',
                           style: TextStyle(
                               fontSize: CustomFontTheme.textSize,
                               fontWeight: FontWeight.w600)),
-                      SizedBox(
-                        width: 100,
-                      ),
                       Text(
                         '${interventionData!['requiredDaysCompletion']} Days',
                       ),
@@ -144,8 +144,8 @@ class _DetailsState extends State<Details> {
                   SizedBox(
                     height: 40,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Wrap(
+                    alignment: WrapAlignment.center,
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -166,8 +166,8 @@ class _DetailsState extends State<Details> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Wrap(
+                    alignment: WrapAlignment.center,
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -175,7 +175,11 @@ class _DetailsState extends State<Details> {
                           backgroundColor: Colors.white,
                         ),
                         onPressed: () {
-                          // Your onPressed action
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => Addinter(),
+                            ),
+                          );
                         },
                         child: Text(
                           'Change Intervention ',
@@ -196,4 +200,54 @@ class _DetailsState extends State<Details> {
       );
     }
   }
+}
+
+void _confirmitem(BuildContext context) {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text('What do you wish to do next?'),
+          ],
+        ),
+        content: SizedBox(
+          height: 100,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(10),
+                  backgroundColor: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const VdfHome(),
+                    ),
+                  );
+                },
+                child: Text(
+                  'Save HH as draft and add intervention later ',
+                  style: TextStyle(color: CustomColorTheme.primaryColor),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: CustomColorTheme.primaryColor),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Continue adding Intervention'),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }

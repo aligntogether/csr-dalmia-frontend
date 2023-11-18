@@ -3,6 +3,7 @@ import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
@@ -151,6 +152,11 @@ class _AddnewState extends State<Addnew> {
                   SizedBox(
                     width: 300,
                     child: TextField(
+                      keyboardType:
+                          TextInputType.number, // Allow only numeric keyboard
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      ],
                       //  keyboardType: TextInputType.streetAddress,
                       onChanged: (value) {
                         setState(() {
@@ -168,7 +174,7 @@ class _AddnewState extends State<Addnew> {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(350, 50),
+                        minimumSize: const Size(300, 50),
                         backgroundColor: streetName != null &&
                                 streetCode != null
                             ? CustomColorTheme.primaryColor

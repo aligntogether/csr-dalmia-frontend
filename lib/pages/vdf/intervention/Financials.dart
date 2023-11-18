@@ -1,6 +1,7 @@
 import 'package:dalmia/pages/vdf/intervention/Followup.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class Financial extends StatefulWidget {
@@ -60,6 +61,11 @@ class _FinancialState extends State<Financial> {
                   height: 20,
                 ),
                 TextField(
+                  keyboardType:
+                      TextInputType.number, // Allow only numeric keyboard
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                  ],
                   controller: _beneficiaryController,
                   decoration: const InputDecoration(
                     labelText: 'Beneficiary contribution (Rs.) *',
@@ -73,6 +79,11 @@ class _FinancialState extends State<Financial> {
                   height: 20,
                 ),
                 TextField(
+                  keyboardType:
+                      TextInputType.number, // Allow only numeric keyboard
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                  ],
                   controller: _subsidyController,
                   decoration: const InputDecoration(
                     labelText: 'Subsidy (Rs.) *',
@@ -86,6 +97,11 @@ class _FinancialState extends State<Financial> {
                   height: 20,
                 ),
                 TextField(
+                  keyboardType:
+                      TextInputType.number, // Allow only numeric keyboard
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                  ],
                   controller: _loanController,
                   decoration: const InputDecoration(
                     labelText: 'Loan (Rs.) *',
@@ -99,6 +115,11 @@ class _FinancialState extends State<Financial> {
                   height: 20,
                 ),
                 TextField(
+                  keyboardType:
+                      TextInputType.number, // Allow only numeric keyboard
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                  ],
                   controller: _dbfController,
                   decoration: const InputDecoration(
                     labelText: 'DBF contribution (Rs.) *',
