@@ -7,6 +7,11 @@ import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:dalmia/apis/commonobject.dart';
+
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Draft extends StatefulWidget {
   const Draft({Key? key});
@@ -22,6 +27,19 @@ class _DraftState extends State<Draft> {
   void _toggleMenu() {
     setState(() {
       isdraftMenuOpen = !isdraftMenuOpen;
+    });
+  }
+
+  String? base = dotenv.env['BASE_URL'];
+  List<DraftHousehold> draftHouseholds = [];
+  Set<String> checkedHousehols = {};
+  @override
+  void initState() {
+    super.initState();
+    fetchDraftHouseholds().then((value) {
+      setState(() {
+        draftHouseholds = value;
+      });
     });
   }
 
@@ -98,9 +116,9 @@ class _DraftState extends State<Draft> {
                     padding: const EdgeInsets.only(left: 30, bottom: 10),
                     alignment: Alignment.topCenter,
                     color: Colors.white,
-                    child: Text(
+                    child: const Text(
                       'Drafts',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: CustomFontTheme.headingSize,
 
                         // Adjust the font size
@@ -137,79 +155,66 @@ class _DraftState extends State<Draft> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: DataTable(
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10),
-                      ),
-                    ),
-                    headingRowColor: MaterialStateColor.resolveWith(
-                      (states) => Color(0xFF008CD3),
-                    ),
-                    columns: const <DataColumn>[
-                      DataColumn(
-                        label: Text(
-                          ' ',
-                          style: TextStyle(color: Colors.white),
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
                         ),
                       ),
-                      DataColumn(
-                        label:
-                            Text('Date', style: TextStyle(color: Colors.white)),
+                      headingRowColor: MaterialStateColor.resolveWith(
+                        (states) => const Color(0xFF008CD3),
                       ),
-                      DataColumn(
-                        label: Text('Family\n Head Name',
-                            style: TextStyle(color: Colors.white)),
-                      ),
-                      DataColumn(
-                        label: Text('Street',
-                            style: TextStyle(color: Colors.white)),
-                      ),
-                      DataColumn(
-                        label: Text('Village',
-                            style: TextStyle(color: Colors.white)),
-                      ),
-                    ],
-                    rows: <DataRow>[
-                      DataRow(
-                        cells: <DataCell>[
+                      columns: const <DataColumn>[
+                        DataColumn(
+                          label: Text(
+                            ' ',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text('Date',
+                              style: TextStyle(color: Colors.white)),
+                        ),
+                        DataColumn(
+                          label: Text('Family\n Head Name',
+                              style: TextStyle(color: Colors.white)),
+                        ),
+                        DataColumn(
+                          label: Text('Street',
+                              style: TextStyle(color: Colors.white)),
+                        ),
+                        DataColumn(
+                          label: Text('Village',
+                              style: TextStyle(color: Colors.white)),
+                        ),
+                      ],
+                      rows:
+                          draftHouseholds.map((DraftHousehold draftHousehold) {
+                        return DataRow(cells: <DataCell>[
                           DataCell(
                             Checkbox(
-                              value: false,
-                              onChanged: (value) {},
+                              value:
+                                  checkedHousehols.contains(draftHousehold.id),
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value != null && value) {
+                                    checkedHousehols.add(draftHousehold.id);
+                                  } else {
+                                    checkedHousehols.remove(draftHousehold.id);
+                                  }
+                                });
+                              },
                             ),
                           ),
-                          const DataCell(Text(
-                              '2023-10-31')), // Placeholder date, replace with actual data
-                          const DataCell(Text(
-                              'John Doe')), // Placeholder name, replace with actual data
-                          const DataCell(Text(
-                              'Main Street')), // Placeholder street, replace with actual data
-                          const DataCell(Text('Rural Village')),
-                        ],
-                      ),
-                      DataRow(
-                        color: MaterialStateColor.resolveWith(
-                            (states) => Colors.lightBlue[50]!),
-                        cells: <DataCell>[
-                          DataCell(
-                            Checkbox(
-                              value: false,
-                              onChanged: (value) {},
-                            ),
-                          ),
-                          const DataCell(Text(
-                              '2023-10-31')), // Placeholder date, replace with actual data
-                          const DataCell(Text(
-                              'John Doe')), // Placeholder name, replace with actual data
-                          const DataCell(Text(
-                              'Main Street')), // Placeholder street, replace with actual data
-                          const DataCell(Text('Rural Village')),
-                        ],
-                      ),
-                      // Add more DataRows as needed
-                    ],
-                  ),
+                          DataCell(Text(draftHousehold
+                              .dateOfEnrollment)), // Placeholder date, replace with actual data
+                          DataCell(Text(draftHousehold
+                              .headName)), // Placeholder name, replace with actual data
+                          DataCell(Text(draftHousehold
+                              .streetName)), // Placeholder street, replace with actual data
+                          DataCell(Text(draftHousehold.villageName)),
+                        ]);
+                      }).toList()),
                 ),
               ),
               const SizedBox(
@@ -242,7 +247,9 @@ class _DraftState extends State<Draft> {
                         backgroundColor: MaterialStateProperty.all<Color>(
                             CustomColorTheme.backgroundColor),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        deleteCheckedHousehold();
+                      },
                       child: const Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Text(
@@ -296,6 +303,80 @@ class _DraftState extends State<Draft> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<List<DraftHousehold>> fetchDraftHouseholds() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$base/get-draft-households'),
+        headers: <String, String>{
+          'vdfId': '10001',
+        },
+      );
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+
+        List<dynamic> draftHouseholdsData =
+            commonObject.respBody as List<dynamic>;
+        List<DraftHousehold> draftHouseholds = draftHouseholdsData
+            .map((model) =>
+                DraftHousehold.fromJson(model as Map<String, dynamic>))
+            .toList();
+
+        return draftHouseholds;
+      } else {
+        throw Exception('Failed to load panchayats: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  void deleteCheckedHousehold() async {
+    try {
+      final response = await http.delete(
+        Uri.parse('$base/delete-draft'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(checkedHousehols.toList()),
+      );
+      if (response.statusCode == 200) {
+        fetchDraftHouseholds().then((value) {
+          setState(() {
+            draftHouseholds = value;
+          });
+        });
+      } else {
+        throw Exception('Failed to load panchayats: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+}
+
+class DraftHousehold {
+  final String id;
+  final String headName;
+  final String villageName;
+  final String hhid;
+  final String dateOfEnrollment;
+  final String streetName;
+
+  DraftHousehold(this.id, this.headName, this.villageName, this.hhid,
+      this.dateOfEnrollment, this.streetName);
+
+  factory DraftHousehold.fromJson(Map<String, dynamic> json) {
+    return DraftHousehold(
+      json['id'].toString(),
+      json['memberName'].toString(),
+      json['villageName'].toString(),
+      json['hhid'].toString(),
+      json['dateOfEnrollment'].toString(),
+      json['streetName'].toString(),
     );
   }
 }
