@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dalmia/pages/vdf/household/addland.dart';
 import 'package:dalmia/pages/vdf/household/addlivestock.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
@@ -16,9 +17,8 @@ class AddCrop extends StatefulWidget {
 }
 
 class _AddCropState extends State<AddCrop> {
-  List<bool> cropCheckList = [];
-  List<String> cropOptions = [];
-  List<int> selectedDataIds = [];
+  List<DropdownOption> cropOptions = [];
+  Set<String> selectedDataIds = {};
 
   @override
   void initState() {
@@ -32,6 +32,7 @@ class _AddCropState extends State<AddCrop> {
     // Replace these values with the actual data you want to send
     final Map<String, dynamic> requestData = {
       "id": widget.id,
+      "crops": selectedDataIds.join(",")
     };
 
     try {
@@ -46,7 +47,7 @@ class _AddCropState extends State<AddCrop> {
 
       if (response.statusCode == 200) {
         // Successful response
-        print(" land Data added successfully");
+        print("Crop Data added successfully");
         // Handle success as needed
       } else {
         // Handle error response
@@ -72,9 +73,8 @@ class _AddCropState extends State<AddCrop> {
 
         setState(() {
           cropOptions = responseData
-              .map((option) => option['titleData'].toString())
+              .map((option) => DropdownOption.fromJson(option))
               .toList();
-          cropCheckList = List.filled(cropOptions.length, false);
         });
       } else {
         throw Exception('Failed to load crop options: ${response.statusCode}');
@@ -169,20 +169,20 @@ class _AddCropState extends State<AddCrop> {
                       for (int i = 0; i < cropOptions.length / 2; i++)
                         cropRow(cropOptions[i], i),
                       const SizedBox(height: 16),
-                      SizedBox(
-                        width: 120,
-                        height: 35,
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            labelText: 'Other Crop 1',
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      // SizedBox(
+                      //   width: 120,
+                      //   height: 35,
+                      //   child: TextField(
+                      //     decoration: const InputDecoration(
+                      //       labelText: 'Other Crop 1',
+                      //       border: OutlineInputBorder(
+                      //         borderSide: BorderSide(
+                      //           width: 2,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                   Column(
@@ -193,20 +193,20 @@ class _AddCropState extends State<AddCrop> {
                           i++)
                         cropRow(cropOptions[i], i),
                       const SizedBox(height: 16),
-                      SizedBox(
-                        width: 120,
-                        height: 35,
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            labelText: 'Other crop 2',
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      // const SizedBox(
+                      //   width: 120,
+                      //   height: 35,
+                      //   child: TextField(
+                      //     decoration: InputDecoration(
+                      //       labelText: 'Other crop 2',
+                      //       border: OutlineInputBorder(
+                      //         borderSide: BorderSide(
+                      //           width: 2,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   )
                 ],
@@ -223,17 +223,18 @@ class _AddCropState extends State<AddCrop> {
                     ),
                     onPressed: () {
                       // Extract selected dataIds
-                      for (int i = 0; i < cropCheckList.length; i++) {
-                        if (cropCheckList[i]) {
-                          selectedDataIds.add(i);
-                        }
-                      }
-
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => AddStock(id: widget.id),
-                        ),
-                      );
+                      // for (int i = 0; i < cropCheckList.length; i++) {
+                      //   selectedDataIds.clear();
+                      //   if (cropCheckList[i]) {
+                      //     selectedDataIds.add(int.parse(cropOptions[i].dataId));
+                      //   }
+                      // }
+                      print("getllo$selectedDataIds");
+                      addcropData().then((value) => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => AddStock(id: widget.id),
+                            ),
+                          ));
                     },
                     child: const Text(
                       'Next',
@@ -276,23 +277,23 @@ class _AddCropState extends State<AddCrop> {
     );
   }
 
-  Widget cropRow(String text, int index) {
+  Widget cropRow(DropdownOption option, int index) {
     return Row(
       children: [
         Checkbox(
-          value: cropCheckList[index],
+          value: selectedDataIds.contains(option.dataId),
           onChanged: (value) {
             setState(() {
-              cropCheckList[index] = value!;
+              selectedDataIds.add(option.dataId);
             });
           },
           activeColor: CustomColorTheme.iconColor,
         ),
         Text(
-          text,
+          option.titleData,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: cropCheckList[index]
+            color: selectedDataIds.contains(option.dataId)
                 ? CustomColorTheme.iconColor
                 : CustomColorTheme.labelColor,
           ),
