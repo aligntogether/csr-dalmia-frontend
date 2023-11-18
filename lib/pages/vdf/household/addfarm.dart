@@ -19,12 +19,22 @@ class AddFarm extends StatefulWidget {
 }
 
 class _AddFarmState extends State<AddFarm> {
+  Map<String?, int> farmData = {};
+  MapEntry<String?, int> other1 = const MapEntry(null, 0);
+  MapEntry<String?, int> other2 = const MapEntry(null, 0);
+
   Future<void> addFarmData() async {
     final apiUrl = '$base/add-household';
-
+    if (other1.key != null || other1.key != "") {
+      farmData.addEntries([other1]);
+    }
+    if (other2.key != null || other2.key != "") {
+      farmData.addEntries([other2]);
+    }
     // Replace these values with the actual data you want to send
     final Map<String, dynamic> requestData = {
       "id": widget.id,
+      "farm_equipment": farmData.toString()
     };
 
     try {
@@ -39,7 +49,7 @@ class _AddFarmState extends State<AddFarm> {
 
       if (response.statusCode == 200) {
         // Successful response
-        print(" land Data added successfully");
+        print("Farm Equipment Data added successfully");
         // Handle success as needed
       } else {
         // Handle error response
@@ -54,7 +64,11 @@ class _AddFarmState extends State<AddFarm> {
   }
 
   void addData(text, value) {
-    // farm[text] = value;
+    int intVal = 0;
+    try {
+      intVal = int.parse(value);
+    } catch (e) {}
+    farmData[text] = intVal;
   }
 
   List<bool> cropCheckList = List.filled(16, false);
@@ -117,7 +131,10 @@ class _AddFarmState extends State<AddFarm> {
                           width: 90,
                           height: 40,
                           child: TextField(
-                            decoration: InputDecoration(
+                            onChanged: (value) {
+                              other1 = MapEntry(value, other1.value);
+                            },
+                            decoration: const InputDecoration(
                               label: Text('Specify'),
                               contentPadding:
                                   EdgeInsets.symmetric(horizontal: 10),
@@ -139,7 +156,14 @@ class _AddFarmState extends State<AddFarm> {
                               FilteringTextInputFormatter.allow(
                                   RegExp(r'[0-9]')), // Allow only digits
                             ],
-                            decoration: InputDecoration(
+                            onChanged: (value) {
+                              int intVal = 0;
+                              try {
+                                intVal = int.parse(value);
+                              } catch (e) {}
+                              other1 = MapEntry(other1.key, intVal);
+                            },
+                            decoration: const InputDecoration(
                               label: Text('No.'),
                               contentPadding:
                                   EdgeInsets.symmetric(horizontal: 10),
@@ -173,7 +197,10 @@ class _AddFarmState extends State<AddFarm> {
                           width: 90,
                           height: 40,
                           child: TextField(
-                            decoration: InputDecoration(
+                            onChanged: (value) {
+                              other2 = MapEntry(value, other2.value);
+                            },
+                            decoration: const InputDecoration(
                               label: Text('Specify'),
                               contentPadding:
                                   EdgeInsets.symmetric(horizontal: 10),
@@ -195,7 +222,14 @@ class _AddFarmState extends State<AddFarm> {
                               FilteringTextInputFormatter.allow(
                                   RegExp(r'[0-9]')), // Allow only digits
                             ],
-                            decoration: InputDecoration(
+                            onChanged: (value) {
+                              int intVal = 0;
+                              try {
+                                intVal = int.parse(value);
+                              } catch (e) {}
+                              other2 = MapEntry(other2.key, intVal);
+                            },
+                            decoration: const InputDecoration(
                               label: Text('No.'),
                               contentPadding:
                                   EdgeInsets.symmetric(horizontal: 10),
@@ -226,11 +260,11 @@ class _AddFarmState extends State<AddFarm> {
                       backgroundColor: CustomColorTheme.primaryColor,
                     ),
                     onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => SelectType(id: widget.id),
-                        ),
-                      );
+                      addFarmData().then((value) => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => SelectType(id: widget.id),
+                            ),
+                          ));
                     },
                     child: const Text(
                       'Next',

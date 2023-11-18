@@ -22,8 +22,8 @@ class AddStock extends StatefulWidget {
 class _AddStockState extends State<AddStock> {
   List<bool> cropCheckList = List.filled(16, false);
   Map<String?, int> livestockData = {};
-  MapEntry<String?, int> other1 = const MapEntry(null, 12);
-  MapEntry<String?, int> other2 = const MapEntry(null, 12);
+  MapEntry<String?, int> other1 = const MapEntry(null, 0);
+  MapEntry<String?, int> other2 = const MapEntry(null, 0);
 
   Future<void> addstockData() async {
     final apiUrl = '$base/add-household';

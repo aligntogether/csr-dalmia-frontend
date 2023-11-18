@@ -223,20 +223,21 @@ class _DraftState extends State<Draft> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
-                      style: ButtonStyle(
-                        elevation: MaterialStateProperty.all(0.0),
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            CustomColorTheme.primaryColor),
-                      ),
-                      onPressed: () {},
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'Edit Household',
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                      )),
+                  // ElevatedButton(
+                  //     style: ButtonStyle(
+                  //       elevation: MaterialStateProperty.all(0.0),
+                  //       backgroundColor: MaterialStateProperty.all<Color>(
+                  //           CustomColorTheme.primaryColor),
+                  //     ),
+                  //     onPressed: () {},
+                  //     child: const Padding(
+                  //       padding: EdgeInsets.all(8.0),
+                  //       child: Text(
+                  //         'Edit Household',
+                  //         style: TextStyle(fontWeight: FontWeight.w500),
+                  //       ),
+                  //     )),
+
                   ElevatedButton(
                       style: ButtonStyle(
                         elevation: MaterialStateProperty.all(0.0),
