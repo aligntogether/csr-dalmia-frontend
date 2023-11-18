@@ -53,6 +53,10 @@ class _AddFarmState extends State<AddFarm> {
     }
   }
 
+  void addData(text, value) {
+    // farm[text] = value;
+  }
+
   List<bool> cropCheckList = List.filled(16, false);
 
   @override
@@ -80,19 +84,19 @@ class _AddFarmState extends State<AddFarm> {
               Column(
                 children: [
                   const SizedBox(height: 20),
-                  Rowstock('Tractor'),
+                  Rowstock('Tractor', addData),
                   const SizedBox(height: 20),
-                  Rowstock('Mini Tractor'),
+                  Rowstock('Mini Tractor', addData),
                   const SizedBox(height: 20),
-                  Rowstock('Rotovator'),
+                  Rowstock('Rotovator', addData),
                   const SizedBox(height: 20),
-                  Rowstock('Sprayer'),
+                  Rowstock('Sprayer', addData),
                   const SizedBox(height: 20),
-                  Rowstock('Weeder'),
+                  Rowstock('Weeder', addData),
                   const SizedBox(height: 20),
-                  Rowstock('MB Plough'),
+                  Rowstock('MB Plough', addData),
                   const SizedBox(height: 20),
-                  Rowstock('Harvestor'),
+                  Rowstock('Harvestor', addData),
                   const SizedBox(height: 20),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),

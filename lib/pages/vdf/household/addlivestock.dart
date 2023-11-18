@@ -21,6 +21,7 @@ class AddStock extends StatefulWidget {
 
 class _AddStockState extends State<AddStock> {
   List<bool> cropCheckList = List.filled(16, false);
+  Map<String, int> livestockData = {};
 
   Future<void> addstockData() async {
     final apiUrl = '$base/add-household';
@@ -28,6 +29,7 @@ class _AddStockState extends State<AddStock> {
     // Replace these values with the actual data you want to send
     final Map<String, dynamic> requestData = {
       "id": widget.id,
+      "livestock_numbers": livestockData.toString(),
     };
 
     try {
@@ -42,7 +44,7 @@ class _AddStockState extends State<AddStock> {
 
       if (response.statusCode == 200) {
         // Successful response
-        print(" land Data added successfully");
+        print("LiveStock Data added successfully");
         // Handle success as needed
       } else {
         // Handle error response
@@ -54,6 +56,15 @@ class _AddStockState extends State<AddStock> {
       // Handle network errors
       print("Error: $e");
     }
+  }
+
+  void addData(text, value) {
+    int intVal = 0;
+    try {
+      intVal = int.parse(value);
+    } catch (e) {}
+    livestockData[text] = intVal;
+    print(livestockData);
   }
 
   @override
@@ -81,17 +92,17 @@ class _AddStockState extends State<AddStock> {
               Column(
                 children: [
                   const SizedBox(height: 20),
-                  Rowstock('Cows'),
+                  Rowstock('Cows', addData),
                   const SizedBox(height: 20),
-                  Rowstock('Goats'),
+                  Rowstock('Goats', addData),
                   const SizedBox(height: 20),
-                  Rowstock('Buffalo'),
+                  Rowstock('Buffalo', addData),
                   const SizedBox(height: 20),
-                  Rowstock('Poultry'),
+                  Rowstock('Poultry', addData),
                   const SizedBox(height: 20),
-                  Rowstock('Pigs'),
+                  Rowstock('Pigs', addData),
                   const SizedBox(height: 20),
-                  Rowstock('Ducks'),
+                  Rowstock('Ducks', addData),
                   const SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -228,11 +239,11 @@ class _AddStockState extends State<AddStock> {
                         minimumSize: const Size(130, 50),
                         backgroundColor: CustomColorTheme.primaryColor),
                     onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => AddFarm(id: widget.id),
-                        ),
-                      );
+                      addstockData().then((value) => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => AddFarm(id: widget.id),
+                            ),
+                          ));
                     },
                     child: const Text(
                       'Next',
@@ -272,7 +283,8 @@ class _AddStockState extends State<AddStock> {
   }
 }
 
-Widget Rowstock(String text) {
+Widget Rowstock(
+    String text, void Function(dynamic text, dynamic value) addData) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
     child: Row(
@@ -297,6 +309,7 @@ Widget Rowstock(String text) {
               FilteringTextInputFormatter.allow(
                   RegExp(r'[0-9]')), // Allow only digits
             ],
+            onChanged: (value) => addData(text, value),
             decoration: const InputDecoration(
               contentPadding: EdgeInsets.symmetric(horizontal: 10),
               border: OutlineInputBorder(
