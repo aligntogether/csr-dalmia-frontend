@@ -17,10 +17,10 @@ class AddLand extends StatefulWidget {
 }
 
 class _MyFormState extends State<AddLand> {
-  Map<String, String> selectedRainfedMap = {};
-  Map<String, String> selectedIrrigatedMap = {};
-  List<String>? rainfedOptions;
-  List<String>? irrigatedOptions;
+  String selectedRainfed = "-1";
+  String selectedIrrigated = "-1";
+  List<DropdownOption>? rainfedOptions;
+  List<DropdownOption>? irrigatedOptions;
 
   @override
   void initState() {
@@ -37,17 +37,15 @@ class _MyFormState extends State<AddLand> {
     });
   }
 
-  void updateRainfedSelection(String selectedAcre, String titleId) {
+  void updateRainfedSelection(String dataId) {
     setState(() {
-      selectedRainfedMap.clear();
-      selectedRainfedMap[selectedAcre] = titleId;
+      selectedRainfed = dataId;
     });
   }
 
-  void updateIrrigatedSelection(String selectedAcre, String titleId) {
+  void updateIrrigatedSelection(String dataId) {
     setState(() {
-      selectedIrrigatedMap.clear();
-      selectedIrrigatedMap[selectedAcre] = titleId;
+      selectedIrrigated = dataId;
     });
   }
 
@@ -57,8 +55,8 @@ class _MyFormState extends State<AddLand> {
     // Replace these values with the actual data you want to send
     final Map<String, dynamic> requestData = {
       "id": widget.id,
-      "irrigated_land": selectedIrrigatedMap.entries,
-      "rainfed_land": selectedRainfedMap.entries,
+      "irrigated_land": selectedIrrigated,
+      "rainfed_land": selectedRainfed,
     };
 
     try {
@@ -87,7 +85,7 @@ class _MyFormState extends State<AddLand> {
     }
   }
 
-  Future<List<String>> fetchRainfedOptions() async {
+  Future<List<DropdownOption>> fetchRainfedOptions() async {
     final apiUrl = '$base/dropdown?titleId=112';
 
     try {
@@ -97,7 +95,7 @@ class _MyFormState extends State<AddLand> {
         final responseData =
             json.decode(response.body)['resp_body']['options'] as List<dynamic>;
         return responseData
-            .map((option) => option['titleData'] as String)
+            .map((option) => DropdownOption.fromJson(option))
             .toList();
       } else {
         throw Exception(
@@ -108,7 +106,7 @@ class _MyFormState extends State<AddLand> {
     }
   }
 
-  Future<List<String>> fetchIrrigatedOptions() async {
+  Future<List<DropdownOption>> fetchIrrigatedOptions() async {
     final apiUrl = '$base/dropdown?titleId=113';
 
     try {
@@ -118,7 +116,7 @@ class _MyFormState extends State<AddLand> {
         final responseData =
             json.decode(response.body)['resp_body']['options'] as List<dynamic>;
         return responseData
-            .map((option) => option['titleData'] as String)
+            .map((option) => DropdownOption.fromJson(option))
             .toList();
       } else {
         throw Exception(
@@ -171,7 +169,7 @@ class _MyFormState extends State<AddLand> {
                             for (var option in rainfedOptions!)
                               InputDetail(
                                 option,
-                                selectedRainfedMap,
+                                selectedRainfed,
                                 updateRainfedSelection,
                               ),
                         ],
@@ -202,7 +200,7 @@ class _MyFormState extends State<AddLand> {
                             for (var option in irrigatedOptions!)
                               InputDetail(
                                 option,
-                                selectedIrrigatedMap,
+                                selectedIrrigated,
                                 updateIrrigatedSelection,
                               ),
                         ],
@@ -276,14 +274,32 @@ class _MyFormState extends State<AddLand> {
   }
 }
 
+class DropdownOption {
+  final String dataId;
+  final String titleId;
+  final String titleData;
+  final String toShow;
+
+  DropdownOption(this.dataId, this.titleId, this.titleData, this.toShow);
+
+  factory DropdownOption.fromJson(Map<String, dynamic> json) {
+    return DropdownOption(
+      json['dataId'].toString(),
+      json['titleId'].toString(),
+      json['titleData'].toString(),
+      json['toShow'].toString(),
+    );
+  }
+}
+
 class InputDetail extends StatelessWidget {
-  final String acre;
-  final Map<String, String> isSelectedMap;
-  final Function(String, String) updateSelection;
+  final DropdownOption acre;
+  final String selectedOptionDataId;
+  final Function(String) updateSelection;
 
   const InputDetail(
     this.acre,
-    this.isSelectedMap,
+    this.selectedOptionDataId,
     this.updateSelection, {
     Key? key,
   }) : super(key: key);
@@ -292,26 +308,27 @@ class InputDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
+        updateSelection(acre.dataId);
         // Call the function to fetch the titleId based on the selected acre
-        fetchTitleId(acre).then((dataId) {
-          updateSelection(acre, dataId.toString());
-        });
+        // fetchTitleId(acre).then((dataId) {
+        //   print("hellllo $dataId");
+        //   updateSelection(acre, dataId.toString());
+        // });
       },
       style: ElevatedButton.styleFrom(
-        side: isSelectedMap[acre] != null && isSelectedMap[acre]!.isNotEmpty
+        side: selectedOptionDataId == acre.dataId
             ? BorderSide(width: 1, color: CustomColorTheme.iconColor)
             : BorderSide(width: 1, color: Color(0x99181818)),
         elevation: 0,
         minimumSize: const Size(85, 38),
-        backgroundColor:
-            isSelectedMap[acre] != null && isSelectedMap[acre]!.isNotEmpty
-                ? const Color(0xFFF15A22)
-                : Colors.white,
+        backgroundColor: selectedOptionDataId == acre.dataId
+            ? const Color(0xFFF15A22)
+            : Colors.white,
       ),
       child: Text(
-        acre,
+        acre.titleData,
         style: TextStyle(
-          color: isSelectedMap[acre] != null && isSelectedMap[acre]!.isNotEmpty
+          color: selectedOptionDataId == acre.dataId
               ? Colors.white
               : Color(0xFF181818),
         ),
