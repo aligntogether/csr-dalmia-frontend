@@ -17,8 +17,8 @@ class CustomFontTheme {
   static const FontWeight labelwt = FontWeight.w500;
   static const FontWeight textwt = FontWeight.w400;
 
-  static const double headingSize = 16.0;
-  static const double textSize = 16.5;
+  static const double headingSize = 16;
+  static const double textSize = 14.5;
 }
 
 class AppTheme {

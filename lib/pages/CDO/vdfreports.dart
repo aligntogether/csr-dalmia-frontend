@@ -1,3 +1,4 @@
+import 'package:dalmia/pages/CDO/cdoappbar.dart';
 import 'package:dalmia/pages/CDO/cdohome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
@@ -18,58 +19,8 @@ class _VdfReportState extends State<VdfReport> {
               preferredSize:
                   //  isMenuOpen ? Size.fromHeight(150) :
                   Size.fromHeight(100),
-              child: Stack(
-                children: [
-                  AppBar(
-                    titleSpacing: 20,
-                    backgroundColor: Colors.white,
-                    title: Image(image: AssetImage('images/icon.jpg')),
-                    centerTitle: false,
-                    automaticallyImplyLeading: false,
-                    bottom: PreferredSize(
-                      preferredSize: const Size.fromHeight(50),
-                      child: Container(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        color: Colors.white,
-                        child: Text(
-                          'VDF Report',
-                          style: TextStyle(
-                              fontSize: CustomFontTheme.headingSize,
-                              fontWeight: CustomFontTheme.headingwt),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    right: 20,
-                    top: 10,
-                    child: Column(
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            // _showConfirmationDialog(context);
-                          },
-                          child: Column(
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: CustomColorTheme.primaryColor,
-                                foregroundColor: Colors.white,
-                                child: Icon(Icons.logout),
-                              ),
-                              Text(
-                                'Logout',
-                                style: TextStyle(
-                                    color: CustomColorTheme.labelColor,
-                                    fontSize: CustomFontTheme.textSize,
-                                    fontWeight: CustomFontTheme.labelwt),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
+              child: CdoAppBar(
+                heading: 'VDF Reports',
               ),
             ),
             body: SingleChildScrollView(

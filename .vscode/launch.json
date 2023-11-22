@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/HP/OneDrive/Desktop/dalmia/linux",
-      "program": "c:/Users/HP/OneDrive/Desktop/dalmia/linux/build/Debug/outDebug",
+      "cwd": "c:/Users/HP/OneDrive/Desktop/dalmia/windows/flutter",
+      "program": "c:/Users/HP/OneDrive/Desktop/dalmia/windows/flutter/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
