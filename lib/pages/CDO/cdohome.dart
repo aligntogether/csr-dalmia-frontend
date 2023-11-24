@@ -1,10 +1,7 @@
-import 'package:dalmia/common/common.dart';
+import 'package:dalmia/pages/CDO/action.dart';
+import 'package:dalmia/pages/CDO/vdffund.dart';
 import 'package:dalmia/pages/CDO/vdfreports.dart';
 import 'package:dalmia/pages/login.dart';
-import 'package:dalmia/pages/vdf/Draft/draft.dart';
-import 'package:dalmia/pages/vdf/household/addhouse.dart';
-import 'package:dalmia/pages/vdf/dash.dart';
-import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -133,9 +130,18 @@ class _CDOHomeState extends State<CDOHome> {
               SizedBox(
                 height: 20,
               ),
-              cards(
-                title: 'Funds utilized by VDFs',
-                imageUrl: 'images/fundsutilized.svg',
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const VDFFunds(),
+                    ),
+                  );
+                },
+                child: cards(
+                  title: 'Funds utilized by VDFs',
+                  imageUrl: 'images/fundsutilized.svg',
+                ),
               ),
               SizedBox(
                 height: 40,
@@ -149,49 +155,58 @@ class _CDOHomeState extends State<CDOHome> {
               SizedBox(
                 height: 20,
               ),
-              Container(
-                // width: 284,
-                // height: 55,
-                padding: const EdgeInsets.all(12),
-                decoration: ShapeDecoration(
-                  color: Color(0xFFC2DEEC),
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                      width: 1,
-                      color: Colors.black.withOpacity(0.10000000149011612),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ActionAgainstHH(),
                     ),
-                    borderRadius: BorderRadius.circular(10),
+                  );
+                },
+                child: Container(
+                  // width: 284,
+                  // height: 55,
+                  padding: const EdgeInsets.all(12),
+                  decoration: ShapeDecoration(
+                    color: Color(0xFFC2DEEC),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        width: 1,
+                        color: Colors.black.withOpacity(0.10000000149011612),
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    shadows: [
+                      BoxShadow(
+                        color: Color(0x11000000),
+                        blurRadius: 20,
+                        offset: Offset(0, 10),
+                        spreadRadius: 0,
+                      )
+                    ],
                   ),
-                  shadows: [
-                    BoxShadow(
-                      color: Color(0x11000000),
-                      blurRadius: 20,
-                      offset: Offset(0, 10),
-                      spreadRadius: 0,
+                  // color: Color(0xFFF2D4C9),
+                  child: Row(children: [
+                    SvgPicture.asset(
+                      ''
+                      'images/takeaction.svg',
+                      width: 34,
+                      height: 31,
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Flexible(
+                      child: Text(
+                        'Drop or Select HH for Int.',
+                        style: TextStyle(
+                            fontSize: CustomFontTheme.textSize,
+                            color: const Color(0xFF0374AD),
+                            fontWeight: CustomFontTheme.labelwt),
+                      ),
                     )
-                  ],
+                  ]),
                 ),
-                // color: Color(0xFFF2D4C9),
-                child: Row(children: [
-                  SvgPicture.asset(
-                    ''
-                    'images/takeaction.svg',
-                    width: 34,
-                    height: 31,
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Flexible(
-                    child: Text(
-                      'Drop or Select HH for Int.',
-                      style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          color: const Color(0xFF0374AD),
-                          fontWeight: CustomFontTheme.labelwt),
-                    ),
-                  )
-                ]),
               )
             ],
           ),

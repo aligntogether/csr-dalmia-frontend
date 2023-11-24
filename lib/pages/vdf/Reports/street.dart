@@ -17,7 +17,9 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
 class StreetReport extends StatefulWidget {
-  const StreetReport({super.key});
+  final String? selectedvillage;
+  final String? selectedvillageid;
+  const StreetReport({super.key, this.selectedvillage, this.selectedvillageid});
 
   @override
   State<StreetReport> createState() => _StreetReportState();
