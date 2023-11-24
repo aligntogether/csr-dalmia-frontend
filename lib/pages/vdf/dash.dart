@@ -68,7 +68,7 @@ class _DashTabState extends State<DashTab> {
               children: [
                 Container(
                   alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.only(left: 20, bottom: 10),
+                  padding: const EdgeInsets.only(left: 10, bottom: 10),
                   child: const Text(
                     'Households Summary',
                     style: TextStyle(
@@ -123,7 +123,7 @@ class _DashTabState extends State<DashTab> {
               children: [
                 Container(
                   alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.only(left: 20, bottom: 10),
+                  padding: const EdgeInsets.only(left: 10, bottom: 10),
                   child: const Text(
                     'Interventions',
                     style: TextStyle(
@@ -176,7 +176,7 @@ class _DashTabState extends State<DashTab> {
               children: [
                 Container(
                   alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.only(left: 20, bottom: 10),
+                  padding: const EdgeInsets.only(left: 10, bottom: 10),
                   child: const Text(
                     'Follow up',
                     style: TextStyle(
@@ -188,7 +188,7 @@ class _DashTabState extends State<DashTab> {
                 FractionallySizedBox(
                   widthFactor: 1.0,
                   child: Wrap(
-                    alignment: WrapAlignment.spaceAround,
+                    alignment: WrapAlignment.start,
                     children: [
                       Container(
                         child: CustomCard(
@@ -219,7 +219,7 @@ class _DashTabState extends State<DashTab> {
               children: [
                 Container(
                   alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.only(left: 20, bottom: 0, top: 0),
+                  padding: const EdgeInsets.only(left: 10, bottom: 0, top: 0),
                   child: RichText(
                     text: const TextSpan(
                       style: TextStyle(fontSize: 16, color: Colors.black),
