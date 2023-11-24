@@ -1,3 +1,4 @@
+import 'package:dalmia/pages/gpl/gpl_home_screen.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -123,7 +124,7 @@ class _OtpState extends State<Otp> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const VdfHome(),
+                            builder: (context) => const GPLHomeScreen(),
                           ),
                         );
                       },

@@ -13,6 +13,7 @@ class VdfReport extends StatefulWidget {
 class _VdfReportState extends State<VdfReport> {
   @override
   Widget build(BuildContext context) {
+
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
