@@ -1,23 +1,48 @@
 import 'package:get/get.dart';
 
 class AmountUtilizedController extends GetxController {
-  //TODO: Implement AmountUtilizedController
+  List<String> locations = [
+    'Budget Allocated',
+    'Amount Utilized',
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+
+  ];
+  RxBool openMenu = false.obs;
+
+  void onTapOpenMenu() {
+    openMenu.value = !openMenu.value;
+    update();
   }
+  List<int> DPM = [
+    128036,
+    37765,
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
+  ];
+  List<int> ALR = [
+    128036,
 
-  void increment() => count.value++;
+
+    387004,
+  ];
+  List<int> BGM = [
+    128036,
+    37765,
+
+  ];
+  List<int> KDP = [
+    128036,
+    37765,
+
+  ];
+  List<int> CHA = [
+    128036,
+    37765,
+
+  ];
+  List<int> SOUTH = [
+    128036,
+    37765,
+
+  ];
 }

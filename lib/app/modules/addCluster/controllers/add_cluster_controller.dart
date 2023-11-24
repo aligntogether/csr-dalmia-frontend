@@ -1,23 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AddClusterController extends GetxController {
-  //TODO: Implement AddClusterController
+  String? selectLocation;
+  String? selectRegion;
+  String? selectP;
+  Rx<TextEditingController> nameController = TextEditingController().obs;
+  Rx<TextEditingController> vdfController = TextEditingController().obs;
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }

@@ -1,23 +1,18 @@
 import 'package:get/get.dart';
-
+import 'package:flutter/material.dart';
 class AddLocationController extends GetxController {
-  //TODO: Implement AddLocationController
-
-  final count = 0.obs;
+  Rx<TextEditingController> nameController = TextEditingController().obs;
+  String? selectLocation;
+  int selectedIndex = -1;
+  List locationList = [
+     "1 Cluster",
+     "2 Cluster",
+     "3 Cluster",
+     "4 Cluster",
+     "5 Cluster",
+  ];
   @override
   void onInit() {
     super.onInit();
   }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }

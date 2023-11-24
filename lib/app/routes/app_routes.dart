@@ -20,6 +20,7 @@ abstract class Routes {
   static const SOURCE_FUNDS = _Paths.SOURCE_FUNDS;
   static const EXPECTED_ACTUAL = _Paths.EXPECTED_ACTUAL;
   static const PERFORMANCE_VDF = _Paths.PERFORMANCE_VDF;
+  static const CHOOSE_ROLE = _Paths.CHOOSE_ROLE;
 }
 
 abstract class _Paths {
@@ -41,4 +42,5 @@ abstract class _Paths {
   static const SOURCE_FUNDS = '/source-funds';
   static const EXPECTED_ACTUAL = '/expected-actual';
   static const PERFORMANCE_VDF = '/performance-vdf';
+  static const CHOOSE_ROLE = '/choose-role';
 }

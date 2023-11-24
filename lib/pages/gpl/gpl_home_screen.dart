@@ -1,10 +1,12 @@
+import 'package:dalmia/app/modules/addLocation/controllers/add_location_controller.dart';
 import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/size_constant.dart';
+import 'package:dalmia/pages/gpl/gpl_controller.dart';
 import 'package:dalmia/pages/login.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 
 class GPLHomeScreen extends StatefulWidget {
   const GPLHomeScreen({super.key});
@@ -14,85 +16,31 @@ class GPLHomeScreen extends StatefulWidget {
 }
 
 class _GPLHomeScreenState extends State<GPLHomeScreen> {
+  GplController controller = Get.put(GplController());
+  List locationList = [
+    {"text": "Add Location", "img": "images/Location.png"},
+    {"text": "Add Panchayat", "img": "images/Panchayat.png"},
+    {"text": "Add Village", "img": "images/Village.png"},
+    {"text": "Add Cluster", "img": "images/Vector.png"},
+    {"text": "Replace VDF", "img": "images/male-icon.png"},
+  ];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: appBarCommon(controller, context),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [appBar(), Space.height(30), dataList()],
+            children: [Space.height(30), dataList()],
           ),
         ),
       ),
     );
   }
 
-  Widget appBar() {
-    return Container(
-      padding: EdgeInsets.only(left: 16, right: 22),
-      height: MySize.size83,
-      width: MySize.screenWidth,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: Offset(0, 3), // changes position of shadow
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Space.height(8),
-          Row(
-            children: [
-              Image.asset(
-                "images/icon.jpg",
-                height: MySize.size38,
-                width: MySize.size69,
-              ),
-              Spacer(),
-              GestureDetector(
-                onTap: () {
-                  _showConfirmationDialog(context);
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'images/Logout.png',
-                      height: 28,
-                      width: 28,
-                    ),
-                    Space.height(6),
-                    Text(
-                      'Logout',
-                      style: TextStyle(
-                          fontFamily: "Inter-Medium",
-                          color: Color(0xff181818),
-                          fontSize: 12,
-                          fontWeight: CustomFontTheme.labelwt),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-          Text(
-            "Welcome Balamurugan !",
-            style: TextStyle(
-                fontFamily: "Inter-Medium",
-                fontSize: 12,
-                color: Color(0xff181818)),
-          )
-        ],
-      ),
-    );
-  }
+
 
   Widget dataList() {
     return Padding(
@@ -109,9 +57,10 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
           Row(
             children: [
               Expanded(
-                child: GestureDetector(onTap: () {
-                  Get.toNamed(Routes.REPORTS);
-                },
+                child: GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.REPORTS);
+                  },
                   child: Container(
                     height: 100,
                     decoration: ShapeDecoration(
@@ -168,10 +117,10 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
               ),
               Space.width(21),
               Expanded(
-                child: GestureDetector(onTap: () {
-                  Get.toNamed(Routes.GENERAL_INFO);
-
-                },
+                child: GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.GENERAL_INFO);
+                  },
                   child: Container(
                     height: 100,
                     decoration: ShapeDecoration(
@@ -228,10 +177,10 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
               ),
               Space.width(21),
               Expanded(
-                child: GestureDetector(onTap: () {
-                  Get.toNamed(Routes.MONITOR_PROGRESS);
-
-                },
+                child: GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.MONITOR_PROGRESS);
+                  },
                   child: Container(
                     height: 100,
                     decoration: ShapeDecoration(
@@ -296,10 +245,10 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                 fontSize: 16, fontWeight: FontWeight.w600),
           ),
           Space.height(10),
-          GestureDetector(onTap: () {
-            Get.toNamed(Routes.ADD_INTERVAL);
-
-          },
+          GestureDetector(
+            onTap: () {
+              Get.toNamed(Routes.ADD_INTERVAL);
+            },
             child: Container(
               height: 110,
               width: 95,
@@ -363,13 +312,102 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                 fontSize: 16, fontWeight: FontWeight.w600),
           ),
           Space.height(10),
-          Row(
+          SingleChildScrollView(
+            child: GridView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, // Number of columns
+                crossAxisSpacing: 20.0, // Spacing between columns
+                mainAxisSpacing: 10.0, // Spacing between rows
+              ),
+              itemCount: locationList.length,
+              // Number of items in the grid
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(onTap: () {
+                  if(index==0){
+                    AddLocationController col = Get.put(AddLocationController());
+                    col.nameController.value.clear();
+                    col.selectLocation=null;
+                    Get.toNamed(Routes.ADD_LOCATION);
+
+                  }else if(index==1){
+                    Get.toNamed(Routes.ADD_PANCHAYAT);
+
+                  }else if(index==2){
+                    Get.toNamed(Routes.ADD_VILLAGE);
+
+                  }else if(index==3){
+                    Get.toNamed(Routes.ADD_CLUSTER);
+
+                  }else{
+                    Get.toNamed(Routes.REPLACE_VDF);
+
+                  }
+                },
+                  child: Container(
+                    height: 100,
+                    decoration: ShapeDecoration(
+                      shape: RoundedRectangleBorder(),
+                      shadows: [
+                        BoxShadow(
+                          color: Color(0x11000000),
+                          blurRadius: 20,
+                          offset: Offset(0, 10),
+                          spreadRadius: 0,
+                        )
+                      ],
+                    ),
+                    child: Card(
+                      color: Color(0xFFC2D3E3),
+                      // elevation: 4.0,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 1,
+                          color: Colors.black.withOpacity(0.10000000149011612),
+                        ),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.only(
+                          left: 10,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Image.asset(
+                              locationList[index]["img"],
+                              width: index==4?26:35,
+                              height: index==4?25.3:35,fit: BoxFit.cover,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(0.0),
+                              child: Text(
+                                locationList[index]["text"],
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xff064F96),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          /*Row(
             children: [
               Expanded(
-                child: GestureDetector(onTap: () {
-                  Get.toNamed(Routes.ADD_LOCATION);
-
-                },
+                child: GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.ADD_LOCATION);
+                  },
                   child: Container(
                     height: 100,
                     decoration: ShapeDecoration(
@@ -426,10 +464,10 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
               ),
               Space.width(21),
               Expanded(
-                child: GestureDetector(onTap: () {
-                  Get.toNamed(Routes.ADD_PANCHAYAT);
-
-                },
+                child: GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.ADD_PANCHAYAT);
+                  },
                   child: Container(
                     height: 100,
                     decoration: ShapeDecoration(
@@ -462,7 +500,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Image.asset(
-                              "images/Panchayat.png",
+                              "images/Vector.png",
                               width: 38,
                               height: 38,
                             ),
@@ -486,10 +524,10 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
               ),
               Space.width(21),
               Expanded(
-                child: GestureDetector(onTap: () {
-                  Get.toNamed(Routes.ADD_VILLAGE);
-
-                },
+                child: GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.ADD_VILLAGE);
+                  },
                   child: Container(
                     height: 100,
                     decoration: ShapeDecoration(
@@ -550,10 +588,10 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
 
           Row(
             children: [
-              GestureDetector(onTap: () {
-                Get.toNamed(Routes.ADD_CLUSTER);
-
-              },
+              GestureDetector(
+                onTap: () {
+                  Get.toNamed(Routes.ADD_CLUSTER);
+                },
                 child: Container(
                   height: 100,
                   width: 110,
@@ -609,10 +647,10 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                 ),
               ),
               Space.width(21),
-              GestureDetector(onTap: () {
-                Get.toNamed(Routes.REPLACE_VDF);
-
-              },
+              GestureDetector(
+                onTap: () {
+                  Get.toNamed(Routes.REPLACE_VDF);
+                },
                 child: Container(
                   height: 100,
                   width: 110,
@@ -668,7 +706,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                 ),
               ),
             ],
-          ),
+          ),*/
           Space.height(40),
 
           ///__________________________ feed back _________________________
@@ -678,9 +716,10 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                 fontSize: 16, fontWeight: FontWeight.w600),
           ),
           Space.height(10),
-          GestureDetector(onTap: () {
-            Get.toNamed(Routes.FEEDBACK);
-          },
+          GestureDetector(
+            onTap: () {
+              Get.toNamed(Routes.FEEDBACK);
+            },
             child: Container(
               height: 110,
               width: 95,
@@ -742,7 +781,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
   }
 }
 
-void _showConfirmationDialog(BuildContext context) {
+void showConfirmationDialog(BuildContext context) {
   showDialog(
     context: context,
     builder: (BuildContext context) {

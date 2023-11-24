@@ -12,6 +12,8 @@ import '../modules/addVillage/bindings/add_village_binding.dart';
 import '../modules/addVillage/views/add_village_view.dart';
 import '../modules/amountUtilized/bindings/amount_utilized_binding.dart';
 import '../modules/amountUtilized/views/amount_utilized_view.dart';
+import '../modules/chooseRole/bindings/choose_role_binding.dart';
+import '../modules/chooseRole/views/choose_role_view.dart';
 import '../modules/expectedActual/bindings/expected_actual_binding.dart';
 import '../modules/expectedActual/views/expected_actual_view.dart';
 import '../modules/feedback/bindings/feedback_binding.dart';
@@ -125,6 +127,11 @@ class AppPages {
       name: _Paths.PERFORMANCE_VDF,
       page: () => const PerformanceVdfView(),
       binding: PerformanceVdfBinding(),
+    ),
+    GetPage(
+      name: _Paths.CHOOSE_ROLE,
+      page: () => const ChooseRoleView(),
+      binding: ChooseRoleBinding(),
     ),
   ];
 }

@@ -1,8 +1,12 @@
+import 'package:dalmia/app/modules/overviewPan/views/overview_pan_view.dart';
+import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/common/app_bar.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/color_constant.dart';
 import 'package:dalmia/common/image_constant.dart';
 import 'package:dalmia/common/size_constant.dart';
+import 'package:dalmia/pages/gpl/gpl_home_screen.dart';
+import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,1174 +17,1293 @@ class LocationWiseView extends GetView<LocationWiseController> {
 
   @override
   Widget build(BuildContext context) {
+    LocationWiseController locationWiseController =
+        Get.put(LocationWiseController());
     return SafeArea(
       child: Scaffold(
-          body: Column(
-        children: [
-          appBar(context, title: "Reports"),
-          Space.height(16),
+        appBar: appBarCommon(controller,context,centerAlignText: true,title: "Reports"),
+          body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Space.height(16),
 
-          ///_________________________________ main menu __________________________///
-          Row(
-            children: [
-              Space.width(16),
-              Icon(
-                Icons.arrow_back_ios,
-                color: Colors.black,
-                size: 18,
-              ),
-              Text(
-                "Main Menu",
-                style: AppStyle.textStyleInterMed(fontSize: 14),
-              ),
-              Spacer(),
-              GestureDetector(
-                onTap: () {},
-                child: Container(
-                  height: MySize.size40,
-                  width: MySize.size150,
-                  decoration: BoxDecoration(
-                      color: blueColor, borderRadius: BorderRadius.circular(5)),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        ImageConstant.menu,
-                        height: 15,
-                        width: 19,
-                      ),
-                      Space.width(2),
-                      Text(
-                        "View other Reports",
-                        style: AppStyle.textStyleInterMed(
-                            fontSize: 12, color: Colors.white),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Space.width(16),
-            ],
-          ),
-          Space.height(34),
-
-          SizedBox(
-              width: MySize.size268,
-              child: Column(
+            ///_________________________________ main menu __________________________///
+            GestureDetector(
+              onTap: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(
+                  builder: (context) {
+                    return GPLHomeScreen();
+                  },
+                ));
+              },
+              child: Row(
                 children: [
+                  Space.width(16),
+                  Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.black,
+                    size: 18,
+                  ),
                   Text(
-                    "Location wise EAAI and AAAI Achieved ",
-                    style: AppStyle.textStyleBoldMed(fontSize: 14),
-                  ), Text(
-                    " (as on <19 Oct 2023>)",
+                    "Main Menu",
                     style: AppStyle.textStyleInterMed(fontSize: 14),
                   ),
-
+                  Spacer(),
+                  viewOtherReports(context),
+                  Space.width(16),
                 ],
-              )),
-          Space.height(14),
-          tableDataAll()
-        ],
+              ),
+            ),
+            Space.height(34),
+
+            SizedBox(
+                width: MySize.size268,
+                child: Column(
+                  children: [
+                    Text(
+                      "Location wise EAAI and AAAI Achieved ",
+                      style: AppStyle.textStyleBoldMed(fontSize: 14),
+                    ),
+                    Text(
+                      " (as on <19 Oct 2023>)",
+                      style: AppStyle.textStyleInterMed(fontSize: 14),
+                    ),
+                  ],
+                )),
+            Space.height(14),
+            allRegionsTables()
+          ],
+        ),
       )),
     );
   }
-  Widget tableDataAll() {
-    return Expanded(
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: [
-            SingleChildScrollView(
-              child: Container(
-                decoration: BoxDecoration(),
-                child: Padding(
-                  padding: EdgeInsets.only(left: 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ///________________________________________________ TITLES __________________________
-                      Container(
-                        padding: EdgeInsets.only(left: 12),
-                        height: 63,
-                        decoration: BoxDecoration(
-                            color: Colors.blueAccent,
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(5),
-                                topLeft: Radius.circular(5))),
-                        child: Row(
-                          children: [
-                            commonHeadingText("Details",h: 167),
-                            Space.width(26),
-                            commonHeadingText("DPM"),
-                            Space.width(22),
-                            commonHeadingText("ALR"),
-                            Space.width(22),
-                            commonHeadingText("BGM"),
-                            Space.width(22),
-                            commonHeadingText("KDP"),
-                            Space.width(22),
-                            commonHeadingText("CHA"),
-                            commonContainer("SOUTH", Color(0xff096C9F)),
-                            Space.width(22),
-                            commonHeadingText("MEG"),
-                            Space.width(22),
-                            commonHeadingText("UGM"),
-                            Space.width(22),
-                            commonHeadingText("JGR"),
-                            Space.width(22),
-                            commonHeadingText("LAN"),
-                            commonContainer("  NE  ", Color(0xff096C9F)),
-                            Space.width(22),
-                            commonHeadingText("CUT"),
-                            Space.width(22),
-                            commonHeadingText("MED"),
-                            Space.width(22),
-                            commonHeadingText("BOK"),
-                            Space.width(22),
-                            commonHeadingText("RAJ"),
-                            Space.width(22),
-                            commonHeadingText("KAL"),
-                            commonContainer("  East  ", Color(0xff096C9F)),
-                            commonContainer("cement", Color(0xff2E8CBB)),
-                            Space.width(22),
-                            commonHeadingText("NIG"),
-                            Space.width(22),
-                            commonHeadingText("RAM"),
-                            Space.width(22),
-                            commonHeadingText("JOW"),
-                            Space.width(22),
-                            commonHeadingText("NIN"),
-                            Space.width(22),
-                            commonHeadingText("KOL"),
-                            commonContainer("SUGAR", Color(0xff2E8CBB)),
-                            commonContainer("PAN IND", Color(0xff096C9F)),
-                          ],
-                        ),
-                      ),
-                      
 
-                      ///________________________________________________ HOUSEHOLDERS LISTS __________________________
-                      Container(
-                        padding: EdgeInsets.only(left: 12),
-                        height: 40,
-                        child: Row(
-                          children: [
-                            commonHeadingText("HH Alloted", color: Colors.black,h: 167),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(25),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            commonContainer("", Color(0xff096C9F)),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            commonContainer("6500", Color(0xff096C9F)),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(23),
-                            commonHeadingText("6500", color: Colors.black),
-                            commonContainer("6500", Color(0xff096C9F)),
-                            commonContainer("6500", Color(0xff2E8CBB)),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(22),
-                            commonHeadingText("6500", color: Colors.black),
-                            commonContainer(" ", Color(0xff2E8CBB)),
-                            commonContainer(" ", Color(0xff096C9F)),
-                          ],
+  Widget allRegionsTables() {
+    return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: DataTable(
+              dividerThickness: 00,
+              columnSpacing: 0,
+              horizontalMargin: 0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 0,
+                    blurRadius: 4,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              columns: <DataColumn>[
+                DataColumn(
+                  label: Expanded(
+                    child: Container( height: 60,
+                      decoration: BoxDecoration(color: Color(0xff008CD3),
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0))),
+                      padding: EdgeInsets.only(left: 10),
+                      child: Center(
+                        child: Text(
+                          'Details',
+                          style: TextStyle(
+                              fontWeight: CustomFontTheme.headingwt,
+                              fontSize: CustomFontTheme.textSize,
+                              color: Colors.white),
                         ),
                       ),
-                      Container(
-                        padding: EdgeInsets.only(left: 12),
-                        height: 40,
-                        color: Color(0xff008CD3).withOpacity(0.1),
-                        child: Row(
-                          children: [
-                            commonHeadingText("HH Selected", color: Colors.black,h: 167),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(25),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            commonContainer("", Color(0xff096C9F)),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            commonContainer("6500", Color(0xff096C9F)),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(23),
-                            commonHeadingText("6500", color: Colors.black),
-                            commonContainer("6500", Color(0xff096C9F)),
-                            commonContainer("6500", Color(0xff2E8CBB)),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(22),
-                            commonHeadingText("6500", color: Colors.black),
-                            commonContainer(" ", Color(0xff2E8CBB)),
-                            commonContainer(" ", Color(0xff096C9F)),
-                          ],
-                        ),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label:Container(
+                    height: 60,width: 80,
+                    color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'DPM',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
                       ),
-                      Container(
-                        padding: EdgeInsets.only(left: 12),
-                        height: 102,
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'ALR',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Container(  height: 60,width: 80,color: Color(0xff008CD3),
+                    child: Center(
+                      child: Text(
+                        'BGM',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'KDP',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label:Container(
+                    height: 60,width: 80,color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'CHA',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Container(
+                    color: Color(0xff096C9F),
+                    height: 60,width: 80,
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'SOUTH',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'MEG',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //umg
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'UMG',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //jgr
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'JGR',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //lan
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'LAN',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //NE
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff096C9F),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'NE',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //CUT
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'CUT',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //MED
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'MED',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //BOK
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'BOK',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //RAJ
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'RAJ',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //KAL
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'KAL',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //EAST
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff096C9F),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'East',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //CEMENT
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff2E8CBB),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'Cement',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //NIG
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'NIG',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //RAM
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'RAM',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //JOW
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'JOW',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //NIN
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'NIN',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //KOL
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'KOL',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //SUGAR
+                DataColumn(
+                  label: Container(
+                    height: 60,width: 80,color: Color(0xff2E8CBB),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'SUGAR',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                //PANIND
+                DataColumn(
+                  label: Container(
+                    decoration: BoxDecoration(color: Color(0xff096C9F),
+                        borderRadius: BorderRadius.only(topRight: Radius.circular(10.0))),
+                    height: 60,width: 80,
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        'PANIND',
+                        style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+
+              rows: List<DataRow>.generate(
+                controller.locations.length,
+                (index) => DataRow(
+                  color: MaterialStateColor.resolveWith(
+                    (states) {
+                      return controller.locations[index] == "Households" ||
+                              controller.locations[index] == "Interventions" ||
+                              controller.locations[index] ==
+                                  "HH with Annual Addl. Income"
+                          ? Color(0xff008CD3).withOpacity(0.3)
+                          : index.isEven
+                              ? Colors.blue.shade50
+                              : Colors.white;
+                    },
+                  ),
+                  cells: [
+                    DataCell(
+                      Container(width: 300,
+                        padding: EdgeInsets.only(left: 10),
                         child: Row(
                           children: [
-                            SizedBox(
-                              width: 167,
-                              child: Row(
-                                children: [
-                                  SizedBox(width: 75,
-                                    child: Text(
-                                      "No. of HHs with planned int. above 50K and 1L EAAI",
-                                      style: AppStyle.textStyleInterMed(
-                                          fontSize: 14, color:  Colors.black),
-                                    ),
-                                  ),
-                                  Space.width(5),
-                                  Container(height: 102,width: 1,color: Color(0xff181818).withOpacity(0.5),),
-                                  Space.width(5),
-                                  Column(
+                            Text(
+                              controller.locations[index],
+                              style: AppStyle.textStyleInterMed(fontSize: 14),
+                            ),
+                            Space.width(5),
+                            index == 2 ||index==3
+                                ? VerticalDivider(
+                                    width: 1,
+                                    color: Color(0xff181818).withOpacity(0.3),
+                                    thickness: 1,
+                                  )
+                                : SizedBox(),
+                            Space.width(5),
+                            index == 2 ||index==3
+                                ? Column(
                                     children: [
-                                      Spacer(),
-
                                       Text(
                                         "> Rs. 50k",
                                         style: AppStyle.textStyleInterMed(
-                                            fontSize: 14, color:  Colors.black),
+                                            fontSize: 14),
                                       ),
-                                      Spacer(),
                                       Text(
                                         "> Rs. 1L",
                                         style: AppStyle.textStyleInterMed(
-                                            fontSize: 14, color:  Colors.black),
+                                            fontSize: 14),
                                       ),
-                                      Spacer(),
-
                                     ],
+                                  )
+                                : SizedBox(),
+                            Spacer(),
+                            Space.width(5),
+
+                            VerticalDivider(
+                              width: 1,
+                              color: Color(0xff181818).withOpacity(0.3),
+                              thickness: 1,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+                    //alr
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+                    //bgm
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+                    //kdp
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+                    //cha
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+
+                    ///__________________________ South _______________________
+                    DataCell(
+                      Container(
+                        height: 60,
+                        color: Color(0xff096C9F),
+                        width: 80,
+                        child: Center(
+                          child:   index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                    // meg
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+                    //umg
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+                    //jgr
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+                    //lan
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+
+                    ///__________________________ NE _______________________
+                    DataCell(
+                      Container(
+                        height: 60,
+                        color: Color(0xff096C9F),
+                        width: 80,
+                        child: Center(
+                          child:    index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                    //CUT
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+                    //MED
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+                    //BOK
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+                    //RAJ
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+                    //KAL
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+                    //EAST
+                    ///__________________________ EAST _______________________
+                    DataCell(
+                      Container(
+                        height: 60,
+                        color: Color(0xff096C9F),
+                        width: 80,
+                        child: Center(
+                          child:  index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                    //CEMENT
+                    DataCell(
+                      Container(
+                        height: 60,
+                        color: Color(0xff2E8CBB),
+                        width: 80,
+                        child: Center(
+                          child:  index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    //NIG
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+                    //RAM
+
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+
+                    //JOW
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+
+                    //NIN
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+
+                    //KOL
+                    DataCell(
+                      Row(
+                        children: [
+                          Spacer(),
+                          index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                          Spacer(),
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
+                        ],
+                      ),
+                    ),
+
+                    //SUGAR
+                    DataCell(
+                      Container(
+                        height: 60,
+                        color: Color(0xff2E8CBB),
+                        width: 80,
+                        child: Center(
+                          child:   index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    //PANIND
+                    DataCell(
+                      Container(
+                        height: 60,
+                        color: Color(0xff096C9F),
+                        width: 80,
+                        child: Center(
+                          child:   index == 2 ||index==3?Column(
+                            children: [
+                              Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                              ),Text(
+                                (controller.DPM[index].toString()),
+                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                              ),
+                            ],
+                          ):Text(
+                            (controller.DPM[index].toString()),
+                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Additional row for total
+                  ],
+                ),
+              ) /*+
+                            [
+                              DataRow(
+                                color: MaterialStateColor.resolveWith(
+                                        (states) => Colors.white),
+                                cells: [
+                                  DataCell(
+                                    Text(
+                                      'Total',
+                                      style: TextStyle(
+                                        fontSize: CustomFontTheme.textSize,
+                                        fontWeight: CustomFontTheme.headingwt,
+                                      ),
+                                    ),
+                                  ),
+                                  DataCell(
+                                    Text(
+                                      "44444",
+                                      style: TextStyle(
+                                        color: CustomColorTheme.textColor,
+                                        fontWeight: CustomFontTheme.headingwt,
+                                        fontSize: CustomFontTheme.textSize,
+                                      ),
+                                    ),
+                                  ),
+                                  DataCell(
+                                    Text(
+                                      "64546",
+                                      style: TextStyle(
+                                        color: CustomColorTheme.textColor,
+                                        fontWeight: CustomFontTheme.headingwt,
+                                        fontSize: CustomFontTheme.textSize,
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-                          //  commonHeadingText("No. of HHs with planned int. above 50K and 1L EAAI", color: Colors.black,h: 167),
-                         Column(crossAxisAlignment: CrossAxisAlignment.start,
-                           mainAxisAlignment: MainAxisAlignment.start,
-                           children: [
-                           Row(children: [
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(25),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             commonContainer("", Color(0xff096C9F)),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             commonContainer("6500", Color(0xff096C9F)),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(23),
-                             commonHeadingText("6500", color: Colors.black),
-                             commonContainer("6500", Color(0xff096C9F)),
-                             commonContainer("6500", Color(0xff2E8CBB)),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(22),
-                             commonHeadingText("6500", color: Colors.black),
-                             commonContainer(" ", Color(0xff2E8CBB)),
-                             commonContainer(" ", Color(0xff096C9F)),
-                           ],),
-                           Row(children: [
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(25),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             commonContainer("", Color(0xff096C9F)),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             commonContainer("6500", Color(0xff096C9F)),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(23),
-                             commonHeadingText("6500", color: Colors.black),
-                             commonContainer("6500", Color(0xff096C9F)),
-                             commonContainer("6500", Color(0xff2E8CBB)),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(21),
-                             commonHeadingText("6500", color: Colors.black),
-                             Container(
-                               height: 40,
-                               width: 1,
-                               color: Color(0xff181818).withOpacity(0.3),
-                             ),
-                             Space.width(22),
-                             commonHeadingText("6500", color: Colors.black),
-                             commonContainer(" ", Color(0xff2E8CBB)),
-                             commonContainer(" ", Color(0xff096C9F)),
-                           ],),
-                         ],)
-                          ],
-                        ),
-                      ),
-
-                      ///________________________________________________ Interventions LISTS __________________________
-/*
-                      Container(
-                        padding: EdgeInsets.only(left: 12),
-                        height: 40,
-                        color: Color(0xff008CD3).withOpacity(0.1),
-                        child: Row(
-                          children: [
-                            commonHeadingText("Planned", color: Colors.black,h: 167),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(25),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            commonContainer("", Color(0xff096C9F)),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            commonContainer("6500", Color(0xff096C9F)),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(23),
-                            commonHeadingText("6500", color: Colors.black),
-                            commonContainer("6500", Color(0xff096C9F)),
-                            commonContainer("6500", Color(0xff2E8CBB)),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(22),
-                            commonHeadingText("6500", color: Colors.black),
-                            commonContainer(" ", Color(0xff2E8CBB)),
-                            commonContainer(" ", Color(0xff096C9F)),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(left: 12),
-                        height: 40,
-                        child: Row(
-                          children: [
-                            commonHeadingText("Completed", color: Colors.black,h: 167),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(25),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            commonContainer("", Color(0xff096C9F)),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            commonContainer("6500", Color(0xff096C9F)),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(23),
-                            commonHeadingText("6500", color: Colors.black),
-                            commonContainer("6500", Color(0xff096C9F)),
-                            commonContainer("6500", Color(0xff2E8CBB)),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: 40,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(22),
-                            commonHeadingText("6500", color: Colors.black),
-                            commonContainer(" ", Color(0xff2E8CBB)),
-                            commonContainer(" ", Color(0xff096C9F)),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(left: 12),
-                        height: MySize.size75,
-                        color: Color(0xff008CD3).withOpacity(0.1),
-                        child: Row(
-                          children: [
-                            commonHeadingText("HH with atleast 1 int. completed",
-                                color: Colors.black,h: 167),
-                            Container(
-                              height: MySize.size75,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(25),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: MySize.size75,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: MySize.size75,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: MySize.size75,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: MySize.size75,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            commonContainer("", Color(0xff096C9F),
-                                h: MySize.size75),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: MySize.size75,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: MySize.size75,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: MySize.size75,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: MySize.size75,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            commonContainer("6500", Color(0xff096C9F),
-                                h: MySize.size75),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: MySize.size75,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: MySize.size75,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: MySize.size75,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: MySize.size75,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(23),
-                            commonHeadingText("6500", color: Colors.black),
-                            commonContainer("6500", Color(0xff096C9F),
-                                h: MySize.size75),
-                            commonContainer("6500", Color(0xff2E8CBB),
-                                h: MySize.size75),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: MySize.size75,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: MySize.size75,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: MySize.size75,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(21),
-                            commonHeadingText("6500", color: Colors.black),
-                            Container(
-                              height: MySize.size75,
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                            ),
-                            Space.width(22),
-                            commonHeadingText("6500", color: Colors.black),
-                            commonContainer(" ", Color(0xff2E8CBB),
-                                h: MySize.size75),
-                            commonContainer(" ", Color(0xff096C9F),
-                                h: MySize.size75),
-                          ],
-                        ),
-                      ),*/
-
-                    ],
-                  ),
-                ),
+                            ],*/
               ),
-            ),
-          ],
         ));
   }
 }

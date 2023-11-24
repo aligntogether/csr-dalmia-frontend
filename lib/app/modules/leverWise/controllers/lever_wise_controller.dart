@@ -1,23 +1,104 @@
 import 'package:get/get.dart';
 
 class LeverWiseController extends GetxController {
-  //TODO: Implement LeverWiseController
+  RxBool openMenu = false.obs;
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  void onTapOpenMenu() {
+    openMenu.value = !openMenu.value;
+    update();
   }
+  List<String> locations = [
+    'Diksha',
+    'ITI',
+    'Water',
+    'Agriculture',
+    'Horticulture',
+    'ME',
+    'LS ',
+    'SGH  ',
+    'FPO',
+    'Other',
+    'Total',
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
+  ];
+  List<int> DPM = [
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
+  ];
+  List<int> ALR = [
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+  ];
+  List<int> BGM = [
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+  ];
+  List<int> KDP = [
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+  ];
+  List<int> CHA = [
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+  ];
+  List<int> SOUTH = [
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+  ];
 
-  void increment() => count.value++;
 }

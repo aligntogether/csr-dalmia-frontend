@@ -1,23 +1,12 @@
 import 'package:get/get.dart';
 
 class PerformanceVdfController extends GetxController {
-  //TODO: Implement PerformanceVdfController
-
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  RxBool openMenu = false.obs;
+  String? selectP ;
+  String? selectVdf ;
+  String? selectLocation = "South & Chandrapur";
+  void onTapOpenMenu() {
+    openMenu.value = !openMenu.value;
+    update();
   }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }

@@ -1,23 +1,151 @@
 import 'package:get/get.dart';
 
 class ExpectedActualController extends GetxController {
-  //TODO: Implement ExpectedActualController
+  RxBool openMenu = false.obs;
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  void onTapOpenMenu() {
+    openMenu.value = !openMenu.value;
+    update();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
+  List locations = [
+    "Cluster 1",
+    "Target",
+    "No. of HHs with EAAI",
+    "50k to 1L",
+    " No. of HHs with EAAI\n1L and above",
+    "No. of HHs with AAAI\nwith 50K to 1L",
+    "No. of HHs with AAAI\nwith 1L and above",
+    "Aggregate income (EAAI)",
+    "Aggregate income (AAAI)",
+    "Cluster 2",
+    "Target",
+    "No. of HHs with EAAI",
+    "50k to 1L",
+    "No. of HHs with EAAI\n1L and above",
+    "No. of HHs with AAAI\nwith 50K to 1L",
+    "No. of HHs with AAAI\nwith 1L and above",
+    "Aggregate income (EAAI)",
+    "Aggregate income (AAAI)",
+  ];
+  List<int> DPM = [
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+  ];
+  List<int> ALR = [
+    128036,
+    37765,
+    387004,
+    1687825,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+  ];
+  List<int> BGM = [
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+  ];
+  List<int> KDP = [
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+  ];
+  List<int> CHA = [
+    128036,
+    37765,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+  ];
+  List<int> SOUTH = [
+    128036,
+    37765,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+  ];
 }

@@ -4,7 +4,7 @@ import 'package:dalmia/pages/login.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
-Widget appBar(BuildContext context,{String? title}) {
+/*Widget appBar(BuildContext context,{String? title}) {
   return Container(
     padding: EdgeInsets.only(left: 16, right: 22),
     height: MySize.size90,
@@ -62,16 +62,16 @@ Widget appBar(BuildContext context,{String? title}) {
           child: Text(
             title!,
             style: AppStyle.textStyleInterMed(fontSize: 16,color: Color(0xff181818),fontWeight: FontWeight.w700)
-             /* TextStyle(
+             *//* TextStyle(
                 fontFamily: "Inter-Medium",
                 fontSize: 16,
-                color: Color(0xff181818)),*/
+                color: Color(0xff181818)),*//*
           ),
         )
       ],
     ),
   );
-}
+}*/
 void _showConfirmationDialog(BuildContext context) {
   showDialog(
     context: context,
