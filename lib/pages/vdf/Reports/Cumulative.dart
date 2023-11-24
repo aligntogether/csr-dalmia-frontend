@@ -341,7 +341,8 @@ class _CumulativeState extends State<Cumulative> {
                           onTap: () {
                             setState(() {
                               selectedPanchayat = panchayat['panchayatName'];
-                              panchayatid = panchayat['pannchayatid'];
+                              panchayatid = panchayat['panchayatid'].toString();
+                              print(panchayatid);
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => VillageReport(

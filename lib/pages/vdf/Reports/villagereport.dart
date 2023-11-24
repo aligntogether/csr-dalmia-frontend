@@ -3,13 +3,11 @@ import 'dart:math';
 
 import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/common/navmenu.dart';
-import 'package:dalmia/components/reportappbar.dart';
-import 'package:dalmia/components/reportpop.dart';
+
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
 import 'package:dalmia/pages/vdf/Reports/street.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:dalmia/pages/vdf/Reports/hhidform.dart';
 import 'package:dalmia/pages/vdf/Reports/home.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
@@ -35,8 +33,8 @@ class _VillageReportState extends State<VillageReport> {
     });
   }
 
-  String? selectedPanchayat;
-  String? selectedVillage;
+  String? Selectedvillage;
+  String? Selectedvillageid;
   // int _selectedpanchayatindex = 0;
   // int _selectedvillagetindex = 0;
   int? selectedRadio;
@@ -284,7 +282,7 @@ class _VillageReportState extends State<VillageReport> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text('$selectedPanchayat',
+          Text(widget.selectedPanchayat!,
               style: TextStyle(
                   fontSize: CustomFontTheme.textSize,
                   fontWeight: CustomFontTheme.labelwt)),
@@ -351,12 +349,16 @@ class _VillageReportState extends State<VillageReport> {
                         InkWell(
                           onTap: () {
                             setState(() {
-                              selectedPanchayat = village['panchayatName'];
+                              Selectedvillage = village['villageName'];
+                              Selectedvillageid = village['villageid'];
                             });
 
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                  builder: (context) => StreetReport()),
+                                  builder: (context) => StreetReport(
+                                        selectedvillage: Selectedvillage,
+                                        selectedvillageid: Selectedvillageid,
+                                      )),
                             );
                           },
                           child: Text(
