@@ -3,6 +3,7 @@ import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/pages/login.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 /*Widget appBar(BuildContext context,{String? title}) {
   return Container(
@@ -127,5 +128,26 @@ void _showConfirmationDialog(BuildContext context) {
         ),
       );
     },
+  );
+}
+
+
+AppBar commonAppBarWidget({String? title}){
+  return AppBar(
+    automaticallyImplyLeading: false,
+    title: Text(
+      title??'Send New Feedback',
+      style: AppStyle.textStyleInterMed(
+          fontSize: 16, fontWeight: FontWeight.w800),
+    ),
+    centerTitle: true,
+    actions: [
+      InkWell(
+          onTap: () {
+            Get.back();
+          },
+          child: Icon(Icons.close)),
+      Space.width(20)
+    ],
   );
 }

@@ -221,12 +221,12 @@ PreferredSize appBarCommon(controller, BuildContext context,
             )));
 }
 
-Widget commonButton({String? title,Color? color, Color? textColor}){
+Widget commonButton({String? title,Color? color, Color? textColor,double? margin}){
   return    Container(
     height: MySize.size50,
-    margin: EdgeInsets.symmetric(horizontal: 33),
+    margin: EdgeInsets.symmetric(horizontal: margin??33),
     decoration: BoxDecoration(
-        color: color??Color(0xff0054A6),
+        color: color??Color(0xff27528F),
         borderRadius: BorderRadius.circular(5)),
     child: Center(
       child: Text(

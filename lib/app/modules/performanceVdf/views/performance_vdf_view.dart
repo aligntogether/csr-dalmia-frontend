@@ -107,6 +107,7 @@ class PerformanceVdfView extends GetView<PerformanceVdfController> {
                 style: AppStyle.textStyleBoldMed(fontSize: 14),
               ),
               Space.height(16),
+
               SizedBox(
                   width: 326,
                   child: Text(

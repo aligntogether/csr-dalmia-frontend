@@ -1,9 +1,5 @@
 import 'package:dalmia/app/modules/overviewPan/views/overview_pan_view.dart';
-import 'package:dalmia/app/routes/app_pages.dart';
-import 'package:dalmia/common/app_bar.dart';
 import 'package:dalmia/common/app_style.dart';
-import 'package:dalmia/common/color_constant.dart';
-import 'package:dalmia/common/image_constant.dart';
 import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/pages/gpl/gpl_home_screen.dart';
 import 'package:dalmia/theme.dart';
@@ -21,60 +17,61 @@ class LocationWiseView extends GetView<LocationWiseController> {
         Get.put(LocationWiseController());
     return SafeArea(
       child: Scaffold(
-        appBar: appBarCommon(controller,context,centerAlignText: true,title: "Reports"),
+          appBar: appBarCommon(controller, context,
+              centerAlignText: true, title: "Reports"),
           body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Space.height(16),
+            child: Column(
+              children: [
+                Space.height(16),
 
-            ///_________________________________ main menu __________________________///
-            GestureDetector(
-              onTap: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(
-                  builder: (context) {
-                    return GPLHomeScreen();
+                ///_________________________________ main menu __________________________///
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(context, MaterialPageRoute(
+                      builder: (context) {
+                        return GPLHomeScreen();
+                      },
+                    ));
                   },
-                ));
-              },
-              child: Row(
-                children: [
-                  Space.width(16),
-                  Icon(
-                    Icons.arrow_back_ios,
-                    color: Colors.black,
-                    size: 18,
+                  child: Row(
+                    children: [
+                      Space.width(16),
+                      Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.black,
+                        size: 18,
+                      ),
+                      Text(
+                        "Main Menu",
+                        style: AppStyle.textStyleInterMed(fontSize: 14),
+                      ),
+                      Spacer(),
+                      viewOtherReports(context),
+                      Space.width(16),
+                    ],
                   ),
-                  Text(
-                    "Main Menu",
-                    style: AppStyle.textStyleInterMed(fontSize: 14),
-                  ),
-                  Spacer(),
-                  viewOtherReports(context),
-                  Space.width(16),
-                ],
-              ),
-            ),
-            Space.height(34),
+                ),
+                Space.height(34),
 
-            SizedBox(
-                width: MySize.size268,
-                child: Column(
-                  children: [
-                    Text(
-                      "Location wise EAAI and AAAI Achieved ",
-                      style: AppStyle.textStyleBoldMed(fontSize: 14),
-                    ),
-                    Text(
-                      " (as on <19 Oct 2023>)",
-                      style: AppStyle.textStyleInterMed(fontSize: 14),
-                    ),
-                  ],
-                )),
-            Space.height(14),
-            allRegionsTables()
-          ],
-        ),
-      )),
+                SizedBox(
+                    width: MySize.size268,
+                    child: Column(
+                      children: [
+                        Text(
+                          "Location wise EAAI and AAAI Achieved ",
+                          style: AppStyle.textStyleBoldMed(fontSize: 14),
+                        ),
+                        Text(
+                          " (as on <19 Oct 2023>)",
+                          style: AppStyle.textStyleInterMed(fontSize: 14),
+                        ),
+                      ],
+                    )),
+                Space.height(14),
+                allRegionsTables()
+              ],
+            ),
+          )),
     );
   }
 
@@ -101,9 +98,12 @@ class LocationWiseView extends GetView<LocationWiseController> {
               columns: <DataColumn>[
                 DataColumn(
                   label: Expanded(
-                    child: Container( height: 60,
-                      decoration: BoxDecoration(color: Color(0xff008CD3),
-                          borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0))),
+                    child: Container(
+                      height: 60,
+                      decoration: BoxDecoration(
+                          color: Color(0xff008CD3),
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10.0))),
                       padding: EdgeInsets.only(left: 10),
                       child: Center(
                         child: Text(
@@ -118,8 +118,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                   ),
                 ),
                 DataColumn(
-                  label:Container(
-                    height: 60,width: 80,
+                  label: Container(
+                    height: 60,
+                    width: 80,
                     color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
@@ -135,7 +136,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 ),
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -149,7 +152,10 @@ class LocationWiseView extends GetView<LocationWiseController> {
                   ),
                 ),
                 DataColumn(
-                  label: Container(  height: 60,width: 80,color: Color(0xff008CD3),
+                  label: Container(
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     child: Center(
                       child: Text(
                         'BGM',
@@ -163,7 +169,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 ),
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -177,8 +185,10 @@ class LocationWiseView extends GetView<LocationWiseController> {
                   ),
                 ),
                 DataColumn(
-                  label:Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                  label: Container(
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -194,7 +204,8 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 DataColumn(
                   label: Container(
                     color: Color(0xff096C9F),
-                    height: 60,width: 80,
+                    height: 60,
+                    width: 80,
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -209,7 +220,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 ),
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -225,7 +238,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //umg
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -241,7 +256,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //jgr
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -257,7 +274,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //lan
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -273,7 +292,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //NE
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff096C9F),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff096C9F),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -289,7 +310,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //CUT
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -305,7 +328,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //MED
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -321,7 +346,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //BOK
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -337,7 +364,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //RAJ
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -353,7 +382,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //KAL
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -369,7 +400,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //EAST
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff096C9F),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff096C9F),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -385,7 +418,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //CEMENT
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff2E8CBB),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff2E8CBB),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -401,7 +436,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //NIG
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -417,7 +454,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //RAM
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -433,7 +472,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //JOW
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -449,7 +490,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //NIN
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -465,7 +508,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //KOL
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -481,7 +526,9 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //SUGAR
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff2E8CBB),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff2E8CBB),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -497,9 +544,12 @@ class LocationWiseView extends GetView<LocationWiseController> {
                 //PANIND
                 DataColumn(
                   label: Container(
-                    decoration: BoxDecoration(color: Color(0xff096C9F),
-                        borderRadius: BorderRadius.only(topRight: Radius.circular(10.0))),
-                    height: 60,width: 80,
+                    decoration: BoxDecoration(
+                        color: Color(0xff096C9F),
+                        borderRadius:
+                            BorderRadius.only(topRight: Radius.circular(10.0))),
+                    height: 60,
+                    width: 80,
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -513,7 +563,6 @@ class LocationWiseView extends GetView<LocationWiseController> {
                   ),
                 ),
               ],
-
               rows: List<DataRow>.generate(
                 controller.locations.length,
                 (index) => DataRow(
@@ -531,7 +580,8 @@ class LocationWiseView extends GetView<LocationWiseController> {
                   ),
                   cells: [
                     DataCell(
-                      Container(width: 300,
+                      Container(
+                        width: 300,
                         padding: EdgeInsets.only(left: 10),
                         child: Row(
                           children: [
@@ -540,7 +590,7 @@ class LocationWiseView extends GetView<LocationWiseController> {
                               style: AppStyle.textStyleInterMed(fontSize: 14),
                             ),
                             Space.width(5),
-                            index == 2 ||index==3
+                            index == 2 || index == 3
                                 ? VerticalDivider(
                                     width: 1,
                                     color: Color(0xff181818).withOpacity(0.3),
@@ -548,7 +598,7 @@ class LocationWiseView extends GetView<LocationWiseController> {
                                   )
                                 : SizedBox(),
                             Space.width(5),
-                            index == 2 ||index==3
+                            index == 2 || index == 3
                                 ? Column(
                                     children: [
                                       Text(
@@ -566,7 +616,6 @@ class LocationWiseView extends GetView<LocationWiseController> {
                                 : SizedBox(),
                             Spacer(),
                             Space.width(5),
-
                             VerticalDivider(
                               width: 1,
                               color: Color(0xff181818).withOpacity(0.3),
@@ -580,20 +629,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -608,20 +663,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -636,20 +697,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -664,20 +731,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -692,20 +765,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -723,20 +802,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                         color: Color(0xff096C9F),
                         width: 80,
                         child: Center(
-                          child:   index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                          ),
+                          child: index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14, color: Colors.white),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14, color: Colors.white),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style: AppStyle.textStyleInterMed(
+                                      fontSize: 14, color: Colors.white),
+                                ),
                         ),
                       ),
                     ),
@@ -745,20 +830,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -773,20 +864,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -801,20 +898,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -829,20 +932,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -860,20 +969,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                         color: Color(0xff096C9F),
                         width: 80,
                         child: Center(
-                          child:    index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                          ),
+                          child: index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14, color: Colors.white),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14, color: Colors.white),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style: AppStyle.textStyleInterMed(
+                                      fontSize: 14, color: Colors.white),
+                                ),
                         ),
                       ),
                     ),
@@ -882,20 +997,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -910,20 +1031,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -938,20 +1065,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -966,20 +1099,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -994,20 +1133,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -1025,20 +1170,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                         color: Color(0xff096C9F),
                         width: 80,
                         child: Center(
-                          child:  index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                          ),
+                          child: index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14, color: Colors.white),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14, color: Colors.white),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style: AppStyle.textStyleInterMed(
+                                      fontSize: 14, color: Colors.white),
+                                ),
                         ),
                       ),
                     ),
@@ -1049,20 +1200,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                         color: Color(0xff2E8CBB),
                         width: 80,
                         child: Center(
-                          child:  index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                          ),
+                          child: index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14, color: Colors.white),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14, color: Colors.white),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style: AppStyle.textStyleInterMed(
+                                      fontSize: 14, color: Colors.white),
+                                ),
                         ),
                       ),
                     ),
@@ -1072,20 +1229,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -1101,20 +1264,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -1130,20 +1299,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -1159,20 +1334,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -1188,20 +1369,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
+                          index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style:
+                                      AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
                           Spacer(),
                           VerticalDivider(
                             width: 1,
@@ -1219,20 +1406,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                         color: Color(0xff2E8CBB),
                         width: 80,
                         child: Center(
-                          child:   index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                          ),
+                          child: index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14, color: Colors.white),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14, color: Colors.white),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style: AppStyle.textStyleInterMed(
+                                      fontSize: 14, color: Colors.white),
+                                ),
                         ),
                       ),
                     ),
@@ -1244,20 +1437,26 @@ class LocationWiseView extends GetView<LocationWiseController> {
                         color: Color(0xff096C9F),
                         width: 80,
                         child: Center(
-                          child:   index == 2 ||index==3?Column(
-                            children: [
-                              Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                              ),Text(
-                                (controller.DPM[index].toString()),
-                                style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                              ),
-                            ],
-                          ):Text(
-                            (controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
-                          ),
+                          child: index == 2 || index == 3
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14, color: Colors.white),
+                                    ),
+                                    Text(
+                                      (controller.DPM[index].toString()),
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14, color: Colors.white),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  (controller.DPM[index].toString()),
+                                  style: AppStyle.textStyleInterMed(
+                                      fontSize: 14, color: Colors.white),
+                                ),
                         ),
                       ),
                     ),
@@ -1265,45 +1464,7 @@ class LocationWiseView extends GetView<LocationWiseController> {
                     // Additional row for total
                   ],
                 ),
-              ) /*+
-                            [
-                              DataRow(
-                                color: MaterialStateColor.resolveWith(
-                                        (states) => Colors.white),
-                                cells: [
-                                  DataCell(
-                                    Text(
-                                      'Total',
-                                      style: TextStyle(
-                                        fontSize: CustomFontTheme.textSize,
-                                        fontWeight: CustomFontTheme.headingwt,
-                                      ),
-                                    ),
-                                  ),
-                                  DataCell(
-                                    Text(
-                                      "44444",
-                                      style: TextStyle(
-                                        color: CustomColorTheme.textColor,
-                                        fontWeight: CustomFontTheme.headingwt,
-                                        fontSize: CustomFontTheme.textSize,
-                                      ),
-                                    ),
-                                  ),
-                                  DataCell(
-                                    Text(
-                                      "64546",
-                                      style: TextStyle(
-                                        color: CustomColorTheme.textColor,
-                                        fontWeight: CustomFontTheme.headingwt,
-                                        fontSize: CustomFontTheme.textSize,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],*/
-              ),
+              )),
         ));
   }
 }

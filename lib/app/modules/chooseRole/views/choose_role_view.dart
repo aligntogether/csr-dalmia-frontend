@@ -35,8 +35,70 @@ class ChooseRoleView extends GetView<ChooseRoleController> {
             "Choose a role to continue",
             style: AppStyle.textStyleInterMed(fontSize: 16),
           ),
-          Space.height(46),
-          Container(
+          Space.height(31),
+         GetBuilder<ChooseRoleController>(builder: (controller) {
+           return  SizedBox(height: 230,
+             child: ListView.builder(
+               itemCount: controller.roleList.length,
+               shrinkWrap: true,
+               physics: NeverScrollableScrollPhysics(),
+               itemBuilder: (context, index) {
+                 return GestureDetector(
+                   onTap: () {
+                     controller.roleIndex = index;
+                     controller.update();
+                   },
+                   child: Container(
+                     height: MySize.size50,
+                     width: MySize.size250,
+                     margin: EdgeInsets.symmetric(horizontal: 55, vertical: 15),
+                     decoration: BoxDecoration(
+                         borderRadius: BorderRadius.circular(10),
+                         border: Border.all(
+                           color: controller.roleIndex == index
+                               ? Color(0xffF15A22)
+                               : Color(0xff181818).withOpacity(0.6),
+                         ),
+                         color: controller.roleIndex == index
+                             ? Color(0xffF15A22).withOpacity(0.2)
+                             : Colors.white),
+                     child: Row(
+                       mainAxisAlignment: MainAxisAlignment.center,
+                       children: [
+                         Space.width(15),
+                         controller.roleIndex == index
+                             ? Image.asset(
+                           ImageConstant.radio,
+                           height: 17,
+                           width: 17,
+                         )
+                             : Container(
+                           height: 17,
+                           width: 17,
+                           decoration: BoxDecoration(
+                               shape: BoxShape.circle,
+                               border:
+                               Border.all(color: Color(0xff2D2D2D))),
+                         ),
+                         Space.width(20),
+                         Text(
+                           controller.roleList[index],
+                           style: AppStyle.textStyleBoldMed(
+                               fontSize: 14,
+                               color: controller.roleIndex == index
+                                   ? Color(0xffF15A22)
+                                   : Color(0xff181818).withOpacity(0.6)),
+                         ),
+                         Spacer()
+                       ],
+                     ),
+                   ),
+                 );
+               },
+             ),
+           );
+         },),
+          /*  Container(
             height: MySize.size50,
             width: MySize.size250,
             decoration: BoxDecoration(
@@ -92,8 +154,8 @@ class ChooseRoleView extends GetView<ChooseRoleController> {
                 Spacer()
               ],
             ),
-          ),
-          Space.height(80),
+          ),*/
+
           GestureDetector(
             onTap: () {},
             child: Container(
