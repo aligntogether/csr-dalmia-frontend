@@ -27,6 +27,8 @@ class _AddnewState extends State<Addnew> {
   String? streetCode;
   int? numberOfHouseholds;
   bool streetpresent = false;
+  TextEditingController streetNameController = TextEditingController();
+  TextEditingController streetCodeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,10 @@ class _AddnewState extends State<Addnew> {
             centerTitle: true,
             title: const Text(
               'Add a Street',
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(
+                  color: CustomColorTheme.textColor,
+                  fontSize: CustomFontTheme.headingSize,
+                  fontWeight: CustomFontTheme.headingwt),
             ),
             backgroundColor: Colors.grey[50],
             actions: <Widget>[
@@ -61,168 +66,188 @@ class _AddnewState extends State<Addnew> {
           ),
           body: SingleChildScrollView(
             child: Center(
-              child: Column(
-                // crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    width: 300,
-                    height: 100,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: const Color(0xFF006838).withOpacity(0.1)),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                            style: const TextStyle(
-                                fontSize: CustomFontTheme.textSize,
-                                color: Color(0xFF006838)),
-                            children: [
-                              const TextSpan(
-                                text: 'Panchayat :',
-                                style: TextStyle(
-                                  fontWeight: CustomFontTheme.labelwt,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  // crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      width: 300,
+                      height: 100,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: const Color(0xFF006838).withOpacity(0.1)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              style: const TextStyle(
+                                  fontSize: CustomFontTheme.textSize,
+                                  color: Color(0xFF006838)),
+                              children: [
+                                const TextSpan(
+                                  text: 'Panchayat :',
+                                  style: TextStyle(
+                                    fontWeight: CustomFontTheme.labelwt,
+                                  ),
                                 ),
-                              ),
-                              TextSpan(text: '  ${widget.panchayat} '),
-                            ],
+                                TextSpan(text: '  ${widget.panchayat} '),
+                              ],
+                            ),
                           ),
-                        ),
-                        RichText(
-                          text: TextSpan(
-                            style: const TextStyle(
-                                fontSize: CustomFontTheme.textSize,
-                                color: Color(0xFF006838)),
-                            children: [
-                              const TextSpan(
-                                text: 'Village:',
-                                style: TextStyle(
-                                  fontWeight: CustomFontTheme.labelwt,
+                          SizedBox(
+                            height: 10,
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              style: const TextStyle(
+                                  fontSize: CustomFontTheme.textSize,
+                                  color: Color(0xFF006838)),
+                              children: [
+                                const TextSpan(
+                                  text: 'Village:',
+                                  style: TextStyle(
+                                    fontWeight: CustomFontTheme.labelwt,
+                                  ),
                                 ),
-                              ),
-                              TextSpan(text: '  ${widget.village}'),
-                            ],
+                                TextSpan(text: '  ${widget.village}'),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  SizedBox(
-                    width: 300,
-                    child: TextField(
-                      onChanged: (value) {
-                        setState(() {
-                          streetName = value;
-                        });
-                      },
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          label: Text('Enter Street Name')),
+                    SizedBox(
+                      height: 20,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  SizedBox(
-                    width: 300,
-                    child: TextField(
-                      onChanged: (value) {
-                        setState(() {
-                          streetCode = value;
-                        });
-                      },
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          label: Text('Enter Street Code')),
+                    const SizedBox(
+                      height: 20,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  SizedBox(
-                    width: 300,
-                    child: TextField(
-                      keyboardType:
-                          TextInputType.number, // Allow only numeric keyboard
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                      ],
-                      //  keyboardType: TextInputType.streetAddress,
-                      onChanged: (value) {
-                        setState(() {
-                          numberOfHouseholds = int.tryParse(value) ?? 0;
-                        });
-                      },
+                    SizedBox(
+                      width: 300,
+                      child: TextField(
+                        controller: streetNameController,
+                        onChanged: (value) {
+                          setState(() {
+                            streetName = value;
+                          });
+                        },
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'[a-zA-Z]')),
+                          LengthLimitingTextInputFormatter(30),
+                        ],
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            label: Text('Enter Street Name')),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      width: 300,
+                      child: TextField(
+                        controller: streetCodeController,
+                        onChanged: (value) {
+                          setState(() {
+                            streetCode = value;
+                          });
+                        },
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[A-Z]')),
+                          LengthLimitingTextInputFormatter(2),
+                        ],
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            label: Text('Enter Street Code')),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      width: 300,
+                      child: TextField(
+                        keyboardType:
+                            TextInputType.number, // Allow only numeric keyboard
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                        ],
+                        //  keyboardType: TextInputType.streetAddress,
+                        onChanged: (value) {
+                          setState(() {
+                            numberOfHouseholds = int.tryParse(value) ?? 0;
+                          });
+                        },
 
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          label: Text('Enter Number of Households')),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(300, 50),
-                        backgroundColor: streetName != null &&
-                                streetCode != null
-                            ? CustomColorTheme.primaryColor
-                            : CustomColorTheme.primaryColor.withOpacity(0.7)),
-                    onPressed: () {
-                      if (streetName != null && streetCode != null) {
-                        _addStreetAPI(
-                            streetName!, numberOfHouseholds!, streetCode!);
-                        _confirmbox(context, streetName!);
-                      }
-                    },
-                    child: const Text(
-                      'Add Street',
-                      style: TextStyle(fontSize: CustomFontTheme.textSize),
-                    ),
-                  ),
-                  if (streetpresent) ...[
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 40),
-                      child: Text(
-                        'This street name and street code are already added to the village.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          color: Color(0xFFEC2828),
-                        ),
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            label: Text('Enter Number of Households')),
                       ),
                     ),
                     const SizedBox(
-                      height: 20,
+                      height: 40,
                     ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 35),
-                      child: Text(
-                        'Check all streets added to the village here',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          fontSize: CustomFontTheme.textSize,
-                          color: Color(0xFFEC2828),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(300, 50),
+                          backgroundColor: streetName != null &&
+                                  streetCode != null
+                              ? CustomColorTheme.primaryColor
+                              : CustomColorTheme.primaryColor.withOpacity(0.7)),
+                      onPressed: () {
+                        if (streetName != null && streetCode != null) {
+                          _addStreetAPI(
+                              streetName!, numberOfHouseholds!, streetCode!);
+                          _confirmbox(context, streetName!);
+                        }
+                      },
+                      child: const Text(
+                        'Add Street',
+                        style: TextStyle(fontSize: CustomFontTheme.textSize),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    if (streetpresent) ...[
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 40),
+                        child: Text(
+                          'This street name and street code are already added to the village.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: CustomFontTheme.textSize,
+                            color: Color(0xFFEC2828),
+                          ),
                         ),
                       ),
-                    )
-                  ]
-                ],
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 35),
+                        child: Text(
+                          'Check all streets added to the village here',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Color(0xFFEC2828),
+                          ),
+                        ),
+                      )
+                    ]
+                  ],
+                ),
               ),
             ),
           )),

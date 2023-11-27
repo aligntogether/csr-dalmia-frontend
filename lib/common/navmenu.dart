@@ -98,28 +98,36 @@ void _showConfirmationDialog(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
+        alignment: Alignment.topCenter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        title: SizedBox(
-          width: 283,
-          height: 80,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Icon(Icons.close),
-              ),
-              const Text(
-                'Are you sure you want to logout of the application?',
-                style: TextStyle(
-                  fontSize: 16,
-                  // fontFamily: 'Inter',
-                  fontWeight: FontWeight.w500,
+        titlePadding: EdgeInsets.all(0),
+        title: Padding(
+          padding: const EdgeInsets.only(top: 10, left: 20, right: 10),
+          child: SizedBox(
+            width: 283,
+            height: 90,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Icon(Icons.close),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 20, right: 10),
+                  child: const Text(
+                    'Are you sure you want to logout of the application?',
+                    style: TextStyle(
+                      fontSize: 16,
+                      // fontFamily: 'Inter',
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         content: Row(
@@ -141,7 +149,14 @@ void _showConfirmationDialog(BuildContext context) {
                   );
                   // Perform actions when 'Yes' is clicked
                 },
-                child: const Text('Yes'),
+                child: const Text(
+                  'Yes',
+                  style: TextStyle(
+                    fontSize: CustomFontTheme.textSize,
+                    fontWeight: CustomFontTheme.labelwt,
+                    letterSpacing: 0.84,
+                  ),
+                ),
               ),
             ),
           ],
