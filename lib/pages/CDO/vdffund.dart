@@ -1,10 +1,9 @@
-import 'package:dalmia/pages/CDO/actiondetails.dart';
 import 'package:dalmia/pages/CDO/cdoappbar.dart';
+import 'package:dalmia/pages/CDO/cdohome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
-class vdfreport {
+class vdffundreport {
   static List<String> names = [
     'VDF Name 1',
     'VDF Name 2',
@@ -30,8 +29,9 @@ class VDFFunds extends StatefulWidget {
 class _VDFFundsState extends State<VDFFunds> {
   @override
   Widget build(BuildContext context) {
-    int totalBudget = vdfreport.budget.fold(0, (prev, curr) => prev + curr);
-    int totalUtilized = vdfreport.utilized.fold(0, (prev, curr) => prev + curr);
+    int totalBudget = vdffundreport.budget.fold(0, (prev, curr) => prev + curr);
+    int totalUtilized =
+        vdffundreport.utilized.fold(0, (prev, curr) => prev + curr);
 
     return Scaffold(
       appBar: PreferredSize(
@@ -44,24 +44,33 @@ class _VDFFundsState extends State<VDFFunds> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.only(left: 20),
+          padding: EdgeInsets.only(left: 20, top: 20, bottom: 20),
           child: Column(
             children: [
-              SizedBox(
-                height: 40,
-              ),
-              Center(
-                child: Text(
-                  'Select HHID to view details',
-                  style: TextStyle(
-                    fontSize: CustomFontTheme.textSize,
-                    fontWeight: CustomFontTheme.labelwt,
-                    color: CustomColorTheme.textColor,
-                  ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const CDOHome(),
+                    ),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.keyboard_arrow_left_sharp,
+                    ),
+                    Text(
+                      'Main Menu',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt),
+                    )
+                  ],
                 ),
               ),
               SizedBox(
-                height: 20,
+                height: 40,
               ),
               SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -99,7 +108,7 @@ class _VDFFundsState extends State<VDFFunds> {
                     headingRowColor: MaterialStateColor.resolveWith(
                         (states) => Color(0xFF008CD3)),
                     rows: List<DataRow>.generate(
-                          vdfreport.names.length,
+                          vdffundreport.names.length,
                           (index) => DataRow(
                             color: MaterialStateColor.resolveWith(
                               (states) {
@@ -111,7 +120,7 @@ class _VDFFundsState extends State<VDFFunds> {
                             cells: [
                               DataCell(
                                 Text(
-                                  vdfreport.names[index],
+                                  vdffundreport.names[index],
                                   style: TextStyle(
                                     fontSize: CustomFontTheme.textSize,
                                     fontWeight: CustomFontTheme.headingwt,
@@ -120,7 +129,7 @@ class _VDFFundsState extends State<VDFFunds> {
                               ),
                               DataCell(
                                 Text(
-                                  (vdfreport.budget[index].toString()),
+                                  (vdffundreport.budget[index].toString()),
                                   style: TextStyle(
                                       color: CustomColorTheme.textColor,
                                       fontWeight: CustomFontTheme.headingwt,
@@ -129,7 +138,7 @@ class _VDFFundsState extends State<VDFFunds> {
                               ),
                               DataCell(
                                 Text(
-                                  vdfreport.utilized[index].toString(),
+                                  vdffundreport.utilized[index].toString(),
                                   style: TextStyle(
                                       color: CustomColorTheme.textColor,
                                       fontWeight: CustomFontTheme.headingwt,

@@ -1,5 +1,6 @@
 import 'package:dalmia/pages/CDO/actiondetails.dart';
 import 'package:dalmia/pages/CDO/cdoappbar.dart';
+import 'package:dalmia/pages/CDO/cdohome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -45,9 +46,31 @@ class _ActionAgainstHHState extends State<ActionAgainstHH> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.only(left: 20),
+          padding: EdgeInsets.only(left: 20, top: 20, bottom: 20),
           child: Column(
             children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const CDOHome(),
+                    ),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.keyboard_arrow_left_sharp,
+                    ),
+                    Text(
+                      'Main Menu',
+                      style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          fontWeight: CustomFontTheme.headingwt),
+                    )
+                  ],
+                ),
+              ),
               SizedBox(
                 height: 40,
               ),

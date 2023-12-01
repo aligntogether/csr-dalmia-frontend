@@ -104,11 +104,6 @@ class _LoginState extends State<Login> {
                           hintText: textFieldFocusNode.hasFocus
                               ? ''
                               : 'Please enter your mobile number',
-                          border: const OutlineInputBorder(),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.black), // Change the color here
-                          ),
                           floatingLabelBehavior: FloatingLabelBehavior.never,
                         ),
                         focusNode: textFieldFocusNode,

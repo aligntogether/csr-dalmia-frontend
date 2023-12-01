@@ -1,4 +1,5 @@
 import 'package:dalmia/pages/CDO/action.dart';
+import 'package:dalmia/pages/CDO/cdohome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
@@ -24,13 +25,12 @@ class _ActionDetailState extends State<ActionDetail> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Icon(Icons.keyboard_arrow_left_sharp),
-                    Text('Back')
-                  ],
-                ),
-                Icon(Icons.close)
+                SizedBox(width: 10),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Icon(Icons.close))
               ],
             ),
             Center(
@@ -157,7 +157,7 @@ class _ActionDetailState extends State<ActionDetail> {
               height: 20,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -248,13 +248,14 @@ class HouseDetails extends StatelessWidget {
 void _drophhDialog(BuildContext context, String hhid) {
   showDialog(
     context: context,
-    barrierDismissible: true,
+    barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
+        alignment: Alignment.topCenter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         title: SizedBox(
-          width: 283,
-          height: 80,
+          width: 290,
+          height: 100,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -287,12 +288,11 @@ void _drophhDialog(BuildContext context, String hhid) {
                   backgroundColor: CustomColorTheme.primaryColor,
                 ),
                 onPressed: () {
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const Login(),
-                  //   ),
-                  // );
-                  // Perform actions when 'Yes' is clicked
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ActionAgainstHH(),
+                    ),
+                  );
                 },
                 child: const Text('Confirm'),
               ),
@@ -307,13 +307,14 @@ void _drophhDialog(BuildContext context, String hhid) {
 void _selecthhDialog(BuildContext context, String hhid) {
   showDialog(
     context: context,
-    barrierDismissible: true,
+    barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
+        alignment: Alignment.topCenter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         title: SizedBox(
           width: 283,
-          height: 80,
+          height: 100,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -374,6 +375,7 @@ void _confirmbox(BuildContext context, String hhid) {
           return false;
         },
         child: AlertDialog(
+          alignment: Alignment.topCenter,
           title: SizedBox(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,

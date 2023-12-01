@@ -1,9 +1,12 @@
+import 'package:dalmia/app/routes/app_pages.dart';
+import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/pages/login.dart';
 import 'package:dalmia/theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 // import 'package:flutter_config/flutter_config.dart';
 
 Future<void> main() async {
@@ -25,7 +28,10 @@ class MyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    MySize().init(
+      context,
+    );
+    return GetMaterialApp(
         theme: ThemeData(
           inputDecorationTheme: InputDecorationTheme(
             border: OutlineInputBorder(
@@ -50,6 +56,7 @@ class MyWidget extends StatelessWidget {
                   ))),
         ),
         debugShowCheckedModeBanner: false,
+        getPages: AppPages.routes,
         home: const Login());
   }
 }

@@ -2,8 +2,7 @@ import 'dart:convert';
 
 import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/common/navmenu.dart';
-import 'package:dalmia/components/reportappbar.dart';
-import 'package:dalmia/components/reportpop.dart';
+
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
 import 'package:dalmia/pages/vdf/Reports/home.dart';
 import 'package:http/http.dart' as http;
@@ -12,7 +11,6 @@ import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
 
 class Leverwise extends StatefulWidget {
   const Leverwise({super.key});
@@ -194,90 +192,107 @@ class _LeverwiseState extends State<Leverwise> {
                 Center(
                   child: Column(
                     children: [
-                      const Text(
-                        ' Lever wise Interventions (income in Lakhs)',
-                        style: TextStyle(
-                            fontSize: CustomFontTheme.textSize,
-                            fontWeight: CustomFontTheme.headingwt),
-                      ),
+                      RichText(
+                          text: TextSpan(
+                              style:
+                                  TextStyle(color: CustomColorTheme.textColor),
+                              children: [
+                            TextSpan(
+                                text: 'Lever wise Interventions',
+                                style: TextStyle(
+                                    fontSize: CustomFontTheme.textSize,
+                                    fontWeight: CustomFontTheme.headingwt)),
+                            TextSpan(
+                                text: ' (income in Lakhs)',
+                                style: TextStyle(
+                                    fontSize: CustomFontTheme.textSize))
+                          ])),
                       const SizedBox(
                         height: 20,
                       ),
                       SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
-                          child: DataTable(
-                            dividerThickness: 00,
-                            // border: TableBorder(
-                            //     borderRadius:
-                            //         BorderRadius.all(Radius.circular(10))),
-                            decoration: const BoxDecoration(
-                              color: Color(0xFF008CD3),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
-                              ),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
                             ),
-                            columns: const [
-                              DataColumn(
-                                label: Text(
-                                  'Levers',
-                                  style: TextStyle(color: Colors.white),
+                            elevation: 5,
+                            child: DataTable(
+                              dividerThickness: 00,
+                              // border: TableBorder(
+                              //     borderRadius:
+                              //         BorderRadius.all(Radius.circular(10))),
+                              decoration: const BoxDecoration(
+                                color: Color(0xFF008CD3),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10),
                                 ),
                               ),
-                              DataColumn(
-                                label: Text(
-                                  'NO. of HH',
-                                  style: TextStyle(color: Colors.white),
+                              columns: const [
+                                DataColumn(
+                                  label: Text(
+                                    'Levers',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  'NO. of int.',
-                                  style: TextStyle(color: Colors.white),
+                                DataColumn(
+                                  label: Text(
+                                    'No. of HH',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  'Annual Income Reported',
-                                  style: TextStyle(color: Colors.white),
+                                DataColumn(
+                                  label: Text(
+                                    'No. of int.',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  'Avg. income/int.',
-                                  style: TextStyle(color: Colors.white),
+                                DataColumn(
+                                  label: Text(
+                                    'Annual Income Reported',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
-                              ),
-                            ],
-                            rows: leverData.map<DataRow>((lever) {
-                              return DataRow(
-                                color: MaterialStateColor.resolveWith((states) {
-                                  // Alternating row colors
-                                  return leverData.indexOf(lever) % 2 == 0
-                                      ? Colors.lightBlue[50]!
-                                      : Colors.white;
-                                }),
-                                cells: <DataCell>[
-                                  DataCell(
-                                    Text('${lever['leverName'] ?? 0}'),
+                                DataColumn(
+                                  label: Text(
+                                    'Avg. income/int.',
+                                    style: TextStyle(color: Colors.white),
                                   ),
-                                  DataCell(
-                                    Text('${lever['noOfHouseholds'] ?? 0}'),
-                                  ),
-                                  DataCell(
-                                    Text('${lever['noOfInterventions'] ?? 0}'),
-                                  ),
-                                  DataCell(
-                                    Text(
-                                        '${lever['annualIncomeReported'] ?? 0}'),
-                                  ),
-                                  DataCell(
-                                    Text(
-                                        '${lever['averageIncomePerIntervention'] ?? 0}'),
-                                  ),
-                                ],
-                              );
-                            }).toList(),
+                                ),
+                              ],
+                              rows: leverData.map<DataRow>((lever) {
+                                return DataRow(
+                                  color:
+                                      MaterialStateColor.resolveWith((states) {
+                                    // Alternating row colors
+                                    return leverData.indexOf(lever) % 2 == 0
+                                        ? Colors.lightBlue[50]!
+                                        : Colors.white;
+                                  }),
+                                  cells: <DataCell>[
+                                    DataCell(
+                                      Text('${lever['leverName'] ?? 0}'),
+                                    ),
+                                    DataCell(
+                                      Text('${lever['noOfHouseholds'] ?? 0}'),
+                                    ),
+                                    DataCell(
+                                      Text(
+                                          '${lever['noOfInterventions'] ?? 0}'),
+                                    ),
+                                    DataCell(
+                                      Text(
+                                          '${lever['annualIncomeReported'] ?? 0}'),
+                                    ),
+                                    DataCell(
+                                      Text(
+                                          '${lever['averageIncomePerIntervention'] ?? 0}'),
+                                    ),
+                                  ],
+                                );
+                              }).toList(),
+                            ),
                           ))
                     ],
                   ),
