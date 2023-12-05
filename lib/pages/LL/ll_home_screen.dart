@@ -287,8 +287,8 @@ class _LLHomeState extends State<LLHome> {
                         // color: Color(0xFFF2D4C9),
                         child: Row(
                           children: [
-                            Image.asset(
-                              'images/feed.png', // Replace with the correct path to your PNG image
+                            SvgPicture.asset(
+                              'images/Feedback.svg',
                               width: 34,
                               height: 31,
                             ),

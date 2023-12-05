@@ -1,9 +1,10 @@
-import 'package:dalmia/pages/gpl/gpl_home_screen.dart';
-import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:dalmia/Constants/constant_export.dart';
+import 'package:dalmia/helper/sharedpref.dart';
+import 'package:dalmia/models/AuthResponse.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:flutter/services.dart';
-
+import 'package:dalmia/pages/SwitchRole/switchRole.dart';
 import '../common/common.dart';
 
 class Otp extends StatefulWidget {
@@ -122,11 +123,7 @@ class _OtpState extends State<Otp> {
                     const SizedBox(height: 20.0),
                     SubmitButton(
                       onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const GPLHomeScreen(),
-                          ),
-                        );
+                        handleOtpVerification();
                       },
                     ),
                     const SizedBox(height: 20.0),
@@ -139,4 +136,37 @@ class _OtpState extends State<Otp> {
       ),
     );
   }
+
+  void handleOtpVerification() async {
+    try {
+      AuthResponse authResponse = await verifyOtp();
+      SharedPrefHelper.storeSharedPref(USER_ID_SHAREDPREF_KEY, authResponse.referenceId);
+      SharedPrefHelper.storeSharedPref(USER_TYPES_SHAREDPREF_KEY, authResponse.userType);
+      SharedPrefHelper.storeSharedPref(ACCESS_TOKEN_SHAREDPREF_KEY, authResponse.accessToken);
+      SharedPrefHelper.storeSharedPref(APP_NAME_SHAREDPREF_KEY, authResponse.appName);
+      SharedPrefHelper.storeSharedPref( REFRESH_TOKEN_SHAREDPREF_KEY, authResponse.refreshToken);
+      SharedPrefHelper.storeSharedPref(PLATFORM_SHAREDPREF_KEY, authResponse.platform);
+      SharedPrefHelper.storeSharedPref(EMPLOYEE_SHAREDPREF_KEY, authResponse.employeeName);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (BuildContext ctx) => SwitchRole()),
+      );
+    }
+    catch (e) {
+      // show error on screen
+    }
+  }
+
+  Future<AuthResponse> verifyOtp() async {
+    return AuthResponse(
+        "10001",
+        "CDO",
+        "CSR",
+        "",
+        "",
+        "",
+        "TestName");
+  }
 }
+
