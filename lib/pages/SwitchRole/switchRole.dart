@@ -6,6 +6,7 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import '../../Constants/constants.dart';
 import '../../helper/sharedpref.dart';
+import '../ACCOUNTS/accounts_home_screen.dart';
 
 class SwitchRole extends StatefulWidget {
   const SwitchRole({super.key});
@@ -60,10 +61,10 @@ class _MyFormState extends State<SwitchRole> {
         //   await SharedPrefHelper.storeSharedPref(USER_TYPE_SHAREDPREF_KEY, userType);
         //   Navigator.push(context, MaterialPageRoute(builder: (context) => CEOHome()));
         //   break;
-        // case ACCOUNTS_USERTYPE:
-        //   await SharedPrefHelper.storeSharedPref(USER_TYPE_SHAREDPREF_KEY, userType);
-        //   Navigator.push(context, MaterialPageRoute(builder: (context) => ACCOUNTSHome()));
-        //   break;
+        case ACCOUNTS_USERTYPE:
+          await SharedPrefHelper.storeSharedPref(USER_TYPE_SHAREDPREF_KEY, userType);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AccountsHome()));
+          break;
         // default:
           // For any other userType we have to show a prompt "You  can not use the Application" and redirect on Login page
       }
