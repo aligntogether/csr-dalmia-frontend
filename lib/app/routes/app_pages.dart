@@ -65,7 +65,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.ADD_LOCATION,
-      page: () => const AddLocationView(),
+      page: () => AddLocationView(),
       binding: AddLocationBinding(),
     ),
     GetPage(

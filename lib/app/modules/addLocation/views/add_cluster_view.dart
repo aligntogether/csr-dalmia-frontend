@@ -6,12 +6,25 @@ import 'package:dalmia/pages/gpl/gpl_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AddClusterViewL extends StatelessWidget {
-  const AddClusterViewL({super.key});
+import '../../addLocation/Service/apiService.dart';
+
+
+class AddClusterViewL extends StatefulWidget {
+  String? region, location;
+
+  AddClusterViewL({super.key});
+
+  @override
+  _AddClusterViewLState createState() => _AddClusterViewLState();
+}
+
+class _AddClusterViewLState extends State<AddClusterViewL> {
+  final ApiService apiService = ApiService();
+  AddLocationController a = Get.put(AddLocationController());
+  String? validationResult;
 
   @override
   Widget build(BuildContext context) {
-    AddLocationController a = Get.put(AddLocationController());
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -55,12 +68,13 @@ class AddClusterViewL extends StatelessWidget {
 
                       return GestureDetector(
                         onTap: () {
-                          a.selectedIndex =index;
+                          a.selectedIndex = index;
+                          print("a.selectedIndex : ${a.selectedIndex}");
                           a.update(["cluster"]);
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                              color: a.selectedIndex ==index
+                              color: a.selectedIndex == index
                                   ? Color(0xffF15A22):Colors.white,
                               border: Border.all(
                                   color:  Color(0xff181818).withOpacity(0.5)),
@@ -87,21 +101,61 @@ class AddClusterViewL extends StatelessWidget {
               id: "add",
               builder: (controller) {
                 return GestureDetector(
-                  onTap: () {
-                    showConfirmationDialog(context);
+                  onTap: () async {
+
+                    String message = await pushLocation();
+
+                    if (message == "Data Added") {
+                      print("message : $message");
+                      showConfirmationDialog(context);
+                    }
+                    else {
+                      setState(() {
+                        validationResult = message;
+                      });
+
+                    }
+
                   },
                   child: commonButton(
                       title: "Done",
-                      color: controller.nameController.value.text.isNotEmpty &&
-                              controller.selectLocation != null
+                      color: (controller.nameController.value.text.isNotEmpty && a.selectRegion != null)
                           ? Color(0xff27528F)
                           : Color(0xff27528F).withOpacity(0.7)),
                 );
               },
             ),
+
+            // Display the error message with red color if there's an error
+            if (validationResult != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  validationResult!,
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+
           ],
         ));
   }
+
+  Future<String> pushLocation() async {
+    // Your validation logic here
+    // Example: Check if fields are not empty, perform API validation, etc.
+    // Return true if validation passes, false otherwise
+
+    print('performValidation ${a.nameController.value.text}');
+
+    Future<String> message = apiService.addLocation(a.selectRegionId ?? 0, a.nameController.value.text ?? "", a.selectedIndex < 0 ? a.selectedIndex : 0);
+
+    print('performValidation message : ${message.toString()}');
+    return message;
+  }
+
+
+
+
   void showConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -121,7 +175,7 @@ class AddClusterViewL extends StatelessWidget {
 
                 SizedBox(
                   child: Text(
-                      '<Location Name > added\nsuccessfully!',textAlign: TextAlign.center,
+                      '${a.nameController.value.text} added\nsuccessfully!',textAlign: TextAlign.center,
                       style: AppStyle.textStyleInterMed(fontSize: 16)),
                 ),
                 Space.height(30),
