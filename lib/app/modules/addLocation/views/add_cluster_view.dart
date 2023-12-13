@@ -10,7 +10,6 @@ import '../../addLocation/Service/apiService.dart';
 
 
 class AddClusterViewL extends StatefulWidget {
-  String? region, location;
 
   AddClusterViewL({super.key});
 
@@ -21,6 +20,7 @@ class AddClusterViewL extends StatefulWidget {
 class _AddClusterViewLState extends State<AddClusterViewL> {
   final ApiService apiService = ApiService();
   AddLocationController a = Get.put(AddLocationController());
+  int selectedClusterCount = -1;
   String? validationResult;
 
   @override
@@ -69,6 +69,9 @@ class _AddClusterViewLState extends State<AddClusterViewL> {
                       return GestureDetector(
                         onTap: () {
                           a.selectedIndex = index;
+                          setState(() {
+                            selectedClusterCount = index;
+                          });
                           print("a.selectedIndex : ${a.selectedIndex}");
                           a.update(["cluster"]);
                         },
@@ -119,7 +122,7 @@ class _AddClusterViewLState extends State<AddClusterViewL> {
                   },
                   child: commonButton(
                       title: "Done",
-                      color: (controller.nameController.value.text.isNotEmpty && a.selectRegion != null)
+                      color: (controller.nameController.value.text.isNotEmpty && a.selectRegion != null && selectedClusterCount >= 0)
                           ? Color(0xff27528F)
                           : Color(0xff27528F).withOpacity(0.7)),
                 );
