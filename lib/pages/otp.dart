@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:flutter/services.dart';
 import 'package:dalmia/pages/SwitchRole/switchRole.dart';
+import '../Constants/constants.dart';
 import '../common/common.dart';
 
 class Otp extends StatefulWidget {
@@ -161,7 +162,7 @@ class _OtpState extends State<Otp> {
   Future<AuthResponse> verifyOtp() async {
     return AuthResponse(
         "10001",
-        "CDO",
+        "GPL",
         "CSR",
         "",
         "",

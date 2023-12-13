@@ -8,14 +8,33 @@ import 'package:dalmia/pages/gpl/gpl_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AddNewPView extends StatelessWidget {
+import '../Service/apiService.dart';
+
+// final AddPanchayatController controller = Get.put(AddPanchayatController());
+// clustersFuture = apiService.getListOfClusters(controller.selectLocationId!);
+
+class AddNewPView extends StatefulWidget {
   String? region, location;
 
   AddNewPView({super.key, this.location, this.region});
 
   @override
+  _AddNewPViewState createState() => _AddNewPViewState();
+}
+
+class _AddNewPViewState extends State<AddNewPView> {
+  final ApiService apiService = ApiService();
+  late Future<Map<String, dynamic>> regionsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    regionsFuture = apiService.getListOfRegions();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    AddPanchayatController a = Get.put(AddPanchayatController());
+    AddPanchayatController controller = Get.put(AddPanchayatController());
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
@@ -59,7 +78,7 @@ class AddNewPView extends StatelessWidget {
                           fontSize: 14, color: Color(0xff006838)),
                       children: <TextSpan>[
                         TextSpan(
-                            text: region,
+                            text: widget.region,
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14,
                                 color: Color(0xff006838).withOpacity(0.5))),
@@ -74,7 +93,7 @@ class AddNewPView extends StatelessWidget {
                           fontSize: 14, color: Color(0xff006838)),
                       children: <TextSpan>[
                         TextSpan(
-                            text: location,
+                            text: widget.location,
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14,
                                 color: Color(0xff006838).withOpacity(0.5))),
@@ -104,21 +123,38 @@ class AddNewPView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "1.  Mullicheval",
-                  style: AppStyle.textStyleInterMed(
-                      fontSize: 14, color: Color(0xff181818).withOpacity(0.7)),
+
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: controller.panchayats!.length,
+                  itemBuilder: (context, index) {
+                    return Text(
+                      "${index + 1}.  ${controller.panchayats![index]}",
+                      style: AppStyle.textStyleInterMed(
+                        fontSize: 14,
+                        color: Color(0xff181818).withOpacity(0.7),
+                      ),
+                    );
+                  },
                 ),
-                Text(
-                  "2.  Upathur",
-                  style: AppStyle.textStyleInterMed(
-                      fontSize: 14, color: Color(0xff181818).withOpacity(0.7)),
-                ),
-                Text(
-                  "3.  Chinnaodaipatti",
-                  style: AppStyle.textStyleInterMed(
-                      fontSize: 14, color: Color(0xff181818).withOpacity(0.7)),
-                ),
+
+
+                // Text(
+                //   "1.  Mullicheval",
+                //   style: AppStyle.textStyleInterMed(
+                //       fontSize: 14, color: Color(0xff181818).withOpacity(0.7)),
+                // ),
+                // Text(
+                //   "2.  Upathur",
+                //   style: AppStyle.textStyleInterMed(
+                //       fontSize: 14, color: Color(0xff181818).withOpacity(0.7)),
+                // ),
+                // Text(
+                //   "3.  Chinnaodaipatti",
+                //   style: AppStyle.textStyleInterMed(
+                //       fontSize: 14, color: Color(0xff181818).withOpacity(0.7)),
+                // ),
               ],
             ),
           ),
@@ -126,8 +162,8 @@ class AddNewPView extends StatelessWidget {
           GestureDetector(
               onTap: () {
                 Get.to(AddNewPCluster(
-                  region: region,
-                  location: location,
+                  region: widget.region,
+                  location: widget.location,
                 ));
               },
               child: commonButton(title: "Add New", color: Color(0xff27528F))),
@@ -137,10 +173,31 @@ class AddNewPView extends StatelessWidget {
   }
 }
 
-class AddNewPCluster extends StatelessWidget {
+
+class AddNewPCluster extends StatefulWidget {
+
   String? region, location;
 
   AddNewPCluster({super.key, this.location, this.region});
+
+  @override
+  _AddNewPClusterState createState() => _AddNewPClusterState();
+}
+
+
+class _AddNewPClusterState extends State<AddNewPCluster> {
+
+  final ApiService apiService = ApiService();
+  late Future<Map<String, dynamic>> clustersFuture;
+  final AddPanchayatController controller = Get.put(AddPanchayatController());
+  String? validationResult;
+  @override
+  void initState() {
+    super.initState();
+    final AddPanchayatController controller = Get.put(AddPanchayatController());
+    clustersFuture = apiService.getListOfClusters(controller.selectLocationId!);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +244,7 @@ class AddNewPCluster extends StatelessWidget {
                           fontSize: 14, color: Color(0xff006838)),
                       children: <TextSpan>[
                         TextSpan(
-                            text: region,
+                            text: widget.region,
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14,
                                 color: Color(0xff006838).withOpacity(0.5))),
@@ -202,7 +259,7 @@ class AddNewPCluster extends StatelessWidget {
                           fontSize: 14, color: Color(0xff006838)),
                       children: <TextSpan>[
                         TextSpan(
-                            text: location,
+                            text: widget.location,
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14,
                                 color: Color(0xff006838).withOpacity(0.5))),
@@ -214,50 +271,177 @@ class AddNewPCluster extends StatelessWidget {
               ),
             ),
           ),
-          Space.height(16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 34),
-            child: TextFormField(
-              onChanged: (value) {},
-              decoration: const InputDecoration(
-                labelText: "Enter Panchayat Name",
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
-              ),
-            ),
-          ),
+
           Space.height(15),
           GetBuilder<AddPanchayatController>(
             id: "add",
             builder: (controller) {
-              return CustomDropdownFormField(
-                  title: "Select Cluster",
-                  options: [
-                    "Cluster 1",
-                    "Cluster 2",
-                    "Cluster 3",
-                    "Cluster 4",
-                    "Cluster 5",
-                  ],
-                  selectedValue: controller.cluster,
-                  onChanged: (String? newValue) async {
-                    controller.cluster = newValue;
-                    controller.update(["add"]);
-                  });
+
+              return FutureBuilder<Map<String, dynamic>>(
+                // Assuming that getListOfRegions returns a Future<Map<String, dynamic>>
+                future: clustersFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    Map<String, dynamic> responseData = snapshot.data ?? {};
+
+                    if (responseData.containsKey('clusters')) {
+                      List<Map<String, dynamic>> clusterOptions =
+                      responseData['clusters'];
+
+                      return CustomDropdownFormField(
+                        title: "Select Cluster",
+                        options: clusterOptions
+                            .map((cluster) => cluster['clusterName'].toString())
+                            .toList(),
+                        selectedValue: controller.selectCluster,
+                        onChanged: (String? newValue) async {
+                          // Find the selected region and get its corresponding regionId
+                          Map<String, dynamic>? selectedCluster =
+                          clusterOptions.firstWhereOrNull(
+                                  (cluster) => cluster['clusterName'] == newValue);
+
+                          print('controller.selectedCluster: ${selectedCluster}');
+
+
+                          if (selectedCluster != null &&
+                              selectedCluster['clusterId'] != null) {
+                            controller.selectClusterId =
+                            selectedCluster['clusterId'];
+                            controller.selectCluster = newValue;
+                            controller.update(["add"]);
+
+                            print('controller.selectedCluster: ${controller.selectClusterId}');
+
+
+
+                          }
+                        },
+                      );
+                    } else {
+                      return Text('No clusters available');
+                    }
+                  }
+                },
+              );
+
             },
           ),
+          Space.height(16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 34),
+            child: TextFormField(
+
+              onChanged: (value) {
+                controller.panchayatNameValue = value;
+              },
+              decoration: const InputDecoration(
+                labelText: "Enter Panchayat Name",
+                contentPadding:
+                EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+              ),
+            ),
+          ),
+          Space.height(16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 34),
+            child: TextFormField(
+              onChanged: (value) {
+                controller.panchayatCodeValue = value;
+              },
+              decoration: const InputDecoration(
+                labelText: "Enter Panchayat Code",
+                contentPadding:
+                EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+              ),
+            ),
+          ),
           Space.height(30),
-          GestureDetector(onTap: () {
-            showConfirmationDialog(context);
+          GestureDetector(onTap: ()  async {
+
+            String? validationresult = await validateAndShowDialog(context);
+
+            if (validationresult == null) {
+              // If validation passes, show the confirmation dialog
+
+              String addPanchayatRespMessage = await apiService.addPanchayat(controller.selectClusterId ?? 0, controller.panchayatNameValue ?? "", controller.panchayatCodeValue ?? "");
+
+              print("addPanchayatRespMessage : $addPanchayatRespMessage");
+              print("addPanchayatRespMessage1 : ${addPanchayatRespMessage.toString()}");
+
+              if (addPanchayatRespMessage == 'Data Added')
+                showConfirmationDialog(context);
+              else
+                validationresult = addPanchayatRespMessage;
+            } else {
+              // Handle validation failure, show an error message or take appropriate action
+              print('Validation failed: $validationresult');
+            }
+            setState(() {
+              validationResult = validationresult;
+            });
+
           },
             child: commonButton(
                 title: "Add Panchayat",
                 color:  Color(0xff27528F)),
           ),
+
+
+          // Display the error message with red color if there's an error
+          if (validationResult != null)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                validationResult!,
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+
+
         ],
       ),
     ));
   }
+
+
+  Future<String?> validateAndShowDialog(BuildContext context) async {
+    // Additional validation logic here
+
+    if (await performValidation() == 'Code Data Found') {
+      // If validation passes, show the confirmation dialog
+      return "The panchayat code must Be unique For the region";
+
+    }
+    else if (await performValidation() == 'Name Data Found') {
+
+      return "The panchayat name must Be unique For the region";
+
+    }
+    else {
+      // Handle validation failure, show an error message or take appropriate action
+      // return Text('No clusters available');
+      return null;
+    }
+
+  }
+
+  Future<String> performValidation() async {
+    // Your validation logic here
+    // Example: Check if fields are not empty, perform API validation, etc.
+    // Return true if validation passes, false otherwise
+
+    print('performValidation ${controller.selectClusterId} , ${controller.panchayatNameValue} , ${controller.panchayatCodeValue}');
+    Future<String> message = apiService.validateDuplicatePanchayat(controller.selectClusterId ?? 0, controller.panchayatNameValue ?? "", controller.panchayatCodeValue ?? "");
+
+    print('performValidation message : ${message.toString()}');
+    return message;
+  }
+
+
 
   void showConfirmationDialog(BuildContext context) {
     showDialog(
@@ -280,7 +464,7 @@ class AddNewPCluster extends StatelessWidget {
                   SizedBox(
                     width: MySize.size296,
                     child: Text(
-                        '“<Panchayat name>” is added successfully. What do you wish to do next? Add another Panchayat Save and Close',
+                        '${controller.panchayatNameValue ?? ""} is added successfully. What do you wish to do next? Add another Panchayat Save and Close',
                         style: AppStyle.textStyleInterMed(fontSize: 16)),
                   ),
                   Space.height(30),

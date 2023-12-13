@@ -70,7 +70,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.ADD_PANCHAYAT,
-      page: () => const AddPanchayatView(),
+      page: () => AddPanchayatView(),
       binding: AddPanchayatBinding(),
     ),
     GetPage(

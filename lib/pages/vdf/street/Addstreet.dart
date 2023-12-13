@@ -27,7 +27,7 @@ class Panchayat {
   }
 }
 
-String? base = dotenv.env['BASE_URL'];
+  String? base = dotenv.env['BASE_URL'];
 
 class Village {
   final String villageid;

@@ -25,7 +25,6 @@ class SourceInterventionsView extends StatelessWidget {
           child: Column(
             children: [
               Space.height(16),
-          
               ///_________________________________ main menu __________________________///
               GestureDetector(
                 onTap: () {
