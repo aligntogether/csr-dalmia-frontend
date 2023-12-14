@@ -11,7 +11,7 @@ class AddPanchayatController extends GetxController {
   String? selectCluster;
   String? cluster;
   List<Map<String, dynamic>>? locations;
-  List<String>? panchayats;
+  List<Map<String, dynamic>>? panchayats;
 
 
   void updateLocations(List<Map<String, dynamic>> locations) {
@@ -19,7 +19,7 @@ class AddPanchayatController extends GetxController {
     update(["add"]);
   }
 
-  void updatePanchayats(List<String> panchayats) {
+  void updatePanchayats(List<Map<String, dynamic>> panchayats) {
     this.panchayats = panchayats;
     update(["add"]);
   }

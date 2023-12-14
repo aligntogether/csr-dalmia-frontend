@@ -187,10 +187,7 @@ class _AddPanchayatViewState extends State<AddPanchayatView> {
                             panchayatsData['panchayats'];
 
                         // Update the controller with the new list of panchayats
-                        controller.updatePanchayats(panchayats
-                            .map((panchayat) =>
-                                panchayat['panchayatName'].toString())
-                            .toList());
+                        controller.updatePanchayats(panchayats);
                         controller.update(["add"]);
 
                         // Navigate to the next screen

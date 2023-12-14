@@ -17,12 +17,8 @@ class ApiService {
     try {
       String url = '$base/list-regions';
 
-      print("Object0");
-
 
       final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
-
-      print("Object1");
 
 
       if (response.statusCode == 200) {
@@ -30,12 +26,9 @@ class ApiService {
 
         // Parse the response and extract regionId and region
         final Map<String, dynamic> respBody = json.decode(response.body);
-        print("Object2");
 
         if (respBody.containsKey('resp_body')) {
           final List<dynamic> regionsData = respBody['resp_body'];
-
-          print("Object3");
 
           final List<Map<String, dynamic>> regions = regionsData.map<Map<String, dynamic>>((region) => {
             'regionId': region['regionId'],
@@ -64,18 +57,13 @@ class ApiService {
   Future<Map<String, dynamic>> getListOfLocations(int regionId) async {
     try {
 
-      print("Object1");
-
       final response = await http.get(Uri.parse('$base/list-locations?regionId=$regionId'));
 
       if (response.statusCode == 200) {
 
-        print("Object1");
-
         print("API Response: ${response.body}");
 
         final Map<String, dynamic> respBody = json.decode(response.body);
-        print("Object2");
 
         if (respBody.containsKey('resp_body')) {
           final List<dynamic> locationsData = respBody['resp_body'];
@@ -86,8 +74,6 @@ class ApiService {
             'locationId': location['locationId'],
             'location': location['location']
           }).toList();
-
-          // print("sgncy $locations");
 
           return {'locations': locations}; // Returning a map with 'regions' key containing the list
         } else {
@@ -112,21 +98,19 @@ class ApiService {
 
       if (response.statusCode == 200) {
 
-        print("Object1gp");
 
         print("API Response: ${response.body}");
 
         final Map<String, dynamic> respBody = json.decode(response.body);
-        print("Object2gp");
 
         if (respBody.containsKey('resp_body')) {
           final List<dynamic> panchayatsData = respBody['resp_body'];
 
-          print("Object3gp");
 
           final List<Map<String, dynamic>> panchayats = panchayatsData.map<Map<String, dynamic>>((panchayat) => {
             'panchayatId': panchayat['panchayatId'],
-            'panchayatName': panchayat['panchayatName']
+            'panchayatName': panchayat['panchayatName'],
+            'panchayatCode': panchayat['panchayatCode'],
           }).toList();
 
 
@@ -150,11 +134,7 @@ class ApiService {
     try {
       String url = '$base/list-cluster-by-location?locationId=$locationId';
 
-      print("Object0");
-
       final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
-
-      print("Object1");
 
 
       if (response.statusCode == 200) {
@@ -162,12 +142,9 @@ class ApiService {
 
         // Parse the response and extract regionId and region
         final Map<String, dynamic> respBody = json.decode(response.body);
-        print("Object2");
 
         if (respBody.containsKey('resp_body')) {
           final List<dynamic> clustersData = respBody['resp_body'];
-
-          print("Object3");
 
           final List<Map<String, dynamic>> clusters = clustersData.map<Map<String, dynamic>>((cluster) => {
             'clusterId': cluster['clusterId'],
@@ -196,22 +173,15 @@ class ApiService {
     try {
       String url = '$base/validate-duplicate-panchayat?clusterId=$clusterId&panchayatName=$panchayatName&panchayatCode=$panchayatCode';
 
-      print("Object0");
-
       final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
-
-      print("Object1");
 
       if (response.statusCode == 200) {
         print("API Response: ${response.body}");
 
         // Parse the response and extract regionId and region
         final Map<String, dynamic> respBody = json.decode(response.body);
-        print("Object2");
         if (respBody.containsKey('resp_msg')) {
           final String duplicatePanchayatResMessage = respBody['resp_msg'];
-
-          print("Object3");
 
           return duplicatePanchayatResMessage; // Returning a map with 'clusters' key containing the list
         } else {
@@ -232,8 +202,6 @@ class ApiService {
 
     try {
       String url = '$base/add-panchayat';
-
-      print("Object0");
 
       Map<String, dynamic> requestBody = {
           "clusterId": clusterId,

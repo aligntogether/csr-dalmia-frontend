@@ -153,11 +153,7 @@ class AddClusterView extends GetView<AddClusterController> {
                   Space.height(30),
                   GestureDetector(
                     onTap: () {
-                      /*   Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => const GPLHomeScreen(),
-                        ),
-                      );*/
+                      Get.to(AddClusterView());
                     },
                     child: Container(
                       height: 50,

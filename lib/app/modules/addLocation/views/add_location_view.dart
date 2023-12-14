@@ -179,7 +179,6 @@ class _AddLocationViewState extends State<AddLocationView> {
 
             ),
 
-            // Display the error message with red color if there's an error
             if (validationResult != null)
               Padding(
                 padding: const EdgeInsets.all(8.0),
