@@ -8,9 +8,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class ApiService {
 
 
-  // String? base = dotenv.env['BASE_URL'];
+  String? base = dotenv.env['BASE_URL'];
   // String? base = 'https://mobiledevcloud.dalmiabharat.com:443/csr';
-  String? base = 'http://192.168.1.16:8082';
+  // String? base = 'http://192.168.1.16:8082';
 
 
   Future<Map<String, dynamic>> getListOfRegions() async {
