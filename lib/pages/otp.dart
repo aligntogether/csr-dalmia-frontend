@@ -18,9 +18,12 @@ class Otp extends StatefulWidget {
 class _OtpState extends State<Otp> {
   final FocusNode textFieldFocusNode = FocusNode();
   bool isContainerVisible = true;
+  final TextEditingController pinEditingController = TextEditingController();
+
   @override
   void dispose() {
     textFieldFocusNode.dispose();
+    pinEditingController.dispose();
     super.dispose();
   }
 
@@ -40,8 +43,6 @@ class _OtpState extends State<Otp> {
   }
 
   SafeArea otp(BuildContext context) {
-    final TextEditingController pinEditingController = TextEditingController();
-
     return SafeArea(
       child: Scaffold(
         body: ListView(
@@ -73,7 +74,6 @@ class _OtpState extends State<Otp> {
                       const Image(
                         image: AssetImage('images/icon.jpg'),
                       ),
-                    // if (isContainerVisible)
                     if (isContainerVisible)
                       Container(
                         padding: const EdgeInsets.all(20.0),
@@ -107,12 +107,13 @@ class _OtpState extends State<Otp> {
                         onChanged: (value) {},
                         controller: pinEditingController,
                         pinTheme: PinTheme(
-                            shape: PinCodeFieldShape.underline,
-                            borderRadius: BorderRadius.circular(5),
-                            fieldHeight: 50,
-                            fieldWidth: 40,
-                            inactiveColor: Colors.grey,
-                            activeColor: Colors.black),
+                          shape: PinCodeFieldShape.underline,
+                          borderRadius: BorderRadius.circular(5),
+                          fieldHeight: 50,
+                          fieldWidth: 40,
+                          inactiveColor: Colors.grey,
+                          activeColor: Colors.black,
+                        ),
                         inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.digitsOnly
                         ],
@@ -125,6 +126,7 @@ class _OtpState extends State<Otp> {
                     SubmitButton(
                       onPressed: () {
                         String enteredOtp = pinEditingController.text.trim();
+                        print('entered opt: $enteredOtp');
 
                         // Change the OTP values as needed
 
