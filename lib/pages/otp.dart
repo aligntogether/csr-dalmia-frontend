@@ -124,7 +124,11 @@ class _OtpState extends State<Otp> {
                     const SizedBox(height: 20.0),
                     SubmitButton(
                       onPressed: () {
-                        handleOtpVerification();
+                        String enteredOtp = pinEditingController.text.trim();
+
+                        // Change the OTP values as needed
+
+                        handleOtpVerification(enteredOtp);
                       },
                     ),
                     const SizedBox(height: 20.0),
@@ -138,36 +142,45 @@ class _OtpState extends State<Otp> {
     );
   }
 
-  void handleOtpVerification() async {
+  void handleOtpVerification(String otp) async {
     try {
-      AuthResponse authResponse = await verifyOtp();
-      SharedPrefHelper.storeSharedPref(USER_ID_SHAREDPREF_KEY, authResponse.referenceId);
-      SharedPrefHelper.storeSharedPref(USER_TYPES_SHAREDPREF_KEY, authResponse.userType);
-      SharedPrefHelper.storeSharedPref(ACCESS_TOKEN_SHAREDPREF_KEY, authResponse.accessToken);
-      SharedPrefHelper.storeSharedPref(APP_NAME_SHAREDPREF_KEY, authResponse.appName);
-      SharedPrefHelper.storeSharedPref( REFRESH_TOKEN_SHAREDPREF_KEY, authResponse.refreshToken);
-      SharedPrefHelper.storeSharedPref(PLATFORM_SHAREDPREF_KEY, authResponse.platform);
-      SharedPrefHelper.storeSharedPref(EMPLOYEE_SHAREDPREF_KEY, authResponse.employeeName);
+      AuthResponse authResponse = await verifyOtp(otp);
+      SharedPrefHelper.storeSharedPref(
+          USER_ID_SHAREDPREF_KEY, authResponse.referenceId);
+      SharedPrefHelper.storeSharedPref(
+          USER_TYPES_SHAREDPREF_KEY, authResponse.userType);
+      SharedPrefHelper.storeSharedPref(
+          ACCESS_TOKEN_SHAREDPREF_KEY, authResponse.accessToken);
+      SharedPrefHelper.storeSharedPref(
+          APP_NAME_SHAREDPREF_KEY, authResponse.appName);
+      SharedPrefHelper.storeSharedPref(
+          REFRESH_TOKEN_SHAREDPREF_KEY, authResponse.refreshToken);
+      SharedPrefHelper.storeSharedPref(
+          PLATFORM_SHAREDPREF_KEY, authResponse.platform);
+      SharedPrefHelper.storeSharedPref(
+          EMPLOYEE_SHAREDPREF_KEY, authResponse.employeeName);
 
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (BuildContext ctx) => SwitchRole()),
       );
-    }
-    catch (e) {
+    } catch (e) {
       // show error on screen
     }
   }
 
-  Future<AuthResponse> verifyOtp() async {
-    return AuthResponse(
-        "10001",
-        "GPL",
-        "CSR",
-        "",
-        "",
-        "",
-        "TestName");
+  Future<AuthResponse> verifyOtp(String otp) async {
+    String user = VDF_USERTYPE;
+    print('otp: $otp');
+    if (otp == '123451') {
+      user = LL_USERTYPE;
+    } else if (otp == '123452') {
+      user = GPL_USERTYPE;
+    } else if (otp == '123453') {
+      user = CDO_USERTYPE;
+    } else {
+      print('Incorrect OTP');
+    }
+    return AuthResponse("10001", user, "CSR", "", "", "", "TestName");
   }
 }
-
