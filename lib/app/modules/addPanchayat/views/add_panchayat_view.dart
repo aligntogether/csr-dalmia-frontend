@@ -50,6 +50,7 @@ class _AddPanchayatViewState extends State<AddPanchayatView> {
         body: Column(
           children: [
             Space.height(36),
+
             GetBuilder<AddPanchayatController>(
               id: "add",
               builder: (controller) {
@@ -118,7 +119,9 @@ class _AddPanchayatViewState extends State<AddPanchayatView> {
                 );
               },
             ),
+
             Space.height(15),
+
             GetBuilder<AddPanchayatController>(
               id: "add",
               builder: (controller) {
@@ -162,6 +165,7 @@ class _AddPanchayatViewState extends State<AddPanchayatView> {
                 );
               },
             ),
+
             Space.height(30),
             GetBuilder<AddPanchayatController>(
               id: "add",

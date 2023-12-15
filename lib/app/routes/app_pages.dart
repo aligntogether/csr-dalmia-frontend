@@ -80,12 +80,12 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.ADD_CLUSTER,
-      page: () => const AddClusterView(),
+      page: () => AddClusterView(),
       binding: AddClusterBinding(),
     ),
     GetPage(
       name: _Paths.REPLACE_VDF,
-      page: () => const ReplaceVdfView(),
+      page: () => ReplaceVdfView(),
       binding: ReplaceVdfBinding(),
     ),
     GetPage(

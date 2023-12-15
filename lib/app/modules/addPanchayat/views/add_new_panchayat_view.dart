@@ -139,22 +139,6 @@ class _AddNewPViewState extends State<AddNewPView> {
                   },
                 ),
 
-
-                // Text(
-                //   "1.  Mullicheval",
-                //   style: AppStyle.textStyleInterMed(
-                //       fontSize: 14, color: Color(0xff181818).withOpacity(0.7)),
-                // ),
-                // Text(
-                //   "2.  Upathur",
-                //   style: AppStyle.textStyleInterMed(
-                //       fontSize: 14, color: Color(0xff181818).withOpacity(0.7)),
-                // ),
-                // Text(
-                //   "3.  Chinnaodaipatti",
-                //   style: AppStyle.textStyleInterMed(
-                //       fontSize: 14, color: Color(0xff181818).withOpacity(0.7)),
-                // ),
               ],
             ),
           ),

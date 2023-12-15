@@ -6,10 +6,34 @@ import 'package:dalmia/pages/gpl/gpl_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../addPanchayat/Service/apiService.dart';
 import '../controllers/replace_vdf_controller.dart';
+import '../service/replaceVdfApiService.dart';
 
-class ReplaceVdfView extends GetView<ReplaceVdfController> {
-  const ReplaceVdfView({Key? key}) : super(key: key);
+
+class ReplaceVdfView extends StatefulWidget {
+  String? region, location;
+
+  ReplaceVdfView({Key? key}) : super(key: key);
+
+  @override
+  _ReplaceVdfViewState createState() => _ReplaceVdfViewState();
+}
+
+class _ReplaceVdfViewState extends State<ReplaceVdfView> {
+  final ApiService addPanchayatApiService = ApiService();
+  final ReplaceVdfApiService addClusterApiService = ReplaceVdfApiService();
+
+  ReplaceVdfController controller = Get.put(ReplaceVdfController());
+  late Future<Map<String, dynamic>> regionsFuture;
+  late Future<Map<String, dynamic>> clustersFuture;
+  String? validationResult;
+
+  @override
+  void initState() {
+    super.initState();
+    regionsFuture = addPanchayatApiService.getListOfRegions();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,20 +62,71 @@ class ReplaceVdfView extends GetView<ReplaceVdfController> {
             GetBuilder<ReplaceVdfController>(
               id: "add",
               builder: (controller) {
-                return CustomDropdownFormField(
-                    title: "Select a Region",
-                    options: [
-                      "South & Chandrapur",
-                      "Sugar",
-                      "East",
-                      "North East",
-                      "All Regions"
-                    ],
-                    selectedValue: controller.selectLocation,
-                    onChanged: (String? newValue) async {
-                      controller.selectLocation = newValue;
-                      controller.update(["add"]);
-                    });
+                return FutureBuilder<Map<String, dynamic>>(
+                  // Assuming that getListOfRegions returns a Future<Map<String, dynamic>>
+                  future: regionsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      Map<String, dynamic> responseData = snapshot.data ?? {};
+
+                      if (responseData.containsKey('regions')) {
+                        List<Map<String, dynamic>> regionOptions =
+                        responseData['regions'];
+
+                        return CustomDropdownFormField(
+                          title: "Select a Region",
+                          options: regionOptions
+                              .map((region) => region['region'].toString())
+                              .toList(),
+                          selectedValue: controller.selectRegion,
+                          onChanged: (String? newValue) async {
+                            // Find the selected region and get its corresponding regionId
+                            Map<String, dynamic>? selectedRegion =
+                            regionOptions.firstWhereOrNull(
+                                    (region) => region['region'] == newValue);
+
+                            // print('controller.selectedRegions: ${selectedRegion}');
+
+
+                            if (selectedRegion != null &&
+                                selectedRegion['regionId'] != null) {
+                              controller.selectRegionId =
+                              selectedRegion['regionId'];
+                              controller.selectRegion = newValue;
+                              controller.update(["add"]);
+
+                              // Get locations based on the selected regionId
+                              Map<String, dynamic> locationsData =
+                              await addPanchayatApiService.getListOfLocations(
+                                  controller.selectRegionId!);
+
+                              // Extract the list of locations from the returned data
+                              List<Map<String, dynamic>> locations =
+                              locationsData['locations'];
+
+                              // Update the controller with the new list of locations
+                              controller.updateLocations(locations);
+                              controller.update(["add"]);
+
+                              // Update the selected location's name and ID in the controller
+                              controller.selectLocation =
+                              null; // Assuming you initially set it to null
+                              controller.selectLocationId = null;
+                              controller.selectCluster = null;
+
+                            }
+                          },
+                        );
+                      } else {
+                        return Text('No regions available');
+                      }
+                    }
+                  },
+                );
               },
             ),
             Space.height(15),
@@ -59,40 +134,97 @@ class ReplaceVdfView extends GetView<ReplaceVdfController> {
               id: "add",
               builder: (controller) {
                 return CustomDropdownFormField(
-                    title: "Select Location",
-                    options: [
-                      "South & Chandrapur",
-                      "Sugar",
-                      "East",
-                      "North East",
-                    ],
-                    selectedValue: controller.selectRegion,
-                    onChanged: (String? newValue) async {
-                      controller.selectRegion = newValue;
-                      controller.update(["add"]);
-                    });
+                  title: "Select Location",
+                  options:
+                  controller.locations != null ? (controller.locations!
+                      .map((location) =>
+                      location['location'].toString())
+                      .toList()) : [],
+                  selectedValue: controller.selectLocation,
+                  onChanged: (String? newValue) async {
+
+                    // Find the selected location and get its corresponding locationId
+                    if (controller.locations != null) {
+                      // Find the selected location object based on the 'location' property
+
+                      // print('controller.locations: ${controller.locations}');
+
+
+                      Map<String, dynamic>? selectedLocation = controller.locations
+                          ?.firstWhere((location) => location['location'] == newValue);
+
+                      if (selectedLocation != null) {
+
+                        // Access the locationId property and convert it to int
+                        int? selectedLocationId =
+                        selectedLocation['locationId'];
+
+                        // print('selectedLocationId: $selectedLocationId');
+
+                        if (selectedLocationId != null) {
+                          // Assign 'location' to controller.selectLocation
+                          controller.selectLocation =
+                          selectedLocation['location'] as String;
+                          controller.selectLocationId = selectedLocationId;
+                          controller.update(["add"]);
+
+                          controller.selectCluster = null;
+
+
+                          Map<String, dynamic> clustersData = await addPanchayatApiService.getListOfClusters(controller.selectLocationId ?? 0);
+
+                          List<Map<String, dynamic>> clusters =
+                          clustersData['clusters'];
+
+                          print("clusters.length : ${clusters.length}");
+                          print("clusters : $clusters");
+
+                          controller.updateClusters(clusters);
+                          controller.update(["add"]);
+
+                        }
+                      }
+                    }
+                  },
+                );
               },
             ),
             Space.height(15),
+
             GetBuilder<ReplaceVdfController>(
               id: "add",
               builder: (controller) {
                 return CustomDropdownFormField(
-                    title: "Select Cluster",
-                    options: [
-                      "Cluster 1",
-                      "Cluster 2",
-                      "Cluster 3",
-                      "Cluster 4",
-                      "Cluster 5",
-                    ],
-                    selectedValue: controller.selectCluster,
-                    onChanged: (String? newValue) async {
+                  title: "Select Cluster",
+                  options: controller.clusters != null ? (controller.clusters!
+                      .map((cluster) =>
+                      cluster['clusterName'].toString())
+                      .toList()) : [],
+                  selectedValue: controller.selectLocation,
+                  onChanged: (String? newValue) async {
+                    // Find the selected region and get its corresponding regionId
+                    Map<String, dynamic>? selectedCluster = controller.clusters
+                        ?.firstWhere((cluster) => cluster['cluster'] == newValue);
+
+                    print('controller.selectedCluster: ${selectedCluster}');
+
+
+                    if (selectedCluster != null &&
+                        selectedCluster['clusterId'] != null) {
+                      controller.selectClusterId =
+                      selectedCluster['clusterId'];
                       controller.selectCluster = newValue;
                       controller.update(["add"]);
-                    });
+
+                      print('controller.selectedCluster: ${controller
+                          .selectClusterId}');
+                    }
+                  },
+                );
               },
+
             ),
+
             Space.height(30),
             GetBuilder<ReplaceVdfController>(
               id: "add",
