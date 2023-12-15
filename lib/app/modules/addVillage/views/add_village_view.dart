@@ -740,7 +740,6 @@ class _AddPNameState extends State<AddPName> {
     print('performValidation ${controller.selectPanchayatId} , ${controller.villageNameValue} , ${controller.villageCodeValue}');
     Future<String> message = addVillageApiService.validateDuplicateVillage(controller.selectPanchayatId ?? 0, controller.villageNameValue ?? "", controller.villageCodeValue ?? "");
 
-    print('performValidation message : ${message.toString()}');
     return message;
   }
 

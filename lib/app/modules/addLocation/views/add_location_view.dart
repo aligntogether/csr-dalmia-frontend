@@ -152,7 +152,7 @@ class _AddLocationViewState extends State<AddLocationView> {
                       controller.selectedIndex = -1;
 
                       String message = await performValidation();
-                      print("performValidation() as String : $message");
+
                       if (message == "Data Found"){
                         validationResult = message;
                         print("Error : Already Existing $validationResult");
@@ -203,7 +203,7 @@ class _AddLocationViewState extends State<AddLocationView> {
     
     Future<String> message = apiService.checkDuplicateLocation(controller.nameController.value.text ?? "");
 
-    print('performValidation message : ${message.toString()}');
+    // print('performValidation message : ${message.toString()}');
     return message;
   }
 

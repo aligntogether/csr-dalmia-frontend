@@ -440,7 +440,6 @@ class _AddNewPClusterState extends State<AddNewPCluster> {
     print('performValidation ${controller.selectClusterId} , ${controller.panchayatNameValue} , ${controller.panchayatCodeValue}');
     Future<String> message = apiService.validateDuplicatePanchayat(controller.selectClusterId ?? 0, controller.panchayatNameValue ?? "", controller.panchayatCodeValue ?? "");
 
-    print('performValidation message : ${message.toString()}');
     return message;
   }
 

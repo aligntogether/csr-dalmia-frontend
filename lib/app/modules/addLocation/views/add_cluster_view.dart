@@ -152,7 +152,6 @@ class _AddClusterViewLState extends State<AddClusterViewL> {
 
     Future<String> message = apiService.addLocation(a.selectRegionId ?? 0, a.nameController.value.text ?? "", a.selectedIndex < 0 ? a.selectedIndex : 0);
 
-    print('performValidation message : ${message.toString()}');
     return message;
   }
 
