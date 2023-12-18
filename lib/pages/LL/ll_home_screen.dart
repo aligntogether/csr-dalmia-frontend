@@ -1,12 +1,16 @@
-import 'package:dalmia/pages/CDO/sourceoffunds.dart';
-import 'package:dalmia/pages/CDO/vdffund.dart';
+import 'package:dalmia/app/routes/app_pages.dart';
+import 'package:dalmia/pages/LL/action.dart';
+import 'package:dalmia/pages/LL/expected.dart';
+import 'package:dalmia/pages/LL/feedback/feedback.dart';
+import 'package:dalmia/pages/LL/sourceoffunds.dart';
+import 'package:dalmia/pages/LL/vdffund.dart';
+import 'package:dalmia/pages/LL/vdfreports.dart';
 import 'package:dalmia/pages/login.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import '../CDO/action.dart';
-import '../CDO/expected.dart';
-import '../CDO/vdfreports.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class LLHome extends StatefulWidget {
   const LLHome({Key? key}) : super(key: key);
@@ -22,8 +26,8 @@ class _LLHomeState extends State<LLHome> {
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize:
-          //  isMenuOpen ? Size.fromHeight(150) :
-          Size.fromHeight(100),
+              //  isMenuOpen ? Size.fromHeight(150) :
+              Size.fromHeight(100),
           child: Stack(
             children: [
               AppBar(
@@ -100,7 +104,7 @@ class _LLHomeState extends State<LLHome> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const VdfReport(),
+                        builder: (context) => const LLVdfReport(),
                       ),
                     );
                   },
@@ -116,7 +120,7 @@ class _LLHomeState extends State<LLHome> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const VDFFunds(),
+                        builder: (context) => const LLVDFFunds(),
                       ),
                     );
                   },
@@ -132,7 +136,7 @@ class _LLHomeState extends State<LLHome> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const Expectedincome(),
+                        builder: (context) => const ExpectedincomeLL(),
                       ),
                     );
                   },
@@ -148,7 +152,7 @@ class _LLHomeState extends State<LLHome> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const SourceOfFunds(),
+                        builder: (context) => const SourceOfFundsOfLL(),
                       ),
                     );
                   },
@@ -173,7 +177,7 @@ class _LLHomeState extends State<LLHome> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => ActionAgainstHH(),
+                        builder: (context) => ActionAgainstHHLL(),
                       ),
                     );
                   },
@@ -189,7 +193,7 @@ class _LLHomeState extends State<LLHome> {
                             side: BorderSide(
                               width: 1,
                               color:
-                              Colors.black.withOpacity(0.10000000149011612),
+                                  Colors.black.withOpacity(0.10000000149011612),
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -205,7 +209,6 @@ class _LLHomeState extends State<LLHome> {
                         // color: Color(0xFFF2D4C9),
                         child: Row(children: [
                           SvgPicture.asset(
-
                             'images/takeaction.svg',
                             width: 34,
                             height: 31,
@@ -236,28 +239,22 @@ class _LLHomeState extends State<LLHome> {
                             ),
                             child: Center(
                                 child: Text(
-                                  '5',
-                                  style: TextStyle(
-                                      fontSize: CustomFontTheme.textSize,
-                                      fontWeight: CustomFontTheme.headingwt,
-                                      color: Colors.white),
-                                )),
+                              '5',
+                              style: TextStyle(
+                                  fontSize: CustomFontTheme.textSize,
+                                  fontWeight: CustomFontTheme.headingwt,
+                                  color: Colors.white),
+                            )),
                           )),
-
                     ],
                   ),
                 ),
-
                 SizedBox(
                   height: 20,
                 ),
                 GestureDetector(
                   onTap: () {
-                    // Navigator.of(context).push(
-                    //   MaterialPageRoute(
-                    //     builder: (context) => Feedback(),
-                    //   ),
-                    // );
+                    Get.toNamed(Routes.FEEDBACK);
                   },
                   child: Stack(
                     children: [
@@ -270,8 +267,8 @@ class _LLHomeState extends State<LLHome> {
                           shape: RoundedRectangleBorder(
                             side: BorderSide(
                               width: 1,
-                              color: Colors.black.withOpacity(
-                                  0.10000000149011612),
+                              color:
+                                  Colors.black.withOpacity(0.10000000149011612),
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -292,7 +289,6 @@ class _LLHomeState extends State<LLHome> {
                               width: 34,
                               height: 31,
                             ),
-
                             SizedBox(
                               width: 20,
                             ),
@@ -341,8 +337,7 @@ class _LLHomeState extends State<LLHome> {
       ),
     );
   }
-  }
-
+}
 
 class cards extends StatelessWidget {
   final String imageUrl;

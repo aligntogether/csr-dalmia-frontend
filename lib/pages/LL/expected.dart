@@ -1,7 +1,8 @@
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/size_constant.dart';
-import 'package:dalmia/pages/CDO/cdoappbar.dart';
-import 'package:dalmia/pages/CDO/cdohome.dart';
+import 'package:dalmia/pages/LL/ll_home_screen.dart';
+import 'package:dalmia/pages/LL/llappbar.dart';
+
 import 'package:dalmia/theme.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:excel/excel.dart';
@@ -28,7 +29,7 @@ List location = [
   "Aggregate income (EAAI)",
   "Aggregate income (AAAI)",
 ];
-List<int> CDO = [
+List<int> LL = [
   128036,
   37765,
   387004,
@@ -49,21 +50,21 @@ List<int> CDO = [
   37765,
 ];
 
-class Expectedincome extends StatefulWidget {
-  const Expectedincome({Key? key}) : super(key: key);
+class ExpectedincomeLL extends StatefulWidget {
+  const ExpectedincomeLL({Key? key}) : super(key: key);
 
   @override
-  State<Expectedincome> createState() => _ExpectedincomeState();
+  State<ExpectedincomeLL> createState() => _ExpectedincomeLLState();
 }
 
-class _ExpectedincomeState extends State<Expectedincome> {
+class _ExpectedincomeLLState extends State<ExpectedincomeLL> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(100),
-          child: CdoAppBar(
+          child: LLAppBar(
             heading: 'Reports',
           ),
         ),
@@ -77,7 +78,7 @@ class _ExpectedincomeState extends State<Expectedincome> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const CDOHome(),
+                        builder: (context) => const LLHome(),
                       ),
                     );
                   },
@@ -227,7 +228,7 @@ class _ExpectedincomeState extends State<Expectedincome> {
                                         (location[index] == "Cluster 1" ||
                                                 location[index] == "Cluster 2"
                                             ? ""
-                                            : CDO[index].toString()),
+                                            : LL[index].toString()),
                                         style: AppStyle.textStyleInterMed(
                                             fontSize: 14),
                                       ),
