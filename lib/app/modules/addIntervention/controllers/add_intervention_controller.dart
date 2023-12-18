@@ -7,32 +7,34 @@ class AddInterventionController extends GetxController {
   Rx<TextEditingController> exAnnualIncome = TextEditingController().obs;
   Rx<TextEditingController> noOfDay = TextEditingController().obs;
 
-  List<String> interventions = [
+  List<Map<String, dynamic>>? interventionsData;
+
+  int? skipRecordsCount = 0;
+  int? recordsCount = 20;
+  int? totalInterventionsCount;
+
+
+  void updateInterventionsData(List<Map<String, dynamic>> interventionsData) {
+    this.interventionsData = interventionsData;
+    update(["add"]);
+  }
+
+
+  List<String> interventionsList = [
     'Vermicompost-Bag (not less than 3 ft x 6 ft)',
-
-
   ];
-  List<int> DPM = [
-    128036,
-    128036,
 
+  List<String> leverList = [
+    "128036",
+    "128036",
   ];
-  List<int> ALR = [
-    128036,
-    128036,
 
-  ];
-  List<int> BGM = [
+  List<int> expAddAnnualIncomeList = [
     128036,
     128036,
 
   ];
-  List<int> KDP = [
-    128036,
-    128036,
-
-  ];
-  List<int> CHA = [
+  List<int> daysRequiredList = [
     128036,
     128036,
 

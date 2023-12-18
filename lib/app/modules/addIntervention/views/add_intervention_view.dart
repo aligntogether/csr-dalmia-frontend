@@ -295,12 +295,30 @@ class _AddInterventionViewState extends State<AddInterventionView> {
 
 }
 
-class InterventionListView extends StatelessWidget {
-  const InterventionListView({super.key});
+
+
+
+class InterventionListView extends StatefulWidget {
+
+  InterventionListView({super.key});
+
+  @override
+  _InterventionListViewState createState() => _InterventionListViewState();
+}
+
+class _InterventionListViewState extends State<InterventionListView> {
+
+  AddInterventionController controller = Get.put(AddInterventionController());
+  AddInterventionApiService addInterventionApiService = new AddInterventionApiService();
+
+  @override
+  void initState() {
+    super.initState();
+    addInterventionApiService.fetchInterventionsData(controller, controller.skipRecordsCount, controller.recordsCount);
+  }
 
   @override
   Widget build(BuildContext context) {
-    AddInterventionController controller = Get.put(AddInterventionController());
     return SafeArea(
         child: Scaffold(
       body: SingleChildScrollView(
@@ -486,13 +504,15 @@ class InterventionListView extends StatelessWidget {
                 ),
               ],
               rows: List<DataRow>.generate(
-                controller.interventions.length,
+                controller.interventionsData!.length,
                 (index) => DataRow(
                   color: MaterialStateColor.resolveWith(
                     (states) {
-                      return controller.interventions[index] == "Households" ||
-                              controller.interventions[index] == "Interventions" ||
-                              controller.interventions[index] ==
+                      print("controller.interventionsData : ${controller.interventionsData}");
+
+                      return controller.interventionsList[index] == "Households" ||
+                              controller.interventionsList[index] == "Interventions" ||
+                              controller.interventionsList[index] ==
                                   "HH with Annual Addl. Income"
                           ? Color(0xff008CD3).withOpacity(0.3)
                           : index.isEven
@@ -508,13 +528,13 @@ class InterventionListView extends StatelessWidget {
                         child: Row(
                           children: [
                             Text(
-                              controller.interventions[index] == "Total"
+                              controller.interventionsList[index] == "Total"
                                   ? ""
                                   : "${index}",
                               style: AppStyle.textStyleInterMed(fontSize: 14),
                             ),
                             Spacer(),
-                            controller.interventions[index] == "Total"
+                            controller.interventionsList[index] == "Total"
                                 ? SizedBox()
                                 : VerticalDivider(
                                     width: 1,
@@ -530,7 +550,7 @@ class InterventionListView extends StatelessWidget {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.interventions[index]),
+                            (controller.interventionsList[index]),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -548,7 +568,7 @@ class InterventionListView extends StatelessWidget {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.ALR[index].toString()),
+                            (controller.leverList[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -566,7 +586,7 @@ class InterventionListView extends StatelessWidget {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.BGM[index].toString()),
+                            (controller.expAddAnnualIncomeList[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -584,7 +604,7 @@ class InterventionListView extends StatelessWidget {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.KDP[index].toString()),
+                            (controller.daysRequiredList[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -598,7 +618,8 @@ class InterventionListView extends StatelessWidget {
                     ),
                   ],
                 ),
-              )),
+              )
+          ),
         ));
   }
 }

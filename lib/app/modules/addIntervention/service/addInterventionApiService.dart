@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:dalmia/app/modules/addIntervention/controllers/add_intervention_controller.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:http/http.dart' as http;
 
@@ -8,9 +9,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class AddInterventionApiService {
 
 
-  // String? base = dotenv.env['BASE_URL'];
+  String? base = dotenv.env['BASE_URL'];
   // String? base = 'https://mobiledevcloud.dalmiabharat.com:443/csr';
-  String? base = 'http://192.168.1.68:8080/csr';
+  // String? base = 'http://192.168.1.68:8080/csr';
 
 
   Future<Map<String, dynamic>> getListOfRegions() async {
@@ -238,6 +239,53 @@ class AddInterventionApiService {
     } catch (e) {
       print("Error making API request: $e");
       throw Exception('Error making API request: $e');
+    }
+  }
+
+
+  Future<void> fetchInterventionsData(AddInterventionController controller, int? skipRecordsCount, int? recordsCount) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$base/list-interventions?skipRecordsCount=${controller.skipRecordsCount}&recordCount=${controller.recordsCount}'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        if (jsonData.containsKey('resp_body')) {
+          final Map<String, dynamic> respBody = jsonData['resp_body'];
+
+          if (respBody.containsKey('interventions')) {
+            final List<dynamic> interventionsData = respBody['interventions'];
+
+            List<Map<String, dynamic>> interventions = interventionsData.map<Map<String, dynamic>>((intervention) => {
+              'interventionName': intervention['interventionName'],
+              'lever': intervention['lever'],
+              'activity': intervention['activity'],
+              'expectedIncomeGeneration': intervention['expectedIncomeGeneration'],
+              'requiredDaysCompletion': intervention['requiredDaysCompletion'],
+            }).toList();
+
+            print("interventionsData : $interventions");
+
+            // You can update the controller or do whatever you need with leverData.
+            controller.updateInterventionsData(interventions);
+
+          }
+          else if (respBody.containsKey('totalInterventionsRecords')) {
+
+            controller.totalInterventionsCount = respBody['totalInterventionsRecords'];
+
+          }
+
+        } else {
+          throw Exception('Response format does not contain expected data');
+        }
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
     }
   }
 
