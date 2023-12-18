@@ -10,7 +10,7 @@ class ApiService {
 
   String? base = dotenv.env['BASE_URL'];
   // String? base = 'https://mobiledevcloud.dalmiabharat.com:443/csr';
-  // String? base = 'http://192.168.1.16:8082';
+  // String? base = 'http://192.168.1.68:8080/csr';
 
 
   Future<Map<String, dynamic>> getListOfRegions() async {
@@ -148,7 +148,9 @@ class ApiService {
 
           final List<Map<String, dynamic>> clusters = clustersData.map<Map<String, dynamic>>((cluster) => {
             'clusterId': cluster['clusterId'],
-            'clusterName': cluster['clusterName']
+            'clusterName': cluster['clusterName'],
+            'vdfName': cluster['vdfName'],
+
           }).toList();
 
           print("sgncy $clusters");

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class ReplaceVdfController extends GetxController {
@@ -8,6 +9,8 @@ class ReplaceVdfController extends GetxController {
   int? selectRegionId;
   String? selectCluster;
   int? selectClusterId;
+  String? selectVdfName;
+  Rx<TextEditingController> newVdfNameController = TextEditingController().obs;
   List<Map<String, dynamic>>? locations;
   List<Map<String, dynamic>>? clusters;
 

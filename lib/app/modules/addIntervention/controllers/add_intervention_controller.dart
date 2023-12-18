@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AddIntervalController extends GetxController {
-  Rx<TextEditingController> nVdfN = TextEditingController().obs;
+class AddInterventionController extends GetxController {
+  Rx<TextEditingController> newInterventionTitle = TextEditingController().obs;
   Rx<TextEditingController> lever = TextEditingController().obs;
   Rx<TextEditingController> exAnnualIncome = TextEditingController().obs;
   Rx<TextEditingController> noOfDay = TextEditingController().obs;
 
-  List<String> locations = [
+  List<String> interventions = [
     'Vermicompost-Bag (not less than 3 ft x 6 ft)',
 
 

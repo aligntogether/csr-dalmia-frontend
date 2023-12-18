@@ -22,7 +22,7 @@ class ReplaceVdfView extends StatefulWidget {
 
 class _ReplaceVdfViewState extends State<ReplaceVdfView> {
   final ApiService addPanchayatApiService = ApiService();
-  final ReplaceVdfApiService addClusterApiService = ReplaceVdfApiService();
+  final ReplaceVdfApiService replaceVdfApiService = ReplaceVdfApiService();
 
   ReplaceVdfController controller = Get.put(ReplaceVdfController());
   late Future<Map<String, dynamic>> regionsFuture;
@@ -94,9 +94,11 @@ class _ReplaceVdfViewState extends State<ReplaceVdfView> {
 
                             if (selectedRegion != null &&
                                 selectedRegion['regionId'] != null) {
+
                               controller.selectRegionId =
-                              selectedRegion['regionId'];
-                              controller.selectRegion = newValue;
+                                selectedRegion['regionId'];
+                                controller.selectRegion = newValue;
+
                               controller.update(["add"]);
 
                               // Get locations based on the selected regionId
@@ -117,6 +119,7 @@ class _ReplaceVdfViewState extends State<ReplaceVdfView> {
                               null; // Assuming you initially set it to null
                               controller.selectLocationId = null;
                               controller.selectCluster = null;
+                              controller.selectVdfName = null;
 
                             }
                           },
@@ -163,9 +166,11 @@ class _ReplaceVdfViewState extends State<ReplaceVdfView> {
 
                         if (selectedLocationId != null) {
                           // Assign 'location' to controller.selectLocation
-                          controller.selectLocation =
-                          selectedLocation['location'] as String;
-                          controller.selectLocationId = selectedLocationId;
+
+                            controller.selectLocation =
+                            selectedLocation['location'] as String;
+                            controller.selectLocationId = selectedLocationId;
+
                           controller.update(["add"]);
 
                           controller.selectCluster = null;
@@ -181,6 +186,11 @@ class _ReplaceVdfViewState extends State<ReplaceVdfView> {
 
                           controller.updateClusters(clusters);
                           controller.update(["add"]);
+
+                            controller.selectClusterId =
+                            0;
+                            controller.selectCluster = null;
+                            controller.selectVdfName = null;
 
                         }
                       }
@@ -200,24 +210,30 @@ class _ReplaceVdfViewState extends State<ReplaceVdfView> {
                       .map((cluster) =>
                       cluster['clusterName'].toString())
                       .toList()) : [],
-                  selectedValue: controller.selectLocation,
+                  selectedValue: controller.selectCluster,
                   onChanged: (String? newValue) async {
                     // Find the selected region and get its corresponding regionId
                     Map<String, dynamic>? selectedCluster = controller.clusters
-                        ?.firstWhere((cluster) => cluster['cluster'] == newValue);
+                        !.firstWhere((cluster) => cluster['clusterName'] == newValue);
 
                     print('controller.selectedCluster: ${selectedCluster}');
 
 
                     if (selectedCluster != null &&
                         selectedCluster['clusterId'] != null) {
-                      controller.selectClusterId =
-                      selectedCluster['clusterId'];
-                      controller.selectCluster = newValue;
+
+                        controller.selectClusterId =
+                        selectedCluster['clusterId'];
+                        controller.selectCluster = newValue;
+                        controller.selectVdfName = selectedCluster['vdfName'];
+
+
                       controller.update(["add"]);
 
+                      controller.newVdfNameController.value = new TextEditingController();
+
                       print('controller.selectedCluster: ${controller
-                          .selectClusterId}');
+                          .selectClusterId}, name : ${controller.selectVdfName}');
                     }
                   },
                 );
@@ -256,10 +272,29 @@ class _ReplaceVdfViewState extends State<ReplaceVdfView> {
   }
 }
 
-class ReplaceVdfNewView extends StatelessWidget {
+
+class ReplaceVdfNewView extends StatefulWidget {
   String? location, regions, cl;
 
   ReplaceVdfNewView({super.key, this.location, this.regions, this.cl});
+
+  @override
+  _ReplaceVdfNewViewState createState() => _ReplaceVdfNewViewState();
+}
+
+class _ReplaceVdfNewViewState extends State<ReplaceVdfNewView> {
+
+  final ReplaceVdfApiService replaceVdfApiService = new ReplaceVdfApiService();
+
+  ReplaceVdfController controller = Get.put(ReplaceVdfController());
+  String? validationResult;
+  String? vdfName;
+
+  @override
+  void initState() {
+    super.initState();
+    controller.newVdfNameController.value.text = '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -305,7 +340,7 @@ class ReplaceVdfNewView extends StatelessWidget {
                           fontSize: 14, color: Color(0xff006838)),
                       children: <TextSpan>[
                         TextSpan(
-                            text: regions,
+                            text: widget.regions,
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14,
                                 color: Color(0xff006838).withOpacity(0.5))),
@@ -320,7 +355,7 @@ class ReplaceVdfNewView extends StatelessWidget {
                           fontSize: 14, color: Color(0xff006838)),
                       children: <TextSpan>[
                         TextSpan(
-                            text: location,
+                            text: widget.location,
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14,
                                 color: Color(0xff006838).withOpacity(0.5))),
@@ -335,7 +370,7 @@ class ReplaceVdfNewView extends StatelessWidget {
                           fontSize: 14, color: Color(0xff006838)),
                       children: <TextSpan>[
                         TextSpan(
-                            text: cl,
+                            text: widget.cl,
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14,
                                 color: Color(0xff006838).withOpacity(0.5))),
@@ -350,7 +385,7 @@ class ReplaceVdfNewView extends StatelessWidget {
                           fontSize: 14, color: Color(0xff006838)),
                       children: <TextSpan>[
                         TextSpan(
-                            text: "Lakshmi",
+                            text: controller.selectVdfName,
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14,
                                 color: Color(0xff006838).withOpacity(0.5))),
@@ -368,8 +403,12 @@ class ReplaceVdfNewView extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 34),
                 child: TextFormField(
-                //  controller: controller.vdfController.value,
+                 controller: controller.newVdfNameController.value,
                   onChanged: (value) {
+
+                   setState(() {
+                     vdfName = value;
+                   });
                     controller.update(["add"]);
                   },
                   decoration: const InputDecoration(
@@ -382,18 +421,57 @@ class ReplaceVdfNewView extends StatelessWidget {
             },
           ),
           Space.height(19),
-          GestureDetector(onTap: () {
-            showConfirmationDialog(context);
+          GestureDetector(onTap: () async {
+
+
+            try {
+              String response = await replaceVdfApiService.replaceVdf(
+                  controller.selectClusterId ?? 0,
+                  controller.newVdfNameController.value.text);
+
+              if (response == "VDF Updated") {
+                showConfirmationDialog(context);
+              }
+              else {
+                print("inside eldse : ");
+                setState(() {
+                  validationResult = "Something went wrong!";
+                });
+              }
+            }
+            catch (e) {
+              setState(() {
+                validationResult = "Something went wrong : $e";
+              });
+            }
+
           },
             child: commonButton(
                 title: "Add VDF",
-                color:  Color(0xff27528F)),
-          )
+                color:  vdfName != null
+                    ? Color(0xff27528F)
+                    : Color(0xff27528F).withOpacity(0.7)
+            ),
+          ),
+
+          // Display the error message with red color if there's an error
+          if (validationResult != null)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                validationResult!,
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
 
         ],
       ),
     ));
   }
+
+
+
+
   void showConfirmationDialog(BuildContext context,
       {String? location, String? r, String? p}) {
     showDialog(
