@@ -4,6 +4,15 @@ class SourceFundsController extends GetxController {
   RxBool openMenu = false.obs;
   String? selectP ;
   String? selectLocation = "South & Chandrapur";
+  Map<String, Map<String, dynamic>>? sourceOfFundsData;
+
+
+  void updateSourceOfFundsData(Map<String, Map<String, dynamic>>? sourceFundsData) {
+    this.sourceOfFundsData = sourceFundsData;
+    update(["add"]);
+  }
+
+
   void onTapOpenMenu() {
     openMenu.value = !openMenu.value;
     update();
@@ -38,9 +47,9 @@ class SourceFundsController extends GetxController {
   ];
   List<String> locations = [
     'Cement',
-    'South',
+    'South and Chandrapur',
     'East',
-    'N.East',
+    'North East',
     'Total',
     'Sugar',
     'Pan-India',
@@ -99,14 +108,14 @@ class SourceFundsController extends GetxController {
     1687825,
   ];
   List<int> SOUTH = [
-    128036,
-    37765,
-    387004,
-    1687825,
-    128036,
-    37765,
-    387004,
-    1687825,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
   ];
 
 }

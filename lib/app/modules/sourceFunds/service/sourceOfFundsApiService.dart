@@ -1,12 +1,12 @@
 import 'dart:convert';
-import 'package:dalmia/app/modules/addIntervention/controllers/add_intervention_controller.dart';
+import 'package:dalmia/app/modules/sourceFunds/controllers/source_funds_controller.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:http/http.dart' as http;
 
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class AddInterventionApiService {
+class SourceOfFundsApiService {
 
 
   String? base = dotenv.env['BASE_URL'];
@@ -51,6 +51,8 @@ class AddInterventionApiService {
       throw Exception('Error making API request: $e');
     }
   }
+
+
 
 
   Future<Map<String, dynamic>> getListOfLocations(int regionId) async {
@@ -147,7 +149,9 @@ class AddInterventionApiService {
 
           final List<Map<String, dynamic>> clusters = clustersData.map<Map<String, dynamic>>((cluster) => {
             'clusterId': cluster['clusterId'],
-            'clusterName': cluster['clusterName']
+            'clusterName': cluster['clusterName'],
+            'vdfName': cluster['vdfName'],
+
           }).toList();
 
           print("sgncy $clusters");
@@ -167,10 +171,10 @@ class AddInterventionApiService {
   }
 
 
-  Future<String> validateDuplicateIntervention(String interventionName) async {
+  Future<String> validateDuplicatePanchayat(int clusterId, String panchayatName, String panchayatCode) async {
 
     try {
-      String url = '$base/validate-duplicate-intervention?interventionName=$interventionName';
+      String url = '$base/validate-duplicate-panchayat?clusterId=$clusterId&panchayatName=$panchayatName&panchayatCode=$panchayatCode';
 
       final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
 
@@ -180,9 +184,9 @@ class AddInterventionApiService {
         // Parse the response and extract regionId and region
         final Map<String, dynamic> respBody = json.decode(response.body);
         if (respBody.containsKey('resp_msg')) {
-          final String duplicateInterventionResMessage = respBody['resp_msg'];
+          final String duplicatePanchayatResMessage = respBody['resp_msg'];
 
-          return duplicateInterventionResMessage; // Returning a map with 'clusters' key containing the list
+          return duplicatePanchayatResMessage; // Returning a map with 'clusters' key containing the list
         } else {
           throw Exception('Response format does not contain expected data');
         }
@@ -197,56 +201,10 @@ class AddInterventionApiService {
   }
 
 
-  Future<String> addIntervention(String interventionName, String lever, int expectedIncomeGeneration, int requiredDaysCompletion) async {
-
-    try {
-      String url = '$base/add-intervention';
-
-      Map<String, dynamic> requestBody = {
-        "interventionName": interventionName,
-        "lever": lever,
-        "expectedIncomeGeneration": expectedIncomeGeneration,
-        "requiredDaysCompletion": requiredDaysCompletion
-      };
-
-
-      final response = await http.post(Uri.parse(url),
-
-          headers: <String, String> {
-            'Content-Type' : 'application/json; charset=UTF-8'
-          },
-          body: jsonEncode(requestBody)
-      ).timeout(Duration(seconds: 30));
-
-
-      if (response.statusCode == 200) {
-        print("API Response: ${response.body}");
-
-        // Parse the response and extract regionId and region
-        final Map<String, dynamic> respBody = json.decode(response.body);
-
-        if (respBody.containsKey('resp_msg')) {
-          final String addPanchayatResMessage = respBody['resp_msg'];
-
-          return addPanchayatResMessage; // Returning a map with 'clusters' key containing the list
-        } else {
-          throw Exception('Response format does not contain expected data');
-        }
-      } else {
-        print("API Error Response: ${response.body}");
-        throw Exception('Failed to add panchayat. Status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      print("Error making API request: $e");
-      throw Exception('Error making API request: $e');
-    }
-  }
-
-
-  Future<List<Map<String, dynamic>>?> fetchInterventionsData(AddInterventionController controller, int? skipRecordsCount, int? recordsCount) async {
+  Future<Map<String, Map<String, dynamic>>?> fetchSourceOfFundsData(SourceFundsController controller) async {
     try {
       final response = await http.get(
-        Uri.parse('$base/list-interventions?skipRecordsCount=${controller.skipRecordsCount}&recordCount=${controller.recordsCount}'),
+        Uri.parse('$base/gpl-source-of-funds'),
       );
 
       if (response.statusCode == 200) {
@@ -255,33 +213,30 @@ class AddInterventionApiService {
         if (jsonData.containsKey('resp_body')) {
           final Map<String, dynamic> respBody = jsonData['resp_body'];
 
-          if (respBody.containsKey('interventions')) {
-            final List<dynamic> interventionsData = respBody['interventions'];
+          // Ensure 'resp_body' contains the expected data structure
+          if (respBody is Map<String, dynamic>) {
+            // Create the desired map structure directly
+            Map<String, Map<String, dynamic>> sourceOfFundsData = {};
+            respBody.forEach((key, data) {
+              sourceOfFundsData[key] = {
+                'noOfHouseholds': data['noOfHouseholds'],
+                'beneficiary': data['beneficiary'],
+                'subsidy': data['subsidy'],
+                'credits': data['credits'],
+                'dbf': data['dbf'],
+              };
+            });
 
-            List<Map<String, dynamic>> interventions = interventionsData.map<Map<String, dynamic>>((intervention) => {
-              'interventionName': intervention['interventionName'],
-              'lever': intervention['lever'],
-              'activity': intervention['activity'],
-              'expectedIncomeGeneration': intervention['expectedIncomeGeneration'],
-              'requiredDaysCompletion': intervention['requiredDaysCompletion'],
-            }).toList();
+            // Update the controller or perform any necessary actions
+            controller.updateSourceOfFundsData(sourceOfFundsData);
 
-            print("interventionsData : $interventions");
+            print("controller.sourceOfFundsData : ${controller.sourceOfFundsData}");
 
-            // You can update the controller or do whatever you need with leverData.
-            controller.updateInterventionsData(interventions);
+            return sourceOfFundsData;
 
-            // print("out............. \n \n  .........");
-            if (respBody.containsKey('totalInterventionsRecords')) {
-
-              controller.totalInterventionsCount = respBody['totalInterventionsRecords'];
-
-            }
-
-            return interventions;
-
+          } else {
+            throw Exception('Unexpected data structure in "resp_body"');
           }
-
         } else {
           throw Exception('Response format does not contain expected data');
         }
@@ -291,7 +246,10 @@ class AddInterventionApiService {
     } catch (e) {
       print('Error: $e');
     }
+    return null; // Return null if there's an error or no data
   }
+
+
 
 
 

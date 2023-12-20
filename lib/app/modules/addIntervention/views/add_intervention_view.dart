@@ -1,15 +1,22 @@
+// import 'dart:html';
+import 'dart:io';
+
 import 'package:dalmia/app/modules/addIntervention/service/addInterventionApiService.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/color_constant.dart';
 import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/theme.dart';
+import 'package:excel/excel.dart' as excels;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:open_file/open_file.dart';
 
 import '../../../../common/image_constant.dart';
 import '../../../../pages/gpl/gpl_home_screen.dart';
+import '../../downloadExcelFromTable/ExportTableToExcel.dart';
 import '../controllers/add_intervention_controller.dart';
+import 'package:path_provider/path_provider.dart';
 
 
 class AddInterventionView extends StatefulWidget {
@@ -177,10 +184,10 @@ class _AddInterventionViewState extends State<AddInterventionView> {
                     child: commonButton(
                         title: "Add Intervention",
                         color: controller.newInterventionTitle.value.text.isNotEmpty &&
-                                controller.lever.value.text.isNotEmpty &&
-                                controller
-                                    .exAnnualIncome.value.text.isNotEmpty &&
-                                controller.noOfDay.value.text.isNotEmpty
+                            controller.lever.value.text.isNotEmpty &&
+                            controller
+                                .exAnnualIncome.value.text.isNotEmpty &&
+                            controller.noOfDay.value.text.isNotEmpty
                             ? Color(0xff27528F)
                             : Color(0xff27528F).withOpacity(0.7)),
                   );
@@ -310,86 +317,136 @@ class _InterventionListViewState extends State<InterventionListView> {
 
   AddInterventionController controller = Get.put(AddInterventionController());
   AddInterventionApiService addInterventionApiService = new AddInterventionApiService();
+  ExportTableToExcel exportsTableToExcel = new ExportTableToExcel();
 
   @override
   void initState() {
     super.initState();
-    addInterventionApiService.fetchInterventionsData(controller, controller.skipRecordsCount, controller.recordsCount);
+    fetchData();
+  }
+
+  void fetchData(){
+    addInterventionApiService.fetchInterventionsData(controller, controller.skipRecordsCount, controller.recordsCount).then((value) => {
+      setState(()=> controller.updateInterventionsData(value!))
+    });
+  }
+
+  void nextPage(){
+    if(controller.pageNumber == (controller.totalInterventionsCount / 20).ceil()) return;
+
+    setState(() {
+      controller.pageNumber++;
+      controller.skipRecordsCount = 20 * (controller.pageNumber - 1);
+      fetchData();
+    });
+  }
+
+  void prevPage(){
+    if(controller.pageNumber == 1) return;
+
+    setState(() {
+      controller.pageNumber--;
+      controller.skipRecordsCount = 20 * (controller.pageNumber - 1);
+      fetchData();
+    });
+  }
+
+  void goToFirst(){
+    setState(() {
+      controller.pageNumber = 1;
+      controller.skipRecordsCount = 20 * (controller.pageNumber - 1);
+      fetchData();
+    });
+  }
+
+  void goToLast(){
+    setState(() {
+      controller.pageNumber = (controller.totalInterventionsCount / 20).ceil();
+      controller.skipRecordsCount = 20 * (controller.pageNumber - 1);
+      fetchData();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Space.height(20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: GestureDetector(
-                onTap: () {
-                  Get.back();
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      color: Colors.black,
-                      size: 15,
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Space.height(20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: GestureDetector(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          color: Colors.black,
+                          size: 15,
+                        ),
+                        Space.width(5),
+                        Text(
+                          "Back",
+                          style: AppStyle.textStyleInterMed(fontSize: 14),
+                        ),
+                        Spacer(),
+                        Icon(
+                          Icons.clear,
+                          color: Colors.black,
+                        )
+                      ],
                     ),
-                    Space.width(5),
-                    Text(
-                      "Back",
-                      style: AppStyle.textStyleInterMed(fontSize: 14),
-                    ),
-                    Spacer(),
-                    Icon(
-                      Icons.clear,
-                      color: Colors.black,
-                    )
-                  ],
+                  ),
                 ),
-              ),
-            ),
-            Space.height(18),
-            Text(
-              "Intervention List",
-              style: AppStyle.textStyleBoldMed(fontSize: 16),
-            ),
-            Space.height(16),
-            dataTable(controller),
-            Space.height(30),
-            GestureDetector(
-              onTap: () {},
-              child: Container(
-                height: MySize.size48,
-                width: MySize.size168,
-                decoration: BoxDecoration(
-                    border: Border.all(color: darkBlueColor),
-                    borderRadius: BorderRadius.circular(5)),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      'images/Excel.svg',
-                      height: 25,
-                      width: 25,
-                    ),
-                    Space.width(3),
-                    Text(
-                      'Download  Excel',
-                      style: AppStyle.textStyleInterMed(fontSize: 14),
-                    ),
-                  ],
+                Space.height(18),
+                Text(
+                  "Intervention List",
+                  style: AppStyle.textStyleBoldMed(fontSize: 16),
                 ),
-              ),
+                Space.height(16),
+                dataTable(controller),
+                Space.height(30),
+                GestureDetector(
+                  onTap: () {
+                    print("exportTableToExcel(controller)");
+                    exportsTableToExcel.exportTableToExcel(controller,
+                        ['S.No.', 'Intervention Titles', 'Lever', 'Expected additional annual income Rs.', 'Days required to complete Intervention'],
+                        ['interventionName', 'lever', 'expectedIncomeGeneration', 'requiredDaysCompletion']);
+
+                    print("exportTableToExcel(controller)  1");
+                  },
+                  child: Container(
+                    height: MySize.size48,
+                    width: MySize.size168,
+                    decoration: BoxDecoration(
+                        border: Border.all(color: darkBlueColor),
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          'images/Excel.svg',
+                          height: 25,
+                          width: 25,
+                        ),
+                        Space.width(3),
+                        Text(
+                          'Download  Excel',
+                          style: AppStyle.textStyleInterMed(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    ));
+          ),
+        ));
   }
 
   Widget dataTable(AddInterventionController controller) {
@@ -425,7 +482,7 @@ class _InterventionListViewState extends State<InterventionListView> {
                       padding: EdgeInsets.only(left: 10),
                       child: Center(
                         child: Text(
-                          'S.No.',
+                          'S.No. ',
                           style: TextStyle(
                               fontWeight: CustomFontTheme.headingwt,
                               fontSize: CustomFontTheme.textSize,
@@ -504,20 +561,21 @@ class _InterventionListViewState extends State<InterventionListView> {
                 ),
               ],
               rows: List<DataRow>.generate(
-                controller.interventionsData!.length,
-                (index) => DataRow(
+                controller.interventionsData != null ? controller.interventionsData!.length : 0,
+                    (index) => DataRow(
                   color: MaterialStateColor.resolveWith(
-                    (states) {
-                      print("controller.interventionsData : ${controller.interventionsData}");
+                        (states) {
 
-                      return controller.interventionsList[index] == "Households" ||
-                              controller.interventionsList[index] == "Interventions" ||
-                              controller.interventionsList[index] ==
-                                  "HH with Annual Addl. Income"
+                      // print("lllllcontroller.interventionsData : ${controller.interventionsData}");
+
+                      return controller.interventionsData![index]['interventionName'] == "Households" ||
+                          controller.interventionsData![index]['interventionName'] == "Interventions" ||
+                          controller.interventionsData![index]['interventionName'] ==
+                              "HH with Annual Addl. Income"
                           ? Color(0xff008CD3).withOpacity(0.3)
                           : index.isEven
-                              ? Colors.blue.shade50
-                              : Colors.white;
+                          ? Colors.blue.shade50
+                          : Colors.white;
                     },
                   ),
                   cells: [
@@ -528,29 +586,28 @@ class _InterventionListViewState extends State<InterventionListView> {
                         child: Row(
                           children: [
                             Text(
-                              controller.interventionsList[index] == "Total"
-                                  ? ""
-                                  : "${index}",
+                              "${index+1}",
                               style: AppStyle.textStyleInterMed(fontSize: 14),
                             ),
                             Spacer(),
-                            controller.interventionsList[index] == "Total"
+                            controller.interventionsData![index]['interventionName'] == "Total"
                                 ? SizedBox()
                                 : VerticalDivider(
-                                    width: 1,
-                                    color: Color(0xff181818).withOpacity(0.3),
-                                    thickness: 1,
-                                  )
+                              width: 1,
+                              color: Color(0xff181818).withOpacity(0.3),
+                              thickness: 1,
+                            )
                           ],
                         ),
                       ),
                     ),
+
                     DataCell(
                       Row(
                         children: [
                           Spacer(),
                           Text(
-                            (controller.interventionsList[index]),
+                            controller.interventionsData![index]['interventionName'] ?? '',
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -568,7 +625,7 @@ class _InterventionListViewState extends State<InterventionListView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.leverList[index].toString()),
+                            controller.interventionsData![index]['lever'].toString() ?? '',
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -586,7 +643,7 @@ class _InterventionListViewState extends State<InterventionListView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.expAddAnnualIncomeList[index].toString()),
+                            controller.interventionsData![index]['expectedIncomeGeneration'].toString() ?? '',
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -604,7 +661,7 @@ class _InterventionListViewState extends State<InterventionListView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.daysRequiredList[index].toString()),
+                            controller.interventionsData![index]['requiredDaysCompletion'].toString() ?? '',
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -620,6 +677,7 @@ class _InterventionListViewState extends State<InterventionListView> {
                 ),
               )
           ),
+
         ));
   }
 }

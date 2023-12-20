@@ -1,5 +1,6 @@
 import 'package:dalmia/app/modules/overviewPan/views/overview_pan_view.dart';
 import 'package:dalmia/app/modules/sourceFunds/controllers/source_funds_controller.dart';
+import 'package:dalmia/app/modules/sourceFunds/service/sourceFundsApiService.dart';
 import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/color_constant.dart';
@@ -11,8 +12,83 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-class SourceInterventionsView extends StatelessWidget {
-  const SourceInterventionsView({super.key});
+import '../../downloadExcelFromTable/ExportTableToExcel.dart';
+
+
+
+
+
+class SourceInterventionsView extends StatefulWidget {
+
+  SourceInterventionsView({super.key});
+
+  @override
+  _SourceInterventionsViewState createState() => _SourceInterventionsViewState();
+}
+
+class _SourceInterventionsViewState extends State<SourceInterventionsView> {
+
+  SourceFundsController controller = Get.put(SourceFundsController());
+  SourceOfFundsApiService sourceOfFundsApiService = new SourceOfFundsApiService();
+  ExportTableToExcel exportsTableToExcel = new ExportTableToExcel();
+  List<String> regionsSequence = ['South and Chandrapur', 'East', 'North East', 'Sugar'];
+
+
+  @override
+  void initState() {
+    super.initState();
+    fetchSourceFundsData();
+    if (controller.sourceOfFundsData != null) {
+
+    }
+  }
+
+  void fetchSourceFundsData() async {
+    await sourceOfFundsApiService.fetchSourceOfFundsData(controller).then((value) => {
+      setState( () => controller.updateSourceOfFundsData(value!))
+    });
+
+    addCementTotalInSourceOfFundsData();
+    addPanIndiaTotalInSourceOfFundsData();
+
+    print("controller.sourceOfFundsData : ${controller.sourceOfFundsData}");
+
+  }
+
+  void addCementTotalInSourceOfFundsData() async {
+
+    List<String> targetRegions = ['South and Chandrapur', 'East', 'North East'];
+    List<String> targetKeys = ['noOfHouseholds', 'beneficiary', 'subsidy', 'credits', 'dbf'];
+
+    print("con reached: ");
+
+    Map<String, dynamic> cementTotal = await calculateIndividualKeySumsForRegions(targetRegions, controller.sourceOfFundsData!, targetKeys);
+
+
+    setState(() {
+      controller.sourceOfFundsData!.putIfAbsent('Total', () => cementTotal);
+    });
+
+    print("controller.sourceOfFundsData  hafsb1: ${controller.sourceOfFundsData}");
+
+  }
+
+  void addPanIndiaTotalInSourceOfFundsData() async {
+
+    List<String> targetRegions = ['South and Chandrapur', 'East', 'North East', 'Sugar'];
+    List<String> targetKeys = ['noOfHouseholds', 'beneficiary', 'subsidy', 'credits', 'dbf'];
+
+    print("con1 reached: ");
+
+    Map<String, dynamic> cementTotal = await calculateIndividualKeySumsForRegions(targetRegions, controller.sourceOfFundsData!, targetKeys);
+
+    setState(() {
+      controller.sourceOfFundsData!.putIfAbsent('Pan-India', () => cementTotal);
+    });
+
+    print("controller.sourceOfFundsData  hafsb11: ${controller.sourceOfFundsData}");
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +124,7 @@ class SourceInterventionsView extends StatelessWidget {
                     ),
                     Spacer(),
                     viewOtherReports(context),
-          
+
                     Space.width(16),
                   ],
                 ),
@@ -62,7 +138,7 @@ class SourceInterventionsView extends StatelessWidget {
               ),
               ///_________________________________ Table __________________________///
               tableDataLocationView(controller),
-      /*    SingleChildScrollView(
+              /*    SingleChildScrollView(
             child: Table(border: TableBorder.all(), children: [
               const TableRow(children: [
                 Text('Details'),
@@ -85,7 +161,7 @@ class SourceInterventionsView extends StatelessWidget {
           ),*/
               Space.height(20),
               GestureDetector(onTap: () {
-          
+
               },
                 child: Container(height: MySize.size48,width: MySize.size168,
                   decoration: BoxDecoration(border: Border.all(color: darkBlueColor),
@@ -95,7 +171,7 @@ class SourceInterventionsView extends StatelessWidget {
                     children: [
                       SvgPicture.asset('images/Excel.svg',height: 25,width: 25,),
                       Space.width(3),
-                       Text(
+                      Text(
                         'Download  Excel',
                         style:AppStyle.textStyleInterMed(fontSize: 14),
                       ),
@@ -133,7 +209,7 @@ class SourceInterventionsView extends StatelessWidget {
               columns:  <DataColumn>[
                 DataColumn(
                   label: Expanded(
-                    child: Container( height: 60,
+                    child: Container( height: 60,width: 180,
                       decoration: BoxDecoration(color: Color(0xff008CD3),
                           borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0))),
                       padding: EdgeInsets.only(left: 10),
@@ -167,7 +243,7 @@ class SourceInterventionsView extends StatelessWidget {
                 ),
                 DataColumn(
                   label: Container(
-                    height: 60,width: 85,color: Color(0xff008CD3),
+                    height: 60,width: 93,color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -245,14 +321,14 @@ class SourceInterventionsView extends StatelessWidget {
               ],
 
               rows: List<DataRow>.generate(
-                controller.locations.length,
+                controller.locations!.length,
                     (index) => DataRow(
                   color: MaterialStateColor.resolveWith(
                         (states) {
-                      return controller.locations[index] == "Households" ||
+                      return  true /*controller.sourceOfFundsData[index] == "Households" ||
                           controller.locations[index] == "Interventions" ||
                           controller.locations[index] ==
-                              "HH with Annual Addl. Income"
+                              "HH with Annual Addl. Income"*/
                           ? Color(0xff008CD3).withOpacity(0.3)
                           : index.isEven
                           ? Colors.blue.shade50
@@ -261,17 +337,19 @@ class SourceInterventionsView extends StatelessWidget {
                   ),
                   cells: [
                     DataCell(
-                      Container(width: 150,
+                      Container(width: 180,
                         padding: EdgeInsets.only(left: 10),
 
                         child: Row(
                           children: [
                             Text(
-                              controller.locations[index],
-                              style: controller.locations[index] == "Cement"?TextStyle(
+                              controller.locations[index], // Use the source name as label
+                              style: controller.locations[index] == "Cement"
+                                  ? TextStyle(
                                   color: CustomColorTheme.textColor,
                                   fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize):AppStyle.textStyleInterMed(fontSize: 14),
+                                  fontSize: CustomFontTheme.textSize)
+                                  : AppStyle.textStyleInterMed(fontSize: 14),
                             ),
                             Spacer(),
                             controller.locations[index] == "Cement"?SizedBox():VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
@@ -285,9 +363,14 @@ class SourceInterventionsView extends StatelessWidget {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Cement"
+                            // (controller.sourceOfFundsData!.keys.elementAt(index) == "Cement"
+                            //     ? ""
+                            //     : controller.sourceOfFundsData!['South and Chandrapur']!['noOfHouseholds'].toString()),
+                            controller.locations[index] == "Cement"
                                 ? ""
-                                : controller.DPM[index].toString()),
+                                : controller.sourceOfFundsData!.containsKey(controller.locations[index])
+                                ? (controller.sourceOfFundsData![controller.locations[index]]!['noOfHouseholds'] ?? 0).toString()
+                                : "0",
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -303,8 +386,11 @@ class SourceInterventionsView extends StatelessWidget {
                           Spacer(),
 
                           Text(
-                            (controller.locations[index] == "Cement"?""
-                                : controller.ALR[index].toString()),
+                            controller.locations[index] == "Cement"
+                                ? ""
+                                : controller.sourceOfFundsData!.containsKey(controller.locations[index])
+                                ? (controller.sourceOfFundsData![controller.locations[index]]!['beneficiary'] ?? 0).toString()
+                                : "0",
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -318,8 +404,11 @@ class SourceInterventionsView extends StatelessWidget {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Cement"?""
-                                : controller.BGM[index].toString()),
+                            controller.locations[index] == "Cement"
+                                ? ""
+                                : controller.sourceOfFundsData!.containsKey(controller.locations[index])
+                                ? (controller.sourceOfFundsData![controller.locations[index]]!['subsidy'] ?? 0).toString()
+                                : "0",
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -333,8 +422,11 @@ class SourceInterventionsView extends StatelessWidget {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Cement"?""
-                                : controller.KDP[index].toString()),
+                            controller.locations[index] == "Cement"
+                                ? ""
+                                : controller.sourceOfFundsData!.containsKey(controller.locations[index])
+                                ? (controller.sourceOfFundsData![controller.locations[index]]!['credits'] ?? 0).toString()
+                                : "0",
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -348,8 +440,11 @@ class SourceInterventionsView extends StatelessWidget {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Cement"? ""
-                                : controller.CHA[index].toString()),
+                            controller.locations[index] == "Cement"
+                                ? ""
+                                : controller.sourceOfFundsData!.containsKey(controller.locations[index])
+                                ? (controller.sourceOfFundsData![controller.locations[index]]!['dbf'] ?? 0).toString()
+                                : "0",
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -357,6 +452,8 @@ class SourceInterventionsView extends StatelessWidget {
                         ],
                       ),
                     ),
+
+
                     ///__________________________ South _______________________
                     DataCell(
                       Container(height: 60,color: Color(0xff096C9F),
@@ -364,7 +461,9 @@ class SourceInterventionsView extends StatelessWidget {
                         child: Center(
                           child: Text(
                             controller.locations[index] == "Cement"?""
-                                : controller.SOUTH[index].toString(),
+                                : controller.sourceOfFundsData!.containsKey(controller.locations[index])
+                                ? _calculateSumForLocation(controller.locations[index]).toString()
+                                : "0",
                             style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
                           ),
                         ),
@@ -416,4 +515,53 @@ class SourceInterventionsView extends StatelessWidget {
           ),
         ));
   }
+
+
+
+  num _calculateSumForLocation(String region) {
+    num sum = 0;
+    if (controller.sourceOfFundsData!.containsKey(region)) {
+      Map<String, dynamic>? regionData = controller.sourceOfFundsData![region];
+      if (regionData != null) {
+        for (var key in regionData.keys) {
+          if (key != "noOfHouseholds" && regionData[key] is num) {
+            sum += regionData[key];
+          }
+        }
+      }
+    }
+    return sum;
+  }
+
+
+  Map<String, num> calculateIndividualKeySumsForRegions(List<String> regions, Map<String, Map<String, dynamic>> sourceOfFundsData, List<String> targetData) {
+    Map<String, num> totalKeySums = {};
+
+    for (var region in regions) {
+      Map<String, dynamic>? regionsData = sourceOfFundsData[region];
+      if (regionsData != null) {
+        Map<String, num> individualKeySums = calculateIndividualKeySums(regionsData, targetData);
+        totalKeySums.addAll(individualKeySums); // Combine individual sums into total
+      }
+    }
+
+    return totalKeySums;
+  }
+
+  Map<String, num> calculateIndividualKeySums(Map<String, dynamic> regionData, List<String> targetKeys) {
+    Map<String, num> keySums = {};
+
+    for (var key in regionData.keys) {
+      if (targetKeys.contains(key) && regionData[key] is num) {
+        keySums[key] = regionData[key]; // Store key-value pairs as a Map
+      }
+    }
+
+    return keySums;
+  }
+
+
+
+
+
 }
