@@ -2,9 +2,18 @@ import 'package:get/get.dart';
 
 class SourceFundsController extends GetxController {
   RxBool openMenu = false.obs;
-  String? selectP ;
-  String? selectLocation = "South & Chandrapur";
+  // String? selectP;
+  String? selectLocation;
   Map<String, Map<String, dynamic>>? sourceOfFundsData;
+  Map<String, Map<String, dynamic>>? regionWiseSourceOfFundsData;
+  Map<String, Map<String, dynamic>>? locationWiseSourceOfFundsData;
+
+  int? selectLocationId;
+  int? selectRegionId;
+  String? selectRegion ;
+
+  List<Map<String, dynamic>>? locationsList;
+  // List<Map<String, dynamic>>? panchayats;
 
 
   void updateSourceOfFundsData(Map<String, Map<String, dynamic>>? sourceFundsData) {
@@ -12,6 +21,20 @@ class SourceFundsController extends GetxController {
     update(["add"]);
   }
 
+  void updateRegionWiseSourceOfFundsData(Map<String, Map<String, dynamic>>? regionWiseSourceFundsData) {
+    this.regionWiseSourceOfFundsData = regionWiseSourceFundsData;
+    update(["add"]);
+  }
+
+  void updateLocationWiseSourceOfFundsData(Map<String, Map<String, dynamic>>? locationWiseSourceFundsData) {
+    this.locationWiseSourceOfFundsData = locationWiseSourceFundsData;
+    update(["add"]);
+  }
+
+  void updateLocations(List<Map<String, dynamic>> locationsList) {
+    this.locationsList = locationsList;
+    update(["add"]);
+  }
 
   void onTapOpenMenu() {
     openMenu.value = !openMenu.value;
@@ -26,7 +49,9 @@ class SourceFundsController extends GetxController {
     'CHA',
     'Total',
   ];
-  List<String> regionsByLocation = [
+
+
+  List<String> clustersByLocation = [
     '<VDF 1>',
     '<VDF 2>',
     '<VDF 3>',
@@ -45,6 +70,7 @@ class SourceFundsController extends GetxController {
     1687825,
 
   ];
+
   List<String> locations = [
     'Cement',
     'South and Chandrapur',
@@ -53,8 +79,6 @@ class SourceFundsController extends GetxController {
     'Total',
     'Sugar',
     'Pan-India',
-
-
   ];
   List<int> DPM = [
     128036,

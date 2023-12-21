@@ -27,8 +27,6 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
 
   SourceFundsController controller = Get.put(SourceFundsController());
   SourceOfFundsApiService sourceOfFundsApiService = new SourceOfFundsApiService();
-  // ExportTableToExcel exportsTableToExcel = new ExportTableToExcel();
-  // List<String> regionsSequence = ['South and Chandrapur', 'East', 'North East', 'Sugar'];
 
 
   @override
@@ -320,8 +318,8 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
                   color: MaterialStateColor.resolveWith(
                         (states) {
                       return controller.sourceOfFundsData![index] == "Households" ||
-                          controller.locations[index] == "Interventions" ||
-                          controller.locations[index] ==
+                          controller.sourceOfFundsData![index] == "Interventions" ||
+                          controller.sourceOfFundsData![index] ==
                               "HH with Annual Addl. Income"
                           ? Color(0xff008CD3).withOpacity(0.3)
                           : index.isEven

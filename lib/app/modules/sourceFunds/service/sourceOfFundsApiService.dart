@@ -14,7 +14,7 @@ class SourceOfFundsApiService {
   // String? base = 'http://192.168.1.68:8080/csr';
 
 
-  Future<Map<String, dynamic>> getListOfRegions() async {
+  Future<Map<String, dynamic>> getListOfRegions(SourceFundsController controller) async {
     try {
       String url = '$base/list-regions';
 
@@ -38,6 +38,13 @@ class SourceOfFundsApiService {
           }).toList();
 
 
+          controller.selectRegion = regions.elementAt(0)['region'];
+          controller.selectRegionId = regions.elementAt(0)['regionId'];
+
+
+          print("controller.selectRegion : ${controller.selectRegion}");
+          print("controller.selectRegionId : ${controller.selectRegionId}");
+
           return {'regions': regions}; // Returning a map with 'regions' key containing the list
         } else {
           throw Exception('Response format does not contain expected data');
@@ -51,8 +58,6 @@ class SourceOfFundsApiService {
       throw Exception('Error making API request: $e');
     }
   }
-
-
 
 
   Future<Map<String, dynamic>> getListOfLocations(int regionId) async {
@@ -233,6 +238,55 @@ class SourceOfFundsApiService {
             print("controller.sourceOfFundsData : ${controller.sourceOfFundsData}");
 
             return sourceOfFundsData;
+
+          } else {
+            throw Exception('Unexpected data structure in "resp_body"');
+          }
+        } else {
+          throw Exception('Response format does not contain expected data');
+        }
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+    return null; // Return null if there's an error or no data
+  }
+
+
+  Future<Map<String, Map<String, dynamic>>?> fetchRegionWiseSourceOfFundsData(SourceFundsController controller) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$base/gpl-location-wise-source-of-funds?regionId=${controller.selectRegionId!}'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        if (jsonData.containsKey('resp_body')) {
+          final Map<String, dynamic> respBody = jsonData['resp_body'];
+
+          // Ensure 'resp_body' contains the expected data structure
+          if (respBody is Map<String, dynamic>) {
+            // Create the desired map structure directly
+            Map<String, Map<String, dynamic>> regionWiseSourceOfFundsData = {};
+            respBody.forEach((key, data) {
+              regionWiseSourceOfFundsData[key] = {
+                'noOfHouseholds': data['noOfHouseholds'],
+                'beneficiary': data['beneficiary'],
+                'subsidy': data['subsidy'],
+                'credits': data['credits'],
+                'dbf': data['dbf'],
+              };
+            });
+
+            // Update the controller or perform any necessary actions
+            controller.updateRegionWiseSourceOfFundsData(regionWiseSourceOfFundsData);
+
+            print(" \n \n controller.regionWiseSourceOfFundsData wiuygif : ${controller.regionWiseSourceOfFundsData}");
+
+            return regionWiseSourceOfFundsData;
 
           } else {
             throw Exception('Unexpected data structure in "resp_body"');
