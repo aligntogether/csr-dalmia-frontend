@@ -1,10 +1,8 @@
 import 'package:dalmia/app/modules/overviewPan/views/overview_pan_view.dart';
 import 'package:dalmia/app/modules/sourceFunds/controllers/source_funds_controller.dart';
-import 'package:dalmia/app/modules/sourceFunds/service/sourceFundsApiService.dart';
-import 'package:dalmia/app/routes/app_pages.dart';
+import 'package:dalmia/app/modules/sourceFunds/service/sourceOfFundsApiService.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/color_constant.dart';
-import 'package:dalmia/common/image_constant.dart';
 import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/pages/gpl/gpl_home_screen.dart';
 import 'package:dalmia/theme.dart';
@@ -12,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-import '../../downloadExcelFromTable/ExportTableToExcel.dart';
 
 
 
@@ -30,17 +27,14 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
 
   SourceFundsController controller = Get.put(SourceFundsController());
   SourceOfFundsApiService sourceOfFundsApiService = new SourceOfFundsApiService();
-  ExportTableToExcel exportsTableToExcel = new ExportTableToExcel();
-  List<String> regionsSequence = ['South and Chandrapur', 'East', 'North East', 'Sugar'];
+  // ExportTableToExcel exportsTableToExcel = new ExportTableToExcel();
+  // List<String> regionsSequence = ['South and Chandrapur', 'East', 'North East', 'Sugar'];
 
 
   @override
   void initState() {
     super.initState();
     fetchSourceFundsData();
-    if (controller.sourceOfFundsData != null) {
-
-    }
   }
 
   void fetchSourceFundsData() async {
@@ -60,7 +54,7 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
     List<String> targetRegions = ['South and Chandrapur', 'East', 'North East'];
     List<String> targetKeys = ['noOfHouseholds', 'beneficiary', 'subsidy', 'credits', 'dbf'];
 
-    print("con reached: ");
+    print("\n \n con reached: ");
 
     Map<String, dynamic> cementTotal = await calculateIndividualKeySumsForRegions(targetRegions, controller.sourceOfFundsData!, targetKeys);
 
@@ -78,12 +72,12 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
     List<String> targetRegions = ['South and Chandrapur', 'East', 'North East', 'Sugar'];
     List<String> targetKeys = ['noOfHouseholds', 'beneficiary', 'subsidy', 'credits', 'dbf'];
 
-    print("con1 reached: ");
+    print(" \n \n con1 reached: ");
 
-    Map<String, dynamic> cementTotal = await calculateIndividualKeySumsForRegions(targetRegions, controller.sourceOfFundsData!, targetKeys);
+    Map<String, dynamic> panIndiaTotal = await calculateIndividualKeySumsForRegions(targetRegions, controller.sourceOfFundsData!, targetKeys);
 
     setState(() {
-      controller.sourceOfFundsData!.putIfAbsent('Pan-India', () => cementTotal);
+      controller.sourceOfFundsData!.putIfAbsent('Pan-India', () => panIndiaTotal);
     });
 
     print("controller.sourceOfFundsData  hafsb11: ${controller.sourceOfFundsData}");
@@ -321,14 +315,14 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
               ],
 
               rows: List<DataRow>.generate(
-                controller.locations!.length,
+                controller.locations.length,
                     (index) => DataRow(
                   color: MaterialStateColor.resolveWith(
                         (states) {
-                      return  true /*controller.sourceOfFundsData[index] == "Households" ||
+                      return controller.sourceOfFundsData![index] == "Households" ||
                           controller.locations[index] == "Interventions" ||
                           controller.locations[index] ==
-                              "HH with Annual Addl. Income"*/
+                              "HH with Annual Addl. Income"
                           ? Color(0xff008CD3).withOpacity(0.3)
                           : index.isEven
                           ? Colors.blue.shade50
@@ -541,7 +535,13 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
       Map<String, dynamic>? regionsData = sourceOfFundsData[region];
       if (regionsData != null) {
         Map<String, num> individualKeySums = calculateIndividualKeySums(regionsData, targetData);
-        totalKeySums.addAll(individualKeySums); // Combine individual sums into total
+        // Sum values for existing keys:
+        individualKeySums.forEach((key, value) {
+          totalKeySums[key] = (totalKeySums[key] ?? 0) + value;
+        });
+
+        print("\n \n totalKeySums : $region : ${totalKeySums} \n \n");
+
       }
     }
 

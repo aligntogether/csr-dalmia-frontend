@@ -1,22 +1,18 @@
 // import 'dart:html';
-import 'dart:io';
 
 import 'package:dalmia/app/modules/addIntervention/service/addInterventionApiService.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/color_constant.dart';
 import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/theme.dart';
-import 'package:excel/excel.dart' as excels;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:open_file/open_file.dart';
 
 import '../../../../common/image_constant.dart';
 import '../../../../pages/gpl/gpl_home_screen.dart';
 import '../../downloadExcelFromTable/ExportTableToExcel.dart';
 import '../controllers/add_intervention_controller.dart';
-import 'package:path_provider/path_provider.dart';
 
 
 class AddInterventionView extends StatefulWidget {
@@ -35,7 +31,6 @@ class _AddInterventionViewState extends State<AddInterventionView> {
 
   @override
   Widget build(BuildContext context) {
-    AddInterventionController a = Get.put(AddInterventionController());
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -332,7 +327,7 @@ class _InterventionListViewState extends State<InterventionListView> {
   }
 
   void nextPage(){
-    if(controller.pageNumber == (controller.totalInterventionsCount / 20).ceil()) return;
+    if(controller.pageNumber == (controller.totalInterventionsCount! / 20).ceil()) return;
 
     setState(() {
       controller.pageNumber++;
@@ -361,7 +356,7 @@ class _InterventionListViewState extends State<InterventionListView> {
 
   void goToLast(){
     setState(() {
-      controller.pageNumber = (controller.totalInterventionsCount / 20).ceil();
+      controller.pageNumber = (controller.totalInterventionsCount! / 20).ceil();
       controller.skipRecordsCount = 20 * (controller.pageNumber - 1);
       fetchData();
     });
@@ -625,7 +620,7 @@ class _InterventionListViewState extends State<InterventionListView> {
                         children: [
                           Spacer(),
                           Text(
-                            controller.interventionsData![index]['lever'].toString() ?? '',
+                            controller.interventionsData![index]['lever'].toString(),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -643,7 +638,7 @@ class _InterventionListViewState extends State<InterventionListView> {
                         children: [
                           Spacer(),
                           Text(
-                            controller.interventionsData![index]['expectedIncomeGeneration'].toString() ?? '',
+                            controller.interventionsData![index]['expectedIncomeGeneration'].toString(),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -661,7 +656,7 @@ class _InterventionListViewState extends State<InterventionListView> {
                         children: [
                           Spacer(),
                           Text(
-                            controller.interventionsData![index]['requiredDaysCompletion'].toString() ?? '',
+                            controller.interventionsData![index]['requiredDaysCompletion'].toString(),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),

@@ -11,6 +11,7 @@ class AddInterventionController extends GetxController {
 
   int? skipRecordsCount = 0;
   int? recordsCount = 20;
+  int pageNumber = 0;
   int? totalInterventionsCount;
 
 
