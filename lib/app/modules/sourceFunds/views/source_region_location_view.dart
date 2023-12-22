@@ -103,12 +103,14 @@ class SourceRegionsView extends StatelessWidget {
                 },
               ),
               Space.height(30),
-             GetBuilder<SourceFundsController>(builder: (controller) {
-               return Text(
-                 "${ controller.selectP??controller.selectLocation }",
-                 style: AppStyle.textStyleBoldMed(fontSize: 14),
-               );
-             },),
+              GetBuilder<SourceFundsController>(
+                builder: (controller) {
+                  return Text(
+                    "${controller.selectP ?? controller.selectLocation}",
+                    style: AppStyle.textStyleBoldMed(fontSize: 14),
+                  );
+                },
+              ),
               Text(
                 "Source of Funds (Rs. in Lakhs)",
                 style: AppStyle.textStyleInterMed(fontSize: 14),
@@ -116,28 +118,10 @@ class SourceRegionsView extends StatelessWidget {
               Space.height(16),
 
               ///_________________________________ Table __________________________///
-              controller.selectP==null?tableDataRegionsView(controller):tableDataLocationView(controller),
-              /*    SingleChildScrollView(
-            child: Table(border: TableBorder.all(), children: [
-              const TableRow(children: [
-                Text('Details'),
-                Text('No. of HH with completed Int.'),
-              ]),
-              TableRow(children: [
-                const Text('Cement'),
-                Table(border: TableBorder.all(), children: const [
-                  TableRow(children: [
-                    Text('Nested Entry 1'),
-                    Text('Nested Entry 2'),
-                  ]),
-                  TableRow(children: [
-                    Text('Nested Entry 3'),
-                    Text('Nested Entry 4'),
-                  ]),
-                ]),
-              ]),
-            ]),
-          ),*/
+              controller.selectP == null
+                  ? tableDataRegionsView(controller)
+                  : tableDataLocationView(controller),
+
               Space.height(20),
               GestureDetector(
                 onTap: () {},
@@ -496,47 +480,10 @@ class SourceRegionsView extends StatelessWidget {
                     // Additional row for total
                   ],
                 ),
-              ) /*+
-                            [
-                              DataRow(
-                                color: MaterialStateColor.resolveWith(
-                                        (states) => Colors.white),
-                                cells: [
-                                  DataCell(
-                                    Text(
-                                      'Total',
-                                      style: TextStyle(
-                                        fontSize: CustomFontTheme.textSize,
-                                        fontWeight: CustomFontTheme.headingwt,
-                                      ),
-                                    ),
-                                  ),
-                                  DataCell(
-                                    Text(
-                                      "44444",
-                                      style: TextStyle(
-                                        color: CustomColorTheme.textColor,
-                                        fontWeight: CustomFontTheme.headingwt,
-                                        fontSize: CustomFontTheme.textSize,
-                                      ),
-                                    ),
-                                  ),
-                                  DataCell(
-                                    Text(
-                                      "64546",
-                                      style: TextStyle(
-                                        color: CustomColorTheme.textColor,
-                                        fontWeight: CustomFontTheme.headingwt,
-                                        fontSize: CustomFontTheme.textSize,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],*/
-              ),
+              )),
         ));
   }
+
   Widget tableDataLocationView(SourceFundsController controller) {
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -691,9 +638,7 @@ class SourceRegionsView extends StatelessWidget {
                 (index) => DataRow(
                   color: MaterialStateColor.resolveWith(
                     (states) {
-                      return index.isEven
-                              ? Colors.blue.shade50
-                              : Colors.white;
+                      return index.isEven ? Colors.blue.shade50 : Colors.white;
                     },
                   ),
                   cells: [
@@ -705,7 +650,8 @@ class SourceRegionsView extends StatelessWidget {
                           children: [
                             Text(
                               controller.regionsByLocation[index],
-                              style: controller.regionsByLocation[index] == "Cement"
+                              style: controller.regionsByLocation[index] ==
+                                      "Cement"
                                   ? TextStyle(
                                       color: CustomColorTheme.textColor,
                                       fontWeight: CustomFontTheme.headingwt,
@@ -855,45 +801,7 @@ class SourceRegionsView extends StatelessWidget {
                     // Additional row for total
                   ],
                 ),
-              ) /*+
-                            [
-                              DataRow(
-                                color: MaterialStateColor.resolveWith(
-                                        (states) => Colors.white),
-                                cells: [
-                                  DataCell(
-                                    Text(
-                                      'Total',
-                                      style: TextStyle(
-                                        fontSize: CustomFontTheme.textSize,
-                                        fontWeight: CustomFontTheme.headingwt,
-                                      ),
-                                    ),
-                                  ),
-                                  DataCell(
-                                    Text(
-                                      "44444",
-                                      style: TextStyle(
-                                        color: CustomColorTheme.textColor,
-                                        fontWeight: CustomFontTheme.headingwt,
-                                        fontSize: CustomFontTheme.textSize,
-                                      ),
-                                    ),
-                                  ),
-                                  DataCell(
-                                    Text(
-                                      "64546",
-                                      style: TextStyle(
-                                        color: CustomColorTheme.textColor,
-                                        fontWeight: CustomFontTheme.headingwt,
-                                        fontSize: CustomFontTheme.textSize,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],*/
-              ),
+              )),
         ));
   }
 }

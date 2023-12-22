@@ -1,41 +1,9 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:dalmia/pages/CDO/cdoappbar.dart';
 import 'package:dalmia/pages/CDO/cdohome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
-
-class sourceoffunds {
-  static List<String> names = [
-    'VDF Name 1',
-    'VDF Name 2',
-    'VDF Name 3',
-    'VDF Name 4'
-  ];
-  static List<int> noofhh = [195, 54, 234, 23];
-  static List<double> beneficiary = [
-    6.4,
-    5.9,
-    3.2,
-    4.5,
-  ];
-  static List<double> subsidy = [
-    6.4,
-    2.9,
-    4.7,
-    4.5,
-  ];
-  static List<double> credits = [
-    6.4,
-    4.9,
-    9.2,
-    7.5,
-  ];
-  static List<double> dbf = [
-    6.4,
-    5.9,
-    3.2,
-    4.5,
-  ];
-}
 
 class SourceOfFunds extends StatefulWidget {
   const SourceOfFunds({Key? key}) : super(key: key);
@@ -45,16 +13,65 @@ class SourceOfFunds extends StatefulWidget {
 }
 
 class _SourceOfFundsState extends State<SourceOfFunds> {
+  List<Map<String, dynamic>> sourceOfFundsData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    final response = await http.get(
+      Uri.parse(
+        'https://mobiledevcloud.dalmiabharat.com:443/csr/source-of-funds?locationId=10001',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+
+      final Map<String, dynamic> respBody = responseData['resp_body'];
+
+      // Handle the case where 'resp_body' is a Map
+      sourceOfFundsData = [respBody];
+    } else {
+      // Handle error
+      print('Error fetching data: ${response.statusCode}');
+    }
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    int totalhh = sourceoffunds.noofhh.fold(0, (prev, curr) => prev + curr);
-    double totalbeneficiary =
-        sourceoffunds.beneficiary.fold(0, (prev, curr) => prev + curr);
-    double totalsubsidy =
-        sourceoffunds.subsidy.fold(0, (prev, curr) => prev + curr);
-    double totalcredit =
-        sourceoffunds.credits.fold(0, (prev, curr) => prev + curr);
-    double totaldbf = sourceoffunds.dbf.fold(0, (prev, curr) => prev + curr);
+    // Assuming sourceOfFundsData is a List<Map<String, dynamic>>
+
+    int totalhh = sourceOfFundsData.fold<int>(
+      0,
+      (prev, curr) => prev + curr.values.first['noOfHouseholds'] as int,
+    );
+
+    double totalbeneficiary = sourceOfFundsData.fold<double>(
+      0,
+      (prev, curr) => prev + curr.values.first['beneficiary'] as double,
+    );
+
+    double totalsubsidy = sourceOfFundsData.fold<double>(
+      0,
+      (prev, curr) => prev + curr.values.first['subsidy'] as double,
+    );
+
+    double totalcredit = sourceOfFundsData.fold<double>(
+      0,
+      (prev, curr) => prev + curr.values.first['credits'] as double,
+    );
+
+    double totaldbf = sourceOfFundsData.fold<double>(
+      0,
+      (prev, curr) => prev + curr.values.first['dbf'] as double,
+    );
+
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
@@ -179,7 +196,7 @@ class _SourceOfFundsState extends State<SourceOfFunds> {
                       headingRowColor: MaterialStateColor.resolveWith(
                           (states) => Color(0xFF008CD3)),
                       rows: List<DataRow>.generate(
-                            sourceoffunds.names.length,
+                            sourceOfFundsData.length,
                             (index) => DataRow(
                               color: MaterialStateColor.resolveWith(
                                 (states) {
@@ -191,7 +208,7 @@ class _SourceOfFundsState extends State<SourceOfFunds> {
                               cells: [
                                 DataCell(
                                   Text(
-                                    sourceoffunds.names[index],
+                                    sourceOfFundsData[0].keys.elementAt(index),
                                     style: TextStyle(
                                       fontSize: CustomFontTheme.textSize,
                                       fontWeight: CustomFontTheme.headingwt,
@@ -200,7 +217,10 @@ class _SourceOfFundsState extends State<SourceOfFunds> {
                                 ),
                                 DataCell(
                                   Text(
-                                    (sourceoffunds.noofhh[index].toString()),
+                                    sourceOfFundsData[0][sourceOfFundsData[0]
+                                            .keys
+                                            .elementAt(index)]['noOfHouseholds']
+                                        .toString(),
                                     style: TextStyle(
                                         color: CustomColorTheme.textColor,
                                         fontSize: CustomFontTheme.textSize),
@@ -208,7 +228,10 @@ class _SourceOfFundsState extends State<SourceOfFunds> {
                                 ),
                                 DataCell(
                                   Text(
-                                    sourceoffunds.beneficiary[index].toString(),
+                                    sourceOfFundsData[0][sourceOfFundsData[0]
+                                            .keys
+                                            .elementAt(index)]['beneficiary']
+                                        .toString(),
                                     style: TextStyle(
                                         color: CustomColorTheme.textColor,
                                         fontSize: CustomFontTheme.textSize),
@@ -216,7 +239,10 @@ class _SourceOfFundsState extends State<SourceOfFunds> {
                                 ),
                                 DataCell(
                                   Text(
-                                    sourceoffunds.subsidy[index].toString(),
+                                    sourceOfFundsData[0][sourceOfFundsData[0]
+                                            .keys
+                                            .elementAt(index)]['subsidy']
+                                        .toString(),
                                     style: TextStyle(
                                         color: CustomColorTheme.textColor,
                                         fontSize: CustomFontTheme.textSize),
@@ -224,7 +250,10 @@ class _SourceOfFundsState extends State<SourceOfFunds> {
                                 ),
                                 DataCell(
                                   Text(
-                                    sourceoffunds.credits[index].toString(),
+                                    sourceOfFundsData[0][sourceOfFundsData[0]
+                                            .keys
+                                            .elementAt(index)]['credits']
+                                        .toString(),
                                     style: TextStyle(
                                         color: CustomColorTheme.textColor,
                                         fontSize: CustomFontTheme.textSize),
@@ -232,7 +261,10 @@ class _SourceOfFundsState extends State<SourceOfFunds> {
                                 ),
                                 DataCell(
                                   Text(
-                                    sourceoffunds.dbf[index].toString(),
+                                    sourceOfFundsData[0][sourceOfFundsData[0]
+                                            .keys
+                                            .elementAt(index)]['dbf']
+                                        .toString(),
                                     style: TextStyle(
                                         color: CustomColorTheme.textColor,
                                         fontSize: CustomFontTheme.textSize),

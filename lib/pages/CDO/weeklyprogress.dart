@@ -1,6 +1,12 @@
+import 'dart:convert';
+
+import 'package:dalmia/common/dropdown_filed.dart';
 import 'package:dalmia/pages/CDO/cdoappbar.dart';
 import 'package:dalmia/pages/CDO/cdohome.dart';
+import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 
 class weeklyprogress {
@@ -29,6 +35,49 @@ class WeeklyProgress extends StatefulWidget {
 }
 
 class _WeeklyProgressState extends State<WeeklyProgress> {
+  Future<Map<String, dynamic>> getListOfClusters(int locationId) async {
+    try {
+      String url = '$base/list-cluster-by-location?locationId=$locationId';
+
+      final response =
+          await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+
+      if (response.statusCode == 200) {
+        print("API Response: ${response.body}");
+
+        // Parse the response and extract regionId and region
+        final Map<String, dynamic> respBody = json.decode(response.body);
+
+        if (respBody.containsKey('resp_body')) {
+          final List<dynamic> clustersData = respBody['resp_body'];
+
+          final List<Map<String, dynamic>> clusters = clustersData
+              .map<Map<String, dynamic>>((cluster) => {
+                    // 'clusterId': cluster['clusterId'],
+                    // 'clusterName': cluster['clusterName'],
+                    'vdfName': cluster['vdfName'],
+                  })
+              .toList();
+
+          print("sgncy $clusters");
+
+          return {
+            'clusters': clusters
+          }; // Returning a map with 'clusters' key containing the list
+        } else {
+          throw Exception('Response format does not contain expected data');
+        }
+      } else {
+        print("API Error Response: ${response.body}");
+        throw Exception(
+            'Failed to load data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print("Error making API request: $e");
+      throw Exception('Error making API request: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -66,6 +115,15 @@ class _WeeklyProgressState extends State<WeeklyProgress> {
                       )
                     ],
                   ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                CustomDropdownFormField(
+                  title: "VDF Name",
+                  options: [],
+                  onChanged: (String) {},
+                  selectedValue: '0',
                 ),
                 SizedBox(
                   height: 20,

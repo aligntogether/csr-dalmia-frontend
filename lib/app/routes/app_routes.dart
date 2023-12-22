@@ -35,6 +35,7 @@ abstract class _Paths {
   static const ADD_CLUSTER = '/add-cluster';
   static const REPLACE_VDF = '/replace-vdf';
   static const FEEDBACK = '/feedback';
+  static const FEEDBACKLL = '/feedbackll';
   static const OVERVIEW_PAN = '/overview-pan';
   static const LOCATION_WISE = '/location-wise';
   static const LEVER_WISE = '/lever-wise';

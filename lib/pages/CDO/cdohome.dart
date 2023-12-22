@@ -9,6 +9,8 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+int LLid = 0;
+
 class CDOHome extends StatefulWidget {
   const CDOHome({Key? key}) : super(key: key);
 

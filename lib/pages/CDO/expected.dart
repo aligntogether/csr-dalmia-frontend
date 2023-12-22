@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/pages/CDO/cdoappbar.dart';
@@ -6,6 +8,8 @@ import 'package:dalmia/theme.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:flutter_svg/svg.dart';
 
 List location = [
@@ -28,26 +32,6 @@ List location = [
   "Aggregate income (EAAI)",
   "Aggregate income (AAAI)",
 ];
-List<int> CDO = [
-  128036,
-  37765,
-  387004,
-  1687825,
-  128036,
-  37765,
-  387004,
-  1687825,
-  128036,
-  37765,
-  387004,
-  1687825,
-  128036,
-  37765,
-  387004,
-  1687825,
-  128036,
-  37765,
-];
 
 class Expectedincome extends StatefulWidget {
   const Expectedincome({Key? key}) : super(key: key);
@@ -57,6 +41,62 @@ class Expectedincome extends StatefulWidget {
 }
 
 class _ExpectedincomeState extends State<Expectedincome> {
+  // List<String> location = [
+  //   'Cluster 1',
+  //   'Cluster 2'
+  // ]; // Initialize with clusters
+
+  List<Map<String, dynamic>> ExpectedData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    final response = await http.get(
+      Uri.parse(
+        'https://mobiledevcloud.dalmiabharat.com:443/csr/expected-actual-additional-income?locationId=10001',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+
+      final Map<String, dynamic> respBody = responseData['resp_body'];
+
+      // Handle the case where 'resp_body' is a Map
+      ExpectedData = [respBody];
+      print(ExpectedData);
+    } else {
+      // Handle error
+      print('Error fetching data: ${response.statusCode}');
+    }
+
+    setState(() {});
+  }
+
+  List<int> CDO = [
+    2434,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+    387004,
+    1687825,
+    128036,
+    37765,
+  ];
   @override
   Widget build(BuildContext context) {
     return SafeArea(

@@ -1,15 +1,15 @@
+import 'package:dalmia/app/modules/feedback/views/feedback_chat_view.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/image_constant.dart';
+import 'package:dalmia/common/size_constant.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class LLFeedback extends StatefulWidget {
-  const LLFeedback({super.key});
+import '../controllers/feedback_controller.dart';
 
-  @override
-  State<LLFeedback> createState() => _LLFeedbackState();
-}
+class FeedbackViewLL extends GetView<FeedbackControllerLL> {
+  const FeedbackViewLL({Key? key}) : super(key: key);
 
-class _LLFeedbackState extends State<LLFeedback> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,19 +24,15 @@ class _LLFeedbackState extends State<LLFeedback> {
           actions: [
             InkWell(
                 onTap: () {
-                  // Get.back();
+                  Get.back();
                 },
                 child: Icon(Icons.close)),
-            SizedBox(
-              height: 20,
-            ),
+            Space.width(20)
           ],
         ),
         body: Column(
           children: [
-            SizedBox(
-              height: 20,
-            ),
+            Space.height(20),
             Expanded(
               child: ListView.builder(
                 itemCount: 2,
@@ -59,9 +55,7 @@ class _LLFeedbackState extends State<LLFeedback> {
                               height: 24,
                               width: 24,
                             ),
-                            SizedBox(
-                              height: 10,
-                            ),
+                            Space.width(10),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -70,9 +64,7 @@ class _LLFeedbackState extends State<LLFeedback> {
                                   style:
                                       AppStyle.textStyleBoldMed(fontSize: 14),
                                 ),
-                                SizedBox(
-                                  height: 2,
-                                ),
+                                Space.height(2),
                                 Text("18 Oct | 10.30 am")
                               ],
                             ),
@@ -93,19 +85,15 @@ class _LLFeedbackState extends State<LLFeedback> {
                 },
               ),
             ),
-            SizedBox(
-              height: 20,
-            ),
+            Space.height(20),
             GestureDetector(
                 onTap: () {
-                  // Get.to(FeedBackChatView());
+                  Get.to(FeedBackChatView());
                 },
                 child: commonButton(
                   title: "Send New Feedback",
                 )),
-            SizedBox(
-              height: 40,
-            ),
+            Space.height(40)
           ],
         ));
   }
