@@ -144,7 +144,7 @@ class SourceOfFundsApiService {
 
 
       if (response.statusCode == 200) {
-        print("API Response: ${response.body}");
+        print("\n\n API Response: ${response.body}");
 
         // Parse the response and extract regionId and region
         final Map<String, dynamic> respBody = json.decode(response.body);
@@ -159,7 +159,7 @@ class SourceOfFundsApiService {
 
           }).toList();
 
-          print("sgncy $clusters");
+          print("\nsgncy $clusters");
 
           return {'clusters': clusters}; // Returning a map with 'clusters' key containing the list
         } else {
@@ -303,6 +303,54 @@ class SourceOfFundsApiService {
     return null; // Return null if there's an error or no data
   }
 
+
+  Future<Map<String, Map<String, dynamic>>?> fetchClusterWiseSourceOfFundsData(SourceFundsController controller) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$base/gpl-cluster-wise-source-of-funds?locationId=${controller.selectLocationId!}'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        if (jsonData.containsKey('resp_body')) {
+          final Map<String, dynamic> respBody = jsonData['resp_body'];
+
+          // Ensure 'resp_body' contains the expected data structure
+          if (respBody is Map<String, dynamic>) {
+            // Create the desired map structure directly
+            Map<String, Map<String, dynamic>> locationWiseSourceOfFundsData = {};
+            respBody.forEach((key, data) {
+              locationWiseSourceOfFundsData[key] = {
+                'noOfHouseholds': data['noOfHouseholds'],
+                'beneficiary': data['beneficiary'],
+                'subsidy': data['subsidy'],
+                'credits': data['credits'],
+                'dbf': data['dbf'],
+              };
+            });
+
+            // Update the controller or perform any necessary actions
+            controller.updateLocationWiseSourceOfFundsData(locationWiseSourceOfFundsData);
+
+            print(" \n \n controller.locationWiseSourceOfFundsData wiuygif : ${controller.locationWiseSourceOfFundsData}");
+
+            return locationWiseSourceOfFundsData;
+
+          } else {
+            throw Exception('Unexpected data structure in "resp_body"');
+          }
+        } else {
+          throw Exception('Response format does not contain expected data');
+        }
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+    return null; // Return null if there's an error or no data
+  }
 
 
 

@@ -4,7 +4,7 @@ import 'package:dalmia/pages/CDO/sourceoffunds.dart';
 import 'package:dalmia/pages/CDO/vdffund.dart';
 import 'package:dalmia/pages/CDO/vdfreports.dart';
 import 'package:dalmia/pages/CDO/weeklyprogress.dart';
-import 'package:dalmia/pages/login.dart';
+import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';

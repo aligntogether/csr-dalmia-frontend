@@ -13,7 +13,7 @@ class SourceFundsController extends GetxController {
   String? selectRegion ;
 
   List<Map<String, dynamic>>? locationsList;
-  // List<Map<String, dynamic>>? panchayats;
+  List<String>? clustersList;
 
 
   void updateSourceOfFundsData(Map<String, Map<String, dynamic>>? sourceFundsData) {
@@ -33,6 +33,11 @@ class SourceFundsController extends GetxController {
 
   void updateLocations(List<Map<String, dynamic>> locationsList) {
     this.locationsList = locationsList;
+    update(["add"]);
+  }
+
+  void updateClusters(List<String> clustersList) {
+    this.clustersList = clustersList;
     update(["add"]);
   }
 

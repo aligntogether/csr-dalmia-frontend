@@ -136,7 +136,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                 controller.updateLocations(locations);
                                 controller.update(["add"]);
 
-
+// to be picked from here and changes in apiservice for fetchClusterWiseSourceOfFundsData and fetch data to use it
                                 // Update the controller with the new list of locations
                                 if (locationsData != null) {
                                  setState(() {
@@ -211,7 +211,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                         location['location'].toString())
                         .toList()) : [],
                     selectedValue: controller.selectLocation,
-                    onChanged: (String? newValue) {
+                    onChanged: (String? newValue) async {
 
                       // Find the selected location and get its corresponding locationId
                       if (controller.locationsList != null) {
@@ -238,31 +238,39 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                               controller.selectLocationId = selectedLocationId;
                             });
 
-
                             //
 
-                            // Update the controller with the new list of locations
-                            // if (clustersData != null) {
-                            //   setState(() {
-                            //     controller.regions = controller.locationsList != null ? (controller.locationsList!
-                            //         .map((location) =>
-                            //         location['location'].toString())
-                            //         .toList()) : [];
-                            //     controller.regions.add('Total');
-                            //   });
-                            // }
-                            //
-                            // var fetchRegionWiseSourceOfFundsData = await sourceOfFundsApiService.fetchRegionWiseSourceOfFundsData(controller);
-                            //
-                            // setState(() {
-                            //   controller.updateRegionWiseSourceOfFundsData(fetchRegionWiseSourceOfFundsData);
-                            //   print(" \n \n controller.updateRegionWiseSourceOfFundsData e2bf : ${controller.updateRegionWiseSourceOfFundsData}");
-                            // });
+                            Map<String, dynamic> clustersData =
+                                await sourceOfFundsApiService.getListOfClusters(
+                                controller.selectLocationId!);
 
-                            //
+                            // Extract the list of locations from the returned data
+                            List<Map<String, dynamic>> clusters =
+                            clustersData['clusters'];
+
+                            List<String> clusterslist = clusters!
+                                .map((cluster) =>
+                                cluster['vdfName'].toString())
+                                .toList();
+
+                            print("\n\n clusters list : $clusterslist");
+
+                            setState(() {
+                              controller.updateClusters(clusterslist);
+                            });
+
+
+
+
+
 
 
                             controller.update(["add"]);
+
+                            //
+
+
+                            // controller.update(["add"]);
                           }
                         }
                       }
@@ -1240,7 +1248,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                 ),
               ],
               rows: List<DataRow>.generate(
-                controller.regions!.length,
+                controller.clustersList!.length,
                     (index) => DataRow(
                   color: MaterialStateColor.resolveWith(
                         (states) {
