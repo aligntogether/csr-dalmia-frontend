@@ -1,8 +1,8 @@
 import 'package:dalmia/pages/CDO/action.dart';
-import 'package:dalmia/pages/CDO/cdohome.dart';
 import 'package:dalmia/theme.dart';
-import 'package:excel/excel.dart';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class ActionDetail extends StatefulWidget {
   final String hhid;
@@ -10,6 +10,48 @@ class ActionDetail extends StatefulWidget {
 
   @override
   State<ActionDetail> createState() => _ActionDetailState();
+}
+
+void _callAcceptHouseholdAPI(String hhid) async {
+  try {
+    final response = await http.put(
+      Uri.parse(
+        'https://mobiledevcloud.dalmiabharat.com:443/csr/cdo-accept-household?hhid=$hhid',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      // Handle success
+      print('Household $hhid accepted for intervention');
+    } else {
+      // Handle error
+      print('Error accepting household $hhid: ${response.statusCode}');
+    }
+  } catch (error) {
+    // Handle error
+    print('Error accepting household $hhid: $error');
+  }
+}
+
+void _calldropHouseholdAPI(String hhid) async {
+  try {
+    final response = await http.put(
+      Uri.parse(
+        'https://mobiledevcloud.dalmiabharat.com:443/csr/cdo-drop-household?hhid=$hhid',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      // Handle success
+      print('Household $hhid droped');
+    } else {
+      // Handle error
+      print('Error droping household $hhid: ${response.statusCode}');
+    }
+  } catch (error) {
+    // Handle error
+    print('Error droping household $hhid: $error');
+  }
 }
 
 class _ActionDetailState extends State<ActionDetail> {
@@ -288,6 +330,7 @@ void _drophhDialog(BuildContext context, String hhid) {
                   backgroundColor: CustomColorTheme.primaryColor,
                 ),
                 onPressed: () {
+                  _calldropHouseholdAPI(hhid);
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const ActionAgainstHH(),
@@ -347,6 +390,7 @@ void _selecthhDialog(BuildContext context, String hhid) {
                   backgroundColor: CustomColorTheme.primaryColor,
                 ),
                 onPressed: () {
+                  _callAcceptHouseholdAPI(hhid);
                   Navigator.pop(context);
                   _confirmbox(context, hhid);
                 },

@@ -1,3 +1,4 @@
+import 'package:dalmia/pages/LL/ll_home_screen.dart';
 import 'package:dalmia/pages/loginUtility/controller/loginController.dart';
 import 'package:dalmia/pages/loginUtility/service/loginApiService.dart';
 import 'package:dalmia/pages/loginUtility/page/otp.dart';
@@ -100,9 +101,11 @@ class _LoginState extends State<Login> {
                       margin: const EdgeInsets.only(bottom: 40.0),
                       width: 300.0,
                       child: TextField(
-                        controller: loginController.selectMobileController.value,
+                        controller:
+                            loginController.selectMobileController.value,
                         onChanged: (value) {
-                          print("loginController.selectMobileController.value : ${loginController.selectMobileController.value}");
+                          print(
+                              "loginController.selectMobileController.value : ${loginController.selectMobileController.value}");
                         },
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
@@ -131,43 +134,40 @@ class _LoginState extends State<Login> {
                     const SizedBox(height: 20.0),
                     SubmitButton(
                       onPressed: () async {
-
                         try {
+                          Map<String, String> respBody = await loginApiService
+                              .loginViaOtp(int.tryParse(loginController
+                                  .selectMobileController.value.text));
 
-                        Map<String, String> respBody = await loginApiService.loginViaOtp(int.tryParse(loginController.selectMobileController.value.text));
+                          if (respBody != null) {
+                            setState(() {
+                              loginController.selectMobileController.value =
+                                  loginController.selectMobileController.value;
+                              loginController.otpTokenId =
+                                  respBody['otpTokenId'];
+                              loginController.referenceId =
+                                  respBody['referenceId'];
+                            });
 
-
-
-                        if (respBody != null) {
-
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => Otp(
+                                    mobileNumber: loginController
+                                        .selectMobileController.value.text,
+                                    otpTokenId: loginController.otpTokenId,
+                                    referenceId: loginController.referenceId),
+                              ),
+                            );
+                          }
+                        } catch (e) {
                           setState(() {
-                            loginController.selectMobileController.value = loginController.selectMobileController.value;
-                            loginController.otpTokenId = respBody['otpTokenId'];
-                            loginController.referenceId = respBody['referenceId'];
-                          });
-
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => Otp(mobileNumber: loginController.selectMobileController.value.text,
-                        otpTokenId: loginController.otpTokenId,
-                        referenceId: loginController.referenceId),
-
-                            ),
-                          );
-                        }
-
-                        }
-                        catch (e) {
-                          setState(() {
-                            validationResult = e.toString().split('Exception:').last.trim();
+                            validationResult =
+                                e.toString().split('Exception:').last.trim();
                           });
                         }
-
                       },
                     ),
                     const SizedBox(height: 20.0),
-
-
                   ],
                 ),
               ),

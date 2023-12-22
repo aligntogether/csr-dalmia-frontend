@@ -1,7 +1,12 @@
+import 'dart:convert';
+
+import 'package:dalmia/pages/CDO/cdoappbar.dart';
+
 import 'package:dalmia/pages/LL/ll_home_screen.dart';
-import 'package:dalmia/pages/LL/llappbar.dart';
+import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class LLVdfReport extends StatefulWidget {
   const LLVdfReport({Key? key}) : super(key: key);
@@ -11,13 +16,47 @@ class LLVdfReport extends StatefulWidget {
 }
 
 class _LLVdfReportState extends State<LLVdfReport> {
+  List<Map<String, dynamic>> VdfReportData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    final response = await http.get(
+      Uri.parse(
+        '$base/vdf-wise-report?locationId=10001',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+
+      final Map<String, dynamic> respBody = responseData['resp_body'];
+
+      // Handle the case where 'resp_body' is a Map
+      VdfReportData = [respBody];
+      print(VdfReportData);
+      vdfDetails =
+          List.generate(VdfReportData.length, (index) => 'VDF ${index + 1}');
+    } else {
+      // Handle error
+      print('Error fetching data: ${response.statusCode}');
+    }
+
+    setState(() {});
+  }
+
+  List<String> vdfDetails = [];
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(100),
-          child: LLAppBar(
+          child: CdoAppBar(
             heading: 'VDF Reports',
           ),
         ),
@@ -74,56 +113,17 @@ class _LLVdfReportState extends State<LLVdfReport> {
                             ),
                           ),
                         ),
-                        DataColumn(
-                          label: Text(
-                            'VDF 1',
-                            style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white,
+                        for (var vdf in vdfDetails)
+                          DataColumn(
+                            label: Text(
+                              vdf,
+                              style: TextStyle(
+                                fontWeight: CustomFontTheme.headingwt,
+                                fontSize: CustomFontTheme.textSize,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
-                        ),
-                        DataColumn(
-                          label: Text(
-                            'VDF 2',
-                            style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        DataColumn(
-                          label: Text(
-                            'VDF 3',
-                            style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        DataColumn(
-                          label: Text(
-                            'VDF 4',
-                            style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        DataColumn(
-                          label: Text(
-                            'VDF 5',
-                            style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
                         DataColumn(
                           label: Text(
                             'Total',
@@ -135,6 +135,7 @@ class _LLVdfReportState extends State<LLVdfReport> {
                           ),
                         ),
                       ],
+
                       headingRowColor: MaterialStateColor.resolveWith(
                         (states) => Color(0xFF008CD3),
                       ),
@@ -155,51 +156,7 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                '',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
+                            for (var vdf in vdfDetails) DataCell(Text("")),
                             DataCell(
                               Text(
                                 ' ',
@@ -227,56 +184,18 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
+                            for (var vdf in vdfDetails)
+                              DataCell(
+                                Text(
+                                  (VdfReportData[0]['10001']['allotted'] ?? '')
+                                      .toString(),
+                                  style: TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
                             DataCell(
                               Text(
                                 _generateRandomNumber().toString(),
@@ -305,56 +224,18 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
+                            for (var vdf in vdfDetails)
+                              DataCell(
+                                Text(
+                                  (VdfReportData[0]['10001']['mapped'] ?? '')
+                                      .toString(),
+                                  style: TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
                             DataCell(
                               Text(
                                 _generateRandomNumber().toString(),
@@ -383,56 +264,18 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
+                            for (var vdf in vdfDetails)
+                              DataCell(
+                                Text(
+                                  (VdfReportData[0]['10001']['selected'] ?? '')
+                                      .toString(),
+                                  style: TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
                             DataCell(
                               Text(
                                 _generateRandomNumber().toString(),
@@ -461,56 +304,17 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
+                            for (var vdf in vdfDetails)
+                              DataCell(
+                                Text(
+                                  _generateRandomNumber().toString(),
+                                  style: TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
                             DataCell(
                               Text(
                                 _generateRandomNumber().toString(),
@@ -539,51 +343,12 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                '',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
+                            for (var vdf in vdfDetails)
+                              DataCell(
+                                Text(
+                                  ' ',
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
                             DataCell(
                               Text(
                                 ' ',
@@ -611,56 +376,18 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
+                            for (var vdf in vdfDetails)
+                              DataCell(
+                                Text(
+                                  (VdfReportData[0]['10001']['hhCovered'] ?? '')
+                                      .toString(),
+                                  style: TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
                             DataCell(
                               Text(
                                 _generateRandomNumber().toString(),
@@ -689,56 +416,18 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
+                            for (var vdf in vdfDetails)
+                              DataCell(
+                                Text(
+                                  (VdfReportData[0]['10001']['planned'] ?? '')
+                                      .toString(),
+                                  style: TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
                             DataCell(
                               Text(
                                 _generateRandomNumber().toString(),
@@ -767,56 +456,18 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
+                            for (var vdf in vdfDetails)
+                              DataCell(
+                                Text(
+                                  (VdfReportData[0]['10001']['completed'] ?? '')
+                                      .toString(),
+                                  style: TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
                             DataCell(
                               Text(
                                 _generateRandomNumber().toString(),
@@ -845,56 +496,17 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
+                            for (var vdf in vdfDetails)
+                              DataCell(
+                                Text(
+                                  _generateRandomNumber().toString(),
+                                  style: TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
                             DataCell(
                               Text(
                                 _generateRandomNumber().toString(),
@@ -923,51 +535,12 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                '',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
+                            for (var vdf in vdfDetails)
+                              DataCell(
+                                Text(
+                                  ' ',
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
                             DataCell(
                               Text(
                                 ' ',
@@ -995,56 +568,17 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
+                            for (var vdf in vdfDetails)
+                              DataCell(
+                                Text(
+                                  _generateRandomNumber().toString(),
+                                  style: TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
                             DataCell(
                               Text(
                                 _generateRandomNumber().toString(),
@@ -1073,56 +607,20 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
+                            for (var vdf in vdfDetails)
+                              DataCell(
+                                Text(
+                                  (VdfReportData[0]['10001']
+                                              ['zeroAdditionalIncome'] ??
+                                          '')
+                                      .toString(),
+                                  style: TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
                             DataCell(
                               Text(
                                 _generateRandomNumber().toString(),
@@ -1151,56 +649,20 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
+                            for (var vdf in vdfDetails)
+                              DataCell(
+                                Text(
+                                  (VdfReportData[0]['10001']
+                                              ['lessThan25KIncome'] ??
+                                          '')
+                                      .toString(),
+                                  style: TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
                             DataCell(
                               Text(
                                 _generateRandomNumber().toString(),
@@ -1229,56 +691,20 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
+                            for (var vdf in vdfDetails)
+                              DataCell(
+                                Text(
+                                  (VdfReportData[0]['10001']
+                                              ['between25KTO50KIncome'] ??
+                                          '')
+                                      .toString(),
+                                  style: TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
                             DataCell(
                               Text(
                                 _generateRandomNumber().toString(),
@@ -1307,56 +733,20 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
+                            for (var vdf in vdfDetails)
+                              DataCell(
+                                Text(
+                                  (VdfReportData[0]['10001']
+                                              ['between50KTO75KIncome'] ??
+                                          '')
+                                      .toString(),
+                                  style: TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
                             DataCell(
                               Text(
                                 _generateRandomNumber().toString(),
@@ -1385,56 +775,20 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
+                            for (var vdf in vdfDetails)
+                              DataCell(
+                                Text(
+                                  (VdfReportData[0]['10001']
+                                              ['between75KTO1LIncome'] ??
+                                          '')
+                                      .toString(),
+                                  style: TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
                             DataCell(
                               Text(
                                 _generateRandomNumber().toString(),
@@ -1463,56 +817,20 @@ class _LLVdfReportState extends State<LLVdfReport> {
                                 ),
                               ),
                             ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
+                            for (var vdf in vdfDetails)
+                              DataCell(
+                                Text(
+                                  (VdfReportData[0]['10001']
+                                              ['moreThan1LIncome'] ??
+                                          '')
+                                      .toString(),
+                                  style: TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                'N/A',
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
                             DataCell(
                               Text(
                                 _generateRandomNumber().toString(),

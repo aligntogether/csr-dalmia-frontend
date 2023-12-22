@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dalmia/pages/CDO/cdoappbar.dart';
 import 'package:dalmia/pages/CDO/cdohome.dart';
+import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -25,7 +26,7 @@ class _VdfReportState extends State<VdfReport> {
   Future<void> fetchData() async {
     final response = await http.get(
       Uri.parse(
-        'https://mobiledevcloud.dalmiabharat.com:443/csr/vdf-wise-report?locationId=10001',
+        '$base/vdf-wise-report?locationId=10001',
       ),
     );
 

@@ -1,6 +1,8 @@
 import 'package:dalmia/pages/LL/action.dart';
+import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
-import 'package:excel/excel.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 
 class LLActionDetail extends StatefulWidget {
@@ -9,6 +11,48 @@ class LLActionDetail extends StatefulWidget {
 
   @override
   State<LLActionDetail> createState() => _LLActionDetailState();
+}
+
+void _callAcceptHouseholdAPILL(String hhid) async {
+  try {
+    final response = await http.put(
+      Uri.parse(
+        '$base/csr/ll-accept-household?hhid=$hhid',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      // Handle success
+      print('Household $hhid accepted for intervention');
+    } else {
+      // Handle error
+      print('Error accepting household $hhid: ${response.statusCode}');
+    }
+  } catch (error) {
+    // Handle error
+    print('Error accepting household $hhid: $error');
+  }
+}
+
+void _calldropHouseholdAPILL(String hhid) async {
+  try {
+    final response = await http.put(
+      Uri.parse(
+        '$base/ll-drop-household?hhid=$hhid',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      // Handle success
+      print('Household $hhid droped');
+    } else {
+      // Handle error
+      print('Error droping household $hhid: ${response.statusCode}');
+    }
+  } catch (error) {
+    // Handle error
+    print('Error droping household $hhid: $error');
+  }
 }
 
 class _LLActionDetailState extends State<LLActionDetail> {
@@ -265,7 +309,7 @@ void _drophhDialog(BuildContext context, String hhid) {
                 child: const Icon(Icons.close),
               ),
               Text(
-                'Are you sure you want to drop $hhid from intervention? ',
+                'Are you sure you want to drop $hhid from intervention?  ',
                 style: TextStyle(
                   fontSize: 16,
                   // fontFamily: 'Inter',
@@ -287,11 +331,9 @@ void _drophhDialog(BuildContext context, String hhid) {
                   backgroundColor: CustomColorTheme.primaryColor,
                 ),
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ActionAgainstHHLL(),
-                    ),
-                  );
+                  _calldropHouseholdAPILL(hhid);
+                  Navigator.pop(context);
+                  _dropedconfirmbox(context, hhid);
                 },
                 child: const Text('Confirm'),
               ),
@@ -346,8 +388,9 @@ void _selecthhDialog(BuildContext context, String hhid) {
                   backgroundColor: CustomColorTheme.primaryColor,
                 ),
                 onPressed: () {
+                  _callAcceptHouseholdAPILL(hhid);
                   Navigator.pop(context);
-                  _confirmbox(context, hhid);
+                  _selectedconfirmbox(context, hhid);
                 },
                 child: const Text('Confirm'),
               ),
@@ -359,7 +402,7 @@ void _selecthhDialog(BuildContext context, String hhid) {
   );
 }
 
-void _confirmbox(BuildContext context, String hhid) {
+void _selectedconfirmbox(BuildContext context, String hhid) {
   showDialog(
     barrierDismissible: false,
     context: context,
@@ -388,7 +431,74 @@ void _confirmbox(BuildContext context, String hhid) {
                   height: 20,
                 ),
                 Text(
-                  '$hhid  data is sent successfully to Location Lead for approval.',
+                  '$hhid is successfully selected from intervention.',
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+          content: SizedBox(
+            height: 100,
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(150, 50),
+                  elevation: 0,
+                  backgroundColor: CustomColorTheme.primaryColor,
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ActionAgainstHHLL(),
+                    ),
+                  );
+                },
+                child: const Text(
+                  'Ok',
+                  style: TextStyle(fontSize: CustomFontTheme.textSize),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+            ]),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void _dropedconfirmbox(BuildContext context, String hhid) {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return WillPopScope(
+        onWillPop: () async {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => ActionAgainstHHLL(),
+            ),
+          );
+          return false;
+        },
+        child: AlertDialog(
+          alignment: Alignment.topCenter,
+          title: SizedBox(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 40,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  '$hhid is successfully dropped from intervention.',
                   textAlign: TextAlign.center,
                 ),
               ],
