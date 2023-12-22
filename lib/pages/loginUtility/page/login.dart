@@ -1,10 +1,12 @@
-import 'package:dalmia/pages/otp.dart';
+import 'package:dalmia/pages/loginUtility/controller/loginController.dart';
+import 'package:dalmia/pages/loginUtility/service/loginApiService.dart';
+import 'package:dalmia/pages/loginUtility/page/otp.dart';
 import 'package:dalmia/pages/vdf/household/approval.dart';
 import 'package:dalmia/pages/vdf/intervention/Addinter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../common/common.dart';
+import '../../../common/common.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -16,6 +18,9 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final FocusNode textFieldFocusNode = FocusNode();
   bool isContainerVisible = true;
+  String? validationResult;
+  LoginController loginController = new LoginController();
+  LoginApiService loginApiService = new LoginApiService();
 
   @override
   void initState() {
@@ -95,6 +100,10 @@ class _LoginState extends State<Login> {
                       margin: const EdgeInsets.only(bottom: 40.0),
                       width: 300.0,
                       child: TextField(
+                        controller: loginController.selectMobileController.value,
+                        onChanged: (value) {
+                          print("loginController.selectMobileController.value : ${loginController.selectMobileController.value}");
+                        },
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                           LengthLimitingTextInputFormatter(10),
@@ -109,17 +118,56 @@ class _LoginState extends State<Login> {
                         focusNode: textFieldFocusNode,
                       ),
                     ),
+                    const SizedBox(height: 5.0),
+                    // Display the error message with red color if there's an error
+                    if (validationResult != null)
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          validationResult!,
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
                     const SizedBox(height: 20.0),
                     SubmitButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => Otp(),
-                          ),
-                        );
+                      onPressed: () async {
+
+                        try {
+
+                        Map<String, String> respBody = await loginApiService.loginViaOtp(int.tryParse(loginController.selectMobileController.value.text));
+
+
+
+                        if (respBody != null) {
+
+                          setState(() {
+                            loginController.selectMobileController.value = loginController.selectMobileController.value;
+                            loginController.otpTokenId = respBody['otpTokenId'];
+                            loginController.referenceId = respBody['referenceId'];
+                          });
+
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => Otp(mobileNumber: loginController.selectMobileController.value.text,
+                        otpTokenId: loginController.otpTokenId,
+                        referenceId: loginController.referenceId),
+
+                            ),
+                          );
+                        }
+
+                        }
+                        catch (e) {
+                          setState(() {
+                            validationResult = e.toString().split('Exception:').last.trim();
+                          });
+                        }
+
                       },
                     ),
                     const SizedBox(height: 20.0),
+
+
                   ],
                 ),
               ),

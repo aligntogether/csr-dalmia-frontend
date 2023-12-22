@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 
 import '../modules/addCluster/bindings/add_cluster_binding.dart';
 import '../modules/addCluster/views/add_cluster_view.dart';
-import '../modules/addInterval/bindings/add_interval_binding.dart';
-import '../modules/addInterval/views/add_interval_view.dart';
+import '../modules/addIntervention/bindings/add_intervention_binding.dart';
+import '../modules/addIntervention/views/add_intervention_view.dart';
 import '../modules/addLocation/bindings/add_location_binding.dart';
 import '../modules/addLocation/views/add_location_view.dart';
 import '../modules/addPanchayat/bindings/add_panchayat_binding.dart';
@@ -62,8 +62,8 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.ADD_INTERVAL,
-      page: () => const AddIntervalView(),
-      binding: AddIntervalBinding(),
+      page: () => AddInterventionView(),
+      binding: AddInterventionBinding(),
     ),
     GetPage(
       name: _Paths.ADD_LOCATION,
@@ -82,12 +82,12 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.ADD_CLUSTER,
-      page: () => const AddClusterView(),
+      page: () => AddClusterView(),
       binding: AddClusterBinding(),
     ),
     GetPage(
       name: _Paths.REPLACE_VDF,
-      page: () => const ReplaceVdfView(),
+      page: () => ReplaceVdfView(),
       binding: ReplaceVdfBinding(),
     ),
     GetPage(

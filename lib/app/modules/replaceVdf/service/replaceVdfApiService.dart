@@ -5,12 +5,12 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class ApiService {
+class ReplaceVdfApiService {
 
 
   String? base = dotenv.env['BASE_URL'];
   // String? base = 'https://mobiledevcloud.dalmiabharat.com:443/csr';
-  // String? base = 'http://192.168.1.68:8080/csr';
+  // String? base = 'http://192.168.1.16:8082';
 
 
   Future<Map<String, dynamic>> getListOfRegions() async {
@@ -52,8 +52,6 @@ class ApiService {
   }
 
 
-
-
   Future<Map<String, dynamic>> getListOfLocations(int regionId) async {
     try {
 
@@ -89,7 +87,7 @@ class ApiService {
   }
 
 
-    Future<Map<String, dynamic>> getPanchayatsByLocations(int locationId) async {
+  Future<Map<String, dynamic>> getPanchayatsByLocations(int locationId) async {
     try {
 
       print("Object1gp, $locationId, locationId");
@@ -148,9 +146,7 @@ class ApiService {
 
           final List<Map<String, dynamic>> clusters = clustersData.map<Map<String, dynamic>>((cluster) => {
             'clusterId': cluster['clusterId'],
-            'clusterName': cluster['clusterName'],
-            'vdfName': cluster['vdfName'],
-
+            'clusterName': cluster['clusterName']
           }).toList();
 
           print("sgncy $clusters");
@@ -200,24 +196,14 @@ class ApiService {
   }
 
 
-  Future<String> addPanchayat(int clusterId, String panchayatName, String panchayatCode) async {
+  Future<String> replaceVdf(int clusterId, String vdfName) async {
 
     try {
-      String url = '$base/add-panchayat';
+      String url = '$base/replace-vdf-for-cluster?clusterId=$clusterId&vdfName=$vdfName';
 
-      Map<String, dynamic> requestBody = {
-          "clusterId": clusterId,
-          "panchayatName": panchayatName,
-          "panchayatCode": panchayatCode,
-      };
 
-      final response = await http.post(Uri.parse(url),
 
-        headers: <String, String> {
-          'Content-Type' : 'application/json; charset=UTF-8'
-        },
-        body: jsonEncode(requestBody)
-      ).timeout(Duration(seconds: 30));
+      final response = await http.put(Uri.parse(url)).timeout(Duration(seconds: 30));
 
 
       if (response.statusCode == 200) {
@@ -227,9 +213,9 @@ class ApiService {
         final Map<String, dynamic> respBody = json.decode(response.body);
 
         if (respBody.containsKey('resp_msg')) {
-          final String addPanchayatResMessage = respBody['resp_msg'];
+          final String replaceVdfResMessage = respBody['resp_msg'];
 
-          return addPanchayatResMessage; // Returning a map with 'clusters' key containing the list
+          return replaceVdfResMessage; // Returning a map with 'clusters' key containing the list
         } else {
           throw Exception('Response format does not contain expected data');
         }
@@ -242,9 +228,6 @@ class ApiService {
       throw Exception('Error making API request: $e');
     }
   }
-
-
-
 
 
 }

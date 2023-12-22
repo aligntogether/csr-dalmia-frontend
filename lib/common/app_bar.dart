@@ -1,6 +1,6 @@
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/size_constant.dart';
-import 'package:dalmia/pages/login.dart';
+import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

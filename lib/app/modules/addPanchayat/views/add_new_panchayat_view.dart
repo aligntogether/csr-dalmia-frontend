@@ -130,7 +130,7 @@ class _AddNewPViewState extends State<AddNewPView> {
                   itemCount: controller.panchayats!.length,
                   itemBuilder: (context, index) {
                     return Text(
-                      "${index + 1}.  ${controller.panchayats![index]}",
+                      "${index + 1}.  ${controller.panchayats![index]['panchayatName']}  (${controller.panchayats![index]['panchayatCode']}) ",
                       style: AppStyle.textStyleInterMed(
                         fontSize: 14,
                         color: Color(0xff181818).withOpacity(0.7),
@@ -139,22 +139,6 @@ class _AddNewPViewState extends State<AddNewPView> {
                   },
                 ),
 
-
-                // Text(
-                //   "1.  Mullicheval",
-                //   style: AppStyle.textStyleInterMed(
-                //       fontSize: 14, color: Color(0xff181818).withOpacity(0.7)),
-                // ),
-                // Text(
-                //   "2.  Upathur",
-                //   style: AppStyle.textStyleInterMed(
-                //       fontSize: 14, color: Color(0xff181818).withOpacity(0.7)),
-                // ),
-                // Text(
-                //   "3.  Chinnaodaipatti",
-                //   style: AppStyle.textStyleInterMed(
-                //       fontSize: 14, color: Color(0xff181818).withOpacity(0.7)),
-                // ),
               ],
             ),
           ),
@@ -191,6 +175,7 @@ class _AddNewPClusterState extends State<AddNewPCluster> {
   late Future<Map<String, dynamic>> clustersFuture;
   final AddPanchayatController controller = Get.put(AddPanchayatController());
   String? validationResult;
+
   @override
   void initState() {
     super.initState();
@@ -387,7 +372,9 @@ class _AddNewPClusterState extends State<AddNewPCluster> {
           },
             child: commonButton(
                 title: "Add Panchayat",
-                color:  Color(0xff27528F)),
+                color:  (controller.panchayatNameValue != null && controller.panchayatCodeValue != null)
+                    ? Color(0xff27528F)
+                    : Color(0xff27528F).withOpacity(0.7)),
           ),
 
 
@@ -437,7 +424,6 @@ class _AddNewPClusterState extends State<AddNewPCluster> {
     print('performValidation ${controller.selectClusterId} , ${controller.panchayatNameValue} , ${controller.panchayatCodeValue}');
     Future<String> message = apiService.validateDuplicatePanchayat(controller.selectClusterId ?? 0, controller.panchayatNameValue ?? "", controller.panchayatCodeValue ?? "");
 
-    print('performValidation message : ${message.toString()}');
     return message;
   }
 

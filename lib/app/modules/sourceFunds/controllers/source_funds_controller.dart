@@ -2,8 +2,45 @@ import 'package:get/get.dart';
 
 class SourceFundsController extends GetxController {
   RxBool openMenu = false.obs;
-  String? selectP ;
-  String? selectLocation = "South & Chandrapur";
+  // String? selectP;
+  String? selectLocation;
+  Map<String, Map<String, dynamic>>? sourceOfFundsData;
+  Map<String, Map<String, dynamic>>? regionWiseSourceOfFundsData;
+  Map<String, Map<String, dynamic>>? locationWiseSourceOfFundsData;
+
+  int? selectLocationId;
+  int? selectRegionId;
+  String? selectRegion ;
+
+  List<Map<String, dynamic>>? locationsList;
+  List<String>? clustersList;
+
+
+  void updateSourceOfFundsData(Map<String, Map<String, dynamic>>? sourceFundsData) {
+    this.sourceOfFundsData = sourceFundsData;
+    update(["add"]);
+  }
+
+  void updateRegionWiseSourceOfFundsData(Map<String, Map<String, dynamic>>? regionWiseSourceFundsData) {
+    this.regionWiseSourceOfFundsData = regionWiseSourceFundsData;
+    update(["add"]);
+  }
+
+  void updateLocationWiseSourceOfFundsData(Map<String, Map<String, dynamic>>? locationWiseSourceFundsData) {
+    this.locationWiseSourceOfFundsData = locationWiseSourceFundsData;
+    update(["add"]);
+  }
+
+  void updateLocations(List<Map<String, dynamic>> locationsList) {
+    this.locationsList = locationsList;
+    update(["add"]);
+  }
+
+  void updateClusters(List<String> clustersList) {
+    this.clustersList = clustersList;
+    update(["add"]);
+  }
+
   void onTapOpenMenu() {
     openMenu.value = !openMenu.value;
     update();
@@ -17,7 +54,9 @@ class SourceFundsController extends GetxController {
     'CHA',
     'Total',
   ];
-  List<String> regionsByLocation = [
+
+
+  List<String> clustersByLocation = [
     '<VDF 1>',
     '<VDF 2>',
     '<VDF 3>',
@@ -36,16 +75,15 @@ class SourceFundsController extends GetxController {
     1687825,
 
   ];
+
   List<String> locations = [
     'Cement',
-    'South',
+    'South and Chandrapur',
     'East',
-    'N.East',
+    'North East',
     'Total',
     'Sugar',
     'Pan-India',
-
-
   ];
   List<int> DPM = [
     128036,
@@ -99,14 +137,14 @@ class SourceFundsController extends GetxController {
     1687825,
   ];
   List<int> SOUTH = [
-    128036,
-    37765,
-    387004,
-    1687825,
-    128036,
-    37765,
-    387004,
-    1687825,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
   ];
 
 }

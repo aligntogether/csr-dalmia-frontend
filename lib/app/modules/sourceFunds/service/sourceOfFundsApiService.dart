@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:dalmia/app/modules/sourceFunds/controllers/source_funds_controller.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:http/http.dart' as http;
 
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class ApiService {
+class SourceOfFundsApiService {
 
 
   String? base = dotenv.env['BASE_URL'];
@@ -13,7 +14,7 @@ class ApiService {
   // String? base = 'http://192.168.1.68:8080/csr';
 
 
-  Future<Map<String, dynamic>> getListOfRegions() async {
+  Future<Map<String, dynamic>> getListOfRegions(SourceFundsController controller) async {
     try {
       String url = '$base/list-regions';
 
@@ -37,6 +38,13 @@ class ApiService {
           }).toList();
 
 
+          controller.selectRegion = regions.elementAt(0)['region'];
+          controller.selectRegionId = regions.elementAt(0)['regionId'];
+
+
+          print("controller.selectRegion : ${controller.selectRegion}");
+          print("controller.selectRegionId : ${controller.selectRegionId}");
+
           return {'regions': regions}; // Returning a map with 'regions' key containing the list
         } else {
           throw Exception('Response format does not contain expected data');
@@ -50,8 +58,6 @@ class ApiService {
       throw Exception('Error making API request: $e');
     }
   }
-
-
 
 
   Future<Map<String, dynamic>> getListOfLocations(int regionId) async {
@@ -89,7 +95,7 @@ class ApiService {
   }
 
 
-    Future<Map<String, dynamic>> getPanchayatsByLocations(int locationId) async {
+  Future<Map<String, dynamic>> getPanchayatsByLocations(int locationId) async {
     try {
 
       print("Object1gp, $locationId, locationId");
@@ -138,7 +144,7 @@ class ApiService {
 
 
       if (response.statusCode == 200) {
-        print("API Response: ${response.body}");
+        print("\n\n API Response: ${response.body}");
 
         // Parse the response and extract regionId and region
         final Map<String, dynamic> respBody = json.decode(response.body);
@@ -153,7 +159,7 @@ class ApiService {
 
           }).toList();
 
-          print("sgncy $clusters");
+          print("\nsgncy $clusters");
 
           return {'clusters': clusters}; // Returning a map with 'clusters' key containing the list
         } else {
@@ -200,49 +206,151 @@ class ApiService {
   }
 
 
-  Future<String> addPanchayat(int clusterId, String panchayatName, String panchayatCode) async {
-
+  Future<Map<String, Map<String, dynamic>>?> fetchSourceOfFundsData(SourceFundsController controller) async {
     try {
-      String url = '$base/add-panchayat';
-
-      Map<String, dynamic> requestBody = {
-          "clusterId": clusterId,
-          "panchayatName": panchayatName,
-          "panchayatCode": panchayatCode,
-      };
-
-      final response = await http.post(Uri.parse(url),
-
-        headers: <String, String> {
-          'Content-Type' : 'application/json; charset=UTF-8'
-        },
-        body: jsonEncode(requestBody)
-      ).timeout(Duration(seconds: 30));
-
+      final response = await http.get(
+        Uri.parse('$base/gpl-source-of-funds'),
+      );
 
       if (response.statusCode == 200) {
-        print("API Response: ${response.body}");
+        final Map<String, dynamic> jsonData = json.decode(response.body);
 
-        // Parse the response and extract regionId and region
-        final Map<String, dynamic> respBody = json.decode(response.body);
+        if (jsonData.containsKey('resp_body')) {
+          final Map<String, dynamic> respBody = jsonData['resp_body'];
 
-        if (respBody.containsKey('resp_msg')) {
-          final String addPanchayatResMessage = respBody['resp_msg'];
+          // Ensure 'resp_body' contains the expected data structure
+          if (respBody is Map<String, dynamic>) {
+            // Create the desired map structure directly
+            Map<String, Map<String, dynamic>> sourceOfFundsData = {};
+            respBody.forEach((key, data) {
+              sourceOfFundsData[key] = {
+                'noOfHouseholds': data['noOfHouseholds'],
+                'beneficiary': data['beneficiary'],
+                'subsidy': data['subsidy'],
+                'credits': data['credits'],
+                'dbf': data['dbf'],
+              };
+            });
 
-          return addPanchayatResMessage; // Returning a map with 'clusters' key containing the list
+            // Update the controller or perform any necessary actions
+            controller.updateSourceOfFundsData(sourceOfFundsData);
+
+            print("controller.sourceOfFundsData : ${controller.sourceOfFundsData}");
+
+            return sourceOfFundsData;
+
+          } else {
+            throw Exception('Unexpected data structure in "resp_body"');
+          }
         } else {
           throw Exception('Response format does not contain expected data');
         }
       } else {
-        print("API Error Response: ${response.body}");
-        throw Exception('Failed to add panchayat. Status code: ${response.statusCode}');
+        throw Exception('Failed to load data: ${response.statusCode}');
       }
     } catch (e) {
-      print("Error making API request: $e");
-      throw Exception('Error making API request: $e');
+      print('Error: $e');
     }
+    return null; // Return null if there's an error or no data
   }
 
+
+  Future<Map<String, Map<String, dynamic>>?> fetchRegionWiseSourceOfFundsData(SourceFundsController controller) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$base/gpl-location-wise-source-of-funds?regionId=${controller.selectRegionId!}'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        if (jsonData.containsKey('resp_body')) {
+          final Map<String, dynamic> respBody = jsonData['resp_body'];
+
+          // Ensure 'resp_body' contains the expected data structure
+          if (respBody is Map<String, dynamic>) {
+            // Create the desired map structure directly
+            Map<String, Map<String, dynamic>> regionWiseSourceOfFundsData = {};
+            respBody.forEach((key, data) {
+              regionWiseSourceOfFundsData[key] = {
+                'noOfHouseholds': data['noOfHouseholds'],
+                'beneficiary': data['beneficiary'],
+                'subsidy': data['subsidy'],
+                'credits': data['credits'],
+                'dbf': data['dbf'],
+              };
+            });
+
+            // Update the controller or perform any necessary actions
+            controller.updateRegionWiseSourceOfFundsData(regionWiseSourceOfFundsData);
+
+            print(" \n \n controller.regionWiseSourceOfFundsData wiuygif : ${controller.regionWiseSourceOfFundsData}");
+
+            return regionWiseSourceOfFundsData;
+
+          } else {
+            throw Exception('Unexpected data structure in "resp_body"');
+          }
+        } else {
+          throw Exception('Response format does not contain expected data');
+        }
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+    return null; // Return null if there's an error or no data
+  }
+
+
+  Future<Map<String, Map<String, dynamic>>?> fetchClusterWiseSourceOfFundsData(SourceFundsController controller) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$base/gpl-cluster-wise-source-of-funds?locationId=${controller.selectLocationId!}'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        if (jsonData.containsKey('resp_body')) {
+          final Map<String, dynamic> respBody = jsonData['resp_body'];
+
+          // Ensure 'resp_body' contains the expected data structure
+          if (respBody is Map<String, dynamic>) {
+            // Create the desired map structure directly
+            Map<String, Map<String, dynamic>> locationWiseSourceOfFundsData = {};
+            respBody.forEach((key, data) {
+              locationWiseSourceOfFundsData[key] = {
+                'noOfHouseholds': data['noOfHouseholds'],
+                'beneficiary': data['beneficiary'],
+                'subsidy': data['subsidy'],
+                'credits': data['credits'],
+                'dbf': data['dbf'],
+              };
+            });
+
+            // Update the controller or perform any necessary actions
+            controller.updateLocationWiseSourceOfFundsData(locationWiseSourceOfFundsData);
+
+            print(" \n \n controller.locationWiseSourceOfFundsData wiuygif : ${controller.locationWiseSourceOfFundsData}");
+
+            return locationWiseSourceOfFundsData;
+
+          } else {
+            throw Exception('Unexpected data structure in "resp_body"');
+          }
+        } else {
+          throw Exception('Response format does not contain expected data');
+        }
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+    return null; // Return null if there's an error or no data
+  }
 
 
 

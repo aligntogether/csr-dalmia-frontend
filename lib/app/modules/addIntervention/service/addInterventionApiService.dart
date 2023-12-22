@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:dalmia/app/modules/addIntervention/controllers/add_intervention_controller.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:http/http.dart' as http;
 
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class ApiService {
+class AddInterventionApiService {
 
 
   String? base = dotenv.env['BASE_URL'];
@@ -52,8 +53,6 @@ class ApiService {
   }
 
 
-
-
   Future<Map<String, dynamic>> getListOfLocations(int regionId) async {
     try {
 
@@ -89,7 +88,7 @@ class ApiService {
   }
 
 
-    Future<Map<String, dynamic>> getPanchayatsByLocations(int locationId) async {
+  Future<Map<String, dynamic>> getPanchayatsByLocations(int locationId) async {
     try {
 
       print("Object1gp, $locationId, locationId");
@@ -148,9 +147,7 @@ class ApiService {
 
           final List<Map<String, dynamic>> clusters = clustersData.map<Map<String, dynamic>>((cluster) => {
             'clusterId': cluster['clusterId'],
-            'clusterName': cluster['clusterName'],
-            'vdfName': cluster['vdfName'],
-
+            'clusterName': cluster['clusterName']
           }).toList();
 
           print("sgncy $clusters");
@@ -170,10 +167,10 @@ class ApiService {
   }
 
 
-  Future<String> validateDuplicatePanchayat(int clusterId, String panchayatName, String panchayatCode) async {
+  Future<String> validateDuplicateIntervention(String interventionName) async {
 
     try {
-      String url = '$base/validate-duplicate-panchayat?clusterId=$clusterId&panchayatName=$panchayatName&panchayatCode=$panchayatCode';
+      String url = '$base/validate-duplicate-intervention?interventionName=$interventionName';
 
       final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
 
@@ -183,9 +180,9 @@ class ApiService {
         // Parse the response and extract regionId and region
         final Map<String, dynamic> respBody = json.decode(response.body);
         if (respBody.containsKey('resp_msg')) {
-          final String duplicatePanchayatResMessage = respBody['resp_msg'];
+          final String duplicateInterventionResMessage = respBody['resp_msg'];
 
-          return duplicatePanchayatResMessage; // Returning a map with 'clusters' key containing the list
+          return duplicateInterventionResMessage; // Returning a map with 'clusters' key containing the list
         } else {
           throw Exception('Response format does not contain expected data');
         }
@@ -200,23 +197,25 @@ class ApiService {
   }
 
 
-  Future<String> addPanchayat(int clusterId, String panchayatName, String panchayatCode) async {
+  Future<String> addIntervention(String interventionName, String lever, int expectedIncomeGeneration, int requiredDaysCompletion) async {
 
     try {
-      String url = '$base/add-panchayat';
+      String url = '$base/add-intervention';
 
       Map<String, dynamic> requestBody = {
-          "clusterId": clusterId,
-          "panchayatName": panchayatName,
-          "panchayatCode": panchayatCode,
+        "interventionName": interventionName,
+        "lever": lever,
+        "expectedIncomeGeneration": expectedIncomeGeneration,
+        "requiredDaysCompletion": requiredDaysCompletion
       };
+
 
       final response = await http.post(Uri.parse(url),
 
-        headers: <String, String> {
-          'Content-Type' : 'application/json; charset=UTF-8'
-        },
-        body: jsonEncode(requestBody)
+          headers: <String, String> {
+            'Content-Type' : 'application/json; charset=UTF-8'
+          },
+          body: jsonEncode(requestBody)
       ).timeout(Duration(seconds: 30));
 
 
@@ -244,6 +243,55 @@ class ApiService {
   }
 
 
+  Future<List<Map<String, dynamic>>?> fetchInterventionsData(AddInterventionController controller, int? skipRecordsCount, int? recordsCount) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$base/list-interventions?skipRecordsCount=${controller.skipRecordsCount}&recordCount=${controller.recordsCount}'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        if (jsonData.containsKey('resp_body')) {
+          final Map<String, dynamic> respBody = jsonData['resp_body'];
+
+          if (respBody.containsKey('interventions')) {
+            final List<dynamic> interventionsData = respBody['interventions'];
+
+            List<Map<String, dynamic>> interventions = interventionsData.map<Map<String, dynamic>>((intervention) => {
+              'interventionName': intervention['interventionName'],
+              'lever': intervention['lever'],
+              'activity': intervention['activity'],
+              'expectedIncomeGeneration': intervention['expectedIncomeGeneration'],
+              'requiredDaysCompletion': intervention['requiredDaysCompletion'],
+            }).toList();
+
+            print("interventionsData : $interventions");
+
+            // You can update the controller or do whatever you need with leverData.
+            controller.updateInterventionsData(interventions);
+
+            // print("out............. \n \n  .........");
+            if (respBody.containsKey('totalInterventionsRecords')) {
+
+              controller.totalInterventionsCount = respBody['totalInterventionsRecords'];
+
+            }
+
+            return interventions;
+
+          }
+
+        } else {
+          throw Exception('Response format does not contain expected data');
+        }
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
 
 

@@ -6,10 +6,35 @@ import 'package:dalmia/pages/gpl/gpl_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../addPanchayat/Service/apiService.dart';
 import '../controllers/add_cluster_controller.dart';
+import '../service/addClusterApiService.dart';
 
-class AddClusterView extends GetView<AddClusterController> {
-  const AddClusterView({Key? key}) : super(key: key);
+
+
+class AddClusterView extends StatefulWidget {
+  String? region, location;
+
+  AddClusterView({Key? key}) : super(key: key);
+
+  @override
+  _AddClusterViewState createState() => _AddClusterViewState();
+}
+
+class _AddClusterViewState extends State<AddClusterView> {
+  final ApiService addPanchayatApiService = ApiService();
+  final AddClusterApiService addClusterApiService = AddClusterApiService();
+
+  AddClusterController controller = Get.put(AddClusterController());
+  late Future<Map<String, dynamic>> regionsFuture;
+  String? validationResult;
+  int? clusterCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    regionsFuture = addPanchayatApiService.getListOfRegions();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,42 +59,143 @@ class AddClusterView extends GetView<AddClusterController> {
         body: Column(
           children: [
             Space.height(10),
+
             GetBuilder<AddClusterController>(
               id: "add",
               builder: (controller) {
-                return CustomDropdownFormField(
-                    title: "Select a Region",
-                    options: [
-                      "South & Chandrapur",
-                      "Sugar",
-                      "East",
-                      "North East",
-                      "All Regions"
-                    ],
-                    selectedValue: controller.selectLocation,
-                    onChanged: (String? newValue) async {
-                      controller.selectLocation = newValue;
-                      controller.update(["add"]);
-                    });
+                return FutureBuilder<Map<String, dynamic>>(
+                  // Assuming that getListOfRegions returns a Future<Map<String, dynamic>>
+                  future: regionsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      Map<String, dynamic> responseData = snapshot.data ?? {};
+
+                      if (responseData.containsKey('regions')) {
+                        List<Map<String, dynamic>> regionOptions =
+                        responseData['regions'];
+
+                        return CustomDropdownFormField(
+                          title: "Select a Region",
+                          options: regionOptions
+                              .map((region) => region['region'].toString())
+                              .toList(),
+                          selectedValue: controller.selectRegion,
+                          onChanged: (String? newValue) async {
+                            // Find the selected region and get its corresponding regionId
+                            Map<String, dynamic>? selectedRegion =
+                            regionOptions.firstWhereOrNull(
+                                    (region) => region['region'] == newValue);
+
+                            // print('controller.selectedRegions: ${selectedRegion}');
+
+
+                            if (selectedRegion != null &&
+                                selectedRegion['regionId'] != null) {
+                              controller.selectRegionId =
+                              selectedRegion['regionId'];
+                              controller.selectRegion = newValue;
+                              controller.update(["add"]);
+
+                              // Get locations based on the selected regionId
+                              Map<String, dynamic> locationsData =
+                              await addPanchayatApiService.getListOfLocations(
+                                  controller.selectRegionId!);
+
+                              // Extract the list of locations from the returned data
+                              List<Map<String, dynamic>> locations =
+                              locationsData['locations'];
+
+                              // Update the controller with the new list of locations
+                              controller.updateLocations(locations);
+                              controller.update(["add"]);
+
+                              // Update the selected location's name and ID in the controller
+                              controller.selectLocation =
+                              null; // Assuming you initially set it to null
+                              controller.selectLocationId = null;
+                              controller.nameController.value = new TextEditingController();
+                            }
+                          },
+                        );
+                      } else {
+                        return Text('No regions available');
+                      }
+                    }
+                  },
+                );
               },
             ),
+
             Space.height(15),
+
             GetBuilder<AddClusterController>(
               id: "add",
               builder: (controller) {
                 return CustomDropdownFormField(
-                    title: "Select Location",
-                    options: [
-                      "South & Chandrapur",
-                      "Sugar",
-                      "East",
-                      "North East",
-                    ],
-                    selectedValue: controller.selectRegion,
-                    onChanged: (String? newValue) async {
-                      controller.selectRegion = newValue;
-                      controller.update(["add"]);
-                    });
+                  title: "Select Location",
+                  options:
+                  controller.locations != null ? (controller.locations!
+                      .map((location) =>
+                      location['location'].toString())
+                      .toList()) : [],
+                  selectedValue: controller.selectLocation,
+                  onChanged: (String? newValue) async {
+
+                    // Find the selected location and get its corresponding locationId
+                    if (controller.locations != null) {
+                      // Find the selected location object based on the 'location' property
+
+                      // print('controller.locations: ${controller.locations}');
+
+
+                      Map<String, dynamic>? selectedLocation = controller.locations
+                          ?.firstWhere((location) => location['location'] == newValue);
+
+                      if (selectedLocation != null) {
+
+                        // Access the locationId property and convert it to int
+                        int? selectedLocationId =
+                        selectedLocation['locationId'];
+
+                        // print('selectedLocationId: $selectedLocationId');
+
+                        if (selectedLocationId != null) {
+                          // Assign 'location' to controller.selectLocation
+                          controller.selectLocation =
+                          selectedLocation['location'] as String;
+                          controller.selectLocationId = selectedLocationId;
+                          controller.update(["add"]);
+
+                          controller.nameController.value = new TextEditingController();
+                          setState(() {
+                            clusterCount = 0;
+                          });
+
+                          Map<String, dynamic> clustersData = await addPanchayatApiService.getListOfClusters(controller.selectLocationId ?? 0);
+
+                          List<Map<String, dynamic>> clusters =
+                          clustersData['clusters'];
+
+                          controller.nameController.value.text = clusters.length.toString() ?? '0';
+                          controller.clusterCounts = clusters.length ?? 0;
+
+                          setState(() {
+                            clusterCount = clusters.length ?? 0;
+                          });
+
+                          print("clusters.length : ${clusters.length}");
+                          print("clusters : $clusters");
+
+
+                        }
+                      }
+                    }
+                  },
+                );
               },
             ),
             Space.height(15),
@@ -81,6 +207,41 @@ class AddClusterView extends GetView<AddClusterController> {
                   child: TextFormField(
                     controller: controller.nameController.value,
                     onChanged: (value) {
+
+                      if (clusterCount! > 4 && int.tryParse(value)! > 5) {
+                        setState(() {
+                          validationResult = "Cannot add more than 5 Clusters";
+                        });
+                      }
+                      else if (int.tryParse(value)! > 5) {
+                        setState(() {
+                          validationResult = "Cannot add more than 5 Clusters";
+                        });
+                      }
+                      else if (controller.clusterCounts! > int.tryParse(value)!){
+                        setState(() {
+                          validationResult = "Cannot reduce Clusters!";
+                        });
+                      }
+                      else if (controller.clusterCounts == int.tryParse(value!)){
+                        setState(() {
+                          validationResult = "Already contains $value Clusters!";
+                        });
+                      }
+                      else {
+
+                        setState(() {
+                          validationResult = null;
+                        });
+                        print("value : $value : $clusterCount");
+                        clusterCount = int.tryParse(value);
+                        print("value1 : $value : $clusterCount");
+
+                      }
+
+                      print("validationResult : $validationResult");
+
+
                       controller.update(["add"]);
                     },
                     decoration: const InputDecoration(
@@ -97,26 +258,72 @@ class AddClusterView extends GetView<AddClusterController> {
               id: "add",
               builder: (controller) {
                 return GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     if (controller.selectLocation != null &&
                         controller.selectRegion != null &&
-                        controller.nameController.value.text.isNotEmpty) {
-                      showConfirmationDialog(context,
-                          location: controller.selectLocation,
-                          p: controller.nameController.value.text,
-                          r: controller.selectRegion);
+                        clusterCount != 0 &&
+                        validationResult == null) {
+
+                      try {
+
+                        Map<String, dynamic> clusterMap = await addClusterApiService
+                            .updateAddCluster(controller.selectLocationId ?? 0,
+                            clusterCount ?? int.tryParse(
+                                controller.nameController.value.text)!);
+
+                        controller.addedClusterName = clusterMap['clusterName'];
+                        controller.addedClusterId = clusterMap['clusterId'];
+
+                        // controller.addedClusterName = "31";
+                        // controller.addedClusterId = 10073;
+
+
+                        if (clusterMap != null) {
+                          showConfirmationDialog(context,
+                              location: controller.selectLocation,
+                              p: controller.nameController.value.text,
+                              r: controller.selectRegion);
+                        }
+                        else {
+                          validationResult = "Something went wrong!";
+                        }
+
+                      }
+                    catch (e) {
+                    validationResult = "Something went wrong!, $e";
+
                     }
+
+
+
+                    }
+
+                    showConfirmationDialog(context,
+                        location: controller.selectLocation,
+                        p: controller.nameController.value.text,
+                        r: controller.selectRegion);
+
                   },
                   child: commonButton(
                       title: "Continue",
                       color: controller.selectLocation != null &&
                               controller.selectRegion != null &&
-                              controller.nameController.value.text.isNotEmpty
+                          clusterCount != 0 && validationResult == null
                           ? Color(0xff27528F)
                           : Color(0xff27528F).withOpacity(0.7)),
                 );
               },
-            )
+            ),
+
+            // Display the error message with red color if there's an error
+            if (validationResult != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  validationResult!,
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
           ],
         ));
   }
@@ -147,17 +354,13 @@ class AddClusterView extends GetView<AddClusterController> {
                   SizedBox(
                     width: MySize.size296,
                     child: Text(
-                        '“<Cluster 5>” is added successfully. What do you wish to do next?',
+                        '${controller.addedClusterName} is added successfully. What do you wish to do next?',
                         style: AppStyle.textStyleInterMed(fontSize: 16)),
                   ),
                   Space.height(30),
                   GestureDetector(
                     onTap: () {
-                      /*   Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => const GPLHomeScreen(),
-                        ),
-                      );*/
+                      Get.to(AddClusterView());
                     },
                     child: Container(
                       height: 50,
@@ -228,10 +431,31 @@ class AddClusterView extends GetView<AddClusterController> {
   }
 }
 
-class AddVdfView extends StatelessWidget {
+
+
+
+class AddVdfView extends StatefulWidget {
   String? location, regions, p;
 
   AddVdfView({super.key, this.location, this.p, this.regions});
+
+  @override
+  _AddVdfViewState createState() => _AddVdfViewState();
+}
+
+class _AddVdfViewState extends State<AddVdfView> {
+
+  final ApiService addPanchayatApiService = ApiService();
+  final AddClusterApiService addClusterApiService = AddClusterApiService();
+
+  AddClusterController controller = Get.put(AddClusterController());
+  String? validationResult;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -277,7 +501,7 @@ class AddVdfView extends StatelessWidget {
                           fontSize: 14, color: Color(0xff006838)),
                       children: <TextSpan>[
                         TextSpan(
-                            text: regions,
+                            text: widget.regions,
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14,
                                 color: Color(0xff006838).withOpacity(0.5))),
@@ -292,7 +516,7 @@ class AddVdfView extends StatelessWidget {
                           fontSize: 14, color: Color(0xff006838)),
                       children: <TextSpan>[
                         TextSpan(
-                            text: location,
+                            text: widget.location,
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14,
                                 color: Color(0xff006838).withOpacity(0.5))),
@@ -307,7 +531,7 @@ class AddVdfView extends StatelessWidget {
                           fontSize: 14, color: Color(0xff006838)),
                       children: <TextSpan>[
                         TextSpan(
-                            text: p,
+                            text: widget.p,
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14,
                                 color: Color(0xff006838).withOpacity(0.5))),
@@ -326,8 +550,11 @@ class AddVdfView extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 34),
                 child: TextFormField(
-                  controller: controller.vdfController.value,
+                  controller: controller.vdfNameController.value,
                   onChanged: (value) {
+
+                    print("controller.vdfNameController.value : ${controller.vdfNameController.value}");
+
                     controller.update(["add"]);
                   },
                   decoration: const InputDecoration(
@@ -339,13 +566,66 @@ class AddVdfView extends StatelessWidget {
               );
             },
           ),
+          Space.height(15),
+          GetBuilder<AddClusterController>(
+            id: "add",
+            builder: (controller) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 34),
+                child: TextFormField(
+                  controller: controller.vdfMobileController.value,
+                  onChanged: (value) {
+
+                    print("controller.vdfMobileController.value : ${controller.vdfMobileController.value}");
+                    controller.update(["add"]);
+                  },
+                  decoration: const InputDecoration(
+                    labelText: "Mobile Number",
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+                  ),
+                ),
+              );
+            },
+          ),
           Space.height(19),
           GestureDetector(
-            onTap: () {
-              showConfirmationDialog(context);
+            onTap: () async {
+
+              if (controller.vdfMobileController.value.text.length < 10) {
+                setState(() {
+                  validationResult = "Mobile number should have 10 digits.";
+                });
+              }
+
+
+              String addNewVdf = await addClusterApiService.addVDFToCluster(controller.selectLocationId ?? 0, controller.addedClusterId ?? 0, controller.vdfNameController.value.text!, int.tryParse(controller.vdfMobileController.value.text)!);
+
+
+              print("addNewVdf : $addNewVdf");
+
+              if (addNewVdf == "VDF Added") {
+                showConfirmationDialog(context);
+              }
+              else {
+                setState(() {
+                  validationResult = "Something Went Wrong";
+                });
+              }
+
             },
             child: commonButton(title: "Add VDF", color: Color(0xff27528F)),
-          )
+          ),
+
+          // Display the error message with red color if there's an error
+          if (validationResult != null)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                validationResult!,
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
         ],
       ),
     ));

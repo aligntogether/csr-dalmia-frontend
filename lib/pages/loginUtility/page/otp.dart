@@ -5,11 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:flutter/services.dart';
 import 'package:dalmia/pages/SwitchRole/switchRole.dart';
-import '../Constants/constants.dart';
-import '../common/common.dart';
+import '../../../Constants/constants.dart';
+import '../../../common/common.dart';
+import '../controller/loginController.dart';
+import '../service/loginApiService.dart';
 
 class Otp extends StatefulWidget {
-  const Otp({Key? key}) : super(key: key);
+  String? mobileNumber, otpTokenId, referenceId;
+
+  Otp({super.key, this.mobileNumber, this.otpTokenId, this.referenceId});
+
+  // const Otp(String mobileNumber, String? otpTokenId, String? referenceId, {Key? key}) : super(key: key);
 
   @override
   _OtpState createState() => _OtpState();
@@ -19,6 +25,10 @@ class _OtpState extends State<Otp> {
   final FocusNode textFieldFocusNode = FocusNode();
   bool isContainerVisible = true;
   final TextEditingController pinEditingController = TextEditingController();
+  String? otpCode;
+  String? validationResult;
+  LoginController loginController = new LoginController();
+  LoginApiService loginApiService = new LoginApiService();
 
   @override
   void dispose() {
@@ -104,8 +114,14 @@ class _OtpState extends State<Otp> {
                       child: PinCodeTextField(
                         appContext: context,
                         length: 6,
-                        onChanged: (value) {},
-                        controller: pinEditingController,
+                        controller: loginController.pinEditingController.value,
+                        onChanged: (value) {
+                          setState(() {
+                            otpCode = value;
+                          });
+                          print(
+                              "loginController.pinEditingController.value : ${loginController.pinEditingController}, otpcode : ${loginController.otpCode} : SDF : $otpCode");
+                        },
                         pinTheme: PinTheme(
                           shape: PinCodeFieldShape.underline,
                           borderRadius: BorderRadius.circular(5),
@@ -122,15 +138,22 @@ class _OtpState extends State<Otp> {
                         focusNode: textFieldFocusNode,
                       ),
                     ),
+                    const SizedBox(height: 5.0),
+                    // Display the error message with red color if there's an error
+                    if (validationResult != null)
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          validationResult!,
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
                     const SizedBox(height: 20.0),
                     SubmitButton(
-                      onPressed: () {
-                        String enteredOtp = pinEditingController.text.trim();
-                        print('entered opt: $enteredOtp');
-
-                        // Change the OTP values as needed
-
-                        handleOtpVerification(enteredOtp);
+                      onPressed: () async {
+                        // if (respBody != null) {
+                        handleOtpVerification();
+                        // }
                       },
                     ),
                     const SizedBox(height: 20.0),
@@ -144,9 +167,9 @@ class _OtpState extends State<Otp> {
     );
   }
 
-  void handleOtpVerification(String otp) async {
+  void handleOtpVerification() async {
     try {
-      AuthResponse authResponse = await verifyOtp(otp);
+      AuthResponse authResponse = await verifyOtp();
       SharedPrefHelper.storeSharedPref(
           USER_ID_SHAREDPREF_KEY, authResponse.referenceId);
       SharedPrefHelper.storeSharedPref(
@@ -171,18 +194,41 @@ class _OtpState extends State<Otp> {
     }
   }
 
-  Future<AuthResponse> verifyOtp(String otp) async {
-    String user = VDF_USERTYPE;
-    print('otp: $otp');
-    if (otp == '123451') {
-      user = LL_USERTYPE;
-    } else if (otp == '123452') {
-      user = GPL_USERTYPE;
-    } else if (otp == '123453') {
-      user = CDO_USERTYPE;
-    } else {
-      print('Incorrect OTP');
+  Future<AuthResponse> verifyOtp() async {
+    setState(() {
+      loginController.selectMobileController.value.text = widget.mobileNumber!;
+      loginController.otpTokenId = widget.otpTokenId;
+      loginController.referenceId = widget.referenceId;
+      loginController.userIdWithTimeStamp =
+          'SWP${DateTime.now().millisecondsSinceEpoch}';
+    });
+
+    Map<String, String> respBodyMap =
+        await loginApiService.checkValidUserOtp(loginController, otpCode);
+
+    if (respBodyMap == null) {
+      setState(() {
+        validationResult = "Something Went Wrong!";
+      });
     }
-    return AuthResponse("10001", user, "CSR", "", "", "", "TestName");
+
+    Map<String, String> userRoleMap = await loginApiService
+        .getUserRoleByReferenceId(loginController.referenceId ?? '');
+
+    if (userRoleMap == null) {
+      setState(() {
+        validationResult = "Something Went Wrong!";
+      });
+    }
+
+    return AuthResponse(
+        loginController.referenceId!,
+        userRoleMap['userRole']!,
+        respBodyMap['appName']!, // appName
+        respBodyMap['accessToken']!, // accessToken
+        respBodyMap['refreshToken']!, //refreshToken
+        respBodyMap['platform']!, // platform
+        userRoleMap['userName']! // employeeName
+        );
   }
 }
