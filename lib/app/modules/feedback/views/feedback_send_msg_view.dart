@@ -1,18 +1,72 @@
+import 'dart:convert';
+
 import 'package:dalmia/app/modules/feedback/controllers/feedback_controller.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/size_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
-class FeedBackSendMsgView extends StatelessWidget {
-  String? regions, location, feedbackid, name;
+class FeedBackSendMsgView extends StatefulWidget {
+  String? regions, location, feedbackid, name, userid, recipentid;
 
-  FeedBackSendMsgView(
-      {super.key, this.regions, this.location, this.feedbackid, this.name});
+  FeedBackSendMsgView({
+    Key? key,
+    this.regions,
+    this.location,
+    this.feedbackid,
+    this.name,
+    this.userid,
+    this.recipentid,
+  }) : super(key: key);
+
+  @override
+  State<FeedBackSendMsgView> createState() => _FeedBackSendMsgViewState();
+}
+
+class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
+  // String? chat;
+
+  Future<List<Map<String, dynamic>>> fetchFeedbackMessages() async {
+    // int useid = userid as int;
+    // int feedid = feedbackid as int;
+    final response = await http.get(
+      Uri.parse(
+        'https://mobiledevcloud.dalmiabharat.com:443/csr/get-feedback?userId=${widget.userid}&feedbackId=${widget.feedbackid}',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData =
+          json.decode(response.body)['resp_body'];
+      return responseData.map((data) {
+        return {
+          'id': data['id'],
+          'feedbackId': data['feedbackId'],
+          'message': data['message'],
+          'accepted': data['accepted'],
+          'senderId': data['senderId'],
+          'recipientId': data['recipientId'],
+          'createdAt': DateTime(
+            data['createdAt'][0],
+            data['createdAt'][1],
+            data['createdAt'][2],
+            data['createdAt'][3],
+            data['createdAt'][4],
+            data['createdAt'][5],
+          ),
+        };
+      }).toList();
+    } else {
+      throw Exception('Failed to load feedback messages');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    getMessage();
     FeedbackController feed = Get.put(FeedbackController());
+
     return SafeArea(
         child: Scaffold(
             backgroundColor: Color(0xffF2F2F2),
@@ -37,13 +91,18 @@ class FeedBackSendMsgView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      GestureDetector(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: Icon(Icons.arrow_back)),
                       Text(
-                        name ?? '',
+                        widget.name ?? '',
                         style: AppStyle.textStyleBoldMed(fontSize: 16),
                       ),
                       Space.height(4),
                       Text(
-                        "${regions ?? ''} ${regions != null && location != null ? ',' : ''} ${location ?? ''}",
+                        "${widget.regions ?? ''} ${widget.regions != null && widget.location != null ? ',' : ''} ${widget.location ?? ''}",
                         style: AppStyle.textStyleInterMed(fontSize: 16),
                       ),
                     ],
@@ -92,6 +151,16 @@ class FeedBackSendMsgView extends StatelessWidget {
                       ],
                     ),
             )));
+  }
+
+  getMessage() async {
+    try {
+      List<Map<String, dynamic>> msg = await fetchFeedbackMessages();
+      print(msg);
+    } catch (e) {
+      // Handle errors if necessary
+      print('Error fetching feedback messages: $e');
+    }
   }
 
   Widget msgViewScreen(FeedbackController feed) {

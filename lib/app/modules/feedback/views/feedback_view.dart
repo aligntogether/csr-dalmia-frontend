@@ -18,9 +18,14 @@ class FeedbackView extends GetView<FeedbackController> {
   const FeedbackView({Key? key}) : super(key: key);
 
   Future<List<Map<String, dynamic>>> fetchData(BuildContext context) async {
+    String userIdSharedPref = await SharedPrefHelper.getSharedPref(
+        USER_ID_SHAREDPREF_KEY, context, true);
+
+    print("userIdSharedPref: " + userIdSharedPref);
+
     final response = await http.get(
       Uri.parse(
-          'https://mobiledevcloud.dalmiabharat.com:443/csr/list-feedback?userId=${SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, true)}'),
+          'https://mobiledevcloud.dalmiabharat.com:443/csr/list-feedback?userId=${userIdSharedPref}'),
       // SharedPrefHelper.storeSharedPref(
       // USER_ID_SHAREDPREF_KEY, authResponse.referenceId)
     );
@@ -100,6 +105,9 @@ class FeedbackView extends GetView<FeedbackController> {
                             child: GestureDetector(
                               onTap: () {
                                 Get.to(FeedBackSendMsgView(
+                                  userid: feedback['sender_id'].toString(),
+                                  recipentid:
+                                      feedback['recipient_id'].toString(),
                                   feedbackid:
                                       feedback['feedback_id'].toString(),
                                   name: feedback['name'],
