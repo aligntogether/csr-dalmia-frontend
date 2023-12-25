@@ -1,101 +1,166 @@
+import 'dart:convert';
+
+import 'package:dalmia/Constants/constants.dart';
+import 'package:dalmia/app/modules/feedback/views/feeback_ceo.dart';
 import 'package:dalmia/app/modules/feedback/views/feedback_chat_view.dart';
+import 'package:dalmia/app/modules/feedback/views/feedback_send_msg_view.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/image_constant.dart';
 import 'package:dalmia/common/size_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:dalmia/helper/sharedpref.dart';
 
 import '../controllers/feedback_controller.dart';
 
 class FeedbackView extends GetView<FeedbackController> {
   const FeedbackView({Key? key}) : super(key: key);
 
+  Future<List<Map<String, dynamic>>> fetchData(BuildContext context) async {
+    final response = await http.get(
+      Uri.parse(
+          'https://mobiledevcloud.dalmiabharat.com:443/csr/list-feedback?userId=${SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, true)}'),
+      // SharedPrefHelper.storeSharedPref(
+      // USER_ID_SHAREDPREF_KEY, authResponse.referenceId)
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Map<String, dynamic> respBody = responseData['resp_body'];
+      print('response body $respBody');
+      // Convert the response body into a List of maps
+
+      return respBody.entries.map((entry) {
+        return {
+          'name': entry.key,
+          'feedback_id': entry.value['feedback_id'],
+          'created_at': entry.value['created_at'],
+          'sender_id': entry.value['sender_id'],
+          'recipient_id': entry.value['recipient_id'],
+        };
+      }).toList();
+    } else {
+      // Handle error
+      print('Error fetching data: ${response.statusCode}');
+      return [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Text(
-            'Feedback',
-            style: AppStyle.textStyleInterMed(
-                fontSize: 16, fontWeight: FontWeight.w800),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text(
+          'Feedback',
+          style: AppStyle.textStyleInterMed(
+            fontSize: 16,
+            fontWeight: FontWeight.w800,
           ),
-          centerTitle: true,
-          actions: [
-            InkWell(
-                onTap: () {
-                  Get.back();
-                },
-                child: Icon(Icons.close)),
-            Space.width(20)
-          ],
         ),
-        body: Column(
-          children: [
-            Space.height(20),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 2,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      Divider(
-                        height: 1,
-                        color: Color(0xff181818).withOpacity(0.3),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 11, vertical: 13),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Image.asset(
-                              ImageConstant.feed,
-                              height: 24,
-                              width: 24,
-                            ),
-                            Space.width(10),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "CEO",
-                                  style:
-                                      AppStyle.textStyleBoldMed(fontSize: 14),
-                                ),
-                                Space.height(2),
-                                Text("18 Oct | 10.30 am")
-                              ],
-                            ),
-                            Spacer(),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 22, top: 10),
-                              child: Image.asset(
-                                ImageConstant.arrowB,
-                                height: 18,
+        centerTitle: true,
+        actions: [
+          InkWell(
+            onTap: () {
+              Get.back();
+            },
+            child: Icon(Icons.close),
+          ),
+          Space.width(20)
+        ],
+      ),
+      body: Column(
+        children: [
+          Space.height(20),
+          Expanded(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: fetchData(context),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No data available'));
+                } else {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final feedback = snapshot.data![index];
+                      return Column(
+                        children: [
+                          Divider(
+                            height: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 11, vertical: 13),
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.to(FeedBackSendMsgView(
+                                  feedbackid:
+                                      feedback['feedback_id'].toString(),
+                                  name: feedback['name'],
+                                ));
+                              },
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Image.asset(
+                                    ImageConstant.feed,
+                                    height: 24,
+                                    width: 24,
+                                  ),
+                                  Space.width(10),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        feedback['name'],
+                                        style: AppStyle.textStyleBoldMed(
+                                            fontSize: 14),
+                                      ),
+                                      Space.height(2),
+                                      Text(feedback['created_at'].toString()),
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        right: 22, top: 10),
+                                    child: Image.asset(
+                                      ImageConstant.arrowB,
+                                      height: 18,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-
-                    ],
+                          ),
+                        ],
+                      );
+                    },
                   );
-                },
-              ),
+                }
+              },
             ),
-            Space.height(20),
-            GestureDetector(
-                onTap: () {
-                  Get.to(FeedBackChatView());
-                },
-                child: commonButton(
-                  title: "Send New Feedback",
-                )),
-            Space.height(40)
-          ],
-        ));
+          ),
+          Space.height(20),
+          GestureDetector(
+            onTap: () {
+              Get.to(FeedBackChatView());
+            },
+            child: commonButton(
+              title: "Send New Feedback",
+            ),
+          ),
+          Space.height(40),
+        ],
+      ),
+    );
   }
 }

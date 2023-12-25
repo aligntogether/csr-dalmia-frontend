@@ -9,6 +9,16 @@ class OverviewPanController extends GetxController {
     openMenu.value = !openMenu.value;
     update();
   }
+
+  List<String> regions = [
+    'DPM',
+    'ALR',
+    'BGM',
+    'KDP',
+    'CHA',
+    'Total',
+  ];
+
   List<String> locations = [
     'Households',
     'Alloted',

@@ -1,3 +1,4 @@
+import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/CDO/action.dart';
 import 'package:dalmia/pages/CDO/expected.dart';
 import 'package:dalmia/pages/CDO/sourceoffunds.dart';
@@ -372,7 +373,8 @@ void _showConfirmationDialog(BuildContext context) {
                   side: const BorderSide(),
                   backgroundColor: CustomColorTheme.primaryColor,
                 ),
-                onPressed: () {
+                onPressed: () async {
+                  await SharedPrefHelper.clearSharedPrefAccess();
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const Login(),

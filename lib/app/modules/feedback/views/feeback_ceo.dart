@@ -4,11 +4,9 @@ import 'package:dalmia/common/size_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class FeedBackSendMsgView extends StatelessWidget {
-  String? regions, location, feedbackid, name;
-
-  FeedBackSendMsgView(
-      {super.key, this.regions, this.location, this.feedbackid, this.name});
+class FeedBackCEO extends StatelessWidget {
+  String? usertype, feedbackid, name;
+  FeedBackCEO({super.key, this.usertype, this.feedbackid, this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -38,14 +36,14 @@ class FeedBackSendMsgView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        name ?? '',
+                        "CEO",
                         style: AppStyle.textStyleBoldMed(fontSize: 16),
                       ),
-                      Space.height(4),
-                      Text(
-                        "${regions ?? ''} ${regions != null && location != null ? ',' : ''} ${location ?? ''}",
-                        style: AppStyle.textStyleInterMed(fontSize: 16),
-                      ),
+
+                      // Text(
+                      //   "${regions}, ${location}",
+                      //   style: AppStyle.textStyleInterMed(fontSize: 16),
+                      // ),
                     ],
                   ),
                 )),

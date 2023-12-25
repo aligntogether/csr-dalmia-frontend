@@ -12,21 +12,11 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter_svg/svg.dart';
 
-List location = [
-  "Cluster 1",
+List locationcdo = [
   "Target",
   "No. of HHs with EAAI",
   "50k to 1L",
   " No. of HHs with EAAI\n1L and above",
-  "No. of HHs with AAAI\nwith 50K to 1L",
-  "No. of HHs with AAAI\nwith 1L and above",
-  "Aggregate income (EAAI)",
-  "Aggregate income (AAAI)",
-  "Cluster 2",
-  "Target",
-  "No. of HHs with EAAI",
-  "50k to 1L",
-  "No. of HHs with EAAI\n1L and above",
   "No. of HHs with AAAI\nwith 50K to 1L",
   "No. of HHs with AAAI\nwith 1L and above",
   "Aggregate income (EAAI)",
@@ -41,11 +31,6 @@ class Expectedincome extends StatefulWidget {
 }
 
 class _ExpectedincomeState extends State<Expectedincome> {
-  // List<String> location = [
-  //   'Cluster 1',
-  //   'Cluster 2'
-  // ]; // Initialize with clusters
-
   List<Map<String, dynamic>> ExpectedData = [];
 
   @override
@@ -67,8 +52,10 @@ class _ExpectedincomeState extends State<Expectedincome> {
       final Map<String, dynamic> respBody = responseData['resp_body'];
 
       // Handle the case where 'resp_body' is a Map
+      // final String clusterKey = responseData['resp_body'].keys.first;
+
       ExpectedData = [respBody];
-      print(ExpectedData);
+      // print(ExpectedData);
     } else {
       // Handle error
       print('Error fetching data: ${response.statusCode}');
@@ -91,11 +78,6 @@ class _ExpectedincomeState extends State<Expectedincome> {
     387004,
     1687825,
     128036,
-    37765,
-    387004,
-    1687825,
-    128036,
-    37765,
   ];
   @override
   Widget build(BuildContext context) {
@@ -211,16 +193,13 @@ class _ExpectedincomeState extends State<Expectedincome> {
                             //PANIND
                           ],
                           rows: List<DataRow>.generate(
-                            location.length,
+                            locationcdo.length,
                             (index) => DataRow(
                               color: MaterialStateColor.resolveWith(
                                 (states) {
-                                  return location[index] == "Cluster 1" ||
-                                          location[index] == "Cluster 2"
-                                      ? Color(0xff008CD3).withOpacity(0.3)
-                                      : index.isEven
-                                          ? Colors.blue.shade50
-                                          : Colors.white;
+                                  return index.isEven
+                                      ? Colors.blue.shade50
+                                      : Colors.white;
                                 },
                               ),
                               cells: [
@@ -231,30 +210,17 @@ class _ExpectedincomeState extends State<Expectedincome> {
                                     child: Row(
                                       children: [
                                         Text(
-                                          location[index],
-                                          style: location[index] ==
-                                                      "Cluster 1" ||
-                                                  location[index] == "Cluster 2"
-                                              ? TextStyle(
-                                                  color: CustomColorTheme
-                                                      .textColor,
-                                                  fontWeight:
-                                                      CustomFontTheme.headingwt,
-                                                  fontSize:
-                                                      CustomFontTheme.textSize)
-                                              : AppStyle.textStyleInterMed(
-                                                  fontSize: 14),
+                                          locationcdo[index],
+                                          style: AppStyle.textStyleInterMed(
+                                              fontSize: 14),
                                         ),
                                         Spacer(),
-                                        location[index] == "Cluster 1" ||
-                                                location[index] == "Cluster 2"
-                                            ? SizedBox()
-                                            : VerticalDivider(
-                                                width: 1,
-                                                color: Color(0xff181818)
-                                                    .withOpacity(0.3),
-                                                thickness: 1,
-                                              )
+                                        VerticalDivider(
+                                          width: 1,
+                                          color: Color(0xff181818)
+                                              .withOpacity(0.3),
+                                          thickness: 1,
+                                        )
                                       ],
                                     ),
                                   ),
@@ -264,23 +230,17 @@ class _ExpectedincomeState extends State<Expectedincome> {
                                     children: [
                                       Spacer(),
                                       Text(
-                                        (location[index] == "Cluster 1" ||
-                                                location[index] == "Cluster 2"
-                                            ? ""
-                                            : CDO[index].toString()),
+                                        (CDO[index].toString()),
                                         style: AppStyle.textStyleInterMed(
                                             fontSize: 14),
                                       ),
                                       Spacer(),
-                                      location[index] == "Cluster 1" ||
-                                              location[index] == "Cluster 2"
-                                          ? SizedBox()
-                                          : VerticalDivider(
-                                              width: 1,
-                                              color: Color(0xff181818)
-                                                  .withOpacity(0.3),
-                                              thickness: 1,
-                                            )
+                                      VerticalDivider(
+                                        width: 1,
+                                        color:
+                                            Color(0xff181818).withOpacity(0.3),
+                                        thickness: 1,
+                                      )
                                     ],
                                   ),
                                 ),

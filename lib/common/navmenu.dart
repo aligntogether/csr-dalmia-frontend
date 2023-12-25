@@ -1,3 +1,4 @@
+import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/pages/vdf/Reports/home.dart';
 import 'package:dalmia/theme.dart';
@@ -141,7 +142,8 @@ void _showConfirmationDialog(BuildContext context) {
                   side: const BorderSide(),
                   backgroundColor: CustomColorTheme.primaryColor,
                 ),
-                onPressed: () {
+                onPressed: () async {
+                  await SharedPrefHelper.clearSharedPrefAccess();
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const Login(),

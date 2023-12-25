@@ -2,6 +2,7 @@ import 'package:dalmia/app/modules/addLocation/controllers/add_location_controll
 import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/size_constant.dart';
+import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/gpl/gpl_controller.dart';
 import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
@@ -39,8 +40,6 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
       ),
     );
   }
-
-
 
   Widget dataList() {
     return Padding(
@@ -324,27 +323,24 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
               itemCount: locationList.length,
               // Number of items in the grid
               itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(onTap: () {
-                  if(index==0){
-                    AddLocationController col = Get.put(AddLocationController());
-                    col.nameController.value.clear();
-                    col.selectLocation=null;
-                    Get.toNamed(Routes.ADD_LOCATION);
-
-                  }else if(index==1){
-                    Get.toNamed(Routes.ADD_PANCHAYAT);
-
-                  }else if(index==2){
-                    Get.toNamed(Routes.ADD_VILLAGE);
-
-                  }else if(index==3){
-                    Get.toNamed(Routes.ADD_CLUSTER);
-
-                  }else{
-                    Get.toNamed(Routes.REPLACE_VDF);
-
-                  }
-                },
+                return GestureDetector(
+                  onTap: () {
+                    if (index == 0) {
+                      AddLocationController col =
+                          Get.put(AddLocationController());
+                      col.nameController.value.clear();
+                      col.selectLocation = null;
+                      Get.toNamed(Routes.ADD_LOCATION);
+                    } else if (index == 1) {
+                      Get.toNamed(Routes.ADD_PANCHAYAT);
+                    } else if (index == 2) {
+                      Get.toNamed(Routes.ADD_VILLAGE);
+                    } else if (index == 3) {
+                      Get.toNamed(Routes.ADD_CLUSTER);
+                    } else {
+                      Get.toNamed(Routes.REPLACE_VDF);
+                    }
+                  },
                   child: Container(
                     height: 100,
                     decoration: ShapeDecoration(
@@ -378,8 +374,9 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                           children: [
                             Image.asset(
                               locationList[index]["img"],
-                              width: index==4?26:35,
-                              height: index==4?25.3:35,fit: BoxFit.cover,
+                              width: index == 4 ? 26 : 35,
+                              height: index == 4 ? 25.3 : 35,
+                              fit: BoxFit.cover,
                             ),
                             Padding(
                               padding: const EdgeInsets.all(0.0),
@@ -809,12 +806,14 @@ void showConfirmationDialog(BuildContext context) {
               ),
               Space.height(30),
               GestureDetector(
-                onTap: () {
+                onTap: () async {
+                  await SharedPrefHelper.clearSharedPrefAccess();
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const Login(),
                     ),
                   );
+                  // Perform actions when 'Yes' is clicked
                 },
                 child: Container(
                   height: 50,

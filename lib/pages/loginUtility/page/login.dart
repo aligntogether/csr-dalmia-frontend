@@ -1,5 +1,12 @@
+import 'package:dalmia/Constants/constants.dart';
+import 'package:dalmia/helper/sharedpref.dart';
+import 'package:dalmia/pages/CDO/cdohome.dart';
 import 'package:dalmia/pages/LL/ll_home_screen.dart';
+import 'package:dalmia/pages/RH/rhhome.dart';
+import 'package:dalmia/pages/SwitchRole/switchRole.dart';
+import 'package:dalmia/pages/gpl/gpl_home_screen.dart';
 import 'package:dalmia/pages/loginUtility/controller/loginController.dart';
+
 import 'package:dalmia/pages/loginUtility/service/loginApiService.dart';
 import 'package:dalmia/pages/loginUtility/page/otp.dart';
 import 'package:dalmia/pages/vdf/household/approval.dart';
@@ -26,6 +33,23 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
+    // get usertype from shared pref
+    SharedPrefHelper.getSharedPref(USER_TYPES_SHAREDPREF_KEY, context, false)
+        .then((userType) => {
+              if (userType != "")
+                {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => SwitchRole(),
+                    ),
+                  )
+                }
+              // if not null redirect to switchRole
+            })
+        .catchError((e) => {
+              //do nothing
+            });
+
     textFieldFocusNode.addListener(() {
       setState(() {
         isContainerVisible = !textFieldFocusNode.hasFocus;
@@ -133,7 +157,15 @@ class _LoginState extends State<Login> {
                       ),
                     const SizedBox(height: 20.0),
                     SubmitButton(
-                      onPressed: () async {
+                      onPressed: ()
+                          //  {
+                          //   Navigator.of(context).push(
+                          //     MaterialPageRoute(
+                          //       builder: (context) => GPLHomeScreen()
+                          //     ),
+                          //   );
+                          // }
+                          async {
                         try {
                           Map<String, String> respBody = await loginApiService
                               .loginViaOtp(int.tryParse(loginController
