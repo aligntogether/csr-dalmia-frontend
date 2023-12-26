@@ -25,6 +25,7 @@ class FeedBackSendMsgView extends StatefulWidget {
 }
 
 class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
+  var messages = [];
   // String? chat;
 
   Future<List<Map<String, dynamic>>> fetchFeedbackMessages() async {
@@ -111,42 +112,47 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
             body: Obx(
               () => feed.sendMsg.isTrue
                   ? msgViewScreen(feed)
-                  : Column(
+                  : ListView(
                       children: [
+                        msgViewScreen(feed),
                         Spacer(),
-                        Container(
-                          height: MySize.size56,
-                          margin: EdgeInsets.symmetric(horizontal: 16),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(color: Colors.grey),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                blurRadius: 4.0,
-                                offset: Offset(0.0, 2.0),
-                              ),
-                            ],
-                          ),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              fillColor: Colors.white,
-                              filled: true,
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                              ),
-                            ),
-                          ),
-                        ),
+                        feed.sendMsg.isTrue == false
+                            ? Container(
+                                height: MySize.size56,
+                                margin: EdgeInsets.symmetric(horizontal: 16),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(color: Colors.grey),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      blurRadius: 4.0,
+                                      offset: Offset(0.0, 2.0),
+                                    ),
+                                  ],
+                                ),
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container(),
                         Space.height(18),
-                        GestureDetector(
-                            onTap: () {
-                              feed.sendMsg.value = true;
-                            },
-                            child: commonButton(title: "Send", margin: 16)),
+                        feed.sendMsg.isTrue == true
+                            ? GestureDetector(
+                                onTap: () {
+                                  feed.sendMsg.value = true;
+                                },
+                                child: commonButton(title: "Send", margin: 16))
+                            : Container(),
                         Space.height(40),
                       ],
                     ),
@@ -156,6 +162,9 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
   getMessage() async {
     try {
       List<Map<String, dynamic>> msg = await fetchFeedbackMessages();
+      setState(() {
+        messages = msg;
+      });
       print(msg);
     } catch (e) {
       // Handle errors if necessary
@@ -164,10 +173,14 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
   }
 
   Widget msgViewScreen(FeedbackController feed) {
-    return Column(
-      children: [
-        Space.height(20),
-        Container(
+    return Column(children: loadElements(feed));
+  }
+
+  loadElements(FeedbackController feed) {
+    List<Widget> list = [];
+    messages.forEach((e) {
+      list.add(Space.height(20));
+      list.add(Container(
           width: Get.width,
           margin: EdgeInsets.symmetric(horizontal: 16),
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -181,11 +194,13 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                 ),
               ],
               borderRadius: BorderRadius.circular(9),
-              color: Color(0xff008CD3).withOpacity(0.18)),
+              color: e['senderId'].toString() == widget.userid
+                  ? Color(0xff008CD3).withOpacity(0.18)
+                  : Color.fromARGB(255, 245, 246, 246).withOpacity(0.18)),
           child: Column(
             children: [
               Text(
-                "Lorem ipsum dolor sit amet consectetur. Ut ultricies ac viverra interdum amet. Tellus vel viverra maecenas viverra tortor. Mauris dictumst amet arcu arcu.",
+                e['message'],
                 style: AppStyle.textStyleInterMed(
                     fontSize: 14, color: Color(0xff181818).withOpacity(0.8)),
               ),
@@ -193,7 +208,9 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
               Row(
                 children: [
                   Text(
-                    "You",
+                    e['senderId'].toString() == widget.userid
+                        ? "You"
+                        : "${widget.name}",
                     style: AppStyle.textStyleInterMed(
                         fontSize: 12,
                         color: Color(0xff181818).withOpacity(0.6)),
@@ -208,73 +225,66 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                 ],
               ),
             ],
-          ),
-        ),
-        Space.height(20),
-        Obx(() => feed.accept.isTrue
-            ? Container(
-                height: 36,
-                width: 207,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Color(0xff129148))),
-                child: Center(
-                  child: Text(
-                    "You have accepted the reply",
-                    style: AppStyle.textStyleBoldMed(color: Color(0xff0EA301)),
+          )));
+    });
+    list.add(Obx(() => feed.accept.isTrue
+        ? Container(
+            height: 36,
+            width: 207,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Color(0xff129148))),
+            child: Center(
+              child: Text(
+                "You have accepted the reply",
+                style: AppStyle.textStyleBoldMed(color: Color(0xff0EA301)),
+              ),
+            ),
+          )
+        : Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  feed.accept.value = true;
+                },
+                child: Container(
+                  height: 50,
+                  padding: EdgeInsets.symmetric(horizontal: 27, vertical: 16),
+                  decoration: BoxDecoration(
+                      color: Color(0xff27528F),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Center(
+                    child: Text(
+                      "Accept",
+                      style: AppStyle.textStyleInterMed(
+                          fontSize: 14, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+              Space.width(13),
+              GestureDetector(
+                onTap: () {
+                  feed.sendMsg.value = false;
+                },
+                child: Container(
+                  height: 50,
+                  padding: EdgeInsets.symmetric(horizontal: 27, vertical: 14),
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Color(0xff27528F)),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Center(
+                    child: Text(
+                      "Reply",
+                      style: AppStyle.textStyleInterMed(fontSize: 14),
+                    ),
                   ),
                 ),
               )
-            : Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      feed.accept.value = true;
-                    },
-                    child: Container(
-                      height: 50,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 27, vertical: 16),
-                      decoration: BoxDecoration(
-                          color: Color(0xff27528F),
-                          borderRadius: BorderRadius.circular(5)),
-                      child: Center(
-                        child: Text(
-                          "Accept",
-                          style: AppStyle.textStyleInterMed(
-                              fontSize: 14, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Space.width(13),
-                  GestureDetector(
-                    onTap: () {
-                      feed.sendMsg.value = false;
-                    },
-                    child: Container(
-                      height: 50,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 27, vertical: 14),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xff27528F)),
-                          borderRadius: BorderRadius.circular(5)),
-                      child: Center(
-                        child: Text(
-                          "Reply",
-                          style: AppStyle.textStyleInterMed(fontSize: 14),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              )),
-        Spacer(),
-        commonButton(title: "Delete Chat"),
-        Space.height(40)
-      ],
-    );
+            ],
+          )));
+    return list;
   }
 }
