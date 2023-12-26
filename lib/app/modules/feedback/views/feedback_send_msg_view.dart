@@ -1,17 +1,105 @@
+import 'dart:convert';
+
 import 'package:dalmia/app/modules/feedback/controllers/feedback_controller.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/size_constant.dart';
+import 'package:dalmia/helper/sharedpref.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:web_socket_channel/html.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:uuid/uuid.dart';
 
-class FeedBackSendMsgView extends StatelessWidget {
+import '../../../../Constants/constants.dart';
+
+
+
+class FeedBackSendMsgView extends StatefulWidget {
+
   String? regions, location;
 
   FeedBackSendMsgView({super.key, this.regions, this.location});
 
   @override
+  _FeedBackSendMsgViewState createState() => _FeedBackSendMsgViewState();
+}
+
+class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
+  FeedbackController controller = Get.put(FeedbackController());
+  String? validationResult;
+  String? userid;
+
+  late StompClient client;
+  List<types.Message> _messages = [];
+  // final _user = types.User(
+  // id: userid,
+  // );
+
+
+  @override
+  void initState() {
+    super.initState();
+    userid = '14001';
+          // SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context);
+
+    client = StompClient(
+        config: StompConfig(
+            onWebSocketError: (dynamic error) => print (error.toString()),
+            url: 'wss://mobiledevcloud.dalmiabharat.com/csr/ws',
+              onConnect: onConnect)); // StompConfig // StompClient
+
+      client.activate();
+  }
+
+  @override
+  void dispose() {
+    client.deactivate();
+    super.dispose();
+  }
+
+
+  void onConnect (StompFrame frame) {
+    client. subscribe(
+        destination: '/user/${userid}/private',
+        callback: (StompFrame frame) {
+          final body = json.decode(frame.body!);
+
+          print("body : ${body}");
+          print("body1 : ${body['message']}");
+
+          if (frame.body != null) {
+            final textMessage = types.TextMessage(
+              author: types.User(
+                firstName: body['message'],
+                id: body['recipientId'].toString(),
+              ), // types. User
+              createdAt: DateTime.now().millisecondsSinceEpoch,
+              id: 'const Uuid().v4()',
+              text: body['message'],
+            ); // types. TextMessage
+            _addMessage(textMessage);
+            print('message recived :${frame.body}');
+          }
+
+        });
+  }
+
+
+  void _addMessage(types.Message message) {
+    setState (() {
+      print('nurgncguy : $message');
+      _messages.insert(0, message);
+    });
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     FeedbackController feed = Get.put(FeedbackController());
+
     return SafeArea(
         child: Scaffold(
             backgroundColor: Color(0xffF2F2F2),
@@ -42,7 +130,7 @@ class FeedBackSendMsgView extends StatelessWidget {
                       ),
                       Space.height(4),
                       Text(
-                        "${regions}, ${location}",
+                        "${widget.regions}, ${widget.location}",
                         style: AppStyle.textStyleInterMed(fontSize: 16),
                       ),
                     ],
@@ -85,6 +173,9 @@ class FeedBackSendMsgView extends StatelessWidget {
                         GestureDetector(
                             onTap: () {
                               feed.sendMsg.value = true;
+
+
+
                             },
                             child: commonButton(title: "Send", margin: 16)),
                         Space.height(40),
@@ -92,6 +183,7 @@ class FeedBackSendMsgView extends StatelessWidget {
                     ),
             )));
   }
+
 
   Widget msgViewScreen(FeedbackController feed) {
     return Column(
