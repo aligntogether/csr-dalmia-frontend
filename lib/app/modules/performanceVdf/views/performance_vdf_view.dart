@@ -3,6 +3,7 @@ import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/color_constant.dart';
 import 'package:dalmia/common/dropdown_filed.dart';
 import 'package:dalmia/common/size_constant.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -25,22 +26,27 @@ class PerformanceVdfView extends GetView<PerformanceVdfController> {
               Space.height(16),
 
               ///_________________________________ main menu __________________________///
-              Row(
-                children: [
-                  Space.width(16),
-                  Icon(
-                    Icons.arrow_back_ios,
-                    color: Colors.black,
-                    size: 18,
-                  ),
-                  Text(
-                    "Main Menu",
-                    style: AppStyle.textStyleInterMed(fontSize: 14),
-                  ),
-                  Spacer(),
-                  viewOtherReports(context),
-                  Space.width(16),
-                ],
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Row(
+                  children: [
+                    Space.width(16),
+                    Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.black,
+                      size: 18,
+                    ),
+                    Text(
+                      "Main Menu",
+                      style: AppStyle.textStyleInterMed(fontSize: 14),
+                    ),
+                    Spacer(),
+                    viewOtherReports(context),
+                    Space.width(16),
+                  ],
+                ),
               ),
               Space.height(32),
               GetBuilder<PerformanceVdfController>(
@@ -142,7 +148,6 @@ class PerformanceVdfView extends GetView<PerformanceVdfController> {
                 ),
               ),
               Space.height(30),
-
             ],
           )),
     );

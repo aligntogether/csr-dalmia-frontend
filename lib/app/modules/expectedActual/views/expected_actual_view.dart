@@ -19,33 +19,39 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: appBarCommon(controller,context,centerAlignText: true,title: "Reports"),
+          appBar: appBarCommon(controller, context,
+              centerAlignText: true, title: "Reports"),
           body: SingleChildScrollView(
             child: Column(
               children: [
                 //appBar(context, title: "Reports"),
                 Space.height(16),
-            
+
                 ///_________________________________ main menu __________________________///
-                Row(
-                  children: [
-                    Space.width(16),
-                    Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.black,
-                      size: 18,
-                    ),
-                    Text(
-                      "Main Menu",
-                      style: AppStyle.textStyleInterMed(fontSize: 14),
-                    ),
-                    Spacer(),
-                   viewOtherReports(context),
-                    Space.width(16),
-                  ],
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Row(
+                    children: [
+                      Space.width(16),
+                      Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.black,
+                        size: 18,
+                      ),
+                      Text(
+                        "Main Menu",
+                        style: AppStyle.textStyleInterMed(fontSize: 14),
+                      ),
+                      Spacer(),
+                      viewOtherReports(context),
+                      Space.width(16),
+                    ],
+                  ),
                 ),
                 Space.height(34),
-            
+
                 Text(
                   "Expected and actual additional incomes",
                   style: AppStyle.textStyleBoldMed(fontSize: 14),
@@ -53,26 +59,33 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 Space.height(14),
                 allRegionsTables(),
                 Space.height(30),
-                GestureDetector(onTap: () {
-
-                },
-                  child: Container(height: MySize.size48,width: MySize.size168,
-                    decoration: BoxDecoration(border: Border.all(color: darkBlueColor),
+                GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    height: MySize.size48,
+                    width: MySize.size168,
+                    decoration: BoxDecoration(
+                        border: Border.all(color: darkBlueColor),
                         borderRadius: BorderRadius.circular(5)),
-                    child: Row(crossAxisAlignment: CrossAxisAlignment.center,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SvgPicture.asset('images/Excel.svg',height: 25,width: 25,),
+                        SvgPicture.asset(
+                          'images/Excel.svg',
+                          height: 25,
+                          width: 25,
+                        ),
                         Space.width(3),
                         Text(
                           'Download  Excel',
-                          style:AppStyle.textStyleInterMed(fontSize: 14),
+                          style: AppStyle.textStyleInterMed(fontSize: 14),
                         ),
                       ],
-                    ),),
+                    ),
+                  ),
                 ),
                 Space.height(30),
-
               ],
             ),
           )),
@@ -85,7 +98,6 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: DataTable(
-
               dividerThickness: 00,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -98,13 +110,17 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                   ),
                 ],
               ),
-              columnSpacing: 0,horizontalMargin: 0,
+              columnSpacing: 0,
+              horizontalMargin: 0,
               columns: <DataColumn>[
                 DataColumn(
                   label: Expanded(
-                    child: Container( height: 60,
-                      decoration: BoxDecoration(color: Color(0xff008CD3),
-                          borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0))),
+                    child: Container(
+                      height: 60,
+                      decoration: BoxDecoration(
+                          color: Color(0xff008CD3),
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10.0))),
                       padding: EdgeInsets.only(left: 10),
                       child: Center(
                         child: Text(
@@ -119,8 +135,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                   ),
                 ),
                 DataColumn(
-                  label:Container(
-                    height: 60,width: 80,
+                  label: Container(
+                    height: 60,
+                    width: 80,
                     color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
@@ -136,7 +153,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 ),
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -150,7 +169,10 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                   ),
                 ),
                 DataColumn(
-                  label: Container(  height: 60,width: 80,color: Color(0xff008CD3),
+                  label: Container(
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     child: Center(
                       child: Text(
                         'BGM',
@@ -164,7 +186,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 ),
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -178,8 +202,10 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                   ),
                 ),
                 DataColumn(
-                  label:Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                  label: Container(
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -195,7 +221,8 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 DataColumn(
                   label: Container(
                     color: Color(0xff096C9F),
-                    height: 60,width: 80,
+                    height: 60,
+                    width: 80,
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -210,7 +237,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 ),
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -226,7 +255,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //umg
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -242,7 +273,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //jgr
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -258,7 +291,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //lan
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -274,7 +309,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //NE
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff096C9F),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff096C9F),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -290,7 +327,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //CUT
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -306,7 +345,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //MED
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -322,7 +363,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //BOK
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -338,7 +381,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //RAJ
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -354,7 +399,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //KAL
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -370,7 +417,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //EAST
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff096C9F),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff096C9F),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -386,7 +435,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //CEMENT
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff2E8CBB),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff2E8CBB),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -402,7 +453,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //NIG
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -418,7 +471,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //RAM
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -434,7 +489,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //JOW
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -450,7 +507,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //NIN
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -466,7 +525,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //KOL
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -482,7 +543,9 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //SUGAR
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff2E8CBB),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff2E8CBB),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -498,9 +561,12 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                 //PANIND
                 DataColumn(
                   label: Container(
-                    decoration: BoxDecoration(color: Color(0xff096C9F),
-                        borderRadius: BorderRadius.only(topRight: Radius.circular(10.0))),
-                    height: 60,width: 80,
+                    decoration: BoxDecoration(
+                        color: Color(0xff096C9F),
+                        borderRadius:
+                            BorderRadius.only(topRight: Radius.circular(10.0))),
+                    height: 60,
+                    width: 80,
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -514,77 +580,94 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                   ),
                 ),
               ],
-
               rows: List<DataRow>.generate(
                 controller.locations.length,
-                    (index) => DataRow(
+                (index) => DataRow(
                   color: MaterialStateColor.resolveWith(
-                        (states) {
+                    (states) {
                       return controller.locations[index] == "Cluster 1" ||
-                          controller.locations[index] == "Cluster 2"
+                              controller.locations[index] == "Cluster 2"
                           ? Color(0xff008CD3).withOpacity(0.3)
                           : index.isEven
-                          ? Colors.blue.shade50
-                          : Colors.white;
+                              ? Colors.blue.shade50
+                              : Colors.white;
                     },
                   ),
                   cells: [
                     DataCell(
-                      Container(width: 200,
+                      Container(
+                        width: 200,
                         padding: EdgeInsets.only(left: 10),
-
                         child: Row(
                           children: [
                             Text(
                               controller.locations[index],
-                              style: controller.locations[index] == "Cluster 1" ||
-                                  controller.locations[index] == "Cluster 2"?TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize):AppStyle.textStyleInterMed(fontSize: 14),
+                              style: controller.locations[index] ==
+                                          "Cluster 1" ||
+                                      controller.locations[index] == "Cluster 2"
+                                  ? TextStyle(
+                                      color: CustomColorTheme.textColor,
+                                      fontWeight: CustomFontTheme.headingwt,
+                                      fontSize: CustomFontTheme.textSize)
+                                  : AppStyle.textStyleInterMed(fontSize: 14),
                             ),
                             Spacer(),
                             controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"?SizedBox():VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                    controller.locations[index] == "Cluster 2"
+                                ? SizedBox()
+                                : VerticalDivider(
+                                    width: 1,
+                                    color: Color(0xff181818).withOpacity(0.3),
+                                    thickness: 1,
+                                  )
                           ],
                         ),
                       ),
-
                     ),
                     DataCell(
                       Row(
                         children: [
                           Spacer(),
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.DPM[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
                           controller.locations[index] == "Cluster 1" ||
-                              controller.locations[index] == "Cluster 2"?SizedBox():VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                  controller.locations[index] == "Cluster 2"
+                              ? SizedBox()
+                              : VerticalDivider(
+                                  width: 1,
+                                  color: Color(0xff181818).withOpacity(0.3),
+                                  thickness: 1,
+                                )
                         ],
                       ),
                     ),
                     //alr
                     DataCell(
                       Row(
-
                         children: [
                           Spacer(),
-
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.ALR[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
                           controller.locations[index] == "Cluster 1" ||
-                              controller.locations[index] == "Cluster 2"?SizedBox():VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                  controller.locations[index] == "Cluster 2"
+                              ? SizedBox()
+                              : VerticalDivider(
+                                  width: 1,
+                                  color: Color(0xff181818).withOpacity(0.3),
+                                  thickness: 1,
+                                )
                         ],
                       ),
                     ),
@@ -594,15 +677,21 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                         children: [
                           Spacer(),
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.BGM[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
                           controller.locations[index] == "Cluster 1" ||
-                              controller.locations[index] == "Cluster 2"?SizedBox():VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                  controller.locations[index] == "Cluster 2"
+                              ? SizedBox()
+                              : VerticalDivider(
+                                  width: 1,
+                                  color: Color(0xff181818).withOpacity(0.3),
+                                  thickness: 1,
+                                )
                         ],
                       ),
                     ),
@@ -612,15 +701,21 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                         children: [
                           Spacer(),
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.KDP[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
                           controller.locations[index] == "Cluster 1" ||
-                              controller.locations[index] == "Cluster 2"?SizedBox():VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                  controller.locations[index] == "Cluster 2"
+                              ? SizedBox()
+                              : VerticalDivider(
+                                  width: 1,
+                                  color: Color(0xff181818).withOpacity(0.3),
+                                  thickness: 1,
+                                )
                         ],
                       ),
                     ),
@@ -630,29 +725,39 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                         children: [
                           Spacer(),
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
                           controller.locations[index] == "Cluster 1" ||
-                              controller.locations[index] == "Cluster 2"?SizedBox():VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                  controller.locations[index] == "Cluster 2"
+                              ? SizedBox()
+                              : VerticalDivider(
+                                  width: 1,
+                                  color: Color(0xff181818).withOpacity(0.3),
+                                  thickness: 1,
+                                )
                         ],
                       ),
                     ),
+
                     ///__________________________ South _______________________
                     DataCell(
-                      Container(height: 60,color: Color(0xff096C9F),
+                      Container(
+                        height: 60,
+                        color: Color(0xff096C9F),
                         width: 80,
                         child: Center(
                           child: Text(
                             controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.SOUTH[index].toString(),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                            style: AppStyle.textStyleInterMed(
+                                fontSize: 14, color: Colors.white),
                           ),
                         ),
                       ),
@@ -663,15 +768,21 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                         children: [
                           Spacer(),
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
                           controller.locations[index] == "Cluster 1" ||
-                              controller.locations[index] == "Cluster 2"?SizedBox():VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                  controller.locations[index] == "Cluster 2"
+                              ? SizedBox()
+                              : VerticalDivider(
+                                  width: 1,
+                                  color: Color(0xff181818).withOpacity(0.3),
+                                  thickness: 1,
+                                )
                         ],
                       ),
                     ),
@@ -681,15 +792,21 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                         children: [
                           Spacer(),
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
                           controller.locations[index] == "Cluster 1" ||
-                              controller.locations[index] == "Cluster 2"?SizedBox():VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                  controller.locations[index] == "Cluster 2"
+                              ? SizedBox()
+                              : VerticalDivider(
+                                  width: 1,
+                                  color: Color(0xff181818).withOpacity(0.3),
+                                  thickness: 1,
+                                )
                         ],
                       ),
                     ),
@@ -699,15 +816,21 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                         children: [
                           Spacer(),
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
                           controller.locations[index] == "Cluster 1" ||
-                              controller.locations[index] == "Cluster 2"?SizedBox():VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                  controller.locations[index] == "Cluster 2"
+                              ? SizedBox()
+                              : VerticalDivider(
+                                  width: 1,
+                                  color: Color(0xff181818).withOpacity(0.3),
+                                  thickness: 1,
+                                )
                         ],
                       ),
                     ),
@@ -717,28 +840,36 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                         children: [
                           Spacer(),
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
+
                     ///__________________________ NE _______________________
                     DataCell(
-                      Container(height: 60,color: Color(0xff096C9F),
+                      Container(
+                        height: 60,
+                        color: Color(0xff096C9F),
                         width: 80,
                         child: Center(
                           child: Text(
                             controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.SOUTH[index].toString(),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                            style: AppStyle.textStyleInterMed(
+                                fontSize: 14, color: Colors.white),
                           ),
                         ),
                       ),
@@ -749,15 +880,21 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                         children: [
                           Spacer(),
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
                           controller.locations[index] == "Cluster 1" ||
-                              controller.locations[index] == "Cluster 2"?SizedBox(): VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                  controller.locations[index] == "Cluster 2"
+                              ? SizedBox()
+                              : VerticalDivider(
+                                  width: 1,
+                                  color: Color(0xff181818).withOpacity(0.3),
+                                  thickness: 1,
+                                )
                         ],
                       ),
                     ),
@@ -767,14 +904,18 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                         children: [
                           Spacer(),
                           Text(
-                              controller.locations[index] == "Cluster 1" ||
-                                  controller.locations[index] == "Cluster 2"
+                            controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.CHA[index].toString(),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
@@ -784,15 +925,21 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                         children: [
                           Spacer(),
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
                           controller.locations[index] == "Cluster 1" ||
-                              controller.locations[index] == "Cluster 2"?SizedBox():VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                  controller.locations[index] == "Cluster 2"
+                              ? SizedBox()
+                              : VerticalDivider(
+                                  width: 1,
+                                  color: Color(0xff181818).withOpacity(0.3),
+                                  thickness: 1,
+                                )
                         ],
                       ),
                     ),
@@ -802,15 +949,21 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                         children: [
                           Spacer(),
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
                           controller.locations[index] == "Cluster 1" ||
-                              controller.locations[index] == "Cluster 2"?SizedBox():VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                  controller.locations[index] == "Cluster 2"
+                              ? SizedBox()
+                              : VerticalDivider(
+                                  width: 1,
+                                  color: Color(0xff181818).withOpacity(0.3),
+                                  thickness: 1,
+                                )
                         ],
                       ),
                     ),
@@ -820,45 +973,57 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                         children: [
                           Spacer(),
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
                           controller.locations[index] == "Cluster 1" ||
-                              controller.locations[index] == "Cluster 2"?SizedBox():VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                  controller.locations[index] == "Cluster 2"
+                              ? SizedBox()
+                              : VerticalDivider(
+                                  width: 1,
+                                  color: Color(0xff181818).withOpacity(0.3),
+                                  thickness: 1,
+                                )
                         ],
                       ),
                     ),
                     //EAST
                     ///__________________________ EAST _______________________
                     DataCell(
-                      Container(height: 60,color: Color(0xff096C9F),
+                      Container(
+                        height: 60,
+                        color: Color(0xff096C9F),
                         width: 80,
                         child: Center(
                           child: Text(
                             controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.SOUTH[index].toString(),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                            style: AppStyle.textStyleInterMed(
+                                fontSize: 14, color: Colors.white),
                           ),
                         ),
                       ),
                     ),
                     //CEMENT
                     DataCell(
-                      Container(height: 60,color: Color(0xff2E8CBB),
+                      Container(
+                        height: 60,
+                        color: Color(0xff2E8CBB),
                         width: 80,
                         child: Center(
                           child: Text(
                             controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.SOUTH[index].toString(),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                            style: AppStyle.textStyleInterMed(
+                                fontSize: 14, color: Colors.white),
                           ),
                         ),
                       ),
@@ -870,15 +1035,21 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                         children: [
                           Spacer(),
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
                           controller.locations[index] == "Cluster 1" ||
-                              controller.locations[index] == "Cluster 2"?SizedBox():VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                  controller.locations[index] == "Cluster 2"
+                              ? SizedBox()
+                              : VerticalDivider(
+                                  width: 1,
+                                  color: Color(0xff181818).withOpacity(0.3),
+                                  thickness: 1,
+                                )
                         ],
                       ),
                     ),
@@ -889,15 +1060,21 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                         children: [
                           Spacer(),
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
                           controller.locations[index] == "Cluster 1" ||
-                              controller.locations[index] == "Cluster 2"?SizedBox():VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                  controller.locations[index] == "Cluster 2"
+                              ? SizedBox()
+                              : VerticalDivider(
+                                  width: 1,
+                                  color: Color(0xff181818).withOpacity(0.3),
+                                  thickness: 1,
+                                )
                         ],
                       ),
                     ),
@@ -908,15 +1085,21 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                         children: [
                           Spacer(),
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
                           controller.locations[index] == "Cluster 1" ||
-                              controller.locations[index] == "Cluster 2"?SizedBox(): VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                  controller.locations[index] == "Cluster 2"
+                              ? SizedBox()
+                              : VerticalDivider(
+                                  width: 1,
+                                  color: Color(0xff181818).withOpacity(0.3),
+                                  thickness: 1,
+                                )
                         ],
                       ),
                     ),
@@ -927,15 +1110,21 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                         children: [
                           Spacer(),
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
                           controller.locations[index] == "Cluster 1" ||
-                              controller.locations[index] == "Cluster 2"?SizedBox(): VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                  controller.locations[index] == "Cluster 2"
+                              ? SizedBox()
+                              : VerticalDivider(
+                                  width: 1,
+                                  color: Color(0xff181818).withOpacity(0.3),
+                                  thickness: 1,
+                                )
                         ],
                       ),
                     ),
@@ -946,30 +1135,39 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                         children: [
                           Spacer(),
                           Text(
-                            ( controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                            (controller.locations[index] == "Cluster 1" ||
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.CHA[index].toString()),
-                            style:AppStyle.textStyleInterMed(fontSize: 14),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
                           controller.locations[index] == "Cluster 1" ||
-                              controller.locations[index] == "Cluster 2"?SizedBox():VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                                  controller.locations[index] == "Cluster 2"
+                              ? SizedBox()
+                              : VerticalDivider(
+                                  width: 1,
+                                  color: Color(0xff181818).withOpacity(0.3),
+                                  thickness: 1,
+                                )
                         ],
                       ),
                     ),
 
                     //SUGAR
                     DataCell(
-                      Container(height: 60,color: Color(0xff2E8CBB),
+                      Container(
+                        height: 60,
+                        color: Color(0xff2E8CBB),
                         width: 80,
                         child: Center(
                           child: Text(
                             controller.locations[index] == "Cluster 1" ||
-                                controller.locations[index] == "Cluster 2"
+                                    controller.locations[index] == "Cluster 2"
                                 ? ""
                                 : controller.SOUTH[index].toString(),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                            style: AppStyle.textStyleInterMed(
+                                fontSize: 14, color: Colors.white),
                           ),
                         ),
                       ),
@@ -977,17 +1175,21 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
 
                     //PANIND
                     DataCell(
-                      Container(height: 60,color: Color(0xff096C9F),
+                      Container(
+                        height: 60,
+                        color: Color(0xff096C9F),
                         width: 80,
                         child: Center(
                           child: Text(
                             controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.SOUTH[index].toString(),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                            style: AppStyle.textStyleInterMed(
+                                fontSize: 14, color: Colors.white),
                           ),
                         ),
                       ),
@@ -1034,7 +1236,7 @@ class ExpectedActualView extends GetView<ExpectedActualController> {
                                 ],
                               ),
                             ],*/
-          ),
+              ),
         ));
   }
 }

@@ -1,9 +1,14 @@
+import 'package:dalmia/app/modules/sourceFunds/views/source_region_location_view.dart';
+import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/helper/sharedpref.dart';
+import 'package:dalmia/pages/RH/reports/panindiareport.dart';
 
 import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class RHHome extends StatefulWidget {
   const RHHome({Key? key}) : super(key: key);
@@ -94,13 +99,9 @@ class _RHHomeState extends State<RHHome> {
                   height: 10,
                 ),
                 GestureDetector(
-                  // onTap: () {
-                  //   Navigator.of(context).push(
-                  //     MaterialPageRoute(
-                  //       builder: (context) => const LLVdfReport(),
-                  //     ),
-                  //   );
-                  // },
+                  onTap: () {
+                    Get.toNamed(Routes.OVERVIEW_PAN);
+                  },
                   child: cards(
                     title: 'View Report - South',
                     imageUrl: 'images/vdfreports.svg',
@@ -110,13 +111,7 @@ class _RHHomeState extends State<RHHome> {
                   height: 20,
                 ),
                 GestureDetector(
-                  // onTap: () {
-                  //   Navigator.of(context).push(
-                  //     MaterialPageRoute(
-                  //       builder: (context) => const LLVdfReport(),
-                  //     ),
-                  //   );
-                  // },
+                  onTap: () {},
                   child: cards(
                     title: 'View Report - Sugar',
                     imageUrl: 'images/vdfreports.svg',
@@ -126,13 +121,9 @@ class _RHHomeState extends State<RHHome> {
                   height: 20,
                 ),
                 GestureDetector(
-                  // onTap: () {
-                  //   Navigator.of(context).push(
-                  //     MaterialPageRoute(
-                  //       builder: (context) => const LLVdfReport(),
-                  //     ),
-                  //   );
-                  // },
+                  onTap: () {
+                    Get.toNamed(Routes.PERFORMANCE_VDF);
+                  },
                   child: cards(
                     title: 'Performance of VDFs',
                     imageUrl: 'images/weeklyreports.svg',
@@ -142,13 +133,9 @@ class _RHHomeState extends State<RHHome> {
                   height: 20,
                 ),
                 GestureDetector(
-                  // onTap: () {
-                  //   Navigator.of(context).push(
-                  //     MaterialPageRoute(
-                  //       builder: (context) => const ExpectedincomeLL(),
-                  //     ),
-                  //   );
-                  // },
+                  onTap: () {
+                    Get.toNamed(Routes.EXPECTED_ACTUAL);
+                  },
                   child: cards(
                     title: 'Expected and Actual Income Report',
                     imageUrl: 'images/expectedreports.svg',
@@ -158,13 +145,9 @@ class _RHHomeState extends State<RHHome> {
                   height: 20,
                 ),
                 GestureDetector(
-                  // onTap: () {
-                  //   Navigator.of(context).push(
-                  //     MaterialPageRoute(
-                  //       builder: (context) => const LLVDFFunds(),
-                  //     ),
-                  //   );
-                  // },
+                  onTap: () {
+                    Get.toNamed(Routes.LEVER_WISE);
+                  },
                   child: cards(
                     title: 'Lever wise details of HH & int.',
                     imageUrl: 'images/leverwise.svg',
@@ -174,13 +157,9 @@ class _RHHomeState extends State<RHHome> {
                   height: 20,
                 ),
                 GestureDetector(
-                  // onTap: () {
-                  //   Navigator.of(context).push(
-                  //     MaterialPageRoute(
-                  //       builder: (context) => const SourceOfFundsOfLL(),
-                  //     ),
-                  //   );
-                  // },
+                  onTap: () {
+                    Get.to(SourceRegionsView());
+                  },
                   child: cards(
                     title: 'Source of Funds',
                     imageUrl: 'images/sourceoffunds.svg',
@@ -190,13 +169,9 @@ class _RHHomeState extends State<RHHome> {
                   height: 20,
                 ),
                 GestureDetector(
-                  // onTap: () {
-                  //   Navigator.of(context).push(
-                  //     MaterialPageRoute(
-                  //       builder: (context) => const SourceOfFundsOfLL(),
-                  //     ),
-                  //   );
-                  // },
+                  onTap: () {
+                    Get.toNamed(Routes.AMOUNT_UTILIZED);
+                  },
                   child: cards(
                     title: 'Amount utilized by Location',
                     imageUrl: 'images/sendmoney.svg',
@@ -215,60 +190,66 @@ class _RHHomeState extends State<RHHome> {
                   height: 10,
                 ),
                 GestureDetector(
-                  // onTap: () {
-                  //   Get.toNamed(Routes.FEEDBACK);
-                  // },
+                  onTap: () {
+                    Get.toNamed(Routes.FEEDBACK);
+                  },
                   child: Stack(
                     children: [
                       Container(
-                        // width: 284,
-                        // height: 55,
-                        padding: const EdgeInsets.all(12),
-                        decoration: ShapeDecoration(
-                          color: Color(0xFFC2DEEC),
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 1,
-                              color:
-                                  Colors.black.withOpacity(0.10000000149011612),
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          shadows: [
-                            BoxShadow(
-                              color: Color(0x11000000),
-                              blurRadius: 20,
-                              offset: Offset(0, 10),
-                              spreadRadius: 0,
-                            )
-                          ],
-                        ),
-                        // color: Color(0xFFF2D4C9),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              'images/Feedback.svg',
-                              width: 34,
-                              height: 31,
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Flexible(
-                              child: Text(
-                                'Reply to Feedback',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  color: const Color(0xFF0374AD),
-                                  fontWeight: CustomFontTheme.labelwt,
+                        height: 75,
+                        color: Colors.white,
+                        child: Center(
+                          child: Container(
+                            // width: 284,
+
+                            padding: const EdgeInsets.all(12),
+                            decoration: ShapeDecoration(
+                              color: Color(0xFFC2DEEC),
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                  width: 1,
+                                  color: Colors.black
+                                      .withOpacity(0.10000000149011612),
                                 ),
+                                borderRadius: BorderRadius.circular(10),
                               ),
+                              shadows: [
+                                BoxShadow(
+                                  color: Color(0x11000000),
+                                  blurRadius: 20,
+                                  offset: Offset(0, 10),
+                                  spreadRadius: 0,
+                                )
+                              ],
                             ),
-                          ],
+                            // color: Color(0xFFF2D4C9),
+                            child: Row(
+                              children: [
+                                SvgPicture.asset(
+                                  'images/Feedback.svg',
+                                  width: 34,
+                                  height: 31,
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    'Reply to Feedback',
+                                    style: TextStyle(
+                                      fontSize: CustomFontTheme.textSize,
+                                      color: const Color(0xFF0374AD),
+                                      fontWeight: CustomFontTheme.labelwt,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                       Positioned(
-                        top: 10,
+                        top: 0,
                         right: 20,
                         child: Container(
                           width: 23,

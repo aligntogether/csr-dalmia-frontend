@@ -146,7 +146,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                               )
                             : Container(),
                         Space.height(18),
-                        feed.sendMsg.isTrue == true
+                        feed.sendMsg.isTrue == false
                             ? GestureDetector(
                                 onTap: () {
                                   feed.sendMsg.value = true;
@@ -245,44 +245,50 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              GestureDetector(
-                onTap: () {
-                  feed.accept.value = true;
-                },
-                child: Container(
-                  height: 50,
-                  padding: EdgeInsets.symmetric(horizontal: 27, vertical: 16),
-                  decoration: BoxDecoration(
-                      color: Color(0xff27528F),
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Center(
-                    child: Text(
-                      "Accept",
-                      style: AppStyle.textStyleInterMed(
-                          fontSize: 14, color: Colors.white),
-                    ),
-                  ),
-                ),
-              ),
+              feed.sendMsg.isTrue == true
+                  ? GestureDetector(
+                      onTap: () {
+                        feed.accept.value = true;
+                      },
+                      child: Container(
+                        height: 50,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 27, vertical: 16),
+                        decoration: BoxDecoration(
+                            color: Color(0xff27528F),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Center(
+                          child: Text(
+                            "Accept",
+                            style: AppStyle.textStyleInterMed(
+                                fontSize: 14, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(),
               Space.width(13),
-              GestureDetector(
-                onTap: () {
-                  feed.sendMsg.value = false;
-                },
-                child: Container(
-                  height: 50,
-                  padding: EdgeInsets.symmetric(horizontal: 27, vertical: 14),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Color(0xff27528F)),
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Center(
-                    child: Text(
-                      "Reply",
-                      style: AppStyle.textStyleInterMed(fontSize: 14),
-                    ),
-                  ),
-                ),
-              )
+              feed.sendMsg.isTrue == true
+                  ? GestureDetector(
+                      onTap: () {
+                        feed.sendMsg.value = false;
+                      },
+                      child: Container(
+                        height: 50,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 27, vertical: 14),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Color(0xff27528F)),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Center(
+                          child: Text(
+                            "Reply",
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container()
             ],
           )));
     return list;
