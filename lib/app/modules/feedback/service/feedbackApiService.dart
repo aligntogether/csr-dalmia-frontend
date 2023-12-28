@@ -269,7 +269,7 @@ class FeedbackApiService {
 
         if (respBody.containsKey('resp_msg')) {
           print("object");
-          if (respBody['resp_msg'] != 'Data Updated') {
+          if (respBody['resp_code'] != 200) {
             return null;
           }
           else {

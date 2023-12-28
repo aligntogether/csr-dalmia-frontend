@@ -15,9 +15,7 @@ import 'package:dalmia/helper/sharedpref.dart';
 import '../controllers/feedback_controller.dart';
 import '../service/feedbackApiService.dart';
 
-
 class FeedbackView extends StatefulWidget {
-
   FeedbackView({Key? key}) : super(key: key);
 
   @override
@@ -26,7 +24,7 @@ class FeedbackView extends StatefulWidget {
 
 class _FeedbackViewState extends State<FeedbackView> {
   final FeedbackApiService feedbackApiService = FeedbackApiService();
-
+  String userId = "";
 
   @override
   void initState() {
@@ -35,12 +33,11 @@ class _FeedbackViewState extends State<FeedbackView> {
   }
 
   void getSharedPreference() async {
-
     FeedbackController controller = Get.put(FeedbackController());
 
     String userIdSharedPref = await SharedPrefHelper.getSharedPref(
         USER_ID_SHAREDPREF_KEY, context, true);
-
+    userId = userIdSharedPref;
     String userTypeSharedPref = await SharedPrefHelper.getSharedPref(
         USER_TYPE_SHAREDPREF_KEY, context, true);
 
@@ -50,9 +47,7 @@ class _FeedbackViewState extends State<FeedbackView> {
     });
 
     print("userIdSharedPref: " + userIdSharedPref);
-
   }
-
 
   Future<List<Map<String, dynamic>>> fetchData(BuildContext context) async {
     String userIdSharedPref = await SharedPrefHelper.getSharedPref(
@@ -144,7 +139,7 @@ class _FeedbackViewState extends State<FeedbackView> {
                             child: GestureDetector(
                               onTap: () {
                                 Get.to(FeedBackSendMsgView(
-                                  userid: feedback['sender_id'].toString(),
+                                  userid: userId,
                                   recipentid:
                                       feedback['recipient_id'].toString(),
                                   feedbackid:
@@ -167,7 +162,7 @@ class _FeedbackViewState extends State<FeedbackView> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        feedback['name'],
+                                        (feedback['name'] ?? "").split("_")[0],
                                         style: AppStyle.textStyleBoldMed(
                                             fontSize: 14),
                                       ),
@@ -197,15 +192,16 @@ class _FeedbackViewState extends State<FeedbackView> {
             ),
           ),
           Space.height(20),
-          controller.userType != 'LL' ?
-          GestureDetector(
-            onTap: () {
-              Get.to(FeedBackChatView());
-            },
-            child: commonButton(
-              title: "Send New Feedback",
-            ),
-          ) : Container(),
+          controller.userType != 'LL'
+              ? GestureDetector(
+                  onTap: () {
+                    Get.to(FeedBackChatView());
+                  },
+                  child: commonButton(
+                    title: "Send New Feedback",
+                  ),
+                )
+              : Container(),
           Space.height(40),
         ],
       ),

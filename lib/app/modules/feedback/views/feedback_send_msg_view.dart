@@ -9,13 +9,12 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 
-import 'package:web_socket_channel/html.dart';
+
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:uuid/uuid.dart';
-import '../../../../Constants/constants.dart';
+
 
 class FeedBackSendMsgView extends StatefulWidget {
   String? regions, location, feedbackid, name, userid, recipentid;
@@ -54,7 +53,8 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
 
     print("client : $client");
     print("client userId : ${widget.userid}");
-    client.activate();
+    client.activate(); 
+    getMessage();
   }
 
   @override
@@ -137,7 +137,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
 
   @override
   Widget build(BuildContext context) {
-    getMessage();
+   
     FeedbackController feed = Get.put(FeedbackController());
 
     return SafeArea(
@@ -170,7 +170,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                           },
                           child: Icon(Icons.arrow_back)),
                       Text(
-                        widget.name ?? '',
+                        (widget.name ?? '').split("_")[0],
                         style: AppStyle.textStyleBoldMed(fontSize: 16),
                       ),
                       Space.height(4),
@@ -287,7 +287,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                   Text(
                     e['senderId'].toString() == widget.userid
                         ? "You"
-                        : "${widget.name}",
+                        : "${(widget.name ?? '').split("_")[0]}",
                     style: AppStyle.textStyleInterMed(
                         fontSize: 12,
                         color: Color(0xff181818).withOpacity(0.6)),
@@ -304,7 +304,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
             ],
           )));
     });
-    list.add(Obx(() => feed.accept.isTrue
+    list.add(Obx(() => feed.accept.value 
         ? Container(
             height: 36,
             width: 207,
@@ -319,7 +319,8 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
             ),
           )
         :
-    // (widget.userid! == feedbackInitiator) ?
+    (widget.userid == feedbackInitiator)
+            ?
     Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -328,9 +329,14 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                   ? GestureDetector(
                 onTap: () async {
 
-                  String? updateResponse = await feedbackApiService.updateFeedback(widget.userid!, controller.feedbackId ?? '0' , '1');
+                            String? updateResponse =
+                                await feedbackApiService.updateFeedback(
+                                    widget.userid!,
+                                    widget.feedbackid ?? '0',
+                                    '1');
 
                   if (updateResponse != null) {
+                              print("feed");
                     setState(() {
                       feed.accept.value = true;
                     });
@@ -351,10 +357,11 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                     ),
                   ),
                 ),
-              ) : Container()
+                        )
+                      : Container(),
               Space.width(13),
               feed.sendMsg.isTrue == true
-                  ? GestureDetector(
+                      ? GestureDetector(
                       onTap: () {
                         feed.sendMsg.value = false;
                       },
@@ -376,7 +383,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                   : Container()
             ],
           )
-    // : Row()
+            : Row()
     ));
     return list;
   }
