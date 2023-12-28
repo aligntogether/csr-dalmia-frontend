@@ -218,7 +218,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                               )
                             : Container(),
                         Space.height(18),
-                        feed.sendMsg.isTrue == true
+                        feed.sendMsg.isTrue == false
                             ? GestureDetector(
                                 onTap: () {
                                   feed.sendMsg.value = true;
@@ -324,7 +324,8 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              GestureDetector(
+              feed.sendMsg.isTrue == true
+                  ? GestureDetector(
                 onTap: () async {
 
                   String? updateResponse = await feedbackApiService.updateFeedback(widget.userid!, controller.feedbackId ?? '0' , '1');
@@ -350,26 +351,29 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                     ),
                   ),
                 ),
-              ),
+              ) : Container()
               Space.width(13),
-              GestureDetector(
-                onTap: () {
-                  feed.sendMsg.value = false;
-                },
-                child: Container(
-                  height: 50,
-                  padding: EdgeInsets.symmetric(horizontal: 27, vertical: 14),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Color(0xff27528F)),
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Center(
-                    child: Text(
-                      "Reply",
-                      style: AppStyle.textStyleInterMed(fontSize: 14),
-                    ),
-                  ),
-                ),
-              )
+              feed.sendMsg.isTrue == true
+                  ? GestureDetector(
+                      onTap: () {
+                        feed.sendMsg.value = false;
+                      },
+                      child: Container(
+                        height: 50,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 27, vertical: 14),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Color(0xff27528F)),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Center(
+                          child: Text(
+                            "Reply",
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container()
             ],
           )
     // : Row()

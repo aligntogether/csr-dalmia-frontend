@@ -1,5 +1,3 @@
-import 'package:dalmia/pages/LL/feedbackll/bindings/feedback_binding.dart';
-import 'package:dalmia/pages/LL/feedbackll/views/feedback_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/addCluster/bindings/add_cluster_binding.dart';
@@ -94,11 +92,6 @@ class AppPages {
       name: _Paths.FEEDBACK,
       page: () => FeedbackView(),
       binding: FeedbackBinding(),
-    ),
-    GetPage(
-      name: _Paths.FEEDBACKLL,
-      page: () => const FeedbackViewLL(),
-      binding: FeedbackBindingLL(),
     ),
     GetPage(
       name: _Paths.OVERVIEW_PAN,

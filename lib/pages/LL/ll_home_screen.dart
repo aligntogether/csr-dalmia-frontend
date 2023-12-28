@@ -2,7 +2,7 @@ import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/LL/action.dart';
 import 'package:dalmia/pages/LL/expected.dart';
-import 'package:dalmia/pages/LL/feedbackll/feedback.dart';
+
 import 'package:dalmia/pages/LL/sourceoffunds.dart';
 import 'package:dalmia/pages/LL/vdffund.dart';
 import 'package:dalmia/pages/LL/vdfreports.dart';
@@ -186,51 +186,57 @@ class _LLHomeState extends State<LLHome> {
                   child: Stack(
                     children: [
                       Container(
-                        // width: 284,
-                        // height: 55,
-                        padding: const EdgeInsets.all(12),
-                        decoration: ShapeDecoration(
-                          color: Color(0xFFC2DEEC),
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 1,
-                              color:
-                                  Colors.black.withOpacity(0.10000000149011612),
+                        height: 75,
+                        color: Colors.white,
+                        child: Center(
+                          child: Container(
+                            // width: 284,
+                            // height: 55,
+                            padding: const EdgeInsets.all(12),
+                            decoration: ShapeDecoration(
+                              color: Color(0xFFC2DEEC),
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                  width: 1,
+                                  color: Colors.black
+                                      .withOpacity(0.10000000149011612),
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              shadows: [
+                                BoxShadow(
+                                  color: Color(0x11000000),
+                                  blurRadius: 20,
+                                  offset: Offset(0, 10),
+                                  spreadRadius: 0,
+                                )
+                              ],
                             ),
-                            borderRadius: BorderRadius.circular(10),
+                            // color: Color(0xFFF2D4C9),
+                            child: Row(children: [
+                              SvgPicture.asset(
+                                'images/takeaction.svg',
+                                width: 34,
+                                height: 31,
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Flexible(
+                                child: Text(
+                                  'Drop or Select HH for Int.',
+                                  style: TextStyle(
+                                      fontSize: CustomFontTheme.textSize,
+                                      color: const Color(0xFF0374AD),
+                                      fontWeight: CustomFontTheme.labelwt),
+                                ),
+                              )
+                            ]),
                           ),
-                          shadows: [
-                            BoxShadow(
-                              color: Color(0x11000000),
-                              blurRadius: 20,
-                              offset: Offset(0, 10),
-                              spreadRadius: 0,
-                            )
-                          ],
                         ),
-                        // color: Color(0xFFF2D4C9),
-                        child: Row(children: [
-                          SvgPicture.asset(
-                            'images/takeaction.svg',
-                            width: 34,
-                            height: 31,
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Flexible(
-                            child: Text(
-                              'Drop or Select HH for Int.',
-                              style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  color: const Color(0xFF0374AD),
-                                  fontWeight: CustomFontTheme.labelwt),
-                            ),
-                          )
-                        ]),
                       ),
                       Positioned(
-                          top: 10,
+                          top: 0,
                           right: 20,
                           child: Container(
                             width: 23,
@@ -261,54 +267,60 @@ class _LLHomeState extends State<LLHome> {
                   child: Stack(
                     children: [
                       Container(
-                        // width: 284,
-                        // height: 55,
-                        padding: const EdgeInsets.all(12),
-                        decoration: ShapeDecoration(
-                          color: Color(0xFFC2DEEC),
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 1,
-                              color:
-                                  Colors.black.withOpacity(0.10000000149011612),
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          shadows: [
-                            BoxShadow(
-                              color: Color(0x11000000),
-                              blurRadius: 20,
-                              offset: Offset(0, 10),
-                              spreadRadius: 0,
-                            )
-                          ],
-                        ),
-                        // color: Color(0xFFF2D4C9),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              'images/Feedback.svg',
-                              width: 34,
-                              height: 31,
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Flexible(
-                              child: Text(
-                                'Reply to Feedback',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  color: const Color(0xFF0374AD),
-                                  fontWeight: CustomFontTheme.labelwt,
+                        height: 75,
+                        color: Colors.white,
+                        child: Center(
+                          child: Container(
+                            // width: 284,
+
+                            padding: const EdgeInsets.all(12),
+                            decoration: ShapeDecoration(
+                              color: Color(0xFFC2DEEC),
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                  width: 1,
+                                  color: Colors.black
+                                      .withOpacity(0.10000000149011612),
                                 ),
+                                borderRadius: BorderRadius.circular(10),
                               ),
+                              shadows: [
+                                BoxShadow(
+                                  color: Color(0x11000000),
+                                  blurRadius: 20,
+                                  offset: Offset(0, 10),
+                                  spreadRadius: 0,
+                                )
+                              ],
                             ),
-                          ],
+                            // color: Color(0xFFF2D4C9),
+                            child: Row(
+                              children: [
+                                SvgPicture.asset(
+                                  'images/Feedback.svg',
+                                  width: 34,
+                                  height: 31,
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    'Reply to Feedback',
+                                    style: TextStyle(
+                                      fontSize: CustomFontTheme.textSize,
+                                      color: const Color(0xFF0374AD),
+                                      fontWeight: CustomFontTheme.labelwt,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                       Positioned(
-                        top: 10,
+                        top: 0,
                         right: 20,
                         child: Container(
                           width: 23,

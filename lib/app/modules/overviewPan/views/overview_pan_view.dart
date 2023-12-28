@@ -34,11 +34,7 @@ class OverviewPanView extends GetView<OverviewPanController> {
                 ///_________________________________ main menu __________________________///
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(
-                      builder: (context) {
-                        return GPLHomeScreen();
-                      },
-                    ));
+                    Navigator.pop(context);
                   },
                   child: Row(
                     children: [

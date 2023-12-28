@@ -21,21 +21,19 @@ class LeverWiseView extends GetView<LeverWiseController> {
     LeverWiseController leverWiseController = Get.put(LeverWiseController());
     return SafeArea(
       child: Scaffold(
-        appBar: appBarCommon(controller,context,centerAlignText: true,title: "Reports"),
+          appBar: appBarCommon(controller, context,
+              centerAlignText: true, title: "Reports"),
           body: SingleChildScrollView(
             child: Column(
               children: [
-               // appBar(context, title: "Reports"),
+                // appBar(context, title: "Reports"),
                 Space.height(16),
-            
+
                 ///_________________________________ main menu __________________________///
-                GestureDetector(onTap: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(
-                    builder: (context) {
-                      return GPLHomeScreen();
-                    },
-                  ));
-                },
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
                   child: Row(
                     children: [
                       Space.width(16),
@@ -50,13 +48,12 @@ class LeverWiseView extends GetView<LeverWiseController> {
                       ),
                       Spacer(),
                       viewOtherReports(context),
-
                       Space.width(16),
                     ],
                   ),
                 ),
                 Space.height(34),
-            
+
                 Text(
                   "Lever wise number of interventions",
                   style: AppStyle.textStyleBoldMed(fontSize: 14),
@@ -85,19 +82,20 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         const Text(
                           'Download  Excel',
                           style: TextStyle(
-                              fontSize: 14, color: CustomColorTheme.primaryColor),
+                              fontSize: 14,
+                              color: CustomColorTheme.primaryColor),
                         ),
                       ],
                     ),
                   ),
                 ),
                 Space.height(14),
-            
               ],
             ),
           )),
     );
   }
+
   Widget allRegionsTables() {
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -105,7 +103,8 @@ class LeverWiseView extends GetView<LeverWiseController> {
           padding: const EdgeInsets.all(8.0),
           child: DataTable(
               dividerThickness: 00,
-              columnSpacing: 0,horizontalMargin: 0,
+              columnSpacing: 0,
+              horizontalMargin: 0,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: [
@@ -117,13 +116,15 @@ class LeverWiseView extends GetView<LeverWiseController> {
                   ),
                 ],
               ),
-
               columns: <DataColumn>[
                 DataColumn(
                   label: Expanded(
-                    child: Container( height: 60,
-                      decoration: BoxDecoration(color: Color(0xff008CD3),
-                          borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0))),
+                    child: Container(
+                      height: 60,
+                      decoration: BoxDecoration(
+                          color: Color(0xff008CD3),
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10.0))),
                       padding: EdgeInsets.only(left: 10),
                       child: Center(
                         child: Text(
@@ -138,8 +139,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                   ),
                 ),
                 DataColumn(
-                  label:Container(
-                    height: 60,width: 80,
+                  label: Container(
+                    height: 60,
+                    width: 80,
                     color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
@@ -155,7 +157,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 ),
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -169,7 +173,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                   ),
                 ),
                 DataColumn(
-                  label: Container(  height: 60,width: 80,color: Color(0xff008CD3),
+                  label: Container(
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     child: Center(
                       child: Text(
                         'BGM',
@@ -183,7 +190,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 ),
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -197,8 +206,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                   ),
                 ),
                 DataColumn(
-                  label:Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                  label: Container(
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -214,7 +225,8 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 DataColumn(
                   label: Container(
                     color: Color(0xff096C9F),
-                    height: 60,width: 80,
+                    height: 60,
+                    width: 80,
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -229,7 +241,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 ),
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -245,7 +259,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //umg
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -261,7 +277,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //jgr
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -277,7 +295,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //lan
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -293,7 +313,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //NE
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff096C9F),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff096C9F),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -309,7 +331,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //CUT
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -325,7 +349,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //MED
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -341,7 +367,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //BOK
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -357,7 +385,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //RAJ
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -373,7 +403,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //KAL
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -389,7 +421,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //EAST
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff096C9F),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff096C9F),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -405,7 +439,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //CEMENT
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff2E8CBB),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff2E8CBB),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -421,7 +457,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //NIG
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -437,7 +475,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //RAM
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -453,7 +493,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //JOW
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -469,7 +511,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //NIN
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -485,7 +529,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //KOL
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff008CD3),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -501,7 +547,9 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //SUGAR
                 DataColumn(
                   label: Container(
-                    height: 60,width: 80,color: Color(0xff2E8CBB),
+                    height: 60,
+                    width: 80,
+                    color: Color(0xff2E8CBB),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -517,9 +565,12 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 //PANIND
                 DataColumn(
                   label: Container(
-                    decoration: BoxDecoration(color: Color(0xff096C9F),
-                        borderRadius: BorderRadius.only(topRight: Radius.circular(10.0))),
-                    height: 60,width: 80,
+                    decoration: BoxDecoration(
+                        color: Color(0xff096C9F),
+                        borderRadius:
+                            BorderRadius.only(topRight: Radius.circular(10.0))),
+                    height: 60,
+                    width: 80,
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -535,42 +586,49 @@ class LeverWiseView extends GetView<LeverWiseController> {
               ],
               rows: List<DataRow>.generate(
                 controller.locations.length,
-                    (index) => DataRow(
+                (index) => DataRow(
                   color: MaterialStateColor.resolveWith(
-                        (states) {
+                    (states) {
                       return controller.locations[index] == "Households" ||
-                          controller.locations[index] == "Interventions" ||
-                          controller.locations[index] ==
-                              "HH with Annual Addl. Income"
+                              controller.locations[index] == "Interventions" ||
+                              controller.locations[index] ==
+                                  "HH with Annual Addl. Income"
                           ? Color(0xff008CD3).withOpacity(0.3)
                           : index.isEven
-                          ? Colors.blue.shade50
-                          : Colors.white;
+                              ? Colors.blue.shade50
+                              : Colors.white;
                     },
                   ),
                   cells: [
                     DataCell(
-                      Container(width: 150,
+                      Container(
+                        width: 150,
                         padding: EdgeInsets.only(left: 10),
-
                         child: Row(
                           children: [
                             Text(
                               controller.locations[index],
-                              style: controller.locations[index] == "Households" ||
-                                  controller.locations[index] == "Interventions" ||
-                                  controller.locations[index] ==
-                                      "HH with Annual Addl. Income"?TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize):AppStyle.textStyleInterMed(fontSize: 14),
+                              style: controller.locations[index] ==
+                                          "Households" ||
+                                      controller.locations[index] ==
+                                          "Interventions" ||
+                                      controller.locations[index] ==
+                                          "HH with Annual Addl. Income"
+                                  ? TextStyle(
+                                      color: CustomColorTheme.textColor,
+                                      fontWeight: CustomFontTheme.headingwt,
+                                      fontSize: CustomFontTheme.textSize)
+                                  : AppStyle.textStyleInterMed(fontSize: 14),
                             ),
                             Spacer(),
-                            VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                            VerticalDivider(
+                              width: 1,
+                              color: Color(0xff181818).withOpacity(0.3),
+                              thickness: 1,
+                            )
                           ],
                         ),
                       ),
-
                     ),
                     DataCell(
                       Row(
@@ -578,36 +636,44 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.DPM[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
                     //alr
                     DataCell(
                       Row(
-
                         children: [
                           Spacer(),
-
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.ALR[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
@@ -618,15 +684,20 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.BGM[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
@@ -637,15 +708,20 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.KDP[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
@@ -656,31 +732,41 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
+
                     ///__________________________ South _______________________
                     DataCell(
-                      Container(height: 60,color: Color(0xff096C9F),
+                      Container(
+                        height: 60,
+                        color: Color(0xff096C9F),
                         width: 80,
                         child: Center(
                           child: Text(
                             controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.SOUTH[index].toString(),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                            style: AppStyle.textStyleInterMed(
+                                fontSize: 14, color: Colors.white),
                           ),
                         ),
                       ),
@@ -692,15 +778,20 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
@@ -711,15 +802,20 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
@@ -730,15 +826,20 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
@@ -749,31 +850,41 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
+
                     ///__________________________ NE _______________________
                     DataCell(
-                      Container(height: 60,color: Color(0xff096C9F),
+                      Container(
+                        height: 60,
+                        color: Color(0xff096C9F),
                         width: 80,
                         child: Center(
                           child: Text(
                             controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.SOUTH[index].toString(),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                            style: AppStyle.textStyleInterMed(
+                                fontSize: 14, color: Colors.white),
                           ),
                         ),
                       ),
@@ -785,15 +896,20 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
@@ -804,15 +920,20 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
@@ -823,15 +944,20 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
@@ -842,15 +968,20 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
@@ -861,49 +992,62 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
                     //EAST
                     ///__________________________ EAST _______________________
                     DataCell(
-                      Container(height: 60,color: Color(0xff096C9F),
+                      Container(
+                        height: 60,
+                        color: Color(0xff096C9F),
                         width: 80,
                         child: Center(
                           child: Text(
                             controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.SOUTH[index].toString(),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                            style: AppStyle.textStyleInterMed(
+                                fontSize: 14, color: Colors.white),
                           ),
                         ),
                       ),
                     ),
                     //CEMENT
                     DataCell(
-                      Container(height: 60,color: Color(0xff2E8CBB),
+                      Container(
+                        height: 60,
+                        color: Color(0xff2E8CBB),
                         width: 80,
                         child: Center(
                           child: Text(
                             controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.SOUTH[index].toString(),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                            style: AppStyle.textStyleInterMed(
+                                fontSize: 14, color: Colors.white),
                           ),
                         ),
                       ),
@@ -916,15 +1060,20 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
@@ -936,15 +1085,20 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
@@ -956,15 +1110,20 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
@@ -976,15 +1135,20 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
@@ -996,32 +1160,41 @@ class LeverWiseView extends GetView<LeverWiseController> {
                           Spacer(),
                           Text(
                             (controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.CHA[index].toString()),
-                            style:AppStyle.textStyleInterMed(fontSize: 14),
+                            style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          VerticalDivider(width: 1,color: Color(0xff181818).withOpacity(0.3),thickness: 1,)
+                          VerticalDivider(
+                            width: 1,
+                            color: Color(0xff181818).withOpacity(0.3),
+                            thickness: 1,
+                          )
                         ],
                       ),
                     ),
 
                     //SUGAR
                     DataCell(
-                      Container(height: 60,color: Color(0xff2E8CBB),
+                      Container(
+                        height: 60,
+                        color: Color(0xff2E8CBB),
                         width: 80,
                         child: Center(
                           child: Text(
                             controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.SOUTH[index].toString(),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                            style: AppStyle.textStyleInterMed(
+                                fontSize: 14, color: Colors.white),
                           ),
                         ),
                       ),
@@ -1029,17 +1202,21 @@ class LeverWiseView extends GetView<LeverWiseController> {
 
                     //PANIND
                     DataCell(
-                      Container(height: 60,color: Color(0xff096C9F),
+                      Container(
+                        height: 60,
+                        color: Color(0xff096C9F),
                         width: 80,
                         child: Center(
                           child: Text(
                             controller.locations[index] == "Households" ||
-                                controller.locations[index] == "Interventions" ||
-                                controller.locations[index] ==
-                                    "HH with Annual Addl. Income"
+                                    controller.locations[index] ==
+                                        "Interventions" ||
+                                    controller.locations[index] ==
+                                        "HH with Annual Addl. Income"
                                 ? ""
                                 : controller.SOUTH[index].toString(),
-                            style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
+                            style: AppStyle.textStyleInterMed(
+                                fontSize: 14, color: Colors.white),
                           ),
                         ),
                       ),
@@ -1086,8 +1263,7 @@ class LeverWiseView extends GetView<LeverWiseController> {
                                 ],
                               ),
                             ],*/
-          ),
+              ),
         ));
   }
-
 }

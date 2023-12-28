@@ -1,27 +1,20 @@
-import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/helper/sharedpref.dart';
-import 'package:dalmia/pages/LL/action.dart';
-import 'package:dalmia/pages/LL/expected.dart';
-import 'package:dalmia/pages/LL/feedbackll/feedback.dart';
-import 'package:dalmia/pages/LL/sourceoffunds.dart';
-import 'package:dalmia/pages/LL/vdffund.dart';
-import 'package:dalmia/pages/LL/vdfreports.dart';
+import 'package:dalmia/pages/Accounts/updatebudget.dart';
+import 'package:dalmia/pages/Accounts/updateexpenditure.dart';
 
 import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
-class ACCOUNTSHome extends StatefulWidget {
-  const ACCOUNTSHome({Key? key}) : super(key: key);
+class AccountsHome extends StatefulWidget {
+  const AccountsHome({Key? key}) : super(key: key);
 
   @override
-  _ACCOUNTSHomeState createState() => _ACCOUNTSHomeState();
+  _AccountsHomeState createState() => _AccountsHomeState();
 }
 
-class _ACCOUNTSHomeState extends State<ACCOUNTSHome> {
+class _AccountsHomeState extends State<AccountsHome> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -93,181 +86,81 @@ class _ACCOUNTSHomeState extends State<ACCOUNTSHome> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'View Data',
-                  style: TextStyle(
-                      fontSize: CustomFontTheme.textSize,
-                      fontWeight: CustomFontTheme.headingwt),
-                ),
                 SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 GestureDetector(
-                  // onTap: () {
-                  //   Navigator.of(context).push(
-                  //     MaterialPageRoute(
-                  //       builder: (context) => const LLVdfReport(),
-                  //     ),
-                  //   );
-                  // },
-                  child: cards(
-                    title: 'Overview Pan-India Locations',
-                    imageUrl: 'images/vdfreports.svg',
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => UpdateBudget(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    // width: 284,
+                    // height: 55,
+                    padding: const EdgeInsets.all(12),
+                    decoration: ShapeDecoration(
+                      color: Color(0xFFC2D7CD),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 1,
+                          color: Colors.black.withOpacity(0.10000000149011612),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      shadows: [
+                        BoxShadow(
+                          color: Color(0x11000000),
+                          blurRadius: 20,
+                          offset: Offset(0, 10),
+                          spreadRadius: 0,
+                        )
+                      ],
+                    ),
+                    // color: Color(0xFFF2D4C9),
+                    child: Row(children: [
+                      SvgPicture.asset(
+                        'images/sourceoffunds.svg',
+                        width: 34,
+                        height: 31,
+                        colorFilter: ColorFilter.mode(Color(0xFF006838),
+                            BlendMode.srcIn), // Change color to blue
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Flexible(
+                        child: Text(
+                          'Update Budget',
+                          style: TextStyle(
+                              fontSize: CustomFontTheme.textSize,
+                              color: const Color(0xFF006838),
+                              fontWeight: CustomFontTheme.labelwt),
+                        ),
+                      )
+                    ]),
                   ),
                 ),
                 SizedBox(
                   height: 20,
                 ),
                 GestureDetector(
-                  // onTap: () {
-                  //   Navigator.of(context).push(
-                  //     MaterialPageRoute(
-                  //       builder: (context) => const LLVdfReport(),
-                  //     ),
-                  //   );
-                  // },
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const UpdateExpenditure(),
+                      ),
+                    );
+                  },
                   child: cards(
-                    title: 'Lever wise number of interventions',
-                    imageUrl: 'images/weeklyreports.svg',
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                GestureDetector(
-                  // onTap: () {
-                  //   Navigator.of(context).push(
-                  //     MaterialPageRoute(
-                  //       builder: (context) => const ExpectedincomeLL(),
-                  //     ),
-                  //   );
-                  // },
-                  child: cards(
-                    title: 'Expected and Actual Income reports',
-                    imageUrl: 'images/expectedreports.svg',
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                GestureDetector(
-                  // onTap: () {
-                  //   Navigator.of(context).push(
-                  //     MaterialPageRoute(
-                  //       builder: (context) => const SourceOfFundsOfLL(),
-                  //     ),
-                  //   );
-                  // },
-                  child: cards(
-                    title: 'Source of Funds',
-                    imageUrl: 'images/sourceoffunds.svg',
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                GestureDetector(
-                  // onTap: () {
-                  //   Navigator.of(context).push(
-                  //     MaterialPageRoute(
-                  //       builder: (context) => const SourceOfFundsOfLL(),
-                  //     ),
-                  //   );
-                  // },
-                  child: cards(
-                    title: 'Amount utilized by Location',
+                    title: 'Update Expenditure',
                     imageUrl: 'images/sendmoney.svg',
                   ),
                 ),
                 SizedBox(
                   height: 40,
-                ),
-                Text(
-                  'Take Action',
-                  style: TextStyle(
-                      fontSize: CustomFontTheme.textSize,
-                      fontWeight: CustomFontTheme.headingwt),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                GestureDetector(
-                  // onTap: () {
-                  //   Get.toNamed(Routes.FEEDBACK);
-                  // },
-                  child: Stack(
-                    children: [
-                      Container(
-                        // width: 284,
-                        // height: 55,
-                        padding: const EdgeInsets.all(12),
-                        decoration: ShapeDecoration(
-                          color: Color(0xFFC2DEEC),
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 1,
-                              color:
-                                  Colors.black.withOpacity(0.10000000149011612),
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          shadows: [
-                            BoxShadow(
-                              color: Color(0x11000000),
-                              blurRadius: 20,
-                              offset: Offset(0, 10),
-                              spreadRadius: 0,
-                            )
-                          ],
-                        ),
-                        // color: Color(0xFFF2D4C9),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              'images/Feedback.svg',
-                              width: 34,
-                              height: 31,
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Flexible(
-                              child: Text(
-                                'Feedback',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  color: const Color(0xFF0374AD),
-                                  fontWeight: CustomFontTheme.labelwt,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        top: 10,
-                        right: 20,
-                        child: Container(
-                          width: 23,
-                          height: 23,
-                          decoration: ShapeDecoration(
-                            color: Color(0xFFF15A22),
-                            shape: OvalBorder(),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '1',
-                              style: TextStyle(
-                                fontSize: CustomFontTheme.textSize,
-                                fontWeight: CustomFontTheme.headingwt,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
               ],
             ),

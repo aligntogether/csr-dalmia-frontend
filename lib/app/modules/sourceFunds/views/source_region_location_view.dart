@@ -45,11 +45,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
               ///_________________________________ main menu __________________________///
               GestureDetector(
                 onTap: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(
-                    builder: (context) {
-                      return GPLHomeScreen();
-                    },
-                  ));
+                  Navigator.pop(context);
                 },
                 child: Row(
                   children: [
