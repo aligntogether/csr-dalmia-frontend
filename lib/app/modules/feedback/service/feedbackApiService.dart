@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:dalmia/app/modules/feedback/controllers/feedback_controller.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:http/http.dart' as http;
 
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:stomp_dart_client/stomp.dart';
 
 class FeedbackApiService {
 
@@ -288,7 +290,35 @@ class FeedbackApiService {
   }
 
 
+  Future<bool> sendFeedback(StompClient client, String latestMessage, FeedbackController controller) async {
+    try {
 
+      if (client == null && !client.connected) {
+        return false;
+      }
+
+      // Create a sample JSON object
+      Map<String, dynamic> sampleFeedback = {
+        'feedbackId': controller.feedbackId,
+        'message': latestMessage,
+        'accepted': 0,
+        'senderId': controller.senderId,
+        'recipientId': controller.recipientId
+      };
+
+      // Convert the sample object to JSON and send it as a STOMP message
+      final message = jsonEncode(sampleFeedback);
+      client.send(
+        destination: '/feedback/send-feedback',
+        body: message,
+      );
+
+      return true;
+    } catch (e) {
+      print("Error sending feedback via STOMP: $e");
+      return false;
+    }
+  }
 
 
 
