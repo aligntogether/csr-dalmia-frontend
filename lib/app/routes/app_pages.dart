@@ -90,7 +90,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.FEEDBACK,
-      page: () => const FeedbackView(),
+      page: () => FeedbackView(),
       binding: FeedbackBinding(),
     ),
     GetPage(
