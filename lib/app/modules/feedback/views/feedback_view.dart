@@ -13,9 +13,46 @@ import 'package:http/http.dart' as http;
 import 'package:dalmia/helper/sharedpref.dart';
 
 import '../controllers/feedback_controller.dart';
+import '../service/feedbackApiService.dart';
 
-class FeedbackView extends GetView<FeedbackController> {
-  const FeedbackView({Key? key}) : super(key: key);
+
+class FeedbackView extends StatefulWidget {
+
+  FeedbackView({Key? key}) : super(key: key);
+
+  @override
+  _FeedbackViewState createState() => _FeedbackViewState();
+}
+
+class _FeedbackViewState extends State<FeedbackView> {
+  final FeedbackApiService feedbackApiService = FeedbackApiService();
+
+
+  @override
+  void initState() {
+    super.initState();
+    getSharedPreference();
+  }
+
+  void getSharedPreference() async {
+
+    FeedbackController controller = Get.put(FeedbackController());
+
+    String userIdSharedPref = await SharedPrefHelper.getSharedPref(
+        USER_ID_SHAREDPREF_KEY, context, true);
+
+    String userTypeSharedPref = await SharedPrefHelper.getSharedPref(
+        USER_TYPE_SHAREDPREF_KEY, context, true);
+
+    setState(() {
+      controller.userId = userIdSharedPref;
+      controller.userType = userTypeSharedPref;
+    });
+
+    print("userIdSharedPref: " + userIdSharedPref);
+
+  }
+
 
   Future<List<Map<String, dynamic>>> fetchData(BuildContext context) async {
     String userIdSharedPref = await SharedPrefHelper.getSharedPref(
@@ -54,6 +91,8 @@ class FeedbackView extends GetView<FeedbackController> {
 
   @override
   Widget build(BuildContext context) {
+    FeedbackController controller = Get.put(FeedbackController());
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -158,6 +197,7 @@ class FeedbackView extends GetView<FeedbackController> {
             ),
           ),
           Space.height(20),
+          controller.userType != 'LL' ?
           GestureDetector(
             onTap: () {
               Get.to(FeedBackChatView());
@@ -165,7 +205,7 @@ class FeedbackView extends GetView<FeedbackController> {
             child: commonButton(
               title: "Send New Feedback",
             ),
-          ),
+          ) : Container(),
           Space.height(40),
         ],
       ),

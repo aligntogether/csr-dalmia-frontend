@@ -1,11 +1,21 @@
 import 'dart:convert';
 
 import 'package:dalmia/app/modules/feedback/controllers/feedback_controller.dart';
+import 'package:dalmia/app/modules/feedback/service/feedbackApiService.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/size_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+
+
+import 'package:web_socket_channel/html.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:uuid/uuid.dart';
+import '../../../../Constants/constants.dart';
 
 class FeedBackSendMsgView extends StatefulWidget {
   String? regions, location, feedbackid, name, userid, recipentid;
@@ -26,7 +36,68 @@ class FeedBackSendMsgView extends StatefulWidget {
 
 class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
   var messages = [];
-  // String? chat;
+  late StompClient client;
+  String? feedbackInitiator;
+  FeedbackApiService feedbackApiService = new FeedbackApiService();
+  FeedbackController controller = Get.put(FeedbackController());
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    client = StompClient(
+        config: StompConfig(
+            onWebSocketError: (dynamic error) => print (error.toString()),
+            url: 'wss://mobiledevcloud.dalmiabharat.com/csr/ws',
+            onConnect: onConnect)); // StompConfig // StompClient
+
+    print("client : $client");
+    print("client userId : ${widget.userid}");
+    client.activate();
+  }
+
+  @override
+  void dispose() {
+    client.deactivate();
+    super.dispose();
+  }
+
+  void onConnect (StompFrame frame) {
+    client. subscribe(
+        destination: '/user/${widget.userid}/private',
+        callback: (StompFrame frame) {
+          final body = json.decode(frame.body!);
+
+          print("body : ${body}");
+          print("body1 : ${body['message']}");
+
+          if (frame.body != null) {
+            final textMessage = types.TextMessage(
+              author: types.User(
+                firstName: body['message'],
+                id: body['recipientId'].toString(),
+              ), // types. User
+              createdAt: DateTime.now().millisecondsSinceEpoch,
+              id: 'const Uuid().v4()',
+              text: body['message'],
+            ); // types. TextMessage
+            _addMessage(textMessage);
+            print('message recived :${frame.body}');
+          }
+
+        });
+  }
+
+
+  void _addMessage(types.Message message) {
+    setState (() {
+      print('nurgncguy : $message');
+      messages.insert(0, message);
+    });
+  }
+
+
 
   Future<List<Map<String, dynamic>>> fetchFeedbackMessages() async {
     // int useid = userid as int;
@@ -48,6 +119,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
           'accepted': data['accepted'],
           'senderId': data['senderId'],
           'recipientId': data['recipientId'],
+          'feedbackInitiator': data['feedbackInitiator'],
           'createdAt': DateTime(
             data['createdAt'][0],
             data['createdAt'][1],
@@ -116,7 +188,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                       children: [
                         msgViewScreen(feed),
                         Spacer(),
-                        feed.sendMsg.isTrue == false
+                        feed.sendMsg.value == false
                             ? Container(
                                 height: MySize.size56,
                                 margin: EdgeInsets.symmetric(horizontal: 16),
@@ -164,8 +236,13 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
       List<Map<String, dynamic>> msg = await fetchFeedbackMessages();
       setState(() {
         messages = msg;
+        if (msg != null && msg.isNotEmpty) {
+          feedbackInitiator = msg[0]['feedbackInitiator'].toString() ?? '0';
+          print("feedbackInitiator :  $feedbackInitiator");
+        }
+
       });
-      print(msg);
+      print('msg : $msg');
     } catch (e) {
       // Handle errors if necessary
       print('Error fetching feedback messages: $e');
@@ -241,13 +318,23 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
               ),
             ),
           )
-        : Row(
+        :
+    // (widget.userid! == feedbackInitiator) ?
+    Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
-                onTap: () {
-                  feed.accept.value = true;
+                onTap: () async {
+
+                  String? updateResponse = await feedbackApiService.updateFeedback(widget.userid!, controller.feedbackId ?? '0' , '1');
+
+                  if (updateResponse != null) {
+                    setState(() {
+                      feed.accept.value = true;
+                    });
+                  }
+
                 },
                 child: Container(
                   height: 50,
@@ -284,7 +371,9 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                 ),
               )
             ],
-          )));
+          )
+    // : Row()
+    ));
     return list;
   }
 }
