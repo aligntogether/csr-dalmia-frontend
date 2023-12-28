@@ -9,13 +9,10 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 
-import 'package:web_socket_channel/html.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:uuid/uuid.dart';
-import '../../../../Constants/constants.dart';
 
 class FeedBackSendMsgView extends StatefulWidget {
   String? regions, location, feedbackid, name, userid, recipentid;
@@ -40,6 +37,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
   String? feedbackInitiator;
   FeedbackApiService feedbackApiService = new FeedbackApiService();
   FeedbackController controller = Get.put(FeedbackController());
+  String? latestMessage;
 
 
   @override
@@ -82,7 +80,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
               id: 'const Uuid().v4()',
               text: body['message'],
             ); // types. TextMessage
-            _addMessage(textMessage);
+            _addMessage(body);
             print('message recived :${frame.body}');
           }
 
@@ -90,12 +88,37 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
   }
 
 
-  void _addMessage(types.Message message) {
+  void _addMessage(message) {
     setState (() {
       print('nurgncguy : $message');
       messages.insert(0, message);
     });
   }
+
+  Future<bool> sendMessage(String message) async {
+
+    if (client == null && !client.connected)
+      return false;
+
+    bool sent = await feedbackApiService.sendFeedback(client, message, controller);
+
+    print('sent : nsjcnufy $sent');
+
+    if (sent) {
+      setState(() {
+        messages.insert(0, 'message sent ......');
+      });
+      print('\n \n message sent ...... \n \n ');
+      return sent;
+    }
+    else {
+      print("\n \n Lag gaye ...... \n \n");
+      return sent;
+    }
+
+  }
+
+
 
 
 
@@ -204,6 +227,11 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                                   ],
                                 ),
                                 child: TextFormField(
+                                  onChanged: (value) {
+                                    setState(() {
+                                      latestMessage = value;
+                                    });
+                                  },
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     filled: true,
@@ -220,8 +248,18 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                         Space.height(18),
                         feed.sendMsg.isTrue == false
                             ? GestureDetector(
-                                onTap: () {
-                                  feed.sendMsg.value = true;
+                                onTap: () async {
+
+                                  setState(() {
+                                    controller.senderId = widget.userid;
+                                    controller.recipientId = widget.recipentid;
+                                    controller.feedbackId = widget.feedbackid;
+                                  });
+
+                                  bool sent = await sendMessage(latestMessage!);
+
+                                  print("\n \n bndsauyhcgv yger send kiya \n \n");
+                                  // feed.sendMsg.value = true;
                                 },
                                 child: commonButton(title: "Send", margin: 16))
                             : Container(),
@@ -242,7 +280,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
         }
 
       });
-      print('msg : $msg');
+      // print('msg : $msg');
     } catch (e) {
       // Handle errors if necessary
       print('Error fetching feedback messages: $e');
@@ -324,7 +362,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              feed.sendMsg.isTrue == true
+              feed.sendMsg.isTrue
                   ? GestureDetector(
                 onTap: () async {
 
@@ -351,9 +389,9 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                     ),
                   ),
                 ),
-              ) : Container()
+              ) : Container(),
               Space.width(13),
-              feed.sendMsg.isTrue == true
+              feed.sendMsg.isTrue
                   ? GestureDetector(
                       onTap: () {
                         feed.sendMsg.value = false;
