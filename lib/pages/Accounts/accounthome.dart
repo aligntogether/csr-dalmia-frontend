@@ -279,7 +279,11 @@ void _showConfirmationDialog(BuildContext context) {
                   );
                   // Perform actions when 'Yes' is clicked
                 },
-                child: const Text('Yes'),
+                child: const Text(
+                  'Yes',
+                  style: TextStyle(color: Colors.white),
+                ),
+                   
               ),
             ),
           ],
