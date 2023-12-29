@@ -191,7 +191,10 @@ class _AddinterState extends State<Addinter> {
                                   );
                                 }
                               : null,
-                          child: const Text('Confirm'),
+                          child: const Text(
+                            'Confirm',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ],
                     ),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dalmia/Constants/constants.dart';
+import 'package:dalmia/app/modules/feedback/views/ceo_screen.dart';
 
 import 'package:dalmia/app/modules/feedback/views/feedback_chat_view.dart';
 import 'package:dalmia/app/modules/feedback/views/feedback_send_msg_view.dart';
@@ -195,7 +196,9 @@ class _FeedbackViewState extends State<FeedbackView> {
           controller.userType != 'LL'
               ? GestureDetector(
                   onTap: () {
-                    Get.to(FeedBackChatView());
+                    controller.userType == 'CEO'
+                        ? Get.to(CEOview())
+                        : Get.to(FeedBackChatView());
                   },
                   child: commonButton(
                     title: "Send New Feedback",

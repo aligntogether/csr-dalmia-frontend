@@ -193,6 +193,7 @@ class _MyFormState extends State<AddHead> {
 
   Future<void> addMember() async {
     try {
+      print('dsb ${widget.id}');
       final response = await http.put(
         Uri.parse('$base/add-member?houseHoldId=${widget.id}'),
         headers: {
@@ -203,7 +204,7 @@ class _MyFormState extends State<AddHead> {
           {
             'memberName': _nameController.text,
             'mobile': int.parse(_mobileController.text),
-            'dob': selectedDate?.toIso8601String(),
+            // 'dob': selectedDate?.toIso8601String(),
             'gender': _selectedGender,
             'education': 0, // You may replace this with the actual value
             'isFamilyHead': 1, // You may replace this with the actual value
@@ -212,12 +213,24 @@ class _MyFormState extends State<AddHead> {
             'relationship': 0, // You may replace this with the actual value
             'secondaryEducation':
                 0, // You may replace this with the actual value
+            //      'primaryEmployment':
+            //     _selectedPrimaryEmployment, // You may replace this with the actual value
+            // 'relationship': 0, // You may replace this with the actual value
+            // 'secondaryEmployment':
+            //     _selectedSecondaryEmployment,
           }
         ]),
       );
       if (response.statusCode == 200) {
         // Handle the success response
         print('Member added successfully!');
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => AddFamily(
+              id: widget.id,
+            ),
+          ),
+        );
       } else {
         throw Exception('Failed to add member: ${response.statusCode}');
       }
@@ -488,13 +501,7 @@ class _MyFormState extends State<AddHead> {
                           });
                           if (_formKey.currentState?.validate() ?? false) {
                             addMember();
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => AddFamily(
-                                  id: widget.id,
-                                ),
-                              ),
-                            );
+
                             // Navigator.of(context).push(
                             //   MaterialPageRoute(
                             //     builder: (context) => const AddFamily(),
@@ -508,6 +515,7 @@ class _MyFormState extends State<AddHead> {
                         child: const Text(
                           'Next',
                           style: TextStyle(
+                              color: Colors.white,
                               fontSize: CustomFontTheme.textSize,
                               fontWeight: CustomFontTheme.labelwt),
                         ),
@@ -556,6 +564,7 @@ class _MyFormState extends State<AddHead> {
 AppBar houseappbar(BuildContext context) {
   return AppBar(
     elevation: 0,
+    scrolledUnderElevation: 0,
     centerTitle: true,
     automaticallyImplyLeading: false,
     title: const Text(

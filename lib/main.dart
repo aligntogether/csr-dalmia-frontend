@@ -33,6 +33,7 @@ class MyWidget extends StatelessWidget {
     );
     return GetMaterialApp(
         theme: ThemeData(
+        
           inputDecorationTheme: InputDecorationTheme(
             border: OutlineInputBorder(
               borderSide: BorderSide(color: Color(0xFF181818).withOpacity(0.5)),

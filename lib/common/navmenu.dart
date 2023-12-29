@@ -154,6 +154,7 @@ void _showConfirmationDialog(BuildContext context) {
                 child: const Text(
                   'Yes',
                   style: TextStyle(
+                    color: Colors.white,
                     fontSize: CustomFontTheme.textSize,
                     fontWeight: CustomFontTheme.labelwt,
                     letterSpacing: 0.84,

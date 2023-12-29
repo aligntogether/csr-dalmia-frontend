@@ -129,6 +129,7 @@ class _SelectTypeState extends State<SelectType> {
                 child: const Text(
                   'Yes',
                   style: TextStyle(
+                      color: Colors.white,
                       fontSize: CustomFontTheme.textSize,
                       fontWeight: CustomFontTheme.labelwt),
                 ),
@@ -290,6 +291,7 @@ class _SelectTypeState extends State<SelectType> {
                       child: const Text(
                         'Done',
                         style: TextStyle(
+                            color: Colors.white,
                             fontWeight: CustomFontTheme.labelwt,
                             fontSize: CustomFontTheme.textSize),
                       ),

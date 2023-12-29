@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
@@ -38,6 +39,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
   FeedbackController controller = Get.put(FeedbackController());
   String? latestMessage;
 
+
   @override
   void initState() {
     super.initState();
@@ -51,7 +53,6 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
     print("client : $client");
     print("client userId : ${widget.userid}");
     client.activate();
-    getMessage();
   }
 
   @override
@@ -82,8 +83,10 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
             _addMessage(body);
             print('message recived :${frame.body}');
           }
+
         });
   }
+
 
   void _addMessage(message) {
     setState(() {
@@ -93,6 +96,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
   }
 
   Future<bool> sendMessage(String message) async {
+
     if (client == null && !client.connected) return false;
 
     bool sent =
@@ -110,7 +114,12 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
       print("\n \n Lag gaye ...... \n \n");
       return sent;
     }
+
   }
+
+
+
+
 
   Future<List<Map<String, dynamic>>> fetchFeedbackMessages() async {
     // int useid = userid as int;
@@ -150,6 +159,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
 
   @override
   Widget build(BuildContext context) {
+    getMessage();
     FeedbackController feed = Get.put(FeedbackController());
 
     return SafeArea(
@@ -182,7 +192,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                           },
                           child: Icon(Icons.arrow_back)),
                       Text(
-                        (widget.name ?? '').split("_")[0],
+                        widget.name ?? '',
                         style: AppStyle.textStyleBoldMed(fontSize: 16),
                       ),
                       Space.height(4),
@@ -238,6 +248,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                         feed.sendMsg.isTrue == false
                             ? GestureDetector(
                                 onTap: () async {
+
                                   setState(() {
                                     controller.senderId = widget.userid;
                                     controller.recipientId = widget.recipentid;
@@ -267,6 +278,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
           feedbackInitiator = msg[0]['feedbackInitiator'].toString() ?? '0';
           print("feedbackInitiator :  $feedbackInitiator");
         }
+
       });
       // print('msg : $msg');
     } catch (e) {
@@ -313,7 +325,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                   Text(
                     e['senderId'].toString() == widget.userid
                         ? "You"
-                        : "${(widget.name ?? '').split("_")[0]}",
+                        : "${widget.name}",
                     style: AppStyle.textStyleInterMed(
                         fontSize: 12,
                         color: Color(0xff181818).withOpacity(0.6)),
@@ -330,7 +342,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
             ],
           )));
     });
-    list.add(Obx(() => feed.accept.value
+    list.add(Obx(() => feed.accept.isTrue
         ? Container(
             height: 36,
             width: 207,
@@ -344,26 +356,28 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
               ),
             ),
           )
-        : (widget.userid == feedbackInitiator)
-            ? Row(
+            :
+            // (widget.userid! == feedbackInitiator) ?
+            Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   feed.sendMsg.isTrue
                       ? GestureDetector(
                           onTap: () async {
+
                             String? updateResponse =
                                 await feedbackApiService.updateFeedback(
                                     widget.userid!,
-                                    widget.feedbackid ?? '0',
+                                    controller.feedbackId ?? '0',
                                     '1');
 
                             if (updateResponse != null) {
-                              print("feed");
                               setState(() {
                                 feed.accept.value = true;
                               });
                             }
+
                           },
                           child: Container(
                             height: 50,
@@ -406,7 +420,8 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                       : Container()
                 ],
               )
-            : Row()));
+        // : Row()
+        ));
     return list;
   }
 }

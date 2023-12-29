@@ -216,6 +216,13 @@ class _MyFormState extends State<AddFamily> {
       );
 
       if (response.statusCode == 200) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => AddLand(
+              id: widget.id,
+            ),
+          ),
+        );
         // Handle the response from the API if needed
         print('Data sent successfully');
       } else {
@@ -555,17 +562,12 @@ class _MyFormState extends State<AddFamily> {
                         sendFamilyData(familyData);
 
                         // Navigate to the next screen or perform other actions
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => AddLand(
-                              id: widget.id,
-                            ),
-                          ),
-                        );
+                      
                       },
                       child: const Text(
                         'Next',
                         style: TextStyle(
+                          color: Colors.white,
                           fontSize: CustomFontTheme.textSize,
                           letterSpacing: 0.84,
                         ),

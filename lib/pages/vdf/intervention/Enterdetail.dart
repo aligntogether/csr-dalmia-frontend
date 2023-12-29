@@ -25,6 +25,7 @@ class _EnterDetailState extends State<EnterDetail> {
     final response = await http.get(Uri.parse(apiUrl));
 
     if (response.statusCode == 200) {
+      // print('object');
       final jsonResponse = json.decode(response.body);
       final respBody = jsonResponse['resp_body'];
 
@@ -93,7 +94,15 @@ class _EnterDetailState extends State<EnterDetail> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Enter Details'),
+                const Text(
+                  'Enter Details',
+                  style: TextStyle(
+                    color: Color(0xFF181818),
+                    fontSize: 16,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 const SizedBox(
                   height: 20,
                 ),

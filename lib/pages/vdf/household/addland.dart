@@ -70,6 +70,13 @@ class _MyFormState extends State<AddLand> {
       );
 
       if (response.statusCode == 200) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => AddCrop(
+              id: widget.id,
+            ),
+          ),
+        );
         // Successful response
         print("Land Data added successfully");
         // Handle success as needed
@@ -223,17 +230,12 @@ class _MyFormState extends State<AddLand> {
                         addlandData();
 
                         // Navigate to the next screen if needed
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => AddCrop(
-                              id: widget.id,
-                            ),
-                          ),
-                        );
+                       
                       },
                       child: Text(
                         'Next',
                         style: TextStyle(
+                          color: Colors.white,
                           fontSize: CustomFontTheme.textSize,
                           fontWeight: CustomFontTheme.labelwt,
                         ),

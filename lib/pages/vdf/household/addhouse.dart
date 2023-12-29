@@ -142,6 +142,7 @@ class _MyFormState extends State<MyForm> {
 
   Future<void> _addHouseholdAPI(
       String vdfid, String streetid, String ishouseholdint) async {
+
     final apiUrl = '$base/add-household';
     final Map<String, dynamic> requestData = {
       'street_id': streetid,
@@ -150,6 +151,8 @@ class _MyFormState extends State<MyForm> {
     };
 
     try {
+      print('dikh rha h 1');
+
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: <String, String>{
@@ -160,11 +163,16 @@ class _MyFormState extends State<MyForm> {
 
       if (response.statusCode >= 200 && response.statusCode < 400) {
         // Handle successful response
+        print('dikh rha h 2');
+
         final Map<String, dynamic> responseBody = json.decode(response.body);
+        print('dikh rha h $responseBody');
         final String id = responseBody['resp_body']['id'].toString();
         print('Household Created Successfully with ID: $id');
         Navigator.of(context).push(
-          MaterialPageRoute(
+          
+          MaterialPageRoute( 
+            
             builder: (context) => AddHead(
               vdfid: '10001',
               id: id,
@@ -406,11 +414,15 @@ class _MyFormState extends State<MyForm> {
                           _selectedVillage != null &&
                           _selectedStreet != null) {
                         if (_formKey.currentState?.validate() ?? false) {
+
                           _addHouseholdAPI('10001', _selectedStreet!, '0');
                         }
                       }
                     },
-                    child: const Text('Next'),
+                    child: const Text(
+                      'Next',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   )
                 ],
               ),

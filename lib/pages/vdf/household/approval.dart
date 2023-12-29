@@ -44,6 +44,11 @@ class _ApprovalState extends State<Approval> {
       );
 
       if (response.statusCode == 200) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => VdfHome(),
+          ),
+        );
         // Successful response
         print("Reason added");
         // Handle success as needed
@@ -170,6 +175,7 @@ class _ApprovalState extends State<Approval> {
                     child: const Text(
                       'submit for approval',
                       style: TextStyle(
+                          color: Colors.white,
                           fontSize: CustomFontTheme.textSize,
                           fontWeight: CustomFontTheme.labelwt),
                     ),

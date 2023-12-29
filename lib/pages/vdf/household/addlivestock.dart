@@ -275,6 +275,7 @@ class _AddStockState extends State<AddStock> {
                     child: const Text(
                       'Next',
                       style: TextStyle(
+                          color: Colors.white,
                           fontSize: CustomFontTheme.textSize,
                           fontWeight: CustomFontTheme.labelwt),
                     ),

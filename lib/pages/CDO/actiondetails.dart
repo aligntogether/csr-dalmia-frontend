@@ -2,6 +2,7 @@ import 'package:dalmia/pages/CDO/action.dart';
 import 'package:dalmia/theme.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:http/http.dart' as http;
 
 class ActionDetail extends StatefulWidget {
@@ -213,6 +214,7 @@ class _ActionDetailState extends State<ActionDetail> {
                   child: const Text(
                     'Drop HH',
                     style: TextStyle(
+                        color: Colors.white,
                         fontSize: CustomFontTheme.textSize,
                         fontWeight: CustomFontTheme.labelwt),
                   ),
@@ -231,6 +233,7 @@ class _ActionDetailState extends State<ActionDetail> {
                   child: Text(
                     'Select HH',
                     style: TextStyle(
+                      
                         color: CustomColorTheme.primaryColor,
                         fontSize: CustomFontTheme.textSize,
                         fontWeight: CustomFontTheme.labelwt),
@@ -337,7 +340,10 @@ void _drophhDialog(BuildContext context, String hhid) {
                     ),
                   );
                 },
-                child: const Text('Confirm'),
+                child: const Text(
+                  'Confirm',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],
@@ -394,7 +400,10 @@ void _selecthhDialog(BuildContext context, String hhid) {
                   Navigator.pop(context);
                   _confirmbox(context, hhid);
                 },
-                child: const Text('Confirm'),
+                child: const Text(
+                  'Confirm',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],
@@ -457,7 +466,8 @@ void _confirmbox(BuildContext context, String hhid) {
                 },
                 child: const Text(
                   'Ok',
-                  style: TextStyle(fontSize: CustomFontTheme.textSize),
+                  style: TextStyle(
+                      color: Colors.white, fontSize: CustomFontTheme.textSize),
                 ),
               ),
               const SizedBox(

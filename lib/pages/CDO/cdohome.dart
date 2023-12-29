@@ -35,13 +35,25 @@ class _CDOHomeState extends State<CDOHome> {
               backgroundColor: Colors.white,
               title: Image(image: AssetImage('images/icon.jpg')),
               centerTitle: false,
+              scrolledUnderElevation: 0,
               automaticallyImplyLeading: false,
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(50),
                 child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 0,
+                        blurRadius: 4,
+                        offset: Offset(0, 4), // changes position of shadow
+                      ),
+                    ],
+                  ),
                   padding: const EdgeInsets.only(left: 30, bottom: 10),
                   alignment: Alignment.topLeft,
-                  color: Colors.white,
+                  // color: Colors.white,
                   child: Text(
                     'Welcome Suresh!',
                     style: TextStyle(
@@ -387,7 +399,10 @@ void _showConfirmationDialog(BuildContext context) {
                   );
                   // Perform actions when 'Yes' is clicked
                 },
-                child: const Text('Yes'),
+                child: const Text(
+                  'Yes',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],

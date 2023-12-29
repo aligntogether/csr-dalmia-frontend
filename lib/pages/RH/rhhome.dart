@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/app/modules/sourceFunds/views/source_region_location_view.dart';
 import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/helper/sharedpref.dart';
@@ -7,7 +10,8 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:http/http.dart' as http;
+
 
 class RHHome extends StatefulWidget {
   const RHHome({Key? key}) : super(key: key);
@@ -17,6 +21,52 @@ class RHHome extends StatefulWidget {
 }
 
 class _RHHomeState extends State<RHHome> {
+  int length = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // fetchDataAndProcess(context);
+    fetchData(context);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchData(BuildContext context) async {
+    String userIdSharedPref = await SharedPrefHelper.getSharedPref(
+        USER_ID_SHAREDPREF_KEY, context, true);
+
+    print("userIdSharedPref: " + userIdSharedPref);
+
+    final response = await http.get(
+      Uri.parse(
+          'https://mobiledevcloud.dalmiabharat.com:443/csr/list-feedback?userId=${userIdSharedPref}'),
+      // SharedPrefHelper.storeSharedPref(
+      // USER_ID_SHAREDPREF_KEY, authResponse.referenceId)
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Map<String, dynamic> respBody = responseData['resp_body'];
+      print('response body $respBody');
+      // Convert the response body into a List of maps
+      setState(() {
+        length = respBody.length;
+        print('length = $length');
+      });
+      return respBody.entries.map((entry) {
+        return {
+          'name': entry.key,
+          'feedback_id': entry.value['feedback_id'],
+          'created_at': entry.value['created_at'],
+          'sender_id': entry.value['sender_id'],
+          'recipient_id': entry.value['recipient_id'],
+        };
+      }).toList();
+    } else {
+      // Handle error
+      print('Error fetching data: ${response.statusCode}');
+      return [];
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -259,7 +309,7 @@ class _RHHomeState extends State<RHHome> {
                           ),
                           child: Center(
                             child: Text(
-                              '1',
+                              length.toString(),
                               style: TextStyle(
                                 fontSize: CustomFontTheme.textSize,
                                 fontWeight: CustomFontTheme.headingwt,

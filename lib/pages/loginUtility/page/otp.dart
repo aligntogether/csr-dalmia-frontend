@@ -195,7 +195,7 @@ class _OtpState extends State<Otp> {
   }
 
   // Future<AuthResponse> verifyOtp() async {
-  //   return AuthResponse("14001", "GPL", "CSR", "", "", "", "TestName");
+  //   return AuthResponse("20012", "CEO", "CSR", "", "", "", "TestName");
   // }
 
   Future<AuthResponse> verifyOtp() async {

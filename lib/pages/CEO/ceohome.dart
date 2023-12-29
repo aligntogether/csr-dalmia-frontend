@@ -1,11 +1,11 @@
+import 'dart:convert';
+
+import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/app/modules/sourceFunds/views/source_region_location_view.dart';
 import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/helper/sharedpref.dart';
-import 'package:dalmia/pages/LL/action.dart';
-import 'package:dalmia/pages/LL/expected.dart';
-import 'package:dalmia/pages/LL/sourceoffunds.dart';
-import 'package:dalmia/pages/LL/vdffund.dart';
-import 'package:dalmia/pages/LL/vdfreports.dart';
+
+import 'package:http/http.dart' as http;
 
 import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
@@ -21,6 +21,53 @@ class CEOHome extends StatefulWidget {
 }
 
 class _CEOHomeState extends State<CEOHome> {
+  int length = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // fetchDataAndProcess(context);
+    fetchData(context);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchData(BuildContext context) async {
+    String userIdSharedPref = await SharedPrefHelper.getSharedPref(
+        USER_ID_SHAREDPREF_KEY, context, true);
+
+    print("userIdSharedPref: " + userIdSharedPref);
+
+    final response = await http.get(
+      Uri.parse(
+          'https://mobiledevcloud.dalmiabharat.com:443/csr/list-feedback?userId=${userIdSharedPref}'),
+      // SharedPrefHelper.storeSharedPref(
+      // USER_ID_SHAREDPREF_KEY, authResponse.referenceId)
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Map<String, dynamic> respBody = responseData['resp_body'];
+      print('response body $respBody');
+      // Convert the response body into a List of maps
+      setState(() {
+        length = respBody.length;
+        print('length = $length');
+      });
+      return respBody.entries.map((entry) {
+        return {
+          'name': entry.key,
+          'feedback_id': entry.value['feedback_id'],
+          'created_at': entry.value['created_at'],
+          'sender_id': entry.value['sender_id'],
+          'recipient_id': entry.value['recipient_id'],
+        };
+      }).toList();
+    } else {
+      // Handle error
+      print('Error fetching data: ${response.statusCode}');
+      return [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -34,15 +81,27 @@ class _CEOHomeState extends State<CEOHome> {
               AppBar(
                 titleSpacing: 20,
                 backgroundColor: Colors.white,
+                scrolledUnderElevation: 0,
                 title: Image(image: AssetImage('images/icon.jpg')),
                 centerTitle: false,
                 automaticallyImplyLeading: false,
                 bottom: PreferredSize(
                   preferredSize: const Size.fromHeight(50),
                   child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 0,
+                          blurRadius: 4,
+                          offset: Offset(0, 4), // changes position of shadow
+                        ),
+                      ],
+                    ),
                     padding: const EdgeInsets.only(left: 30, bottom: 10),
                     alignment: Alignment.topLeft,
-                    color: Colors.white,
+                 
                     child: Text(
                       'Welcome Suresh!',
                       style: TextStyle(
@@ -241,7 +300,7 @@ class _CEOHomeState extends State<CEOHome> {
                           ),
                           child: Center(
                             child: Text(
-                              '1',
+                              length.toString(),
                               style: TextStyle(
                                 fontSize: CustomFontTheme.textSize,
                                 fontWeight: CustomFontTheme.headingwt,

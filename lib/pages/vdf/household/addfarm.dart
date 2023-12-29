@@ -269,6 +269,7 @@ class _AddFarmState extends State<AddFarm> {
                     child: const Text(
                       'Next',
                       style: TextStyle(
+                          color: Colors.white,
                           fontSize: CustomFontTheme.textSize,
                           fontWeight: CustomFontTheme.labelwt),
                     ),

@@ -214,6 +214,7 @@ class _LLActionDetailState extends State<LLActionDetail> {
                   child: const Text(
                     'Drop HH',
                     style: TextStyle(
+                        color: Colors.white,
                         fontSize: CustomFontTheme.textSize,
                         fontWeight: CustomFontTheme.labelwt),
                   ),
@@ -335,7 +336,10 @@ void _drophhDialog(BuildContext context, String hhid) {
                   Navigator.pop(context);
                   _dropedconfirmbox(context, hhid);
                 },
-                child: const Text('Confirm'),
+                child: const Text(
+                  'Confirm',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],
@@ -392,7 +396,10 @@ void _selecthhDialog(BuildContext context, String hhid) {
                   Navigator.pop(context);
                   _selectedconfirmbox(context, hhid);
                 },
-                child: const Text('Confirm'),
+                child: const Text(
+                  'Confirm',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],
@@ -455,7 +462,8 @@ void _selectedconfirmbox(BuildContext context, String hhid) {
                 },
                 child: const Text(
                   'Ok',
-                  style: TextStyle(fontSize: CustomFontTheme.textSize),
+                  style: TextStyle(
+                      color: Colors.white, fontSize: CustomFontTheme.textSize),
                 ),
               ),
               const SizedBox(
@@ -522,7 +530,8 @@ void _dropedconfirmbox(BuildContext context, String hhid) {
                 },
                 child: const Text(
                   'Ok',
-                  style: TextStyle(fontSize: CustomFontTheme.textSize),
+                  style: TextStyle(
+                      color: Colors.white, fontSize: CustomFontTheme.textSize),
                 ),
               ),
               const SizedBox(

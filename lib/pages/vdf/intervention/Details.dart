@@ -81,7 +81,7 @@ class _DetailsState extends State<Details> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Details of Intervention -  1',
+                    'Details of Intervention',
                     style: TextStyle(
                         fontSize: CustomFontTheme.textSize,
                         fontWeight: CustomFontTheme.labelwt),
@@ -159,7 +159,10 @@ class _DetailsState extends State<Details> {
                             ),
                           );
                         },
-                        child: const Text('Continue'),
+                        child: const Text(
+                          'Continue',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ],
                   ),

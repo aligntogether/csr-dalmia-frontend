@@ -239,6 +239,7 @@ class _AddCropState extends State<AddCrop> {
                     child: const Text(
                       'Next',
                       style: TextStyle(
+                        color: Colors.white,
                         fontSize: CustomFontTheme.textSize,
                         fontWeight: CustomFontTheme.labelwt,
                       ),
