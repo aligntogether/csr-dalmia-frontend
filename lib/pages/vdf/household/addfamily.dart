@@ -149,7 +149,30 @@ class _MyFormState extends State<AddFamily> {
       throw Exception('Error: $e');
     }
   }
+Future<List<Map<String, dynamic>>> getFamilyMembers(
+      String householdId) async {
+    final String apiUrl = '$base/get-familymembers?householdId=$householdId';
 
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+        if (jsonResponse['resp_code'] == 200 &&
+            jsonResponse['resp_msg'] == 'Family Found') {
+          final List<dynamic> respBody = jsonResponse['resp_body'];
+          return List<Map<String, dynamic>>.from(respBody);
+        } else {
+          throw Exception('API Error: ${jsonResponse['resp_msg']}');
+        }
+      } else {
+        throw Exception('HTTP Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw Exception('Error: $error');
+    }
+  }
   @override
   void initState() {
     super.initState();
@@ -173,6 +196,35 @@ class _MyFormState extends State<AddFamily> {
     fetchPrimaryOptions();
     fetchSecondaryOptions();
     fetchRelationOptions();
+    //  getFamilyMembers(widget.id ?? '0').then(
+    //   (familyMembers) {
+    //     var headIndex = getHeadIndex(familyMembers);
+    //     print('head index is $headIndex');
+    //     if (familyMembers.length > headIndex) {
+    //       _nameControllers[0] = TextEditingController(
+    //           text: familyMembers[headIndex]['memberName']);
+    //       _mobileControllers[-] = TextEditingController(
+    //           text: familyMembers[headIndex]['mobile'].toString());
+    //       // _dobController =
+    //       _dobController = TextEditingController(
+    //           text: familyMembers[headIndex]['dob'].toString());
+    //       _selectedGender = familyMembers[headIndex]['gender'].toString();
+    //       // _selectedCaste = familyMembers[headIndex]['caste']?.toString() ?? '0';
+    //       // _selectedEducation = familyMembers[headIndex]['education'];
+
+    //       setState(() {
+    //         memberId = familyMembers[headIndex]['memberId'].toString();
+    //         print('member id $memberId');
+    //       });
+    //     }
+    //     // _selectedCaste = familyMembers[0]['education'];
+
+    //     // _selectedPrimaryEmployment =
+    //     //     familyMembers[0]['primaryEmployment'].toString();
+    //     // _selectedSecondaryEmployment =
+    //     //     familyMembers[0]['secondaryEmployment'].toString();
+    //   },
+    // );
   }
 
   DateTime? selectedDate;

@@ -6,6 +6,7 @@ import 'package:dalmia/common/navmenu.dart';
 
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
 import 'package:dalmia/pages/vdf/Reports/street.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:dalmia/pages/vdf/Reports/home.dart';
@@ -96,9 +97,10 @@ class _VillageReportState extends State<VillageReport> {
                     entry.value['selectedHHWithoutIntervention'],
                 'interventionStartedButNotCompleted':
                     entry.value['interventionStartedButNotCompleted'],
-                'villageid': ['villageId']
+                'villageid': entry.value['villageId'],
               }
           ];
+          print(villagetData);
         });
       } else {
         print('${widget.selectedPanchayatid}');
@@ -374,14 +376,18 @@ class _VillageReportState extends State<VillageReport> {
                           onTap: () {
                             setState(() {
                               Selectedvillage = village['villageName'];
-                              Selectedvillageid = village['villageid'];
+                              print('village name $Selectedvillage');
+                              Selectedvillageid =
+                                  village['villageid'].toString();
+                              print('village id $Selectedvillageid');
                             });
 
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                   builder: (context) => StreetReport(
                                         selectedvillage: Selectedvillage,
-                                        selectedvillageid: Selectedvillageid,
+                                        selectedvillageId: Selectedvillageid,
+                                       
                                       )),
                             );
                           },

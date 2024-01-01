@@ -27,7 +27,7 @@ class Panchayat {
   }
 }
 
-  String? base = dotenv.env['BASE_URL'];
+String? base = dotenv.env['BASE_URL'];
 
 class Village {
   final String villageid;
@@ -263,14 +263,14 @@ class _AddStreetState extends State<AddStreet> {
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               minimumSize: const Size(350, 50),
-                              backgroundColor: _selectedPanchayat == null &&
+                              backgroundColor: _selectedPanchayat == null ||
                                       _selectedVillage == null
                                   ? CustomColorTheme.primaryColor
                                       .withOpacity(0.7)
                                   : CustomColorTheme.primaryColor),
-                          onPressed: _selectedPanchayat != null &&
-                                  _selectedVillage != null
-                              ? () {
+                          onPressed: () {
+                            if (_selectedPanchayat != null &&
+                                _selectedVillage != null) {
                                   if (_formKey.currentState?.validate() ??
                                       false) {
                                     String selectedPanchayatName = panchayats
@@ -288,7 +288,8 @@ class _AddStreetState extends State<AddStreet> {
                                             element.villageid ==
                                             _selectedVillage)
                                         .villageid;
-
+                                print(
+                                    'selected village id is $selectedVillagId');
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (context) => CheckStreet(
@@ -301,8 +302,11 @@ class _AddStreetState extends State<AddStreet> {
                                     );
                                   }
                                 }
-                              : null,
-                          child: const Text('Next'),
+                          },
+                          child: const Text(
+                            'Next',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         )
                       ],
                     ),

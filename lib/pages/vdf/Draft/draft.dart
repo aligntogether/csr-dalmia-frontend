@@ -1,11 +1,11 @@
-import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/common/navmenu.dart';
-import 'package:dalmia/components/reportappbar.dart';
+import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dalmia/apis/commonobject.dart';
@@ -23,6 +23,7 @@ class Draft extends StatefulWidget {
 int selectedIndex = 0;
 
 class _DraftState extends State<Draft> {
+  String? SelectedId;
   bool isdraftMenuOpen = false;
   void _toggleMenu() {
     setState(() {
@@ -209,6 +210,9 @@ class _DraftState extends State<Draft> {
                                   checkedHousehols.contains(draftHousehold.id),
                               onChanged: (value) {
                                 setState(() {
+                                  checkedHousehols.contains(draftHousehold.id)
+                                      ? SelectedId = null
+                                      : SelectedId = draftHousehold.id;
                                   if (value != null && value) {
                                     checkedHousehols.add(draftHousehold.id);
                                   } else {
@@ -235,21 +239,39 @@ class _DraftState extends State<Draft> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // ElevatedButton(
-                  //     style: ButtonStyle(
-                  //       elevation: MaterialStateProperty.all(0.0),
-                  //       backgroundColor: MaterialStateProperty.all<Color>(
-                  //           CustomColorTheme.primaryColor),
-                  //     ),
-                  //     onPressed: () {},
-                  //     child: const Padding(
-                  //       padding: EdgeInsets.all(8.0),
-                  //       child: Text(
-                  //         'Edit Household',
-                  //         style: TextStyle(fontWeight: FontWeight.w500),
-                  //       ),
-                  //     )),
+                  ElevatedButton(
+                      style: ButtonStyle(
+                        elevation: MaterialStateProperty.all(0.0),
+                        backgroundColor: checkedHousehols.length != 1
+                            ? MaterialStateProperty.all<Color>(
+                                CustomColorTheme.primaryColor.withOpacity(0.5))
+                            : MaterialStateProperty.all<Color>(
+                                CustomColorTheme.primaryColor),
+                      ),
+                      onPressed: checkedHousehols.length != 1
+                          ? () {
+                              return null;
+                            }
+                          : () {
+                              print('selected hid is $SelectedId');
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => AddHead(
+                                    vdfid: '10001',
+                                    id: SelectedId,
 
+                                  ),
+                                ),
+                              );
+                            },
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Edit Household',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.w500),
+                        ),
+                      )),
                   ElevatedButton(
                       style: ButtonStyle(
                         elevation: MaterialStateProperty.all(0.0),
@@ -261,7 +283,8 @@ class _DraftState extends State<Draft> {
                             CustomColorTheme.backgroundColor),
                       ),
                       onPressed: () {
-                        deleteCheckedHousehold();
+                        _deleteConfirmationDialog(context);
+                        // deleteCheckedHousehold();
                       },
                       child: const Padding(
                         padding: EdgeInsets.all(8.0),
@@ -382,6 +405,102 @@ class _DraftState extends State<Draft> {
     } catch (e) {
       throw Exception('Error: $e');
     }
+  }
+
+  void _deleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          alignment: Alignment.topCenter,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          titlePadding: EdgeInsets.all(0),
+          title: Padding(
+            padding: const EdgeInsets.only(top: 10, left: 20, right: 10),
+            child: SizedBox(
+              width: 283,
+              height: 90,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Icon(Icons.close),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(top: 10, left: 20, right: 10),
+                    child: const Text(
+                      'Are you sure you want to delete the selected households?',
+                      style: TextStyle(
+                        fontSize: 16,
+                        // fontFamily: 'Inter',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          content: Row(
+            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SizedBox(
+                width: 130,
+                height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    side: const BorderSide(),
+                    backgroundColor: CustomColorTheme.primaryColor,
+                  ),
+                  onPressed: () {
+                    deleteCheckedHousehold();
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Yes',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: CustomFontTheme.textSize,
+                      fontWeight: CustomFontTheme.labelwt,
+                      letterSpacing: 0.84,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 20),
+              SizedBox(
+                width: 130,
+                height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    side: const BorderSide(),
+                    backgroundColor: Colors.white,
+                  ),
+                  onPressed: () {
+                    // deleteCheckedHousehold();
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'NO',
+                    style: TextStyle(
+                      color: CustomColorTheme.primaryColor,
+                      fontSize: CustomFontTheme.textSize,
+                      fontWeight: CustomFontTheme.labelwt,
+                      letterSpacing: 0.84,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
 

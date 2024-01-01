@@ -257,6 +257,7 @@ class _CheckStreetState extends State<CheckStreet> {
                       backgroundColor: CustomColorTheme.primaryColor,
                     ),
                     onPressed: () {
+                      print(widget.selectedVillagId);
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => Addnew(
@@ -269,7 +270,9 @@ class _CheckStreetState extends State<CheckStreet> {
                     },
                     child: const Text(
                       'Add New Street',
-                      style: TextStyle(fontSize: CustomFontTheme.textSize),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: CustomFontTheme.textSize),
                     ),
                   ),
                   SizedBox(

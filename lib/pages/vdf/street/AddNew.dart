@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
@@ -20,6 +23,47 @@ class Addnew extends StatefulWidget {
   });
   @override
   _AddnewState createState() => _AddnewState();
+}
+
+Future<bool> checkStreetCodeExists({
+  required String? vdfId,
+  required String? villageId,
+  required String streetName,
+  required String streetCode,
+}) async {
+  try {
+    print('vdfid: $vdfId');
+    print('villageId: $villageId');
+    print('streetName: $streetName');
+    print('streecode: $streetCode');
+    final url = Uri.parse(
+      '$base/street-code-exists?vdfId=$vdfId&villageId=$villageId&streetName=$streetName&streetCode=$streetCode',
+    );
+
+    final response = await http.get(url);
+    print(json.decode(response.body));
+    if (response.statusCode == 500) {
+      return true;
+    }
+    if (response.statusCode == 200) {
+      print('gv');
+      final Map<String, dynamic> responseData = json.decode(response.body);
+
+      print('gv');
+      final respBody = responseData['resp_body'];
+      print('gv' + respBody);
+
+      if (respBody != null) {
+        print('gv');
+        return true; // If resp_body is not null, return 1
+      }
+    }
+
+    return false; // If resp_body is null or there is an error, return 0
+  } catch (error) {
+    print('Error: $error');
+    return false; // Return 0 in case of an error
+  }
 }
 
 class _AddnewState extends State<Addnew> {
@@ -156,12 +200,14 @@ class _AddnewState extends State<Addnew> {
                         onChanged: (value) {
                           setState(() {
                             streetCode = value;
+                            streetCode = value.toUpperCase();
                           });
                         },
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[A-Z]')),
                           LengthLimitingTextInputFormatter(2),
                         ],
+                        textCapitalization: TextCapitalization.characters,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             label: Text('Enter Street Code')),
@@ -200,16 +246,32 @@ class _AddnewState extends State<Addnew> {
                                   streetCode != null
                               ? CustomColorTheme.primaryColor
                               : CustomColorTheme.primaryColor.withOpacity(0.7)),
-                      onPressed: () {
-                        if (streetName != null && streetCode != null) {
-                          _addStreetAPI(
-                              streetName!, numberOfHouseholds!, streetCode!);
-                          _confirmbox(context, streetName!);
+                      onPressed: () async {
+                        print('rdg');
+                        final result = await checkStreetCodeExists(
+                          vdfId: '10001',
+                          villageId: widget.villagId,
+                          streetName: streetName!,
+                          streetCode: streetCode!,
+                        );
+                        print(result);
+                        if (result == false) {
+                          if (streetName != null && streetCode != null) {
+                            _addStreetAPI(
+                                streetName!, numberOfHouseholds!, streetCode!);
+                            _confirmbox(context, streetName!);
+                          }
+                        } else {
+                          setState(() {
+                            streetpresent = true;
+                          });
                         }
                       },
                       child: const Text(
                         'Add Street',
-                        style: TextStyle(fontSize: CustomFontTheme.textSize),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: CustomFontTheme.textSize),
                       ),
                     ),
                     SizedBox(
@@ -233,15 +295,20 @@ class _AddnewState extends State<Addnew> {
                       const SizedBox(
                         height: 20,
                       ),
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.symmetric(horizontal: 35),
-                        child: Text(
-                          'Check all streets added to the village here',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            fontSize: CustomFontTheme.textSize,
-                            color: Color(0xFFEC2828),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Check all streets added to the village here',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              fontSize: CustomFontTheme.textSize,
+                              color: Color(0xFFEC2828),
+                            ),
                           ),
                         ),
                       )
@@ -282,6 +349,8 @@ void _confirmbox(BuildContext context, String streetName) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
+        // backgroundColor: Colors.white,
+
         title: SizedBox(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -332,6 +401,7 @@ void _confirmbox(BuildContext context, String streetName) {
                       width: 1, color: CustomColorTheme.primaryColor),
                 ),
                 onPressed: () {
+                  // _addHouseholdAPI('10001', , '0');
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => MyForm(),
@@ -356,7 +426,10 @@ void _confirmbox(BuildContext context, String streetName) {
                     ),
                   );
                 },
-                child: const Text('Save and Close'),
+                child: const Text(
+                  'Save and Close',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),

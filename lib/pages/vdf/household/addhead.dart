@@ -1,17 +1,13 @@
 import 'package:dalmia/apis/commonobject.dart';
 import 'package:dalmia/pages/vdf/household/addfamily.dart';
 import 'dart:convert';
-import 'dart:io';
-import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
-
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 
 class AddHead extends StatefulWidget {
   final String? vdfid;
@@ -25,9 +21,9 @@ class AddHead extends StatefulWidget {
 
 class _MyFormState extends State<AddHead> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _mobileController = TextEditingController();
-  final TextEditingController _dobController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _mobileController = TextEditingController();
+  TextEditingController _dobController = TextEditingController();
   String? _selectedGender;
   List<dynamic> genderOptions = [];
   String? _selectedEducation;
@@ -40,19 +36,7 @@ class _MyFormState extends State<AddHead> {
   String? _selectedPrimaryEmployment;
   String? _selectedSecondaryEmployment;
   bool _validateFields = false;
-  // List<String> genderOptions = ['Male', 'Female'];
-  // List<String> educationOptions = [
-  //   'Option 1',
-  //   'Option 2',
-  //   'Option 3'
-  // ]; // Replace with actual options
-  // List<String> casteOptions = [
-  //   'Option 1',
-  //   'Option 2',
-  //   'Option 3'
-  // ]; // Replace with actual options
-  // List<String> employmentOptions = ['Option 1', 'Option 2', 'Option 3'];
-  // Replace with actual options
+  String? memberId;
 
   Future<void> fetchGenderOptions() async {
     try {
@@ -152,6 +136,7 @@ class _MyFormState extends State<AddHead> {
     }
   }
 
+  List<Map<String, dynamic>> familyMembers = [];
   @override
   void initState() {
     super.initState();
@@ -160,6 +145,36 @@ class _MyFormState extends State<AddHead> {
     fetchEducationOptions();
     fetchPrimaryOptions();
     fetchSecondaryOptions();
+
+    getFamilyMembers(widget.id ?? '0').then(
+      (familyMembers) {
+        var headIndex = getHeadIndex(familyMembers);
+        print('head index is $headIndex');
+        if (familyMembers.length > headIndex) {
+          _nameController = TextEditingController(
+              text: familyMembers[headIndex]['memberName']);
+          _mobileController = TextEditingController(
+              text: familyMembers[headIndex]['mobile'].toString());
+          // _dobController =
+          _dobController = TextEditingController(
+              text: familyMembers[headIndex]['dob'].toString());
+          _selectedGender = familyMembers[headIndex]['gender'].toString();
+          // _selectedCaste = familyMembers[headIndex]['caste']?.toString() ?? '0';
+          // _selectedEducation = familyMembers[headIndex]['education'];
+
+          setState(() {
+            memberId = familyMembers[headIndex]['memberId'].toString();
+            print('member id $memberId');
+          });
+        }
+        // _selectedCaste = familyMembers[0]['education'];
+
+        // _selectedPrimaryEmployment =
+        //     familyMembers[0]['primaryEmployment'].toString();
+        // _selectedSecondaryEmployment =
+        //     familyMembers[0]['secondaryEmployment'].toString();
+      },
+    );
   }
 
   DateTime? selectedDate;
@@ -193,6 +208,8 @@ class _MyFormState extends State<AddHead> {
 
   Future<void> addMember() async {
     try {
+      print('member id $memberId');
+
       print('dsb ${widget.id}');
       final response = await http.put(
         Uri.parse('$base/add-member?houseHoldId=${widget.id}'),
@@ -204,11 +221,12 @@ class _MyFormState extends State<AddHead> {
           {
             'memberName': _nameController.text,
             'mobile': int.parse(_mobileController.text),
-            // 'dob': selectedDate?.toIso8601String(),
+            'dob': selectedDate?.toIso8601String(),
             'gender': _selectedGender,
             'education': 0, // You may replace this with the actual value
             'isFamilyHead': 1, // You may replace this with the actual value
             // You may replace this with the actual value
+            'memberId': memberId,
             'primaryEducation': 0, // You may replace this with the actual value
             'relationship': 0, // You may replace this with the actual value
             'secondaryEducation':
@@ -236,6 +254,31 @@ class _MyFormState extends State<AddHead> {
       }
     } catch (e) {
       print('Error: $e');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getFamilyMembers(
+      String householdId) async {
+    final String apiUrl = '$base/get-familymembers?householdId=$householdId';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+        if (jsonResponse['resp_code'] == 200 &&
+            jsonResponse['resp_msg'] == 'Family Found') {
+          final List<dynamic> respBody = jsonResponse['resp_body'];
+          return List<Map<String, dynamic>>.from(respBody);
+        } else {
+          throw Exception('API Error: ${jsonResponse['resp_msg']}');
+        }
+      } else {
+        throw Exception('HTTP Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw Exception('Error: $error');
     }
   }
 
@@ -558,6 +601,17 @@ class _MyFormState extends State<AddHead> {
         ),
       ),
     );
+  }
+
+  int getHeadIndex(List<Map<String, dynamic>> familyMembers) {
+    int index = 0;
+    for (var element in familyMembers) {
+      if (element['isFamilyHead'] == 1) {
+        return index;
+      }
+      index++;
+    }
+    return 0;
   }
 }
 

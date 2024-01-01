@@ -3,8 +3,7 @@ import 'dart:math';
 
 import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/common/navmenu.dart';
-import 'package:dalmia/components/reportappbar.dart';
-import 'package:dalmia/components/reportpop.dart';
+
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,8 +17,12 @@ import 'package:flutter/material.dart';
 
 class StreetReport extends StatefulWidget {
   final String? selectedvillage;
-  final String? selectedvillageid;
-  const StreetReport({super.key, this.selectedvillage, this.selectedvillageid});
+  final String? selectedvillageId;
+  const StreetReport({
+    super.key,
+    this.selectedvillage,
+    this.selectedvillageId,
+  });
 
   @override
   State<StreetReport> createState() => _StreetReportState();
@@ -35,8 +38,7 @@ class _StreetReportState extends State<StreetReport> {
 
   String? selectedPanchayat;
   String? selectedVillage;
-  int _selectedpanchayatindex = 0;
-  int _selectedvillagetindex = 0;
+
   int? selectedRadio;
   void _onTabTapped(int index) {
     setState(() {
@@ -79,7 +81,8 @@ class _StreetReportState extends State<StreetReport> {
   Future<void> fetchStreetData() async {
     try {
       final response = await http.get(
-        Uri.parse('$base/report-street-wise?vdfId=10001'),
+        Uri.parse(
+            '$base/report-street-wise?vdfId=10001&villageId=${widget.selectedvillageId}'),
       );
 
       if (response.statusCode == 200) {

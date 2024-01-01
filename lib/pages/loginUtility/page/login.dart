@@ -1,5 +1,6 @@
 import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/helper/sharedpref.dart';
+import 'package:dalmia/pages/LL/ll_home_screen.dart';
 
 
 import 'package:dalmia/pages/SwitchRole/switchRole.dart';
@@ -8,6 +9,7 @@ import 'package:dalmia/pages/loginUtility/controller/loginController.dart';
 
 import 'package:dalmia/pages/loginUtility/service/loginApiService.dart';
 import 'package:dalmia/pages/loginUtility/page/otp.dart';
+import 'package:dalmia/pages/vdf/vdfhome.dart';
 
 
 import 'package:flutter/material.dart';
@@ -58,7 +60,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return login(context);
+    return PopScope(canPop: false, child: login(context));
   }
 
   SafeArea login(context) {
@@ -157,44 +159,44 @@ class _LoginState extends State<Login> {
                     const SizedBox(height: 20.0),
                     SubmitButton(
                       onPressed: ()
-                          //          {
-                          //   Navigator.of(context).push(
-                          //     MaterialPageRoute(builder: (context) => CDOHome()),
-                          //   );
-                          // }
-                          async {
-                        try {
-                          Map<String, String> respBody = await loginApiService
-                              .loginViaOtp(int.tryParse(loginController
-                                  .selectMobileController.value.text));
-
-                          if (respBody != null) {
-                            setState(() {
-                              loginController.selectMobileController.value =
-                                  loginController.selectMobileController.value;
-                              loginController.otpTokenId =
-                                  respBody['otpTokenId'];
-                              loginController.referenceId =
-                                  respBody['referenceId'];
-                            });
-
+                                   {
                             Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => Otp(
-                                    mobileNumber: loginController
-                                        .selectMobileController.value.text,
-                                    otpTokenId: loginController.otpTokenId,
-                                    referenceId: loginController.referenceId),
-                              ),
+                        MaterialPageRoute(builder: (context) => VdfHome()),
                             );
                           }
-                        } catch (e) {
-                          setState(() {
-                            validationResult =
-                                e.toString().split('Exception:').last.trim();
-                          });
-                        }
-                      },
+                        //     async {
+                        //   try {
+                        //     Map<String, String> respBody = await loginApiService
+                        //         .loginViaOtp(int.tryParse(loginController
+                        //             .selectMobileController.value.text));
+
+                        //     if (respBody != null) {
+                        //       setState(() {
+                        //         loginController.selectMobileController.value =
+                        //             loginController.selectMobileController.value;
+                        //         loginController.otpTokenId =
+                        //             respBody['otpTokenId'];
+                        //         loginController.referenceId =
+                        //             respBody['referenceId'];
+                        //       });
+
+                        //       Navigator.of(context).push(
+                        //         MaterialPageRoute(
+                        //           builder: (context) => Otp(
+                        //               mobileNumber: loginController
+                        //                   .selectMobileController.value.text,
+                        //               otpTokenId: loginController.otpTokenId,
+                        //               referenceId: loginController.referenceId),
+                        //         ),
+                        //       );
+                        //     }
+                        //   } catch (e) {
+                        //     setState(() {
+                        //       validationResult =
+                        //           e.toString().split('Exception:').last.trim();
+                        //     });
+                        //   }
+                        // },
                         ),
                     const SizedBox(height: 20.0),
                   ],
