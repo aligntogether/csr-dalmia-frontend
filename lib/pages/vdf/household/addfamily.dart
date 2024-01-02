@@ -47,7 +47,7 @@ class _MyFormState extends State<AddFamily> {
 
   List<bool> formExpandStateList = [];
   List<bool> formFilledStateList = [];
-
+  final List<String?> membersId = [];
   Future<void> fetchGenderOptions() async {
     try {
       final response = await http.get(
@@ -149,7 +149,8 @@ class _MyFormState extends State<AddFamily> {
       throw Exception('Error: $e');
     }
   }
-Future<List<Map<String, dynamic>>> getFamilyMembers(
+
+  Future<List<Map<String, dynamic>>> getFamilyMembers(
       String householdId) async {
     final String apiUrl = '$base/get-familymembers?householdId=$householdId';
 
@@ -173,6 +174,8 @@ Future<List<Map<String, dynamic>>> getFamilyMembers(
       throw Exception('Error: $error');
     }
   }
+
+  // int count = 0;
   @override
   void initState() {
     super.initState();
@@ -190,41 +193,12 @@ Future<List<Map<String, dynamic>>> getFamilyMembers(
       _selectedSecondaryEmployments.add(null);
     }
     fetchGenderOptions();
-
     fetchEducationOptions();
     fetchGenderOptions();
     fetchPrimaryOptions();
     fetchSecondaryOptions();
     fetchRelationOptions();
-    //  getFamilyMembers(widget.id ?? '0').then(
-    //   (familyMembers) {
-    //     var headIndex = getHeadIndex(familyMembers);
-    //     print('head index is $headIndex');
-    //     if (familyMembers.length > headIndex) {
-    //       _nameControllers[0] = TextEditingController(
-    //           text: familyMembers[headIndex]['memberName']);
-    //       _mobileControllers[-] = TextEditingController(
-    //           text: familyMembers[headIndex]['mobile'].toString());
-    //       // _dobController =
-    //       _dobController = TextEditingController(
-    //           text: familyMembers[headIndex]['dob'].toString());
-    //       _selectedGender = familyMembers[headIndex]['gender'].toString();
-    //       // _selectedCaste = familyMembers[headIndex]['caste']?.toString() ?? '0';
-    //       // _selectedEducation = familyMembers[headIndex]['education'];
-
-    //       setState(() {
-    //         memberId = familyMembers[headIndex]['memberId'].toString();
-    //         print('member id $memberId');
-    //       });
-    //     }
-    //     // _selectedCaste = familyMembers[0]['education'];
-
-    //     // _selectedPrimaryEmployment =
-    //     //     familyMembers[0]['primaryEmployment'].toString();
-    //     // _selectedSecondaryEmployment =
-    //     //     familyMembers[0]['secondaryEmployment'].toString();
-    //   },
-    // );
+    fetchExistingData();
   }
 
   DateTime? selectedDate;
@@ -567,6 +541,7 @@ Future<List<Map<String, dynamic>>> getFamilyMembers(
                       onPressed: () {
                         {
                           setState(() {
+                            membersId.add(null);
                             formCount++;
                             formExpandStateList.add(false);
                             formFilledStateList.add(false);
@@ -597,12 +572,15 @@ Future<List<Map<String, dynamic>>> getFamilyMembers(
                       ),
                       onPressed: () {
                         List<Map<String, dynamic>> familyData = [];
-
                         // Collect data for each family member
+                        print(formCount);
+                        print(membersId.length);
                         for (int i = 0; i < formCount; i++) {
-                          familyData.add({
-                            'memberName': _nameControllers[i].text,
+                          print(membersId[i]);
 
+                          familyData.add({
+                            'memberId': membersId[i],
+                            'memberName': _nameControllers[i].text,
                             'gender': _selectedGenders[i],
                             'mobile': _mobileControllers[i].text,
                             'isFamilyHead': 0,
@@ -610,11 +588,10 @@ Future<List<Map<String, dynamic>>> getFamilyMembers(
                           });
                         }
                         print(familyData);
-                      
+
                         sendFamilyData(familyData);
 
                         // Navigate to the next screen or perform other actions
-                      
                       },
                       child: const Text(
                         'Next',
@@ -651,6 +628,94 @@ Future<List<Map<String, dynamic>>> getFamilyMembers(
           ),
         ),
       ),
+    );
+  }
+
+  int getHeadIndex(List<Map<String, dynamic>> familyMembers) {
+    int index = 0;
+    for (var element in familyMembers) {
+      if (element['isFamilyHead'] == 1) {
+        return index;
+      }
+      index++;
+    }
+    return 0;
+  }
+
+  void fetchExistingData() {
+    getFamilyMembers(widget.id ?? '0').then(
+      (familyMembers) {
+        setState(() {
+          formExpandStateList =
+              List<bool>.generate(formCount, (index) => false);
+          formFilledStateList =
+              List<bool>.generate(formCount, (index) => false);
+          // count = familyMembers.length;
+          // formCount++;
+        });
+        var headIndex = getHeadIndex(familyMembers);
+        print(formCount);
+        print('head index is $headIndex');
+        int i = -1;
+        if (familyMembers.length == 0) {
+          return;
+        }
+        formCount = 0;
+        formExpandStateList.clear();
+        formFilledStateList.clear();
+        _nameControllers.clear();
+        _mobileControllers.clear();
+        _dobControllers.clear();
+        _selectedGenders.clear();
+        _selectedEducations.clear();
+        _selectedRelation.clear();
+        _selectedCastes.clear();
+        _selectedPrimaryEmployments.clear();
+        _selectedSecondaryEmployments.clear();
+        membersId.clear();
+
+        for (int ind = 0; ind < familyMembers.length; ind++) {
+          if (ind == headIndex) {
+            continue;
+          }
+          i++;
+          print('$i  $ind');
+          formExpandStateList.add(false);
+          formFilledStateList.add(false);
+          _nameControllers.add(TextEditingController());
+          _mobileControllers.add(TextEditingController());
+          _dobControllers.add(TextEditingController());
+          _selectedGenders.add(null);
+          _selectedEducations.add(null);
+          _selectedRelation.add(null);
+          _selectedCastes.add(null);
+          _selectedPrimaryEmployments.add(null);
+          _selectedSecondaryEmployments.add(null);
+          membersId.add(familyMembers[ind]['memberId'].toString());
+          // print('member id ${membersId[ind]}');
+          print('sef');
+          _nameControllers[i] =
+              TextEditingController(text: familyMembers[ind]['memberName']);
+          _mobileControllers[i] = TextEditingController(
+              text: familyMembers[ind]['mobile'].toString());
+          setState(() {
+            formCount++;
+          });
+          print("shreyanshu $formCount");
+          // _dobController =
+          // _dobController = TextEditingController(
+          //     text: familyMembers[headIndex]['dob'].toString());
+          // _selectedGenders[i] = familyMembers[i]['gender'].toString();
+          // _selectedCaste = familyMembers[headIndex]['caste']?.toString() ?? '0';
+          // _selectedEducation = familyMembers[headIndex]['education'];
+        }
+        // _selectedCaste = familyMembers[0]['education'];
+
+        // _selectedPrimaryEmployment =
+        //     familyMembers[0]['primaryEmployment'].toString();
+        // _selectedSecondaryEmployment =
+        //     familyMembers[0]['secondaryEmployment'].toString();
+      },
     );
   }
 }

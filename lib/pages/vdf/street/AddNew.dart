@@ -81,6 +81,7 @@ class _AddnewState extends State<Addnew> {
           appBar: AppBar(
             automaticallyImplyLeading: false,
             elevation: 0,
+            scrolledUnderElevation: 0,
             iconTheme: const IconThemeData(color: Colors.black),
             centerTitle: true,
             title: const Text(
@@ -90,7 +91,7 @@ class _AddnewState extends State<Addnew> {
                   fontSize: CustomFontTheme.headingSize,
                   fontWeight: CustomFontTheme.headingwt),
             ),
-            backgroundColor: Colors.grey[50],
+            // backgroundColor: Colors.grey[50],
             actions: <Widget>[
               IconButton(
                 iconSize: 30,
@@ -348,9 +349,10 @@ void _confirmbox(BuildContext context, String streetName) {
     barrierDismissible: false,
     context: context,
     builder: (BuildContext context) {
+      
       return AlertDialog(
         // backgroundColor: Colors.white,
-
+backgroundColor: Colors.white,
         title: SizedBox(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,

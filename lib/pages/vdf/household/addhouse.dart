@@ -207,8 +207,10 @@ class _MyFormState extends State<MyForm> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          
           automaticallyImplyLeading: false,
-          elevation: 0,
+          // elevation: 0,
+          scrolledUnderElevation: 0,
           iconTheme: const IconThemeData(color: Color(0xFF181818)),
           centerTitle: true,
           title: const Text(
@@ -218,7 +220,7 @@ class _MyFormState extends State<MyForm> {
                 fontSize: CustomFontTheme.headingSize,
                 fontWeight: CustomFontTheme.headingwt),
           ),
-          backgroundColor: Colors.grey[50],
+          // backgroundColor: Colors.grey[50],
           actions: <Widget>[
             IconButton(
               iconSize: 30,

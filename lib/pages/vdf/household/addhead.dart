@@ -158,7 +158,7 @@ class _MyFormState extends State<AddHead> {
           // _dobController =
           _dobController = TextEditingController(
               text: familyMembers[headIndex]['dob'].toString());
-          _selectedGender = familyMembers[headIndex]['gender'].toString();
+          // _selectedGender = familyMembers[headIndex]['gender'].toString();
           // _selectedCaste = familyMembers[headIndex]['caste']?.toString() ?? '0';
           // _selectedEducation = familyMembers[headIndex]['education'];
 
@@ -646,7 +646,7 @@ AppBar houseappbar(BuildContext context) {
         ],
       ),
     ),
-    backgroundColor: Colors.grey[50],
+    // backgroundColor: Colors.grey[50],
     actions: <Widget>[
       IconButton(
         iconSize: 30,
