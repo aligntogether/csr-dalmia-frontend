@@ -149,7 +149,6 @@ class _MyFormState extends State<AddFamily> {
       throw Exception('Error: $e');
     }
   }
-
   Future<List<Map<String, dynamic>>> getFamilyMembers(
       String householdId) async {
     final String apiUrl = '$base/get-familymembers?householdId=$householdId';
@@ -174,8 +173,6 @@ class _MyFormState extends State<AddFamily> {
       throw Exception('Error: $error');
     }
   }
-
-  // int count = 0;
   @override
   void initState() {
     super.initState();
@@ -193,6 +190,7 @@ class _MyFormState extends State<AddFamily> {
       _selectedSecondaryEmployments.add(null);
     }
     fetchGenderOptions();
+
     fetchEducationOptions();
     fetchGenderOptions();
     fetchPrimaryOptions();
@@ -572,15 +570,13 @@ class _MyFormState extends State<AddFamily> {
                       ),
                       onPressed: () {
                         List<Map<String, dynamic>> familyData = [];
-                        // Collect data for each family member
-                        print(formCount);
-                        print(membersId.length);
-                        for (int i = 0; i < formCount; i++) {
-                          print(membersId[i]);
 
+                        // Collect data for each family member
+                        for (int i = 0; i < formCount; i++) {
                           familyData.add({
                             'memberId': membersId[i],
                             'memberName': _nameControllers[i].text,
+
                             'gender': _selectedGenders[i],
                             'mobile': _mobileControllers[i].text,
                             'isFamilyHead': 0,
@@ -592,6 +588,7 @@ class _MyFormState extends State<AddFamily> {
                         sendFamilyData(familyData);
 
                         // Navigate to the next screen or perform other actions
+
                       },
                       child: const Text(
                         'Next',

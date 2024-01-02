@@ -207,7 +207,6 @@ class _MyFormState extends State<MyForm> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          
           automaticallyImplyLeading: false,
           // elevation: 0,
           scrolledUnderElevation: 0,
