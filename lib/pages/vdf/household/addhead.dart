@@ -26,15 +26,15 @@ class _MyFormState extends State<AddHead> {
   TextEditingController _dobController = TextEditingController();
   String? _selectedGender;
   List<dynamic> genderOptions = [];
-  String? _selectedEducation;
+  int? _selectedEducation;
   List<dynamic> educationOptions = [];
   List<dynamic> primaryEmploymentOptions = [];
   List<dynamic> secondaryEmploymentOptions = [];
 
-  String? _selectedCaste;
+  int? _selectedCaste;
   List<dynamic> casteOptions = [];
-  String? _selectedPrimaryEmployment;
-  String? _selectedSecondaryEmployment;
+  int? _selectedPrimaryEmployment;
+  int? _selectedSecondaryEmployment;
   bool _validateFields = false;
   String? memberId;
 
@@ -155,14 +155,23 @@ class _MyFormState extends State<AddHead> {
               text: familyMembers[headIndex]['memberName']);
           _mobileController = TextEditingController(
               text: familyMembers[headIndex]['mobile'].toString());
-          // _dobController =
-          _dobController = TextEditingController(
-              text: familyMembers[headIndex]['dob'].toString());
-          // _selectedGender = familyMembers[headIndex]['gender'].toString();
+          if (familyMembers[headIndex]['gender'] != null)
+            _selectedGender = familyMembers[headIndex]['gender'].toString();
           // _selectedCaste = familyMembers[headIndex]['caste']?.toString() ?? '0';
-          // _selectedEducation = familyMembers[headIndex]['education'];
+          _selectedEducation = familyMembers[headIndex]['education'];
+          if (familyMembers[headIndex]['primaryEmployment'] != null)
+            _selectedPrimaryEmployment =
+                familyMembers[headIndex]['primaryEmployment'];
+          if (familyMembers[headIndex]['secondaryEmployment'] != null)
+            _selectedSecondaryEmployment =
+                familyMembers[headIndex]['secondaryEmployment'];
 
           setState(() {
+            selectedDate = DateTime.fromMillisecondsSinceEpoch(
+                familyMembers[headIndex]['dob']);
+            if (selectedDate != null)
+              _dobController.text =
+                  DateFormat('dd/MM/yyyy').format(selectedDate!);
             memberId = familyMembers[headIndex]['memberId'].toString();
             print('member id $memberId');
           });
@@ -223,7 +232,8 @@ class _MyFormState extends State<AddHead> {
             'mobile': int.parse(_mobileController.text),
             'dob': selectedDate?.toIso8601String(),
             'gender': _selectedGender,
-            'education': 0, // You may replace this with the actual value
+            'education':
+                _selectedEducation, // You may replace this with the actual value
             'isFamilyHead': 1, // You may replace this with the actual value
             // You may replace this with the actual value
             'memberId': memberId,
@@ -231,8 +241,10 @@ class _MyFormState extends State<AddHead> {
             'relationship': 0, // You may replace this with the actual value
             'secondaryEducation':
                 0, // You may replace this with the actual value
-            //      'primaryEmployment':
-            //     _selectedPrimaryEmployment, // You may replace this with the actual value
+            'primaryEmployment':
+                _selectedPrimaryEmployment, // You may replace this with the actual value, // You may replace this with the actual value
+            'secondaryEmployment':
+                _selectedSecondaryEmployment, // You may replace this with the actual value
             // 'relationship': 0, // You may replace this with the actual value
             // 'secondaryEmployment':
             //     _selectedSecondaryEmployment,
@@ -407,12 +419,12 @@ class _MyFormState extends State<AddHead> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
+                  DropdownButtonFormField<int>(
                     value: _selectedCaste,
                     items: casteOptions
-                        .map<DropdownMenuItem<String>>((dynamic caste) {
-                      return DropdownMenuItem<String>(
-                        value: caste['titleData'].toString(),
+                        .map<DropdownMenuItem<int>>((dynamic caste) {
+                      return DropdownMenuItem<int>(
+                        value: caste['dataId'],
                         child: Text(caste['titleData'].toString()),
                       );
                     }).toList(),
@@ -434,12 +446,12 @@ class _MyFormState extends State<AddHead> {
                   const SizedBox(
                     height: 16,
                   ),
-                  DropdownButtonFormField<String>(
+                  DropdownButtonFormField<int>(
                     value: _selectedEducation,
                     items: educationOptions
-                        .map<DropdownMenuItem<String>>((dynamic education) {
-                      return DropdownMenuItem<String>(
-                        value: education['titleData'].toString(),
+                        .map<DropdownMenuItem<int>>((dynamic education) {
+                      return DropdownMenuItem<int>(
+                        value: education['dataId'],
                         child: Text(education['titleData'].toString()),
                       );
                     }).toList(),
@@ -459,13 +471,13 @@ class _MyFormState extends State<AddHead> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
+                  DropdownButtonFormField<int>(
                     value: _selectedPrimaryEmployment,
                     items: primaryEmploymentOptions
-                        .map<DropdownMenuItem<String>>(
+                        .map<DropdownMenuItem<int>>(
                             (dynamic primaryemployment) {
-                      return DropdownMenuItem<String>(
-                        value: primaryemployment['titleData'].toString(),
+                      return DropdownMenuItem<int>(
+                        value: primaryemployment['dataId'],
                         child: Text(primaryemployment['titleData'].toString()),
                       );
                     }).toList(),
@@ -485,13 +497,13 @@ class _MyFormState extends State<AddHead> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
+                  DropdownButtonFormField<int>(
                     value: _selectedSecondaryEmployment,
                     items: secondaryEmploymentOptions
-                        .map<DropdownMenuItem<String>>(
+                        .map<DropdownMenuItem<int>>(
                             (dynamic secondaryemployment) {
-                      return DropdownMenuItem<String>(
-                        value: secondaryemployment['titleData'].toString(),
+                      return DropdownMenuItem<int>(
+                        value: secondaryemployment['dataId'],
                         child:
                             Text(secondaryemployment['titleData'].toString()),
                       );

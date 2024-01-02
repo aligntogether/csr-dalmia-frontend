@@ -5,6 +5,7 @@ import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class AddLand extends StatefulWidget {
@@ -25,6 +26,15 @@ class _MyFormState extends State<AddLand> {
   @override
   void initState() {
     super.initState();
+    getlandData(widget.id ?? '0').then(
+      (land) {
+        print("test $land");
+        setState(() {
+          selectedIrrigated = land['irrigatedLand'].toString();
+          selectedRainfed = land['rainfedLand'].toString();
+        });
+      },
+    );
     fetchRainfedOptions().then((options) {
       setState(() {
         rainfedOptions = options;
@@ -47,6 +57,31 @@ class _MyFormState extends State<AddLand> {
     setState(() {
       selectedIrrigated = dataId;
     });
+  }
+
+  Future<Map<String, dynamic>> getlandData(String householdId) async {
+    final String apiUrl = '$base/get-household?householdId=$householdId';
+
+    try {
+      final response = await http.post(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+        if (jsonResponse['resp_code'] == 200 &&
+            jsonResponse['resp_msg'] == 'Data Found') {
+          final Map<String, dynamic> respBody = jsonResponse['resp_body'];
+          return Map<String, dynamic>.from(respBody);
+        } else {
+          throw Exception('API Error: ${jsonResponse['resp_msg']}');
+        }
+      } else {
+        throw Exception('HTTP Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      error.printError();
+      throw Exception('Error: $error');
+    }
   }
 
   Future<void> addlandData() async {
@@ -230,7 +265,6 @@ class _MyFormState extends State<AddLand> {
                         addlandData();
 
                         // Navigate to the next screen if needed
-                       
                       },
                       child: Text(
                         'Next',
