@@ -159,44 +159,44 @@ class _LoginState extends State<Login> {
                     const SizedBox(height: 20.0),
                     SubmitButton(
                       onPressed: ()
-                                   {
+                          //            {
+                          //     Navigator.of(context).push(
+                          // MaterialPageRoute(builder: (context) => VdfHome()),
+                          //     );
+                          //   }
+                          async {
+                        try {
+                          Map<String, String> respBody = await loginApiService
+                              .loginViaOtp(int.tryParse(loginController
+                                  .selectMobileController.value.text));
+
+                          if (respBody != null) {
+                            setState(() {
+                              loginController.selectMobileController.value =
+                                  loginController.selectMobileController.value;
+                              loginController.otpTokenId =
+                                  respBody['otpTokenId'];
+                              loginController.referenceId =
+                                  respBody['referenceId'];
+                            });
+
                             Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => VdfHome()),
+                              MaterialPageRoute(
+                                builder: (context) => Otp(
+                                    mobileNumber: loginController
+                                        .selectMobileController.value.text,
+                                    otpTokenId: loginController.otpTokenId,
+                                    referenceId: loginController.referenceId),
+                              ),
                             );
                           }
-                        //     async {
-                        //   try {
-                        //     Map<String, String> respBody = await loginApiService
-                        //         .loginViaOtp(int.tryParse(loginController
-                        //             .selectMobileController.value.text));
-
-                        //     if (respBody != null) {
-                        //       setState(() {
-                        //         loginController.selectMobileController.value =
-                        //             loginController.selectMobileController.value;
-                        //         loginController.otpTokenId =
-                        //             respBody['otpTokenId'];
-                        //         loginController.referenceId =
-                        //             respBody['referenceId'];
-                        //       });
-
-                        //       Navigator.of(context).push(
-                        //         MaterialPageRoute(
-                        //           builder: (context) => Otp(
-                        //               mobileNumber: loginController
-                        //                   .selectMobileController.value.text,
-                        //               otpTokenId: loginController.otpTokenId,
-                        //               referenceId: loginController.referenceId),
-                        //         ),
-                        //       );
-                        //     }
-                        //   } catch (e) {
-                        //     setState(() {
-                        //       validationResult =
-                        //           e.toString().split('Exception:').last.trim();
-                        //     });
-                        //   }
-                        // },
+                        } catch (e) {
+                          setState(() {
+                            validationResult =
+                                e.toString().split('Exception:').last.trim();
+                          });
+                          }
+                      },
                         ),
                     const SizedBox(height: 20.0),
                   ],

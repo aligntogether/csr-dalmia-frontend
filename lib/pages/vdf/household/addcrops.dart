@@ -24,10 +24,45 @@ class _AddCropState extends State<AddCrop> {
   void initState() {
     super.initState();
     fetchCropOptions();
+    getcropData(widget.id ?? '0').then(
+      (crop) {
+        print("test $crop");
+        setState(() {
+          selectedDataIds = crop['crops'].toString().split(",").toSet();
+          print(selectedDataIds);
+        });
+      },
+    );
+  }
+
+  Future<Map<String, dynamic>> getcropData(String householdId) async {
+    final String apiUrl = '$base/get-household?householdId=$householdId';
+
+    try {
+      final response = await http.post(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+        if (jsonResponse['resp_code'] == 200 &&
+            jsonResponse['resp_msg'] == 'Data Found') {
+          final Map<String, dynamic> respBody = jsonResponse['resp_body'];
+          return Map<String, dynamic>.from(respBody);
+        } else {
+          throw Exception('API Error: ${jsonResponse['resp_msg']}');
+        }
+      } else {
+        throw Exception('HTTP Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      // error.printError();
+      throw Exception('Error: $error');
+    }
   }
 
   Future<void> addcropData() async {
     final apiUrl = '$base/add-household';
+    
 
     // Replace these values with the actual data you want to send
     final Map<String, dynamic> requestData = {

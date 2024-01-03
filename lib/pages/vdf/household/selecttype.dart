@@ -131,7 +131,9 @@ class _SelectTypeState extends State<SelectType> {
                   addhouse(1);
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => Addinter(),
+                      builder: (context) => Addinter(
+                        id: widget.id,
+                      ),
                     ),
                   );
                   // Perform actions when 'Yes' is clicked

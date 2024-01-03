@@ -9,6 +9,7 @@ import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class AddStock extends StatefulWidget {
@@ -20,10 +21,11 @@ class AddStock extends StatefulWidget {
 }
 
 class _AddStockState extends State<AddStock> {
+  List<String> items = ["Cows", "Goats", "Buffalo", "Poultry", "Pigs", "Ducks"];
   List<bool> cropCheckList = List.filled(16, false);
-  Map<String?, int> livestockData = {};
-  MapEntry<String?, int> other1 = const MapEntry(null, 0);
-  MapEntry<String?, int> other2 = const MapEntry(null, 0);
+  Map<String, int> livestockData = {};
+  MapEntry<String, int> other1 = const MapEntry("null", 0);
+  MapEntry<String, int> other2 = const MapEntry("null", 0);
 
   Future<void> addstockData() async {
     final apiUrl = '$base/add-household';
@@ -36,7 +38,7 @@ class _AddStockState extends State<AddStock> {
     // Replace these values with the actual data you want to send
     final Map<String, dynamic> requestData = {
       "id": widget.id,
-      "livestock_numbers": livestockData.toString(),
+      "livestock_numbers": json.encode(livestockData),
     };
 
     try {
@@ -65,6 +67,31 @@ class _AddStockState extends State<AddStock> {
     }
   }
 
+  Future<Map<String, dynamic>> getlivestockData(String householdId) async {
+    final String apiUrl = '$base/get-household?householdId=$householdId';
+
+    try {
+      final response = await http.post(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+        if (jsonResponse['resp_code'] == 200 &&
+            jsonResponse['resp_msg'] == 'Data Found') {
+          final Map<String, dynamic> respBody = jsonResponse['resp_body'];
+          return Map<String, dynamic>.from(respBody);
+        } else {
+          throw Exception('API Error: ${jsonResponse['resp_msg']}');
+        }
+      } else {
+        throw Exception('HTTP Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      // error.printError();
+      throw Exception('Error: $error');
+    }
+  }
+
   void addData(text, value) {
     int intVal = 0;
     try {
@@ -72,6 +99,21 @@ class _AddStockState extends State<AddStock> {
     } catch (e) {}
     livestockData[text] = intVal;
     print(livestockData);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getlivestockData(widget.id ?? '0').then((livestock) {
+      print("test $livestock");
+      setState(
+        () {
+          livestockData =
+              Map<String, int>.from(jsonDecode(livestock['livestockNumbers']));
+        },
+      );
+      print(livestockData['Cows']);
+    });
   }
 
   @override
@@ -99,17 +141,17 @@ class _AddStockState extends State<AddStock> {
               Column(
                 children: [
                   const SizedBox(height: 20),
-                  Rowstock('Cows', addData),
+                  Rowstock('Cows', addData, livestockData),
                   const SizedBox(height: 20),
-                  Rowstock('Goats', addData),
+                  Rowstock('Goats', addData, livestockData),
                   const SizedBox(height: 20),
-                  Rowstock('Buffalo', addData),
+                  Rowstock('Buffalo', addData, livestockData),
                   const SizedBox(height: 20),
-                  Rowstock('Poultry', addData),
+                  Rowstock('Poultry', addData, livestockData),
                   const SizedBox(height: 20),
-                  Rowstock('Pigs', addData),
+                  Rowstock('Pigs', addData, livestockData),
                   const SizedBox(height: 20),
-                  Rowstock('Ducks', addData),
+                  Rowstock('Ducks', addData, livestockData),
                   const SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -309,10 +351,20 @@ class _AddStockState extends State<AddStock> {
       ),
     );
   }
-}
+  Rowstock(String text, void Function(dynamic text, dynamic value) addData,
+      Map<String, int>? value) {
+    TextEditingController controller = TextEditingController();
 
-Widget Rowstock(
-    String text, void Function(dynamic text, dynamic value) addData) {
+    // Set initial value when the widget is created
+    if (value != null && value.containsKey(text)) {
+      controller.text = value[text]?.toString() ?? '';
+    }
+
+    // Use a listener to update the text field when the underlying value changes
+    controller.addListener(() {
+      addData(text, controller.text);
+    });
+
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
     child: Row(
@@ -331,13 +383,12 @@ Widget Rowstock(
         SizedBox(
           width: 50,
           height: 30,
-          child: TextField(
-            keyboardType: TextInputType.number, // Allow only numeric keyboard
+            child: TextFormField(
+              controller: controller,
+              keyboardType: TextInputType.number,
             inputFormatters: [
-              FilteringTextInputFormatter.allow(
-                  RegExp(r'[0-9]')), // Allow only digits
-            ],
-            onChanged: (value) => addData(text, value),
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+              ],
             decoration: const InputDecoration(
               contentPadding: EdgeInsets.symmetric(horizontal: 10),
               border: OutlineInputBorder(
@@ -354,4 +405,7 @@ Widget Rowstock(
       ],
     ),
   );
+}
+
+
 }
