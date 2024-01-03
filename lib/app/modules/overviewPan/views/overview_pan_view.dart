@@ -12,9 +12,30 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../controllers/overview_pan_controller.dart';
+import '../serivce/overviewReportApiService.dart';
 
-class OverviewPanView extends GetView<OverviewPanController> {
-  const OverviewPanView({Key? key}) : super(key: key);
+
+
+class OverviewPanView extends StatefulWidget {
+
+  OverviewPanView({Key? key}) : super(key: key);
+
+  @override
+  _OverviewPanViewState createState() => new _OverviewPanViewState();
+}
+
+class _OverviewPanViewState extends State<OverviewPanView> {
+  final OverviewReportApiService overviewReportApiService = new OverviewReportApiService();
+
+  OverviewPanController controller = Get.put(OverviewPanController());
+  late Future<Map<String, dynamic>> regionsFuture;
+  late Future<Map<String, dynamic>> clustersFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    regionsFuture = overviewReportApiService.getListOfRegions();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,20 +78,81 @@ class OverviewPanView extends GetView<OverviewPanController> {
                 Space.height(34),
 
                 ///_________________________________ drop downs__________________________///
-                CustomDropdownFormField(
-                    title: "Select a Region",
-                    options: [
-                      "South & Chandrapur",
-                      "Sugar",
-                      "East",
-                      "North East",
-                      "All Regions"
-                    ],
-                    selectedValue: controller.selectP,
-                    onChanged: (String? newValue) async {
-                      controller.selectP = newValue;
-                      controller.update();
-                    }),
+                GetBuilder<OverviewPanController>(
+                  id: "add",
+                  builder: (controller) {
+                    return FutureBuilder<Map<String, dynamic>>(
+                      // Assuming that getListOfRegions returns a Future<Map<String, dynamic>>
+                      future: regionsFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          Map<String, dynamic> responseData = snapshot.data ?? {};
+
+                          if (responseData.containsKey('regions')) {
+                            List<Map<String, dynamic>> regionOptions =
+                            responseData['regions'];
+
+                            return CustomDropdownFormField(
+                              title: "Select a Region",
+                              options: regionOptions
+                                  .map((region) => region['region'].toString())
+                                  .toList(),
+                              selectedValue: controller.selectRegion,
+                              onChanged: (String? newValue) async {
+                                // Find the selected region and get its corresponding regionId
+                                Map<String, dynamic>? selectedRegion =
+                                regionOptions.firstWhereOrNull(
+                                        (region) => region['region'] == newValue);
+
+                                // print('controller.selectedRegions: ${selectedRegion}');
+
+
+                                if (selectedRegion != null &&
+                                    selectedRegion['regionId'] != null) {
+
+                                  controller.selectRegionId =
+                                  selectedRegion['regionId'];
+                                  controller.selectRegion = newValue;
+
+                                  controller.update(["add"]);
+
+                                  // Get locations based on the selected regionId
+                                  Map<String, dynamic> locationsData =
+                                  await performanceVdfApiService.getListOfLocations(
+                                      controller.selectRegionId!);
+
+                                  // Extract the list of locations from the returned data
+                                  List<Map<String, dynamic>> locations =
+                                  locationsData['locations'];
+
+                                  // Update the controller with the new list of locations
+                                  controller.updateLocations(locations);
+                                  controller.update(["add"]);
+
+                                  setState(() {
+                                    controller.selectLocation =
+                                    null;
+                                    controller.selectLocationId = null;
+                                    controller.selectCluster = null;
+                                    controller.selectVdfName = null;
+                                  });
+
+
+                                }
+                              },
+                            );
+                          } else {
+                            return Text('No regions available');
+                          }
+                        }
+                      },
+                    );
+                  },
+                ),
 
                 ///_________________________________ drop downs__________________________///
                 GetBuilder<OverviewPanController>(
