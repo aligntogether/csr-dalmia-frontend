@@ -165,6 +165,8 @@ class _MyFormState extends State<AddHead> {
           if (familyMembers[headIndex]['secondaryEmployment'] != null)
             _selectedSecondaryEmployment =
                 familyMembers[headIndex]['secondaryEmployment'];
+          if (familyMembers[headIndex]['caste'] != null)
+            _selectedCaste = familyMembers[headIndex]['caste'];
 
           setState(() {
             selectedDate = DateTime.fromMillisecondsSinceEpoch(
@@ -245,6 +247,7 @@ class _MyFormState extends State<AddHead> {
                 _selectedPrimaryEmployment, // You may replace this with the actual value, // You may replace this with the actual value
             'secondaryEmployment':
                 _selectedSecondaryEmployment, // You may replace this with the actual value
+            'caste': _selectedCaste,
             // 'relationship': 0, // You may replace this with the actual value
             // 'secondaryEmployment':
             //     _selectedSecondaryEmployment,
@@ -473,9 +476,8 @@ class _MyFormState extends State<AddHead> {
                   const SizedBox(height: 16),
                   DropdownButtonFormField<int>(
                     value: _selectedPrimaryEmployment,
-                    items: primaryEmploymentOptions
-                        .map<DropdownMenuItem<int>>(
-                            (dynamic primaryemployment) {
+                    items: primaryEmploymentOptions.map<DropdownMenuItem<int>>(
+                        (dynamic primaryemployment) {
                       return DropdownMenuItem<int>(
                         value: primaryemployment['dataId'],
                         child: Text(primaryemployment['titleData'].toString()),

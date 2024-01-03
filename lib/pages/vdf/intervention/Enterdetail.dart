@@ -74,7 +74,7 @@ class _EnterDetailState extends State<EnterDetail> {
 
       if (response.statusCode == 200) {
         // Handle successful response
-        _successmsg(context);
+        _successmsg(context, widget.hid);
         print('updated successfully');
       } else {
         // Handle error response
@@ -249,7 +249,45 @@ class _EnterDetailState extends State<EnterDetail> {
   }
 }
 
-void _successmsg(BuildContext context) {
+void _successmsg(BuildContext context, String? hid) {
+  Future<void> addreason(String? hid, BuildContext context) async {
+    final apiUrl =
+        'https://mobiledevcloud.dalmiabharat.com:443/csr/add-household';
+
+    // Replace these values with the actual data you want to send
+    final Map<String, dynamic> requestData = {"id": hid, "is_draft": 0};
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          "Content-Type": "application/json",
+          // Add any additional headers if needed
+        },
+        body: jsonEncode(requestData),
+      );
+
+      if (response.statusCode == 200) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => VdfHome(),
+          ),
+        );
+        // Successful response
+        print("Reason added");
+        // Handle success as needed
+      } else {
+        // Handle error response
+        print("Failed to add data: ${response.statusCode}");
+        print(response.body);
+        // Handle error as needed
+      }
+    } catch (e) {
+      // Handle network errors
+      print("Error: $e");
+    }
+  }
+
   showDialog(
     barrierDismissible: false,
     context: context,
@@ -305,11 +343,7 @@ void _successmsg(BuildContext context) {
                   minimumSize: const Size(250, 50),
                 ),
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => VdfHome(),
-                    ),
-                  );
+                  addreason(hid, context);
                 },
                 child: const Text(
                   'Save and Close',

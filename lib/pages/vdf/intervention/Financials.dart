@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dalmia/pages/vdf/intervention/Addinter.dart';
 import 'package:dalmia/pages/vdf/intervention/Followup.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
@@ -49,17 +51,52 @@ class _FinancialState extends State<Financial> {
         _loanController.text.isNotEmpty &&
         _dbfController.text.isNotEmpty;
   }
+
   Future<void> _updateinterAPI(
       // String benificiaryId
       ) async {
     final apiUrl =
         'https://mobiledevcloud.dalmiabharat.com:443/csr/update-interventions?householdId=${widget.hid}&interventionId=${widget.interId}';
     try {
-      final response = await http.put(Uri.parse(apiUrl));
+      var inputFormat = DateFormat('dd/MM/yyyy');
 
+      var outputFormat = DateFormat('yyyy-MM-dd');
+
+      var requestData = {
+        "dateOfCompletion": outputFormat
+            .format(inputFormat.parse(widget.dateofcompletion.text)),
+        "followUpDate1":
+            outputFormat.format(inputFormat.parse(widget.follow1.text)),
+        "followUpDate2":
+            outputFormat.format(inputFormat.parse(widget.follow2.text)),
+        "followUpDate3":
+            outputFormat.format(inputFormat.parse(widget.follow3.text)),
+        "followUpDate4":
+            outputFormat.format(inputFormat.parse(widget.follow4.text)),
+        "followUpDate5":
+            outputFormat.format(inputFormat.parse(widget.follow5.text)),
+        "followUpDate6":
+            outputFormat.format(inputFormat.parse(widget.follow6.text)),
+        "interventionDbfContribution": _dbfController.text.toString(),
+        "interventionHouseholdContribution":
+            _beneficiaryController.text.toString(),
+        "interventionLoan": _loanController.text.toString(),
+        "interventionSubsidy": _subsidyController.text.toString(),
+        "remarks": widget.remark
+      };
+      print(requestData);
+      final response = await http.put(
+        Uri.parse(apiUrl),
+        headers: {
+          "Content-Type": "application/json",
+          // Add any additional headers if needed
+        },
+        body: jsonEncode(requestData),
+      );
+      print(response);
       if (response.statusCode == 200) {
         // Handle successful response
-        _successmsg(context);
+        _successmsg(context, widget.hid);
         print('updated successfully');
       } else {
         // Handle error response
@@ -199,7 +236,7 @@ class _FinancialState extends State<Financial> {
                       ),
                       onPressed: isButtonEnabled
                           ? () {
-                              _successmsg(context);
+                              _updateinterAPI();
                             }
                           : null,
                       child: const Text(
@@ -218,7 +255,45 @@ class _FinancialState extends State<Financial> {
   }
 }
 
-void _successmsg(BuildContext context) {
+void _successmsg(BuildContext context, String? hid) {
+  Future<void> addreason(String? hid, BuildContext context) async {
+    final apiUrl =
+        'https://mobiledevcloud.dalmiabharat.com:443/csr/add-household';
+
+    // Replace these values with the actual data you want to send
+    final Map<String, dynamic> requestData = {"id": hid, "is_draft": 0};
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          "Content-Type": "application/json",
+          // Add any additional headers if needed
+        },
+        body: jsonEncode(requestData),
+      );
+
+      if (response.statusCode == 200) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => VdfHome(),
+          ),
+        );
+        // Successful response
+        print("Reason added");
+        // Handle success as needed
+      } else {
+        // Handle error response
+        print("Failed to add data: ${response.statusCode}");
+        print(response.body);
+        // Handle error as needed
+      }
+    } catch (e) {
+      // Handle network errors
+      print("Error: $e");
+    }
+  }
+
   showDialog(
     barrierDismissible: false,
     context: context,
@@ -251,7 +326,6 @@ void _successmsg(BuildContext context) {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      
                       elevation: 0,
                       fixedSize: Size(220, 50),
                       backgroundColor: Colors.white,
@@ -275,16 +349,11 @@ void _successmsg(BuildContext context) {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-        
                       backgroundColor: CustomColorTheme.primaryColor,
                       fixedSize: Size(220, 50),
                     ),
                     onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => VdfHome(),
-                        ),
-                      );
+                      addreason(hid, context);
                     },
                     child: const Text(
                       'Save and Close',

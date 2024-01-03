@@ -31,12 +31,12 @@ class _MyFormState extends State<AddFamily> {
   final List<TextEditingController> _mobileControllers = [];
   final List<TextEditingController> _dobControllers = [];
 
-  final List<String?> _selectedGenders = [];
-  final List<String?> _selectedEducations = [];
-  final List<String?> _selectedRelation = [];
-  final List<String?> _selectedCastes = [];
-  final List<String?> _selectedPrimaryEmployments = [];
-  final List<String?> _selectedSecondaryEmployments = [];
+  final List<int?> _selectedGenders = [];
+  final List<int?> _selectedEducations = [];
+  final List<int?> _selectedRelation = [];
+  final List<int?> _selectedCastes = [];
+  final List<int?> _selectedPrimaryEmployments = [];
+  final List<int?> _selectedSecondaryEmployments = [];
 
   List<dynamic> genderOptions = [];
 
@@ -149,6 +149,7 @@ class _MyFormState extends State<AddFamily> {
       throw Exception('Error: $e');
     }
   }
+
   Future<List<Map<String, dynamic>>> getFamilyMembers(
       String householdId) async {
     final String apiUrl = '$base/get-familymembers?householdId=$householdId';
@@ -173,6 +174,7 @@ class _MyFormState extends State<AddFamily> {
       throw Exception('Error: $error');
     }
   }
+
   @override
   void initState() {
     super.initState();
@@ -384,13 +386,13 @@ class _MyFormState extends State<AddFamily> {
                                   ],
                                 ),
                                 const SizedBox(height: 16),
-                                DropdownButtonFormField<String>(
+                                DropdownButtonFormField<int>(
                                   value: _selectedGenders[i],
                                   items: genderOptions
-                                      .map<DropdownMenuItem<String>>(
+                                      .map<DropdownMenuItem<int>>(
                                           (dynamic gender) {
-                                    return DropdownMenuItem<String>(
-                                      value: gender['titleData'].toString(),
+                                    return DropdownMenuItem<int>(
+                                      value: gender['dataId'],
                                       child:
                                           Text(gender['titleData'].toString()),
                                     );
@@ -411,13 +413,13 @@ class _MyFormState extends State<AddFamily> {
                                   ),
                                 ),
                                 const SizedBox(height: 16),
-                                DropdownButtonFormField<String>(
+                                DropdownButtonFormField<int>(
                                   value: _selectedEducations[i],
                                   items: educationOptions
-                                      .map<DropdownMenuItem<String>>(
+                                      .map<DropdownMenuItem<int>>(
                                           (dynamic education) {
-                                    return DropdownMenuItem<String>(
-                                      value: education['titleData'].toString(),
+                                    return DropdownMenuItem<int>(
+                                      value: education['dataId'],
                                       child: Text(
                                           education['titleData'].toString()),
                                     );
@@ -441,11 +443,10 @@ class _MyFormState extends State<AddFamily> {
                                 DropdownButtonFormField(
                                   value: _selectedRelation[i],
                                   items: relationOptions
-                                      .map<DropdownMenuItem<String>>(
+                                      .map<DropdownMenuItem<int>>(
                                           (dynamic relationship) {
-                                    return DropdownMenuItem<String>(
-                                      value:
-                                          relationship['titleData'].toString(),
+                                    return DropdownMenuItem<int>(
+                                      value: relationship['dataId'],
                                       child: Text(
                                           relationship['titleData'].toString()),
                                     );
@@ -466,14 +467,13 @@ class _MyFormState extends State<AddFamily> {
                                   ),
                                 ),
                                 const SizedBox(height: 16),
-                                DropdownButtonFormField<String>(
+                                DropdownButtonFormField<int>(
                                   value: _selectedPrimaryEmployments[i],
                                   items: primaryEmploymentOptions
-                                      .map<DropdownMenuItem<String>>(
+                                      .map<DropdownMenuItem<int>>(
                                           (dynamic primaryemployment) {
-                                    return DropdownMenuItem<String>(
-                                      value: primaryemployment['titleData']
-                                          .toString(),
+                                    return DropdownMenuItem<int>(
+                                      value: primaryemployment['dataId'],
                                       child: Text(primaryemployment['titleData']
                                           .toString()),
                                     );
@@ -494,14 +494,13 @@ class _MyFormState extends State<AddFamily> {
                                   ),
                                 ),
                                 const SizedBox(height: 16),
-                                DropdownButtonFormField<String>(
+                                DropdownButtonFormField<int>(
                                   value: _selectedSecondaryEmployments[i],
                                   items: secondaryEmploymentOptions
-                                      .map<DropdownMenuItem<String>>(
+                                      .map<DropdownMenuItem<int>>(
                                           (dynamic secondaryemployment) {
-                                    return DropdownMenuItem<String>(
-                                      value: secondaryemployment['titleData']
-                                          .toString(),
+                                    return DropdownMenuItem<int>(
+                                      value: secondaryemployment['dataId'],
                                       child: Text(
                                           secondaryemployment['titleData']
                                               .toString()),
@@ -570,7 +569,9 @@ class _MyFormState extends State<AddFamily> {
                       ),
                       onPressed: () {
                         List<Map<String, dynamic>> familyData = [];
+                        var inputFormat = DateFormat('dd/MM/yyyy');
 
+                        var outputFormat = DateFormat('yyyy-MM-dd');
                         // Collect data for each family member
                         for (int i = 0; i < formCount; i++) {
                           familyData.add({
@@ -579,6 +580,18 @@ class _MyFormState extends State<AddFamily> {
 
                             'gender': _selectedGenders[i],
                             'mobile': _mobileControllers[i].text,
+                            'dob': outputFormat.format(
+                                inputFormat.parse(_dobControllers[i].text)),
+                            'education': _selectedEducations[
+                                i], // You may replace this with the actual value
+                            // You may replace this with the actual value
+                            'relationship': _selectedRelation[
+                                i], // You may replace this with the actual value
+                            'primaryEmployment': _selectedPrimaryEmployments[
+                                i], // You may replace this with the actual value
+                            'secondaryEmployment': _selectedSecondaryEmployments[
+                                i], // You may replace this with the actual value
+                            'caste': _selectedCastes[i],
                             'isFamilyHead': 0,
                             // Add other fields as needed
                           });
@@ -588,7 +601,6 @@ class _MyFormState extends State<AddFamily> {
                         sendFamilyData(familyData);
 
                         // Navigate to the next screen or perform other actions
-
                       },
                       child: const Text(
                         'Next',
@@ -682,12 +694,16 @@ class _MyFormState extends State<AddFamily> {
           _nameControllers.add(TextEditingController());
           _mobileControllers.add(TextEditingController());
           _dobControllers.add(TextEditingController());
-          _selectedGenders.add(null);
-          _selectedEducations.add(null);
-          _selectedRelation.add(null);
-          _selectedCastes.add(null);
-          _selectedPrimaryEmployments.add(null);
-          _selectedSecondaryEmployments.add(null);
+          setState(() {
+            _selectedGenders.add(1001);
+            _selectedEducations.add(familyMembers[ind]['education']);
+            _selectedRelation.add(familyMembers[ind]['relationship']);
+            _selectedCastes.add(familyMembers[ind]['caste']);
+            _selectedPrimaryEmployments
+                .add(familyMembers[ind]['primaryEmployment']);
+            _selectedSecondaryEmployments
+                .add(familyMembers[ind]['secondaryEmployment']);
+          });
           membersId.add(familyMembers[ind]['memberId'].toString());
           // print('member id ${membersId[ind]}');
           print('sef');
@@ -695,6 +711,11 @@ class _MyFormState extends State<AddFamily> {
               TextEditingController(text: familyMembers[ind]['memberName']);
           _mobileControllers[i] = TextEditingController(
               text: familyMembers[ind]['mobile'].toString());
+          selectedDate = DateTime.fromMillisecondsSinceEpoch(
+              familyMembers[ind]['dob'] ?? 0);
+          if (selectedDate != null)
+            _dobControllers[i].text =
+                DateFormat('dd/MM/yyyy').format(selectedDate!);
           setState(() {
             formCount++;
           });

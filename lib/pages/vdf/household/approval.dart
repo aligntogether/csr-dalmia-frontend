@@ -31,6 +31,7 @@ class _ApprovalState extends State<Approval> {
     final Map<String, dynamic> requestData = {
       "id": widget.id,
       "reason_for_dropping": selectedRadio,
+      "is_draft": 0
     };
 
     try {
