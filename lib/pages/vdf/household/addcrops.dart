@@ -17,6 +17,64 @@ class AddCrop extends StatefulWidget {
 }
 
 class _AddCropState extends State<AddCrop> {
+  void _savedata(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // backgroundColor: Colors.white,
+          backgroundColor: Colors.white,
+          title: SizedBox(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 40,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text('Saved Data to Draft'),
+              ],
+            ),
+          ),
+          content: SizedBox(
+            height: 80,
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(100, 50),
+                    elevation: 0,
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    side: const BorderSide(
+                      width: 1,
+                      color: CustomColorTheme.primaryColor,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Ok',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: CustomFontTheme.textSize,
+                        fontWeight: CustomFontTheme.headingwt),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   List<DropdownOption> cropOptions = [];
   Set<String> selectedDataIds = {};
 
@@ -62,7 +120,6 @@ class _AddCropState extends State<AddCrop> {
 
   Future<void> addcropData() async {
     final apiUrl = '$base/add-household';
-    
 
     // Replace these values with the actual data you want to send
     final Map<String, dynamic> requestData = {
@@ -291,9 +348,7 @@ class _AddCropState extends State<AddCrop> {
                       ),
                     ),
                     onPressed: () {
-                      // Perform actions with the field values
-
-                      // Save as draft
+                      addcropData().then((value) => _savedata(context));
                     },
                     child: Text(
                       'Save as Draft',

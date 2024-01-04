@@ -242,13 +242,7 @@ class _MyFormState extends State<AddFamily> {
       );
 
       if (response.statusCode == 200) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => AddLand(
-              id: widget.id,
-            ),
-          ),
-        );
+      
         // Handle the response from the API if needed
         print('Data sent successfully');
       } else {
@@ -580,8 +574,8 @@ class _MyFormState extends State<AddFamily> {
 
                             'gender': _selectedGenders[i],
                             'mobile': _mobileControllers[i].text,
-                            'dob': outputFormat.format(
-                                inputFormat.parse(_dobControllers[i].text)),
+                            'dob': outputFormat.format(inputFormat.parse(
+                                _dobControllers[i].text ?? "28/12/2000")),
                             'education': _selectedEducations[
                                 i], // You may replace this with the actual value
                             // You may replace this with the actual value
@@ -598,7 +592,14 @@ class _MyFormState extends State<AddFamily> {
                         }
                         print(familyData);
 
-                        sendFamilyData(familyData);
+                        sendFamilyData(familyData)
+                            .then((value) => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => AddLand(
+                                      id: widget.id,
+                                    ),
+                                  ),
+                                ));
 
                         // Navigate to the next screen or perform other actions
                       },
@@ -619,7 +620,38 @@ class _MyFormState extends State<AddFamily> {
                           side: BorderSide(
                               color: CustomColorTheme.primaryColor, width: 1)),
                       onPressed: () {
-                        if (_formKey.currentState?.validate() ?? false) {}
+                        List<Map<String, dynamic>> familyData = [];
+                        var inputFormat = DateFormat('dd/MM/yyyy');
+
+                        var outputFormat = DateFormat('yyyy-MM-dd');
+                        // Collect data for each family member
+                        for (int i = 0; i < formCount; i++) {
+                          familyData.add({
+                            'memberId': membersId[i],
+                            'memberName': _nameControllers[i].text,
+
+                            'gender': _selectedGenders[i],
+                            'mobile': _mobileControllers[i].text,
+                            'dob': outputFormat.format(inputFormat.parse(
+                                _dobControllers[i].text ?? "28/12/2000")),
+                            'education': _selectedEducations[
+                                i], // You may replace this with the actual value
+                            // You may replace this with the actual value
+                            'relationship': _selectedRelation[
+                                i], // You may replace this with the actual value
+                            'primaryEmployment': _selectedPrimaryEmployments[
+                                i], // You may replace this with the actual value
+                            'secondaryEmployment': _selectedSecondaryEmployments[
+                                i], // You may replace this with the actual value
+                            'caste': _selectedCastes[i],
+                            'isFamilyHead': 0,
+                            // Add other fields as needed
+                          });
+                        }
+                        print(familyData);
+
+                        sendFamilyData(familyData)
+                            .then((value) => _savedata(context));
                       },
                       child: Text(
                         'Save as Draft',
@@ -637,6 +669,64 @@ class _MyFormState extends State<AddFamily> {
           ),
         ),
       ),
+    );
+  }
+
+  void _savedata(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // backgroundColor: Colors.white,
+          backgroundColor: Colors.white,
+          title: SizedBox(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 40,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text('Saved Data to Draft'),
+              ],
+            ),
+          ),
+          content: SizedBox(
+            height: 80,
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(100, 50),
+                    elevation: 0,
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    side: const BorderSide(
+                      width: 1,
+                      color: CustomColorTheme.primaryColor,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Ok',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: CustomFontTheme.textSize,
+                        fontWeight: CustomFontTheme.headingwt),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

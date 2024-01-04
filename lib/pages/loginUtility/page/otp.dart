@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dalmia/Constants/constant_export.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/models/AuthResponse.dart';
@@ -29,20 +31,39 @@ class _OtpState extends State<Otp> {
   String? validationResult;
   LoginController loginController = new LoginController();
   LoginApiService loginApiService = new LoginApiService();
-
+  bool isResendEnabled = false;
+  int resendTimer = 120; // 2 minutes in seconds
+  Timer? timer;
   @override
   void dispose() {
     textFieldFocusNode.dispose();
     pinEditingController.dispose();
+    timer?.cancel();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
+    // Start the countdown timer
+    startResendTimer();
     textFieldFocusNode.addListener(() {
       setState(() {
         isContainerVisible = !textFieldFocusNode.hasFocus;
+      });
+    });
+  }
+
+  void startResendTimer() {
+    timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+      setState(() {
+        if (resendTimer > 0) {
+          resendTimer--;
+        } else {
+          // Enable the resend button after 2 minutes
+          isResendEnabled = true;
+          timer!.cancel(); // Cancel the timer when it reaches 0
+        }
       });
     });
   }
@@ -138,7 +159,41 @@ class _OtpState extends State<Otp> {
                         focusNode: textFieldFocusNode,
                       ),
                     ),
-                    const SizedBox(height: 5.0),
+                    // const SizedBox(height: 5.0),
+                    GestureDetector(
+                      onTap: () {
+                        if (isResendEnabled) {
+                          // Handle resend OTP logic here
+                          // You can call the API to resend OTP and then start the timer again
+                          loginApiService
+                              .loginViaOtp(int.tryParse(widget.mobileNumber!))
+                              .then((value) => {
+                                    startResendTimer(),
+                                    setState(() {
+                                      isResendEnabled =
+                                          false; // Disable the button during the timer
+                                      resendTimer =
+                                          120; // Reset the timer to 2 minutes
+                                    })
+                                  });
+                        }
+                      },
+                      child: Text(
+                        isResendEnabled
+                            ? 'Resend OTP'
+                            : ' ${resendTimer ~/ 60}:${(resendTimer % 60).toString().padLeft(2, '0')}',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Color(0xFF0054A6),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          decoration: isResendEnabled
+                              ? TextDecoration.underline
+                              : TextDecoration.none,
+                        ),
+                      ),
+                    ),
+
                     // Display the error message with red color if there's an error
                     if (validationResult != null)
                       Padding(

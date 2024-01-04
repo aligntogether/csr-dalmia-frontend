@@ -257,13 +257,6 @@ class _MyFormState extends State<AddHead> {
       if (response.statusCode == 200) {
         // Handle the success response
         print('Member added successfully!');
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => AddFamily(
-              id: widget.id,
-            ),
-          ),
-        );
       } else {
         throw Exception('Failed to add member: ${response.statusCode}');
       }
@@ -520,7 +513,7 @@ class _MyFormState extends State<AddHead> {
                       color: CustomColorTheme.iconColor,
                     ),
                     decoration: const InputDecoration(
-                      labelText: 'Secondary Employment *',
+                      labelText: 'Secondary Employment',
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
@@ -557,16 +550,14 @@ class _MyFormState extends State<AddHead> {
                             _validateFields = true;
                           });
                           if (_formKey.currentState?.validate() ?? false) {
-                            addMember();
+                            addMember().then((value) =>
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => AddFamily(
+                                    id: widget.id,
+                                  ),
+                                )));
 
-                            // Navigator.of(context).push(
-                            //   MaterialPageRoute(
-                            //     builder: (context) => const AddFamily(),
-                            //   ),
-                            // );
-                            // final name = _nameController.text;
-                            // final mobile = _mobileController.text;
-                            // final dob = _dobController.text;
+                            // addstockData()
                           }
                         },
                         child: const Text(
@@ -586,16 +577,7 @@ class _MyFormState extends State<AddHead> {
                           backgroundColor: Colors.white,
                         ),
                         onPressed: () {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            // All fields are valid, you can process the data
-                            final name = _nameController.text;
-                            final mobile = _mobileController.text;
-                            final dob = _dobController.text;
-
-                            // Perform actions with the field values
-
-                            // Save as draft
-                          }
+                          addMember().then((value) => _savedata(context));
                         },
                         child: Text(
                           'Save as Draft',
@@ -614,6 +596,64 @@ class _MyFormState extends State<AddHead> {
           ),
         ),
       ),
+    );
+  }
+
+  void _savedata(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // backgroundColor: Colors.white,
+          backgroundColor: Colors.white,
+          title: SizedBox(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 40,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text('Saved Data to Draft'),
+              ],
+            ),
+          ),
+          content: SizedBox(
+            height: 80,
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(100, 50),
+                    elevation: 0,
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    side: const BorderSide(
+                      width: 1,
+                      color: CustomColorTheme.primaryColor,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Ok',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: CustomFontTheme.textSize,
+                        fontWeight: CustomFontTheme.headingwt),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

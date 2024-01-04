@@ -18,6 +18,64 @@ class SelectType extends StatefulWidget {
 }
 
 class _SelectTypeState extends State<SelectType> {
+  void _savedata(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // backgroundColor: Colors.white,
+          backgroundColor: Colors.white,
+          title: SizedBox(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 40,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text('Saved Data to Draft'),
+              ],
+            ),
+          ),
+          content: SizedBox(
+            height: 80,
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(100, 50),
+                    elevation: 0,
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    side: const BorderSide(
+                      width: 1,
+                      color: CustomColorTheme.primaryColor,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Ok',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: CustomFontTheme.textSize,
+                        fontWeight: CustomFontTheme.headingwt),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   int? pakka = null;
   int? kuccha = null;
   int? tiled = null;
@@ -26,40 +84,6 @@ class _SelectTypeState extends State<SelectType> {
   void initState() {
     super.initState();
     fetchExistingData();
-  }
-
-  Future<void> addFarmData() async {
-    final apiUrl = '$base/add-household';
-
-    // Replace these values with the actual data you want to send
-    final Map<String, dynamic> requestData = {
-      "id": widget.id,
-    };
-
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: {
-          "Content-Type": "application/json",
-          // Add any additional headers if needed
-        },
-        body: jsonEncode(requestData),
-      );
-
-      if (response.statusCode == 200) {
-        // Successful response
-        print(" land Data added successfully");
-        // Handle success as needed
-      } else {
-        // Handle error response
-        print("Failed to add land data: ${response.statusCode}");
-        print(response.body);
-        // Handle error as needed
-      }
-    } catch (e) {
-      // Handle network errors
-      print("Error: $e");
-    }
   }
 
   Future<void> addhouse(int value) async {
@@ -323,7 +347,8 @@ class _SelectTypeState extends State<SelectType> {
                         backgroundColor: Colors.blue[900],
                       ),
                       onPressed: () {
-                        saveData();
+                        saveData()
+                            .then((value) => _showConfirmationDialog(context));
                       },
                       child: const Text(
                         'Done',
@@ -347,9 +372,7 @@ class _SelectTypeState extends State<SelectType> {
                         ),
                       ),
                       onPressed: () {
-                        // Perform actions with the field values
-
-                        // Save as draft
+                        saveData().then((value) => _savedata(context));
                       },
                       child: Text(
                         'Save as Draft',
@@ -420,7 +443,7 @@ class _SelectTypeState extends State<SelectType> {
     }
   }
 
-  void saveData() async {
+  Future<void> saveData() async {
     final apiUrl = '$base/add-household';
 
     // Replace these values with the actual data you want to send
@@ -445,13 +468,12 @@ class _SelectTypeState extends State<SelectType> {
       );
 
       if (response.statusCode == 200) {
-        _showConfirmationDialog(context);
         // Successful response
-        print("Housetype added successfully");
+        print("selected type successfully");
         // Handle success as needed
       } else {
         // Handle error response
-        print("Failed to add land data: ${response.statusCode}");
+        print("Failed to add  data: ${response.statusCode}");
         print(response.body);
         // Handle error as needed
       }

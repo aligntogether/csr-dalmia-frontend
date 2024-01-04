@@ -21,6 +21,64 @@ class AddStock extends StatefulWidget {
 }
 
 class _AddStockState extends State<AddStock> {
+  void _savedata(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // backgroundColor: Colors.white,
+          backgroundColor: Colors.white,
+          title: SizedBox(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 40,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text('Saved Data to Draft'),
+              ],
+            ),
+          ),
+          content: SizedBox(
+            height: 80,
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(100, 50),
+                    elevation: 0,
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    side: const BorderSide(
+                      width: 1,
+                      color: CustomColorTheme.primaryColor,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Ok',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: CustomFontTheme.textSize,
+                        fontWeight: CustomFontTheme.headingwt),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   List<String> items = ["Cows", "Goats", "Buffalo", "Poultry", "Pigs", "Ducks"];
   List<bool> cropCheckList = List.filled(16, false);
   Map<String, int> livestockData = {};
@@ -331,9 +389,7 @@ class _AddStockState extends State<AddStock> {
                           color: CustomColorTheme.primaryColor, width: 1),
                     ),
                     onPressed: () {
-                      // Perform actions with the field values
-
-                      // Save as draft
+                      addstockData().then((value) => _savedata(context));
                     },
                     child: const Text(
                       'Save as Draft',
@@ -351,6 +407,7 @@ class _AddStockState extends State<AddStock> {
       ),
     );
   }
+
   Rowstock(String text, void Function(dynamic text, dynamic value) addData,
       Map<String, int>? value) {
     TextEditingController controller = TextEditingController();
@@ -365,47 +422,45 @@ class _AddStockState extends State<AddStock> {
       addData(text, controller.text);
     });
 
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        SizedBox(
-          width: 90,
-          child: Text(
-            text,
-            style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xFF181818).withOpacity(0.80)),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            width: 90,
+            child: Text(
+              text,
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF181818).withOpacity(0.80)),
+            ),
           ),
-        ),
-        SizedBox(
-          width: 50,
-          height: 30,
+          SizedBox(
+            width: 50,
+            height: 30,
             child: TextFormField(
               controller: controller,
               keyboardType: TextInputType.number,
-            inputFormatters: [
+              inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
               ],
-            decoration: const InputDecoration(
-              contentPadding: EdgeInsets.symmetric(horizontal: 10),
-              border: OutlineInputBorder(
-                borderSide: BorderSide(
-                  width: 2,
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 2,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        const SizedBox(
-          width: 50,
-        )
-      ],
-    ),
-  );
-}
-
-
+          const SizedBox(
+            width: 50,
+          )
+        ],
+      ),
+    );
+  }
 }

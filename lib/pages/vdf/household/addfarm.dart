@@ -19,6 +19,64 @@ class AddFarm extends StatefulWidget {
 }
 
 class _AddFarmState extends State<AddFarm> {
+  void _savedata(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // backgroundColor: Colors.white,
+          backgroundColor: Colors.white,
+          title: SizedBox(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 40,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text('Saved Data to Draft'),
+              ],
+            ),
+          ),
+          content: SizedBox(
+            height: 80,
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(100, 50),
+                    elevation: 0,
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    side: const BorderSide(
+                      width: 1,
+                      color: CustomColorTheme.primaryColor,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Ok',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: CustomFontTheme.textSize,
+                        fontWeight: CustomFontTheme.headingwt),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Map<String, int> farmData = {};
   MapEntry<String, int> other1 = const MapEntry('null', 0);
   MapEntry<String, int> other2 = const MapEntry('null', 0);
@@ -322,9 +380,7 @@ class _AddFarmState extends State<AddFarm> {
                           color: CustomColorTheme.primaryColor, width: 1),
                     ),
                     onPressed: () {
-                      // Perform actions with the field values
-
-                      // Save as draft
+                      addFarmData().then((value) => _savedata(context));
                     },
                     child: Text(
                       'Save as Draft',

@@ -280,25 +280,28 @@ class _Form1State extends State<Form1> {
                                       apiData.isNotEmpty
                                           ? apiData[index]['panchayatName']
                                               .toString()
-                                          : '000',
+                                          : '0',
                                       style: TextStyle(fontSize: 14),
                                     )),
                                     DataCell(Text(
-                                      apiData[index]['villageName'].toString(),
+                                      apiData.isNotEmpty
+                                          ? apiData[index]['villageName']
+                                              .toString()
+                                          : '0',
                                       style: TextStyle(fontSize: 14),
                                     )),
                                     DataCell(Text(
                                       apiData.isNotEmpty
                                           ? apiData[index]['householdCount']
                                               .toString()
-                                          : '000',
+                                          : '0',
                                       style: TextStyle(fontSize: 14),
                                     )),
                                     DataCell(Text(
                                       apiData.isNotEmpty
                                           ? apiData[index]['populationCount']
                                               .toString()
-                                          : '000',
+                                          : '0',
                                       style: TextStyle(fontSize: 14),
                                     )),
                                   ],

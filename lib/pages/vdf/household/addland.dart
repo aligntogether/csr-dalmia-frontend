@@ -105,13 +105,6 @@ class _MyFormState extends State<AddLand> {
       );
 
       if (response.statusCode == 200) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => AddCrop(
-              id: widget.id,
-            ),
-          ),
-        );
         // Successful response
         print("Land Data added successfully");
         // Handle success as needed
@@ -262,7 +255,14 @@ class _MyFormState extends State<AddLand> {
                       ),
                       onPressed: () {
                         // Call the function to add household data
-                        addlandData();
+                        addlandData()
+                            .then((value) => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => AddCrop(
+                                      id: widget.id,
+                                    ),
+                                  ),
+                                ));
 
                         // Navigate to the next screen if needed
                       },
@@ -286,9 +286,7 @@ class _MyFormState extends State<AddLand> {
                         backgroundColor: Colors.white,
                       ),
                       onPressed: () {
-                        // Perform actions with the field values
-
-                        // Save as draft
+                        addlandData().then((value) => _savedata(context));
                       },
                       child: Text(
                         'Save as Draft',
@@ -307,6 +305,95 @@ class _MyFormState extends State<AddLand> {
         ),
       ),
     );
+  }
+
+  void _savedata(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // backgroundColor: Colors.white,
+          backgroundColor: Colors.white,
+          title: SizedBox(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 40,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text('Saved Data to Draft'),
+              ],
+            ),
+          ),
+          content: SizedBox(
+            height: 80,
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(100, 50),
+                    elevation: 0,
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    side: const BorderSide(
+                      width: 1,
+                      color: CustomColorTheme.primaryColor,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Ok',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: CustomFontTheme.textSize,
+                        fontWeight: CustomFontTheme.headingwt),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<int> fetchTitleId(String acre) async {
+    // Fetch the dataId based on the selected acre
+    final apiUrl = '$base/dropdown?titleId=${acre == 'Rainfed' ? 112 : 113}';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final responseData =
+            json.decode(response.body)['resp_body'] as Map<int, dynamic>;
+
+        // Check if the dataId is present and not null
+        final dataId = responseData['dataId'];
+        if (dataId != null && dataId is int) {
+          print('DataId: $dataId');
+          return dataId;
+        } else {
+          print('DataId is null or not a String in the response');
+          return 0;
+        }
+      } else {
+        print('Failed to load dataId: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        return 0;
+      }
+    } catch (e) {
+      print('Error fetching dataId: $e');
+      return 0;
+    }
   }
 }
 
@@ -370,36 +457,5 @@ class InputDetail extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<int> fetchTitleId(String acre) async {
-    // Fetch the dataId based on the selected acre
-    final apiUrl = '$base/dropdown?titleId=${acre == 'Rainfed' ? 112 : 113}';
-
-    try {
-      final response = await http.get(Uri.parse(apiUrl));
-
-      if (response.statusCode == 200) {
-        final responseData =
-            json.decode(response.body)['resp_body'] as Map<int, dynamic>;
-
-        // Check if the dataId is present and not null
-        final dataId = responseData['dataId'];
-        if (dataId != null && dataId is int) {
-          print('DataId: $dataId');
-          return dataId;
-        } else {
-          print('DataId is null or not a String in the response');
-          return 0;
-        }
-      } else {
-        print('Failed to load dataId: ${response.statusCode}');
-        print('Response body: ${response.body}');
-        return 0;
-      }
-    } catch (e) {
-      print('Error fetching dataId: $e');
-      return 0;
-    }
   }
 }

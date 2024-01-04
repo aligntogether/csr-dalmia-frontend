@@ -7,7 +7,7 @@ import 'package:dalmia/pages/vdf/Reports/updateinter.dart';
 import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/intervention/Addinter.dart';
-import 'package:dalmia/pages/vdf/intervention/Followup.dart';
+
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
@@ -15,17 +15,56 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 
-
 class HhidForm extends StatefulWidget {
-  const HhidForm({super.key});
+  final String? streetid;
+  const HhidForm({super.key, this.streetid});
 
   @override
   State<HhidForm> createState() => _HhidFormState();
 }
 
 class _HhidFormState extends State<HhidForm> {
+  List<Map<String, dynamic>> HhidData = [];
+  Future<void> fetchHhidData() async {
+    try {
+      print('street id -- ${widget.streetid}');
+      final response = await http.get(
+        Uri.parse(
+            'https://mobiledevcloud.dalmiabharat.com:443/csr/get-bystreet-cummulative-household-details?vdfId=10001&streetId=${widget.streetid}'),
+      );
 
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
 
+        setState(() {
+          HhidData = [
+            for (var entry in jsonData['resp_body'].entries)
+              {
+                // 'Hhid': entry.key,
+                'hhid': entry.value['hhid'],
+                'selected': entry.value['selected'],
+                'memberName': entry.value['memberName'],
+                'interventionPlanned': entry.value['interventionPlanned'],
+                'interventionCompleted': entry.value['interventionCompleted'],
+                'expectedAdditionalIncome':
+                    entry.value['expectedAdditionalIncome'],
+                'actualAdditionalIncome': entry.value['actualAdditionalIncome'],
+              }
+          ];
+          print(HhidData);
+        });
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  void initState() {
+    super.initState();
+    fetchHhidData(); // Call the method to fetch API data when the page initializes
+  }
 
   int? selectedRadio;
   void _onTabTapped(int index) {
@@ -256,7 +295,6 @@ class _HhidFormState extends State<HhidForm> {
                       const SizedBox(
                         height: 20,
                       ),
-                     
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Card(
@@ -265,132 +303,256 @@ class _HhidFormState extends State<HhidForm> {
                           ),
                           elevation: 5,
                           child: DataTable(
-                            dividerThickness: 00,
                             decoration: const BoxDecoration(
+                              color: Color(0xFF008CD3),
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(10),
                                 topRight: Radius.circular(10),
                               ),
                             ),
+                            dividerThickness: 0,
+                            columnSpacing: 15,
                             columns: const <DataColumn>[
                               DataColumn(
                                 label: Text(
                                   'HHID',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
+                                  style: TextStyle(color: Colors.white),
                                 ),
                               ),
                               DataColumn(
                                 label: Text(
                                   'Selected',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
+                                  style: TextStyle(color: Colors.white),
                                 ),
                               ),
                               DataColumn(
                                 label: Text(
                                   'Names',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
+                                  style: TextStyle(color: Colors.white),
                                 ),
                               ),
                               DataColumn(
                                 label: Text(
-                                  'Intervention planned',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
+                                  'Intervention Planned',
+                                  style: TextStyle(color: Colors.white),
                                 ),
                               ),
                               DataColumn(
                                 label: Text(
                                   'Intervention completed',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
+                                  style: TextStyle(color: Colors.white),
                                 ),
                               ),
                               DataColumn(
                                 label: Text(
                                   'Expected additional income p/a',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
+                                  style: TextStyle(color: Colors.white),
                                 ),
                               ),
                               DataColumn(
                                 label: Text(
                                   'Actual annual income',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
+                                  style: TextStyle(color: Colors.white),
                                 ),
                               ),
-                             
                             ],
-                            headingRowColor: MaterialStateColor.resolveWith(
-                                (states) => Color(0xFF008CD3)),
-                            rows: <DataRow>[
-                              DataRow(
+                            rows: HhidData.map<DataRow>((hhid) {
+                              return DataRow(
+                                color: MaterialStateColor.resolveWith((states) {
+                                  // Alternating row colors
+                                  return HhidData.indexOf(hhid) % 2 == 0
+                                      ? Colors.lightBlue[50]!
+                                      : Colors.white;
+                                }),
                                 cells: <DataCell>[
                                   DataCell(
                                     InkWell(
                                       onTap: () {
-                                        _takeaction(context, 'DPKDMKS003');
+                                        _takeaction(context, hhid['hhid']);
                                       },
-                                      child: const Text(
-                                        'DPKDMKS003',
-                                        style: TextStyle(
+                                      child: Text(
+                                        hhid['hhid'] ?? '',
+                                        style: const TextStyle(
                                           color: CustomColorTheme.iconColor,
                                           decoration: TextDecoration.underline,
+                                          decorationColor:
+                                              CustomColorTheme.iconColor,
+                                            
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
                                   ),
-                                  const DataCell(Text('Yes')),
-                                  const DataCell(Text('John Doe')),
-                                  const DataCell(Text('Intervention 1')),
-                                  const DataCell(Text('Yes')),
-                                  const DataCell(Text('500')),
-                                  const DataCell(Text('600')),
-                                
-                                ],
-                              ),
-                              DataRow(
-                                
-                                cells: <DataCell>[
+                     
                                   DataCell(
-                                    InkWell(
-                                      onTap: () {
-                                        _takeaction(context, 'DPKDMKS003');
-                                      },
-                                      child: const Text(
-                                        'DPKDMKS003',
-                                        style: TextStyle(
-                                          color: CustomColorTheme.iconColor,
-                                          decoration: TextDecoration.underline,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
+                                      // Text('${hhid['selected'] ?? ''}'),
+                                      Center(
+                                    child: Text(
+                                        hhid['selected'] == '1' ? 'Y' : 'N'),
+                                  )),
+                                  DataCell(
+                                    Text('${hhid['memberName'] ?? ''}'),
+                                  ),
+                                  DataCell(
+                                    Center(
+                                      child: Text(
+                                          '${hhid['interventionPlanned'] ?? ''}'),
                                     ),
                                   ),
-                                  const DataCell(Text('No')),
-                                  const DataCell(Text('Jane Smith')),
-                                  const DataCell(Text('Intervention 2')),
-                                  const DataCell(Text('No')),
-                                  const DataCell(Text('300')),
-                                  const DataCell(Text('400')),
-                                 
+                                  DataCell(
+                                    Center(
+                                      child: Text(
+                                          '${hhid['interventionCompleted'] ?? ''}'),
+                                    ),
+                                  ),
+                                  DataCell(
+                                    Center(
+                                      child: Text(
+                                          '${hhid['expectedAdditionalIncome'] ?? ''}'),
+                                    ),
+                                  ),
+                                  DataCell(
+                                    Center(
+                                      child: Text(
+                                          '${hhid['actualAdditionalIncome'] ?? ''}'),
+                                    ),
+                                  ),
                                 ],
-                              ),
-                            ],
+                              );
+                            }).toList(),
                           ),
                         ),
                       )
+                      // SingleChildScrollView(
+                      //   scrollDirection: Axis.horizontal,
+                      //   child: Card(
+                      //     shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(10.0),
+                      //     ),
+                      //     elevation: 5,
+                      //     child: DataTable(
+                      //       dividerThickness: 00,
+                      //       decoration: const BoxDecoration(
+                      //         borderRadius: BorderRadius.only(
+                      //           topLeft: Radius.circular(10),
+                      //           topRight: Radius.circular(10),
+                      //         ),
+                      //       ),
+                      //       columns: const <DataColumn>[
+                      //         DataColumn(
+                      //           label: Text(
+                      //             'HHID',
+                      //             style: TextStyle(
+                      //                 fontWeight: FontWeight.bold,
+                      //                 color: Colors.white),
+                      //           ),
+                      //         ),
+                      //         DataColumn(
+                      //           label: Text(
+                      //             'Selected',
+                      //             style: TextStyle(
+                      //                 fontWeight: FontWeight.bold,
+                      //                 color: Colors.white),
+                      //           ),
+                      //         ),
+                      //         DataColumn(
+                      //           label: Text(
+                      //             'Names',
+                      //             style: TextStyle(
+                      //                 fontWeight: FontWeight.bold,
+                      //                 color: Colors.white),
+                      //           ),
+                      //         ),
+                      //         DataColumn(
+                      //           label: Text(
+                      //             'Intervention planned',
+                      //             style: TextStyle(
+                      //                 fontWeight: FontWeight.bold,
+                      //                 color: Colors.white),
+                      //           ),
+                      //         ),
+                      //         DataColumn(
+                      //           label: Text(
+                      //             'Intervention completed',
+                      //             style: TextStyle(
+                      //                 fontWeight: FontWeight.bold,
+                      //                 color: Colors.white),
+                      //           ),
+                      //         ),
+                      //         DataColumn(
+                      //           label: Text(
+                      //             'Expected additional income p/a',
+                      //             style: TextStyle(
+                      //                 fontWeight: FontWeight.bold,
+                      //                 color: Colors.white),
+                      //           ),
+                      //         ),
+                      //         DataColumn(
+                      //           label: Text(
+                      //             'Actual annual income',
+                      //             style: TextStyle(
+                      //                 fontWeight: FontWeight.bold,
+                      //                 color: Colors.white),
+                      //           ),
+                      //         ),
+                      //       ],
+                      //       headingRowColor: MaterialStateColor.resolveWith(
+                      //           (states) => Color(0xFF008CD3)),
+                      //       rows: <DataRow>[
+                      //         DataRow(
+                      //           cells: <DataCell>[
+                      //             DataCell(
+                      //               InkWell(
+                      //                 onTap: () {
+                      //                   _takeaction(context, 'DPKDMKS003');
+                      //                 },
+                      //                 child: const Text(
+                      //                   'DPKDMKS003',
+                      //                   style: TextStyle(
+                      //                     color: CustomColorTheme.iconColor,
+                      //                     decoration: TextDecoration.underline,
+                      //                     fontWeight: FontWeight.bold,
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //             const DataCell(Text('Yes')),
+                      //             const DataCell(Text('John Doe')),
+                      //             const DataCell(Text('Intervention 1')),
+                      //             const DataCell(Text('Yes')),
+                      //             const DataCell(Text('500')),
+                      //             const DataCell(Text('600')),
+                      //           ],
+                      //         ),
+                      //         DataRow(
+                      //           cells: <DataCell>[
+                      //             DataCell(
+                      //               InkWell(
+                      //                 onTap: () {
+                      //                   _takeaction(context, 'DPKDMKS003');
+                      //                 },
+                      //                 child: const Text(
+                      //                   'DPKDMKS003',
+                      //                   style: TextStyle(
+                      //                     color: CustomColorTheme.iconColor,
+                      //                     decoration: TextDecoration.underline,
+                      //                     fontWeight: FontWeight.bold,
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //             const DataCell(Text('No')),
+                      //             const DataCell(Text('Jane Smith')),
+                      //             const DataCell(Text('Intervention 2')),
+                      //             const DataCell(Text('No')),
+                      //             const DataCell(Text('300')),
+                      //             const DataCell(Text('400')),
+                      //           ],
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // )
                     ],
                   ),
                 ),
@@ -550,6 +712,7 @@ class _HhidFormState extends State<HhidForm> {
                   ),
                   IgnorePointer(
                     ignoring: updateinactive,
+                    // ignoring: false,
                     child: RadioListTile<int>(
                       activeColor: CustomColorTheme.iconColor,
                       selectedTileColor: CustomColorTheme.iconColor,
