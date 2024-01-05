@@ -262,11 +262,8 @@ class _OtpState extends State<Otp> {
     }
   }
 
-  // Future<AuthResponse> verifyOtp() async {
-  //   return AuthResponse("20012", "CEO", "CSR", "", "", "", "TestName");
-  // }
-
   Future<AuthResponse> verifyOtp() async {
+
     setState(() {
       loginController.selectMobileController.value.text = widget.mobileNumber!;
       if (loginController.otpTokenId == null)
@@ -304,4 +301,42 @@ class _OtpState extends State<Otp> {
         userRoleMap['userName']! // employeeName
         );
   }
+
+  // Future<AuthResponse> verifyOtp() async {
+  //   setState(() {
+  //     loginController.selectMobileController.value.text = widget.mobileNumber!;
+  //     loginController.otpTokenId = widget.otpTokenId;
+  //     loginController.referenceId = widget.referenceId;
+  //     loginController.userIdWithTimeStamp =
+  //         'SWP${DateTime.now().millisecondsSinceEpoch}';
+  //   });
+  //
+  //   Map<String, String> respBodyMap =
+  //       await loginApiService.checkValidUserOtp(loginController, otpCode);
+  //
+  //   if (respBodyMap == null) {
+  //     setState(() {
+  //       validationResult = "Something Went Wrong!";
+  //     });
+  //   }
+  //
+  //   Map<String, String> userRoleMap = await loginApiService
+  //       .getUserRoleByReferenceId(loginController.referenceId ?? '');
+  //
+  //   if (userRoleMap == null) {
+  //     setState(() {
+  //       validationResult = "Something Went Wrong!";
+  //     });
+  //   }
+  //
+  //   return AuthResponse(
+  //       loginController.referenceId!,
+  //       userRoleMap['userRole']!,
+  //       respBodyMap['appName']!, // appName
+  //       respBodyMap['accessToken']!, // accessToken
+  //       respBodyMap['refreshToken']!, //refreshToken
+  //       respBodyMap['platform']!, // platform
+  //       userRoleMap['userName']! // employeeName
+  //       );
+  // }
 }

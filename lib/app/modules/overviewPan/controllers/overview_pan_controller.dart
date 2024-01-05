@@ -1,14 +1,59 @@
 import 'package:get/get.dart';
 
 class OverviewPanController extends GetxController {
-  String? selectP = "All Regions";
+  // String? selectP = "All Regions";
   String? selectLocation;
   RxBool openMenu = false.obs;
+
+  int? selectLocationId;
+  String? selectRegion;
+  int? selectRegionId;
+  String? selectCluster;
+  int? selectClusterId;
+
+  List<Map<String, dynamic>>? locations;
+  List<Map<String, dynamic>>? clusters;
+  List<Map<String, Map<String, dynamic>>>? overviewMappedList;
+  List<Map<String, Map<String, dynamic>>>? regionWiseMappedList;
+
+
+  void updateLocations(List<Map<String, dynamic>> locations) {
+    this.locations = locations;
+    update(["add"]);
+  }
+
+  void updateClusters(List<Map<String, dynamic>> clusters) {
+    this.clusters = clusters;
+    update(["add"]);
+  }
+
+  void updateOverviewMappedList(List<Map<String, Map<String, dynamic>>> overviewMappedList) {
+    this.overviewMappedList = overviewMappedList;
+    update(["add"]);
+  }
+
+void updateRegionWiseMappedList(List<Map<String, Map<String, dynamic>>> regionWiseMappedList) {
+    this.regionWiseMappedList = regionWiseMappedList;
+    update(["add"]);
+  }
+
+
+
 
   void onTapOpenMenu() {
     openMenu.value = !openMenu.value;
     update();
   }
+
+  var allLocations = ["DPM", "ALR", "BGM", "KDP", "CHA", "SOUTH",
+    "MEG", "UMG", "JGR", "LAN","NE",
+    "CUT", "MED", "BOK", "RAJ", "KAL", "EAST", "CEMENT",
+    "NIG", "RAM", "JOW", "NIN", "KOL", "SUGAR", "PANIND"];
+
+  var objectKeys = ["allotted", "mapped", "selected",
+    "hhCovered", "planned", "completed", "householdWithAtLeast1Completed", "noInterventionPlanned", "followupOverdue",
+    "zeroAdditionalIncome", "lessThan25KIncome", "between25KTO50KIncome", "between50KTO75KIncome", "between75KTO1LIncome", "moreThan1LIncome", "mapped"];
+
 
   List<String> regions = [
     'DPM',
@@ -19,7 +64,29 @@ class OverviewPanController extends GetxController {
     'Total',
   ];
 
-  List<String> locations = [
+  List<String> locationsListMapping = [
+    'Households',
+    'allotted',
+    'mapped',
+    'selected',
+    'Interventions',
+    'hhCovered',
+    'planned',
+    'completed',
+    'householdWithAtLeast1Completed',
+    'noInterventionPlanned',
+    'followupOverdue',
+    'HH with Annual\nAddl. Income',
+    'zeroAdditionalIncome',
+    'lessThan25KIncome',
+    'between25KTO50KIncome',
+    'between50KTO75KIncome',
+    'between75KTO1LIncome',
+    'moreThan1LIncome',
+    'mapped',
+  ];
+
+  List<String> locationsList = [
     'Households',
     'Alloted',
     'Mapped',
@@ -40,6 +107,8 @@ class OverviewPanController extends GetxController {
     '>1L',
     'Total no. of HH',
   ];
+
+
   List<int> DPM = [
     128036,
     37765,

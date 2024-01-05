@@ -95,7 +95,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.OVERVIEW_PAN,
-      page: () => const OverviewPanView(),
+      page: () => OverviewPanView(),
       binding: OverviewPanBinding(),
     ),
     GetPage(
@@ -125,7 +125,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.PERFORMANCE_VDF,
-      page: () => const PerformanceVdfView(),
+      page: () => PerformanceVdfView(),
       binding: PerformanceVdfBinding(),
     ),
     GetPage(
