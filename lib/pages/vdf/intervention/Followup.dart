@@ -4,6 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Followup extends StatefulWidget {
+  final String? hid;
+  final String? interId;
+  final String? memberId;
+  final TextEditingController date;
+  final String? remark;
+
+  const Followup(
+      {super.key,
+      this.hid,
+      this.interId,
+      this.memberId,
+      this.remark,
+      required this.date});
   @override
   _FollowupState createState() => _FollowupState();
 }
@@ -143,12 +156,25 @@ class _FollowupState extends State<Followup> {
                           ? () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => Financial(),
+                                  builder: (context) => Financial(
+                                    hid: widget.hid,
+                                    interId: widget.interId,
+                                    dateofcompletion: widget.date,
+                                    follow1: _followController1,
+                                    follow2: _followController2,
+                                    follow3: _followController3,
+                                    follow4: _followController4,
+                                    follow5: _followController5,
+                                    follow6: _followController6,
+                                  ),
                                 ),
                               );
                             }
                           : null,
-                      child: const Text('Continue'),
+                      child: const Text(
+                        'Continue',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ],
                 ),

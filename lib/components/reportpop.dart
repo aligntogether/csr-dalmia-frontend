@@ -228,7 +228,10 @@ class _ReportPopupWidgetState extends State<ReportPopupWidget> {
               },
               child: Container(
                   padding: EdgeInsets.symmetric(vertical: 10),
-                  child: const Text('View Report')),
+                  child: const Text(
+                    'View Report',
+                    style: TextStyle(color: Colors.white),
+                  )),
             ),
           ),
         ],

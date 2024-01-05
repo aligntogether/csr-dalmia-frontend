@@ -1,4 +1,5 @@
-import 'package:dalmia/pages/login.dart';
+import 'package:dalmia/helper/sharedpref.dart';
+import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/pages/vdf/Reports/home.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
@@ -98,28 +99,36 @@ void _showConfirmationDialog(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
+        alignment: Alignment.topCenter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        title: SizedBox(
-          width: 283,
-          height: 80,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Icon(Icons.close),
-              ),
-              const Text(
-                'Are you sure you want to logout of the application?',
-                style: TextStyle(
-                  fontSize: 16,
-                  // fontFamily: 'Inter',
-                  fontWeight: FontWeight.w500,
+        titlePadding: EdgeInsets.all(0),
+        title: Padding(
+          padding: const EdgeInsets.only(top: 10, left: 20, right: 10),
+          child: SizedBox(
+            width: 283,
+            height: 90,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Icon(Icons.close),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 20, right: 10),
+                  child: const Text(
+                    'Are you sure you want to logout of the application?',
+                    style: TextStyle(
+                      fontSize: 16,
+                      // fontFamily: 'Inter',
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         content: Row(
@@ -130,10 +139,11 @@ void _showConfirmationDialog(BuildContext context) {
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  side: const BorderSide(),
+                  // side: const BorderSide(),
                   backgroundColor: CustomColorTheme.primaryColor,
                 ),
-                onPressed: () {
+                onPressed: () async {
+                  await SharedPrefHelper.clearSharedPrefAccess();
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const Login(),
@@ -141,7 +151,15 @@ void _showConfirmationDialog(BuildContext context) {
                   );
                   // Perform actions when 'Yes' is clicked
                 },
-                child: const Text('Yes'),
+                child: const Text(
+                  'Yes',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: CustomFontTheme.textSize,
+                    fontWeight: CustomFontTheme.labelwt,
+                    letterSpacing: 0.84,
+                  ),
+                ),
               ),
             ),
           ],

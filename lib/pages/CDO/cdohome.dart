@@ -1,10 +1,17 @@
+import 'package:dalmia/Constants/constants.dart';
+import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/CDO/action.dart';
+import 'package:dalmia/pages/CDO/expected.dart';
+import 'package:dalmia/pages/CDO/sourceoffunds.dart';
 import 'package:dalmia/pages/CDO/vdffund.dart';
 import 'package:dalmia/pages/CDO/vdfreports.dart';
-import 'package:dalmia/pages/login.dart';
+import 'package:dalmia/pages/CDO/weeklyprogress.dart';
+import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
+int LLid = 0;
 
 class CDOHome extends StatefulWidget {
   const CDOHome({Key? key}) : super(key: key);
@@ -13,7 +20,20 @@ class CDOHome extends StatefulWidget {
   _CDOHomeState createState() => _CDOHomeState();
 }
 
+
+  
 class _CDOHomeState extends State<CDOHome> {
+  String name = "";
+  @override
+  void initState() {
+    super.initState();
+
+    SharedPrefHelper.getSharedPref(USER_NAME_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+              value == '' ? name = 'user' : name = value;
+            }));
+    ;
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -29,15 +49,27 @@ class _CDOHomeState extends State<CDOHome> {
               backgroundColor: Colors.white,
               title: Image(image: AssetImage('images/icon.jpg')),
               centerTitle: false,
+              scrolledUnderElevation: 0,
               automaticallyImplyLeading: false,
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(50),
                 child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 0,
+                        blurRadius: 4,
+                        offset: Offset(0, 4), // changes position of shadow
+                      ),
+                    ],
+                  ),
                   padding: const EdgeInsets.only(left: 30, bottom: 10),
                   alignment: Alignment.topLeft,
-                  color: Colors.white,
+                  // color: Colors.white,
                   child: Text(
-                    'Welcome Suresh!',
+                    'Welcome $name!',
                     style: TextStyle(
                       color: Colors.grey.shade700,
                       fontSize: 16,
@@ -48,6 +80,7 @@ class _CDOHomeState extends State<CDOHome> {
               ),
             ),
             Positioned(
+              top: 10,
               right: 20,
               child: Column(
                 children: [
@@ -109,23 +142,50 @@ class _CDOHomeState extends State<CDOHome> {
               SizedBox(
                 height: 20,
               ),
-              cards(
-                title: 'Weekly progress report',
-                imageUrl: 'images/weeklyreports.svg',
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const WeeklyProgress(),
+                    ),
+                  );
+                },
+                child: cards(
+                  title: 'Weekly progress report',
+                  imageUrl: 'images/weeklyreports.svg',
+                ),
               ),
               SizedBox(
                 height: 20,
               ),
-              cards(
-                title: 'Expected and actual income reports',
-                imageUrl: 'images/expectedreports.svg',
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const Expectedincome(),
+                    ),
+                  );
+                },
+                child: cards(
+                  title: 'Expected and actual income reports',
+                  imageUrl: 'images/expectedreports.svg',
+                ),
               ),
               SizedBox(
                 height: 20,
               ),
-              cards(
-                title: 'Source of funds',
-                imageUrl: 'images/sourceoffunds.svg',
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const SourceOfFunds(),
+                    ),
+                  );
+                },
+                child: cards(
+                  title: 'Source of funds',
+                  imageUrl: 'images/sourceoffunds.svg',
+                ),
               ),
               SizedBox(
                 height: 20,
@@ -163,51 +223,80 @@ class _CDOHomeState extends State<CDOHome> {
                     ),
                   );
                 },
-                child: Container(
-                  // width: 284,
-                  // height: 55,
-                  padding: const EdgeInsets.all(12),
-                  decoration: ShapeDecoration(
-                    color: Color(0xFFC2DEEC),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1,
-                        color: Colors.black.withOpacity(0.10000000149011612),
+                child: Stack(
+                  children: [
+                    Container(
+                      height: 75,
+                      color: Colors.white,
+                      child: Center(
+                        child: Container(
+                          // width: 284,
+                          // height: 55,
+                          padding: const EdgeInsets.all(12),
+                          decoration: ShapeDecoration(
+                            color: Color(0xFFC2DEEC),
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                width: 1,
+                                color: Colors.black
+                                    .withOpacity(0.10000000149011612),
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            shadows: [
+                              BoxShadow(
+                                color: Color(0x11000000),
+                                blurRadius: 20,
+                                offset: Offset(0, 10),
+                                spreadRadius: 0,
+                              )
+                            ],
+                          ),
+                          // color: Color(0xFFF2D4C9),
+                          child: Row(children: [
+                            SvgPicture.asset(
+                              'images/takeaction.svg',
+                              width: 34,
+                              height: 31,
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Flexible(
+                              child: Text(
+                                'Drop or Select HH for Int.',
+                                style: TextStyle(
+                                    fontSize: CustomFontTheme.textSize,
+                                    color: const Color(0xFF0374AD),
+                                    fontWeight: CustomFontTheme.labelwt),
+                              ),
+                            )
+                          ]),
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(10),
                     ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0x11000000),
-                        blurRadius: 20,
-                        offset: Offset(0, 10),
-                        spreadRadius: 0,
-                      )
-                    ],
-                  ),
-                  // color: Color(0xFFF2D4C9),
-                  child: Row(children: [
-                    SvgPicture.asset(
-                      ''
-                      'images/takeaction.svg',
-                      width: 34,
-                      height: 31,
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Flexible(
-                      child: Text(
-                        'Drop or Select HH for Int.',
-                        style: TextStyle(
-                            fontSize: CustomFontTheme.textSize,
-                            color: const Color(0xFF0374AD),
-                            fontWeight: CustomFontTheme.labelwt),
-                      ),
-                    )
-                  ]),
+                    Positioned(
+                        top: 0,
+                        right: 20,
+                        child: Container(
+                          width: 23,
+                          height: 23,
+                          decoration: ShapeDecoration(
+                            color: Color(0xFFF15A22),
+                            shape: OvalBorder(),
+                          ),
+                          child: Center(
+                              child: Text(
+                            '5',
+                            style: TextStyle(
+                                fontSize: CustomFontTheme.textSize,
+                                fontWeight: CustomFontTheme.headingwt,
+                                color: Colors.white),
+                          )),
+                        )),
+                  ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -279,6 +368,7 @@ void _showConfirmationDialog(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
+        alignment: Alignment.topCenter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         title: SizedBox(
           width: 283,
@@ -314,7 +404,8 @@ void _showConfirmationDialog(BuildContext context) {
                   side: const BorderSide(),
                   backgroundColor: CustomColorTheme.primaryColor,
                 ),
-                onPressed: () {
+                onPressed: () async {
+                  await SharedPrefHelper.clearSharedPrefAccess();
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const Login(),
@@ -322,7 +413,10 @@ void _showConfirmationDialog(BuildContext context) {
                   );
                   // Perform actions when 'Yes' is clicked
                 },
-                child: const Text('Yes'),
+                child: const Text(
+                  'Yes',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],

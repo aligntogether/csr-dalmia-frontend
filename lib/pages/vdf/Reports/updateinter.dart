@@ -1,21 +1,13 @@
 import 'dart:convert';
-
 import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/common/navmenu.dart';
-import 'package:dalmia/components/reportappbar.dart';
-
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
-
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
-
-import 'dart:math';
-
 class UpdateIntervention extends StatefulWidget {
   final String? interventiontype;
   final String? interventionid;
@@ -112,6 +104,7 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
             children: [
               AppBar(
                 titleSpacing: 20,
+                scrolledUnderElevation: 0,
                 backgroundColor: Colors.white,
                 title: const Image(image: AssetImage('images/icon.jpg')),
                 automaticallyImplyLeading: false,
@@ -141,11 +134,22 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
                 bottom: PreferredSize(
                   preferredSize: const Size.fromHeight(50),
                   child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 0,
+                          blurRadius: 4,
+                          offset: Offset(0, 4), // changes position of shadow
+                        ),
+                      ],
+                    ),
                     padding: const EdgeInsets.only(left: 30, bottom: 10),
                     alignment: Alignment.topCenter,
-                    color: Colors.white,
+                    // color: Colors.white,
                     child: Text(
-                      'Update Intervention',
+                      'Reports',
                       style: const TextStyle(
                         fontSize: CustomFontTheme.headingSize,
 
@@ -173,13 +177,13 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
                   child: Column(
                     children: [
                       Text(
-                        '${widget.hhid}',
+                        '${widget.hhid ?? ''}',
                         style: TextStyle(
                             fontSize: CustomFontTheme.textSize,
                             fontWeight: CustomFontTheme.headingwt),
                       ),
                       Text(
-                        '${widget.interventiontype}',
+                        '${widget.interventiontype ?? ''}',
                         style: TextStyle(
                             fontSize: CustomFontTheme.textSize,
                             fontWeight: CustomFontTheme.labelwt),
@@ -263,7 +267,9 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
                     },
                     child: const Text(
                       'Save Update',
-                      style: TextStyle(fontSize: CustomFontTheme.textSize),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: CustomFontTheme.textSize),
                     ),
                   ),
                 ),
@@ -292,10 +298,19 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
             ),
           ),
         ),
-        bottomNavigationBar: BottomAppBar(
-          elevation: 10,
-          child: SizedBox(
-            height: 67,
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 0,
+                blurRadius: 10,
+                offset: Offset(4, 0), // changes position of shadow
+              ),
+            ],
+          ),
+          child: BottomAppBar(
+            color: Colors.white,
             child: SizedBox(
               height: 67,
               child: Row(

@@ -1,5 +1,8 @@
+import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/common/common.dart';
+import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
+import 'package:dalmia/pages/vdf/Reports/updateinter.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/dash.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
@@ -67,7 +70,18 @@ class _VdfHomeState extends State<VdfHome> {
       );
     }
   }
+@override
+  void initState() {
+    super.initState();
 
+    SharedPrefHelper.getSharedPref(USER_NAME_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+              value == '' ? name = 'user' : name = value;
+            }));
+    ;
+  }
+
+  String name = "";
   int selectedIndex = 0;
   bool toggle = false;
 
@@ -80,6 +94,8 @@ class _VdfHomeState extends State<VdfHome> {
         child: Stack(
           children: [
             AppBar(
+              elevation: 0,
+              scrolledUnderElevation: 0,
               titleSpacing: 20,
               backgroundColor: Colors.white,
               title: Image(image: AssetImage('images/icon.jpg')),
@@ -113,11 +129,22 @@ class _VdfHomeState extends State<VdfHome> {
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(50),
                 child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 0,
+                        blurRadius: 4,
+                        offset: Offset(0, 4), // changes position of shadow
+                      ),
+                    ],
+                  ),
                   padding: const EdgeInsets.only(left: 30, bottom: 10),
                   alignment: Alignment.topLeft,
-                  color: Colors.white,
+                  // color: Colors.white,
                   child: Text(
-                    'Welcome Suresh!',
+                    'Welcome $name!',
                     style: TextStyle(
                       color: Colors.grey.shade700,
                       fontSize: 16,
@@ -135,42 +162,56 @@ class _VdfHomeState extends State<VdfHome> {
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: DashTab(),
       ),
-      bottomNavigationBar: BottomAppBar(
-        elevation: 10,
-        child: SizedBox(
-          height: 67,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              CustomTabItem(
-                imagePath: 'images/fill_dash.svg',
-                label: "Dashboard",
-                index: 0,
-                selectedIndex: 0,
-                onTabTapped: _onTabTapped,
-              ),
-              CustomTabItem(
-                imagePath: 'images/Household_Outline.svg',
-                label: "Add Household",
-                index: 1,
-                selectedIndex: 0,
-                onTabTapped: _onTabTapped,
-              ),
-              CustomTabItem(
-                imagePath: 'images/Street_Outline.svg',
-                label: "Add Street",
-                index: 2,
-                selectedIndex: 0,
-                onTabTapped: _onTabTapped,
-              ),
-              CustomTabItem(
-                imagePath: 'images/Drafts_Outline.svg',
-                label: "Drafts",
-                index: 3,
-                selectedIndex: 0,
-                onTabTapped: _onTabTapped,
-              ),
-            ],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          // color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 0,
+              blurRadius: 10,
+              offset: Offset(4, 0), // changes position of shadow
+            ),
+          ],
+        ),
+        child: BottomAppBar(
+          color: Colors.white,
+          // elevation: 10,
+          child: SizedBox(
+            height: 67,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                CustomTabItem(
+                  imagePath: 'images/fill_dash.svg',
+                  label: "Dashboard",
+                  index: 0,
+                  selectedIndex: 0,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Household_Outline.svg',
+                  label: "Add Household",
+                  index: 1,
+                  selectedIndex: 0,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Street_Outline.svg',
+                  label: "Add Street",
+                  index: 2,
+                  selectedIndex: 0,
+                  onTabTapped: _onTabTapped,
+                ),
+                CustomTabItem(
+                  imagePath: 'images/Drafts_Outline.svg',
+                  label: "Drafts",
+                  index: 3,
+                  selectedIndex: 0,
+                  onTabTapped: _onTabTapped,
+                ),
+              ],
+            ),
           ),
         ),
       ),

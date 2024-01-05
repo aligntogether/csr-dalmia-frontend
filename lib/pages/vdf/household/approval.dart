@@ -31,6 +31,7 @@ class _ApprovalState extends State<Approval> {
     final Map<String, dynamic> requestData = {
       "id": widget.id,
       "reason_for_dropping": selectedRadio,
+      "is_draft": 0
     };
 
     try {
@@ -44,6 +45,11 @@ class _ApprovalState extends State<Approval> {
       );
 
       if (response.statusCode == 200) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => VdfHome(),
+          ),
+        );
         // Successful response
         print("Reason added");
         // Handle success as needed
@@ -170,6 +176,7 @@ class _ApprovalState extends State<Approval> {
                     child: const Text(
                       'submit for approval',
                       style: TextStyle(
+                          color: Colors.white,
                           fontSize: CustomFontTheme.textSize,
                           fontWeight: CustomFontTheme.labelwt),
                     ),

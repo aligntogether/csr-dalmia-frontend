@@ -1,7 +1,9 @@
 import 'package:dalmia/pages/CDO/action.dart';
 import 'package:dalmia/theme.dart';
-import 'package:excel/excel.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:http/http.dart' as http;
 
 class ActionDetail extends StatefulWidget {
   final String hhid;
@@ -9,6 +11,48 @@ class ActionDetail extends StatefulWidget {
 
   @override
   State<ActionDetail> createState() => _ActionDetailState();
+}
+
+void _callAcceptHouseholdAPI(String hhid) async {
+  try {
+    final response = await http.put(
+      Uri.parse(
+        'https://mobiledevcloud.dalmiabharat.com:443/csr/cdo-accept-household?hhid=$hhid',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      // Handle success
+      print('Household $hhid accepted for intervention');
+    } else {
+      // Handle error
+      print('Error accepting household $hhid: ${response.statusCode}');
+    }
+  } catch (error) {
+    // Handle error
+    print('Error accepting household $hhid: $error');
+  }
+}
+
+void _calldropHouseholdAPI(String hhid) async {
+  try {
+    final response = await http.put(
+      Uri.parse(
+        'https://mobiledevcloud.dalmiabharat.com:443/csr/cdo-drop-household?hhid=$hhid',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      // Handle success
+      print('Household $hhid droped');
+    } else {
+      // Handle error
+      print('Error droping household $hhid: ${response.statusCode}');
+    }
+  } catch (error) {
+    // Handle error
+    print('Error droping household $hhid: $error');
+  }
 }
 
 class _ActionDetailState extends State<ActionDetail> {
@@ -24,13 +68,12 @@ class _ActionDetailState extends State<ActionDetail> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Icon(Icons.keyboard_arrow_left_sharp),
-                    Text('Back')
-                  ],
-                ),
-                Icon(Icons.close)
+                SizedBox(width: 10),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Icon(Icons.close))
               ],
             ),
             Center(
@@ -157,7 +200,7 @@ class _ActionDetailState extends State<ActionDetail> {
               height: 20,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -171,6 +214,7 @@ class _ActionDetailState extends State<ActionDetail> {
                   child: const Text(
                     'Drop HH',
                     style: TextStyle(
+                        color: Colors.white,
                         fontSize: CustomFontTheme.textSize,
                         fontWeight: CustomFontTheme.labelwt),
                   ),
@@ -189,6 +233,7 @@ class _ActionDetailState extends State<ActionDetail> {
                   child: Text(
                     'Select HH',
                     style: TextStyle(
+                      
                         color: CustomColorTheme.primaryColor,
                         fontSize: CustomFontTheme.textSize,
                         fontWeight: CustomFontTheme.labelwt),
@@ -248,13 +293,14 @@ class HouseDetails extends StatelessWidget {
 void _drophhDialog(BuildContext context, String hhid) {
   showDialog(
     context: context,
-    barrierDismissible: true,
+    barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
+        alignment: Alignment.topCenter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         title: SizedBox(
-          width: 283,
-          height: 80,
+          width: 290,
+          height: 100,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -287,14 +333,17 @@ void _drophhDialog(BuildContext context, String hhid) {
                   backgroundColor: CustomColorTheme.primaryColor,
                 ),
                 onPressed: () {
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const Login(),
-                  //   ),
-                  // );
-                  // Perform actions when 'Yes' is clicked
+                  _calldropHouseholdAPI(hhid);
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ActionAgainstHH(),
+                    ),
+                  );
                 },
-                child: const Text('Confirm'),
+                child: const Text(
+                  'Confirm',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],
@@ -307,13 +356,14 @@ void _drophhDialog(BuildContext context, String hhid) {
 void _selecthhDialog(BuildContext context, String hhid) {
   showDialog(
     context: context,
-    barrierDismissible: true,
+    barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
+        alignment: Alignment.topCenter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         title: SizedBox(
           width: 283,
-          height: 80,
+          height: 100,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -346,10 +396,14 @@ void _selecthhDialog(BuildContext context, String hhid) {
                   backgroundColor: CustomColorTheme.primaryColor,
                 ),
                 onPressed: () {
+                  _callAcceptHouseholdAPI(hhid);
                   Navigator.pop(context);
                   _confirmbox(context, hhid);
                 },
-                child: const Text('Confirm'),
+                child: const Text(
+                  'Confirm',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],
@@ -374,6 +428,7 @@ void _confirmbox(BuildContext context, String hhid) {
           return false;
         },
         child: AlertDialog(
+          alignment: Alignment.topCenter,
           title: SizedBox(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -411,7 +466,8 @@ void _confirmbox(BuildContext context, String hhid) {
                 },
                 child: const Text(
                   'Ok',
-                  style: TextStyle(fontSize: CustomFontTheme.textSize),
+                  style: TextStyle(
+                      color: Colors.white, fontSize: CustomFontTheme.textSize),
                 ),
               ),
               const SizedBox(
