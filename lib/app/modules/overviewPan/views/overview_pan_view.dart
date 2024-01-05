@@ -12,7 +12,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../controllers/overview_pan_controller.dart';
-import '../serivce/overviewReportApiService.dart';
+import '../service/overviewReportApiService.dart';
 
 
 
@@ -34,8 +34,21 @@ class _OverviewPanViewState extends State<OverviewPanView> {
   @override
   void initState() {
     super.initState();
+    getPanIndiaReport();
     regionsFuture = overviewReportApiService.getListOfRegions();
+    controller.selectRegion = "All Regions";
   }
+
+  void getPanIndiaReport() async {
+
+    List<Map<String, Map<String, dynamic>>> panIndiaMappedData = await overviewReportApiService.getPanIndiaReport(controller.allLocations, controller.objectKeys);
+
+    setState(() {
+      controller.updateOverviewMappedList(panIndiaMappedData);
+    });
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -103,10 +116,25 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                                   .toList(),
                               selectedValue: controller.selectRegion,
                               onChanged: (String? newValue) async {
-                                // Find the selected region and get its corresponding regionId
-                                Map<String, dynamic>? selectedRegion =
-                                regionOptions.firstWhereOrNull(
-                                        (region) => region['region'] == newValue);
+
+                                Map<String, dynamic>? selectedRegion;
+
+                                if (newValue == "All Regions") {
+                                  setState(() {
+                                    controller.selectRegion = newValue;
+                                    controller.selectLocation =
+                                    null;
+                                    controller.selectLocationId = null;
+                                    controller.locations = List.generate(1, (index) => <String, dynamic>{"location" : "No Data Found"});
+                                  });
+                                }
+                                else {
+                                  // Find the selected region and get its corresponding regionId
+                                  selectedRegion =
+                                      regionOptions.firstWhereOrNull(
+                                              (region) =>
+                                          region['region'] == newValue);
+                                }
 
                                 // print('controller.selectedRegions: ${selectedRegion}');
 
@@ -122,7 +150,7 @@ class _OverviewPanViewState extends State<OverviewPanView> {
 
                                   // Get locations based on the selected regionId
                                   Map<String, dynamic> locationsData =
-                                  await performanceVdfApiService.getListOfLocations(
+                                  await overviewReportApiService.getListOfLocations(
                                       controller.selectRegionId!);
 
                                   // Extract the list of locations from the returned data
@@ -133,12 +161,25 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                                   controller.updateLocations(locations);
                                   controller.update(["add"]);
 
+                                  List<String> locationsCode = locations != null ? (controller.locations!
+                                      .map((location) =>
+                                      location['locationCode'].toString())
+                                      .toList()) : [];
+                                  locationsCode.add("TOTAL");
+
+                                  List<Map<String, Map<String, dynamic>>> regionWiseMappedList = await overviewReportApiService.getRegionWiseReport(locationsCode, controller.objectKeys, controller.selectRegionId!);
+
+                                  setState(() {
+                                    controller.updateRegionWiseMappedList(regionWiseMappedList);
+                                  });
+
+
+
                                   setState(() {
                                     controller.selectLocation =
                                     null;
                                     controller.selectLocationId = null;
-                                    controller.selectCluster = null;
-                                    controller.selectVdfName = null;
+                                    // controller.selectCluster = null;
                                   });
 
 
@@ -153,32 +194,84 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                     );
                   },
                 ),
-
+                Space.height(10),
                 ///_________________________________ drop downs__________________________///
+                controller.selectRegion != "All Regions" ?
                 GetBuilder<OverviewPanController>(
+                  id: "add",
                   builder: (controller) {
-                    return controller.selectP != null
-                        ? controller.selectP != "All Regions"
-                            ? Padding(
-                                padding: const EdgeInsets.only(top: 15.0),
-                                child: CustomDropdownFormField(
-                                    title: "Select a Location",
-                                    options: [
-                                      "South & Chandrapur",
-                                      "Sugar",
-                                      "East",
-                                      "North East",
-                                    ],
-                                    selectedValue: controller.selectLocation,
-                                    onChanged: (String? newValue) async {
-                                      controller.selectLocation = newValue;
-                                      controller.update();
-                                    }),
-                              )
-                            : SizedBox()
-                        : SizedBox();
+                    return CustomDropdownFormField(
+                      title: "Select Location",
+                      options:
+                      controller.locations != null ? (controller.locations!
+                          .map((location) =>
+                          location['location'].toString())
+                          .toList()) : [],
+                      selectedValue: controller.selectLocation,
+                      onChanged: (String? newValue) async {
+
+                        // Find the selected location and get its corresponding locationId
+                        if (controller.locations != null) {
+                          // Find the selected location object based on the 'location' property
+
+                          // print('controller.locations: ${controller.locations}');
+
+
+                          Map<String, dynamic>? selectedLocation = controller.locations
+                              ?.firstWhere((location) => location['location'] == newValue);
+
+                          if (selectedLocation != null) {
+
+                            // Access the locationId property and convert it to int
+                            int? selectedLocationId =
+                            selectedLocation['locationId'];
+
+                            // print('selectedLocationId: $selectedLocationId');
+
+                            if (selectedLocationId != null) {
+                              // Assign 'location' to controller.selectLocation
+
+                              setState(() {
+                                controller.selectLocationId = selectedLocationId;
+                                controller.selectLocation =
+                                selectedLocation['location'] as String;
+                              });
+
+                              controller.update(["add"]);
+
+                              controller.selectCluster = null;
+
+                              Map<String, dynamic>? clustersData = await overviewReportApiService.getListOfClusters(controller.selectLocationId ?? 0);
+
+
+                              if (clustersData != null) {
+                                List<Map<String, dynamic>> clusters =
+                                clustersData['clusters'];
+
+                                print("clusters.length : ${clusters.length}");
+                                print("clusters : $clusters");
+
+                                controller.updateClusters(clusters);
+                                controller.update(["add"]);
+                              }
+
+                              // setState(() {
+                              //   controller.selectClusterId =
+                              //   0;
+                              //   controller.selectCluster = null;
+                              // });
+
+                            }
+                          }
+                        }
+                      },
+                    );
                   },
-                ),
+                )
+                :
+                    Container(),
+
+
                 Space.height(30),
                 GetBuilder<OverviewPanController>(
                   builder: (controller) {
@@ -190,11 +283,11 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                 Space.height(16),
                 GetBuilder<OverviewPanController>(
                   builder: (controller) {
-                    return controller.selectP != null
-                        ? controller.selectP == "All Regions"
-                            ? allRegionsTables()
+                    return controller.selectRegion != null
+                        ? controller.selectRegion == "All Regions"
+                            ? allRegionsTables(0)
                             : controller.selectLocation == null &&
-                                    controller.selectP != "All Regions"
+                                    controller.selectRegion != "All Regions"
                                 ? tableDataLocation()
                                 : tableDataLocationView()
                         : SizedBox();
@@ -236,8 +329,12 @@ class _OverviewPanViewState extends State<OverviewPanView> {
     );
   }
 
-  Widget allRegionsTables() {
-    return SingleChildScrollView(
+
+
+  Widget allRegionsTables(int i) {
+    return Visibility(
+        visible: controller.overviewMappedList != null && controller.overviewMappedList!.isNotEmpty,
+        child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -725,13 +822,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                 ),
               ],
               rows: List<DataRow>.generate(
-                controller.locations.length,
+                controller.locationsList.length,
                 (index) => DataRow(
                   color: MaterialStateColor.resolveWith(
                     (states) {
-                      return controller.locations[index] == "Households" ||
-                              controller.locations[index] == "Interventions" ||
-                              controller.locations[index] ==
+                      i = 0;
+                      return controller.locationsList[index] == "Households" ||
+                              controller.locationsList[index] == "Interventions" ||
+                              controller.locationsList[index] ==
                                   "HH with Annual Addl. Income"
                           ? Color(0xff008CD3).withOpacity(0.3)
                           : index.isEven
@@ -747,13 +845,13 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         child: Row(
                           children: [
                             Text(
-                              controller.locations[index],
-                              style: controller.locations[index] ==
+                              controller.locationsList[index],
+                              style: controller.locationsList[index] ==
                                           "Households" ||
-                                      controller.locations[index] ==
+                                      controller.locationsList[index] ==
                                           "Interventions" ||
-                                      controller.locations[index] ==
-                                          "HH with Annual Addl. Income"
+                                      controller.locationsList[index] ==
+                                          "HH with Annual\nAddl. Income"
                                   ? TextStyle(
                                       color: CustomColorTheme.textColor,
                                       fontWeight: CustomFontTheme.headingwt,
@@ -775,13 +873,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.DPM[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                            //     : controller.DPM[index].toString()), // changes required here
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -799,13 +898,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.ALR[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                // : controller.ALR[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -823,13 +923,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.BGM[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                // : controller.BGM[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -847,13 +948,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.KDP[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                // : controller.KDP[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -871,13 +973,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.CHA[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                // : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -898,13 +1001,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         width: 80,
                         child: Center(
                           child: Text(
-                            controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.SOUTH[index].toString(),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0',
+                                // : controller.SOUTH[index].toString(),
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14, color: Colors.white),
                           ),
@@ -917,13 +1021,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.CHA[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                // : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -941,13 +1046,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.CHA[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                // : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -965,13 +1071,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.CHA[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                // : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -989,13 +1096,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.CHA[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                // : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -1016,13 +1124,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         width: 80,
                         child: Center(
                           child: Text(
-                            controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
+                                    controller.locationsList[index] ==
                                         "HH with Annual Addl. Income"
                                 ? ""
-                                : controller.SOUTH[index].toString(),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0',
+                                // : controller.SOUTH[index].toString(),
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14, color: Colors.white),
                           ),
@@ -1035,13 +1144,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.CHA[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                // : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -1059,13 +1169,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.CHA[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                // : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -1083,13 +1194,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.CHA[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                // : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -1107,13 +1219,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.CHA[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                  // : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -1131,13 +1244,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.CHA[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                // : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -1158,13 +1272,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         width: 80,
                         child: Center(
                           child: Text(
-                            controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.SOUTH[index].toString(),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0',
+                                // : controller.SOUTH[index].toString(),
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14, color: Colors.white),
                           ),
@@ -1179,13 +1294,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         width: 80,
                         child: Center(
                           child: Text(
-                            controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.SOUTH[index].toString(),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0',
+                                // : controller.SOUTH[index].toString(),
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14, color: Colors.white),
                           ),
@@ -1199,13 +1315,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.CHA[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                // : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -1224,13 +1341,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.CHA[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                // : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -1249,13 +1367,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.CHA[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                // : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -1274,13 +1393,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.CHA[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                // : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -1299,13 +1419,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.CHA[index].toString()),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
+                                // : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -1326,13 +1447,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         width: 80,
                         child: Center(
                           child: Text(
-                            controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.SOUTH[index].toString(),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0',
+                                // : controller.SOUTH[index].toString(),
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14, color: Colors.white),
                           ),
@@ -1348,13 +1470,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         width: 80,
                         child: Center(
                           child: Text(
-                            controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.SOUTH[index].toString(),
+                                : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0',
+                                // : controller.SOUTH[index].toString(),
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14, color: Colors.white),
                           ),
@@ -1366,11 +1489,95 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                   ],
                 ),
               )),
-        ));
+        )),
+      replacement: Container(),
+    );
+
+
   }
 
   Widget tableDataLocation() {
-    return SingleChildScrollView(
+
+    // List<DataColumn> dataColumns = [];
+    //
+    // // Create the "Details" DataColumn
+    // dataColumns.add(DataColumn(
+    //   label: Expanded(
+    //     child: Container(
+    //       height: 60,
+    //       decoration: BoxDecoration(
+    //         color: Color(0xff008CD3),
+    //         borderRadius: BorderRadius.only(
+    //           topLeft: Radius.circular(10.0),
+    //         ),
+    //       ),
+    //       padding: EdgeInsets.only(left: 10),
+    //       child: Center(
+    //         child: Text(
+    //           'Details',
+    //           style: TextStyle(
+    //             fontWeight: CustomFontTheme.headingwt,
+    //             fontSize: CustomFontTheme.textSize,
+    //             color: Colors.white,
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // ));
+    //
+    // // Create DataColumns based on controller.locationName
+    // for (String location in controller.locations!.map((location) => location['locationCode'].toString()).toList()) {
+    //   dataColumns.add(DataColumn(
+    //     label: Container(
+    //       height: 60,
+    //       width: 80,
+    //       color: Color(0xff008CD3),
+    //       padding: EdgeInsets.symmetric(horizontal: 10),
+    //       child: Center(
+    //         child: Text(
+    //           location,
+    //           style: TextStyle(
+    //             fontWeight: CustomFontTheme.headingwt,
+    //             fontSize: CustomFontTheme.textSize,
+    //             color: Colors.white,
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //   ));
+    // }
+    //
+    // // Add the "Total" DataColumn
+    // dataColumns.add(DataColumn(
+    //   label: Container(
+    //     decoration: BoxDecoration(
+    //       color: Color(0xff096C9F),
+    //       borderRadius: BorderRadius.only(
+    //         topRight: Radius.circular(10.0),
+    //       ),
+    //     ),
+    //     height: 60,
+    //     width: 80,
+    //     padding: EdgeInsets.symmetric(horizontal: 10),
+    //     child: Center(
+    //       child: Text(
+    //         'Total',
+    //         style: TextStyle(
+    //           fontWeight: CustomFontTheme.headingwt,
+    //           fontSize: CustomFontTheme.textSize,
+    //           color: Colors.white,
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // ));
+
+
+
+    return Visibility(
+        visible: true /* controller.regionWiseMappedList != null && controller.regionWiseMappedList!.isNotEmpty */,
+      child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -1502,7 +1709,7 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                     decoration: BoxDecoration(
                         color: Color(0xff096C9F),
                         borderRadius:
-                            BorderRadius.only(topRight: Radius.circular(10.0))),
+                        BorderRadius.only(topRight: Radius.circular(10.0))),
                     height: 60,
                     width: 80,
                     padding: EdgeInsets.symmetric(horizontal: 10),
@@ -1518,15 +1725,18 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                   ),
                 ),
               ],
+
+
+
               rows: List<DataRow>.generate(
-                controller.locations.length,
+                controller.locationsList.length,
                 (index) => DataRow(
                   color: MaterialStateColor.resolveWith(
                     (states) {
-                      return controller.locations[index] == "Households" ||
-                              controller.locations[index] == "Interventions" ||
-                              controller.locations[index] ==
-                                  "HH with Annual Addl. Income"
+                      return controller.locationsList[index] == "Households" ||
+                              controller.locationsList[index] == "Interventions" ||
+                              controller.locationsList[index] ==
+                                  "HH with Annual\nAddl. Income"
                           ? Color(0xff008CD3).withOpacity(0.3)
                           : index.isEven
                               ? Colors.blue.shade50
@@ -1541,13 +1751,13 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         child: Row(
                           children: [
                             Text(
-                              controller.locations[index],
-                              style: controller.locations[index] ==
+                              controller.locationsList[index],
+                              style: controller.locationsList[index] ==
                                           "Households" ||
-                                      controller.locations[index] ==
+                                      controller.locationsList[index] ==
                                           "Interventions" ||
-                                      controller.locations[index] ==
-                                          "HH with Annual Addl. Income"
+                                      controller.locationsList[index] ==
+                                          "HH with Annual\nAddl. Income"
                                   ? TextStyle(
                                       color: CustomColorTheme.textColor,
                                       fontWeight: CustomFontTheme.headingwt,
@@ -1569,11 +1779,11 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
                                 : controller.DPM[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
@@ -1593,11 +1803,11 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
                                 : controller.ALR[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
@@ -1617,11 +1827,11 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
                                 : controller.BGM[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
@@ -1641,11 +1851,11 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
                                 : controller.KDP[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
@@ -1665,11 +1875,11 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
@@ -1683,6 +1893,29 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         ],
                       ),
                     ),
+                    // DataCell(
+                    //   Row(
+                    //     children: [
+                    //       Spacer(),
+                    //       Text(
+                    //         (controller.locationsList[index] == "Households" ||
+                    //                 controller.locationsList[index] ==
+                    //                     "Interventions" ||
+                    //                 controller.locationsList[index] ==
+                    //                     "HH with Annual\nAddl. Income"
+                    //             ? ""
+                    //             : controller.CHA[index].toString()),
+                    //         style: AppStyle.textStyleInterMed(fontSize: 14),
+                    //       ),
+                    //       Spacer(),
+                    //       VerticalDivider(
+                    //         width: 1,
+                    //         color: Color(0xff181818).withOpacity(0.3),
+                    //         thickness: 1,
+                    //       )
+                    //     ],
+                    //   ),
+                    // ),
 
                     ///__________________________ South _______________________
                     DataCell(
@@ -1692,11 +1925,11 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         width: 80,
                         child: Center(
                           child: Text(
-                            controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
                                 : controller.SOUTH[index].toString(),
                             style: AppStyle.textStyleInterMed(
@@ -1748,7 +1981,8 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                               ),
                             ],*/
               ),
-        ));
+        )),
+    replacement: Container());
   }
 
   Widget tableDataLocationView() {
@@ -1901,14 +2135,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                 ),
               ],
               rows: List<DataRow>.generate(
-                controller.locations.length,
+                controller.locationsList.length,
                 (index) => DataRow(
                   color: MaterialStateColor.resolveWith(
                     (states) {
-                      return controller.locations[index] == "Households" ||
-                              controller.locations[index] == "Interventions" ||
-                              controller.locations[index] ==
-                                  "HH with Annual Addl. Income"
+                      return controller.locationsList[index] == "Households" ||
+                              controller.locationsList[index] == "Interventions" ||
+                              controller.locationsList[index] ==
+                                  "HH with Annual\nAddl. Income"
                           ? Color(0xff008CD3).withOpacity(0.3)
                           : index.isEven
                               ? Colors.blue.shade50
@@ -1923,13 +2157,13 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         child: Row(
                           children: [
                             Text(
-                              controller.locations[index],
-                              style: controller.locations[index] ==
+                              controller.locationsList[index],
+                              style: controller.locationsList[index] ==
                                           "Households" ||
-                                      controller.locations[index] ==
+                                      controller.locationsList[index] ==
                                           "Interventions" ||
-                                      controller.locations[index] ==
-                                          "HH with Annual Addl. Income"
+                                      controller.locationsList[index] ==
+                                          "HH with Annual\nAddl. Income"
                                   ? TextStyle(
                                       color: CustomColorTheme.textColor,
                                       fontWeight: CustomFontTheme.headingwt,
@@ -1951,11 +2185,11 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
                                 : controller.DPM[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
@@ -1975,11 +2209,11 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
                                 : controller.ALR[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
@@ -1999,11 +2233,11 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
                                 : controller.BGM[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
@@ -2023,11 +2257,11 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
                                 : controller.KDP[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
@@ -2047,11 +2281,11 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            (controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
                                 : controller.CHA[index].toString()),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
@@ -2074,11 +2308,11 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         width: 80,
                         child: Center(
                           child: Text(
-                            controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
+                            controller.locationsList[index] == "Households" ||
+                                    controller.locationsList[index] ==
                                         "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
+                                    controller.locationsList[index] ==
+                                        "HH with Annual\nAddl. Income"
                                 ? ""
                                 : controller.SOUTH[index].toString(),
                             style: AppStyle.textStyleInterMed(
