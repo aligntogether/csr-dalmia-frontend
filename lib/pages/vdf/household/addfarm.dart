@@ -19,9 +19,67 @@ class AddFarm extends StatefulWidget {
 }
 
 class _AddFarmState extends State<AddFarm> {
-  Map<String?, int> farmData = {};
-  MapEntry<String?, int> other1 = const MapEntry(null, 0);
-  MapEntry<String?, int> other2 = const MapEntry(null, 0);
+  void _savedata(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // backgroundColor: Colors.white,
+          backgroundColor: Colors.white,
+          title: SizedBox(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 40,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text('Saved Data to Draft'),
+              ],
+            ),
+          ),
+          content: SizedBox(
+            height: 80,
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(100, 50),
+                    elevation: 0,
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    side: const BorderSide(
+                      width: 1,
+                      color: CustomColorTheme.primaryColor,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Ok',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: CustomFontTheme.textSize,
+                        fontWeight: CustomFontTheme.headingwt),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Map<String, int> farmData = {};
+  MapEntry<String, int> other1 = const MapEntry('null', 0);
+  MapEntry<String, int> other2 = const MapEntry('null', 0);
 
   Future<void> addFarmData() async {
     final apiUrl = '$base/add-household';
@@ -34,7 +92,7 @@ class _AddFarmState extends State<AddFarm> {
     // Replace these values with the actual data you want to send
     final Map<String, dynamic> requestData = {
       "id": widget.id,
-      "farm_equipment": farmData.toString()
+      "farm_equipment": json.encode(farmData)
     };
 
     try {
@@ -71,6 +129,45 @@ class _AddFarmState extends State<AddFarm> {
     farmData[text] = intVal;
   }
 
+  Future<Map<String, dynamic>> getfarmData(String householdId) async {
+    final String apiUrl = '$base/get-household?householdId=$householdId';
+
+    try {
+      final response = await http.post(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+        if (jsonResponse['resp_code'] == 200 &&
+            jsonResponse['resp_msg'] == 'Data Found') {
+          final Map<String, dynamic> respBody = jsonResponse['resp_body'];
+          return Map<String, dynamic>.from(respBody);
+        } else {
+          throw Exception('API Error: ${jsonResponse['resp_msg']}');
+        }
+      } else {
+        throw Exception('HTTP Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      // error.printError();
+      throw Exception('Error: $error');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getfarmData(widget.id ?? '0').then((farm) {
+      print("test $farm");
+      setState(
+        () {
+          farmData = Map<String, int>.from(jsonDecode(farm['farmEquipment']));
+        },
+      );
+      print(farmData);
+    });
+  }
+
   List<bool> cropCheckList = List.filled(16, false);
 
   @override
@@ -98,19 +195,19 @@ class _AddFarmState extends State<AddFarm> {
               Column(
                 children: [
                   const SizedBox(height: 20),
-                  Rowstock('Tractor', addData),
+                  Rowstock('Tractor', addData, farmData),
                   const SizedBox(height: 20),
-                  Rowstock('Mini Tractor', addData),
+                  Rowstock('Mini Tractor', addData, farmData),
                   const SizedBox(height: 20),
-                  Rowstock('Rotovator', addData),
+                  Rowstock('Rotovator', addData, farmData),
                   const SizedBox(height: 20),
-                  Rowstock('Sprayer', addData),
+                  Rowstock('Sprayer', addData, farmData),
                   const SizedBox(height: 20),
-                  Rowstock('Weeder', addData),
+                  Rowstock('Weeder', addData, farmData),
                   const SizedBox(height: 20),
-                  Rowstock('MB Plough', addData),
+                  Rowstock('MB Plough', addData, farmData),
                   const SizedBox(height: 20),
-                  Rowstock('Harvestor', addData),
+                  Rowstock('Harvestor', addData, farmData),
                   const SizedBox(height: 20),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -283,9 +380,7 @@ class _AddFarmState extends State<AddFarm> {
                           color: CustomColorTheme.primaryColor, width: 1),
                     ),
                     onPressed: () {
-                      // Perform actions with the field values
-
-                      // Save as draft
+                      addFarmData().then((value) => _savedata(context));
                     },
                     child: Text(
                       'Save as Draft',
@@ -300,6 +395,62 @@ class _AddFarmState extends State<AddFarm> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Rowstock(String text, void Function(dynamic text, dynamic value) addData,
+      Map<String, int>? value) {
+    TextEditingController controller = TextEditingController();
+
+    // Set initial value when the widget is created
+    if (value != null && value.containsKey(text)) {
+      controller.text = value[text]?.toString() ?? '';
+    }
+
+    // Use a listener to update the text field when the underlying value changes
+    controller.addListener(() {
+      addData(text, controller.text);
+    });
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            width: 90,
+            child: Text(
+              text,
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF181818).withOpacity(0.80)),
+            ),
+          ),
+          SizedBox(
+            width: 50,
+            height: 30,
+            child: TextFormField(
+              controller: controller,
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+              ],
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 2,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 50,
+          )
+        ],
       ),
     );
   }

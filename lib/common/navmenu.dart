@@ -139,7 +139,7 @@ void _showConfirmationDialog(BuildContext context) {
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  side: const BorderSide(),
+                  // side: const BorderSide(),
                   backgroundColor: CustomColorTheme.primaryColor,
                 ),
                 onPressed: () async {

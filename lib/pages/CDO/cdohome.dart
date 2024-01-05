@@ -1,3 +1,4 @@
+import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/CDO/action.dart';
 import 'package:dalmia/pages/CDO/expected.dart';
@@ -19,7 +20,20 @@ class CDOHome extends StatefulWidget {
   _CDOHomeState createState() => _CDOHomeState();
 }
 
+
+  
 class _CDOHomeState extends State<CDOHome> {
+  String name = "";
+  @override
+  void initState() {
+    super.initState();
+
+    SharedPrefHelper.getSharedPref(USER_NAME_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+              value == '' ? name = 'user' : name = value;
+            }));
+    ;
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -55,7 +69,7 @@ class _CDOHomeState extends State<CDOHome> {
                   alignment: Alignment.topLeft,
                   // color: Colors.white,
                   child: Text(
-                    'Welcome Suresh!',
+                    'Welcome $name!',
                     style: TextStyle(
                       color: Colors.grey.shade700,
                       fontSize: 16,

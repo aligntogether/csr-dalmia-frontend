@@ -177,13 +177,13 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
                   child: Column(
                     children: [
                       Text(
-                        '${widget.hhid}',
+                        '${widget.hhid ?? ''}',
                         style: TextStyle(
                             fontSize: CustomFontTheme.textSize,
                             fontWeight: CustomFontTheme.headingwt),
                       ),
                       Text(
-                        '${widget.interventiontype}',
+                        '${widget.interventiontype ?? ''}',
                         style: TextStyle(
                             fontSize: CustomFontTheme.textSize,
                             fontWeight: CustomFontTheme.labelwt),
@@ -267,7 +267,9 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
                     },
                     child: const Text(
                       'Save Update',
-                      style: TextStyle(fontSize: CustomFontTheme.textSize),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: CustomFontTheme.textSize),
                     ),
                   ),
                 ),

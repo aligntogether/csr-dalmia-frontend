@@ -1,3 +1,4 @@
+import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/LL/action.dart';
@@ -22,6 +23,17 @@ class LLHome extends StatefulWidget {
 }
 
 class _LLHomeState extends State<LLHome> {
+  String name = "";
+  @override
+  void initState() {
+    super.initState();
+
+    SharedPrefHelper.getSharedPref(USER_NAME_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+              value == '' ? name = 'user' : name = value;
+            }));
+    ;
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -56,7 +68,7 @@ class _LLHomeState extends State<LLHome> {
                     alignment: Alignment.topLeft,
                     // color: Colors.white,
                     child: Text(
-                      'Welcome Suresh!',
+                      'Welcome $name!',
                       style: TextStyle(
                         color: Colors.grey.shade700,
                         fontSize: 16,

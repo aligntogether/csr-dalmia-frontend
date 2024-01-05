@@ -16,6 +16,9 @@ class Intervention {
 String intervention = '';
 
 class Addinter extends StatefulWidget {
+  final String? id;
+
+  const Addinter({super.key, this.id});
   @override
   _AddinterState createState() => _AddinterState();
 }
@@ -27,6 +30,7 @@ class _AddinterState extends State<Addinter> {
   List<Intervention> filteredInterventions = [];
   TextEditingController interventionController = TextEditingController();
   bool showListView = true;
+  String selectedInterventionId = '';
   // RegExp reg = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
   // String Function(Match) mathFunc = (Match match) => '${match[1]},';
   void filterInterventions(String query) async {
@@ -45,8 +49,8 @@ class _AddinterState extends State<Addinter> {
           List<dynamic> fetchedInterventions = data['resp_body'];
           List<Intervention> interventionsList = fetchedInterventions
               .map((intervention) => Intervention(
-                  DateTime.now().millisecondsSinceEpoch.toString(),
-                  intervention))
+                  intervention['id'].toString(),
+                  intervention['interventionName']))
               .toList();
           setState(() {
             filteredInterventions = interventionsList;
@@ -69,6 +73,8 @@ class _AddinterState extends State<Addinter> {
 
   @override
   Widget build(BuildContext context) {
+    
+    print("sttt ${widget.id}");
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -80,7 +86,7 @@ class _AddinterState extends State<Addinter> {
             'Assign Intervention',
             style: TextStyle(color: Colors.black),
           ),
-          backgroundColor: Colors.grey[50],
+          // backgroundColor: Colors.grey[50],
           actions: <Widget>[
             IconButton(
               iconSize: 30,
@@ -160,6 +166,8 @@ class _AddinterState extends State<Addinter> {
                                     setState(() {
                                       interventionController.text =
                                           filteredInterventions[index].name;
+                                      selectedInterventionId =
+                                          filteredInterventions[index].id;
                                       showListView = false;
                                       isButtonEnabled = true;
                                     });
@@ -181,11 +189,14 @@ class _AddinterState extends State<Addinter> {
                           ),
                           onPressed: isButtonEnabled
                               ? () {
+                                  print(selectedInterventionId);
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => Details(
                                         interventionname:
                                             interventionController.text,
+                                          hid: widget.id,
+                                          interId: selectedInterventionId
                                       ),
                                     ),
                                   );
@@ -208,7 +219,6 @@ class _AddinterState extends State<Addinter> {
     );
   }
 }
-
 void _confirmitem(BuildContext context) {
   showDialog(
     barrierDismissible: false,
@@ -222,13 +232,14 @@ void _confirmitem(BuildContext context) {
           ],
         ),
         content: SizedBox(
-          height: 100,
+          height: 200,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            // mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(10),
+                  fixedSize: Size(250, 60),
                   backgroundColor: Colors.white,
                 ),
                 onPressed: () {
@@ -240,16 +251,27 @@ void _confirmitem(BuildContext context) {
                 },
                 child: Text(
                   'Save HH as draft and add intervention later ',
-                  style: TextStyle(color: CustomColorTheme.primaryColor),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: CustomColorTheme.primaryColor,
+                  ),
                 ),
+              ),
+              SizedBox(
+                height: 20,
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
+                    fixedSize: Size(250, 60),
+
                     backgroundColor: CustomColorTheme.primaryColor),
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text('Continue adding Intervention'),
+                child: const Text(
+                  'Continue adding Intervention',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),

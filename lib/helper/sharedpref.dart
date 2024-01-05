@@ -41,7 +41,9 @@ class SharedPrefHelper {
       USER_ID_SHAREDPREF_KEY,
       ACCESS_TOKEN_SHAREDPREF_KEY,
       REFRESH_TOKEN_SHAREDPREF_KEY,
-      USER_TYPES_SHAREDPREF_KEY
+      USER_TYPES_SHAREDPREF_KEY,
+      USER_NAME_SHAREDPREF_KEY
+
     ];
 
     SharedPreferences prefs = await SharedPreferences.getInstance();

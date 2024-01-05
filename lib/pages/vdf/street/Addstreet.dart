@@ -134,7 +134,7 @@ class _AddStreetState extends State<AddStreet> {
                 fontSize: CustomFontTheme.headingSize,
                 fontWeight: CustomFontTheme.headingwt),
           ),
-          backgroundColor: Colors.grey[50],
+          // backgroundColor: Colors.grey[50],
           actions: <Widget>[
             IconButton(
               iconSize: 30,

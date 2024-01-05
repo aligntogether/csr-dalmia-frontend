@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
+import 'package:dalmia/pages/vdf/street/CheckStreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:get/get_state_manager/src/simple/list_notifier.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
@@ -81,6 +83,7 @@ class _AddnewState extends State<Addnew> {
           appBar: AppBar(
             automaticallyImplyLeading: false,
             elevation: 0,
+            scrolledUnderElevation: 0,
             iconTheme: const IconThemeData(color: Colors.black),
             centerTitle: true,
             title: const Text(
@@ -90,7 +93,7 @@ class _AddnewState extends State<Addnew> {
                   fontSize: CustomFontTheme.headingSize,
                   fontWeight: CustomFontTheme.headingwt),
             ),
-            backgroundColor: Colors.grey[50],
+            // backgroundColor: Colors.grey[50],
             actions: <Widget>[
               IconButton(
                 iconSize: 30,
@@ -232,6 +235,7 @@ class _AddnewState extends State<Addnew> {
                         },
 
                         decoration: InputDecoration(
+                          
                             border: OutlineInputBorder(),
                             label: Text('Enter Number of Households')),
                       ),
@@ -341,16 +345,15 @@ class _AddnewState extends State<Addnew> {
       print('Error: $error');
     }
   }
-}
-
+  
 void _confirmbox(BuildContext context, String streetName) {
   showDialog(
     barrierDismissible: false,
     context: context,
-    builder: (BuildContext context) {
+      builder: (BuildContext context) {
       return AlertDialog(
         // backgroundColor: Colors.white,
-
+          backgroundColor: Colors.white,
         title: SizedBox(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -382,7 +385,16 @@ void _confirmbox(BuildContext context, String streetName) {
                       width: 1, color: CustomColorTheme.primaryColor),
                 ),
                 onPressed: () {
-                  Navigator.pop(context);
+                    // navigate to checkstreet
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => CheckStreet(
+                            selectedPanchayat: widget.panchayat,
+                            selectedVillage: widget.village,
+                            selectedVillagId: widget.villagId),
+                      ),
+                    );
+                 
                 },
                 child: const Text(
                   'Add another street in same village',
@@ -438,3 +450,5 @@ void _confirmbox(BuildContext context, String streetName) {
     },
   );
 }
+}
+

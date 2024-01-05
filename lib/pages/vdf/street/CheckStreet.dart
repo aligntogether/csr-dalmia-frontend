@@ -92,6 +92,7 @@ class _CheckStreetState extends State<CheckStreet> {
           appBar: AppBar(
             automaticallyImplyLeading: false,
             elevation: 0,
+            scrolledUnderElevation: 0,
             iconTheme: const IconThemeData(color: Colors.black),
             centerTitle: true,
             title: const Text(
@@ -101,7 +102,7 @@ class _CheckStreetState extends State<CheckStreet> {
                   fontSize: CustomFontTheme.headingSize,
                   fontWeight: CustomFontTheme.headingwt),
             ),
-            backgroundColor: Colors.grey[50],
+            // backgroundColor: Colors.grey[50],
             leading: GestureDetector(
               onTap: () {
                 Navigator.of(context).pop();
