@@ -60,7 +60,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return login(context);
+    return PopScope(canPop: false, child: login(context));
   }
 
   SafeArea login(context) {

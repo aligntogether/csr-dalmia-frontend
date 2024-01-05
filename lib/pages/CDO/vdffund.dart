@@ -49,9 +49,15 @@ class _VDFFundsState extends State<VDFFunds> {
   @override
   Widget build(BuildContext context) {
     int totalBudget =
-        fundData.fold(0, (prev, curr) => prev + (curr['budget'] as int));
+        fundData.fold(
+        0,
+        (prev, curr) =>
+            prev + ((curr['budget'] != null ? curr['budget'] : 0) as int));
     int totalUtilized =
-        fundData.fold(0, (prev, curr) => prev + (curr['utilized'] as int));
+        fundData.fold(
+        0,
+        (prev, curr) =>
+            prev + ((curr['utilized'] != null ? curr['utilized'] : 0) as int));
 
     return Scaffold(
       appBar: PreferredSize(
