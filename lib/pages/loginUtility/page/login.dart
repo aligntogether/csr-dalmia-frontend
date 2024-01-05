@@ -1,4 +1,6 @@
 import 'package:dalmia/Constants/constants.dart';
+import 'package:dalmia/app/modules/chooseRole/views/choose_role_view.dart';
+import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/LL/ll_home_screen.dart';
 
@@ -14,6 +16,8 @@ import 'package:dalmia/pages/vdf/vdfhome.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import '../../../common/common.dart';
 
@@ -39,11 +43,7 @@ class _LoginState extends State<Login> {
         .then((userType) => {
               if (userType != "")
                 {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => SwitchRole(),
-                    ),
-                  )
+                Get.toNamed(Routes.CHOOSE_ROLE)
                 }
               // if not null redirect to switchRole
             })
@@ -159,11 +159,11 @@ class _LoginState extends State<Login> {
                     const SizedBox(height: 20.0),
                     SubmitButton(
                       onPressed: ()
-                          //                                    {
-                          //     Navigator.of(context).push(
-                          // MaterialPageRoute(builder: (context) => VdfHome()),
-                          //     );
-                          //   }
+                          //                                          {
+                          //   Navigator.of(context).push(
+                          //     MaterialPageRoute(builder: (context) => VdfHome()),
+                          //   );
+                          // }
                           async {
                         try {
                           Map<String, String> respBody = await loginApiService
@@ -195,7 +195,7 @@ class _LoginState extends State<Login> {
                             validationResult =
                                 e.toString().split('Exception:').last.trim();
                           });
-                          }
+                        }
                       },
                         ),
                     const SizedBox(height: 20.0),

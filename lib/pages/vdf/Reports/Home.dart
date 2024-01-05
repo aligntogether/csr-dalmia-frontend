@@ -69,10 +69,19 @@ class _HomeReportState extends State<HomeReport> {
       ) async {
     // final formattedStartDate = DateFormat('dd-MM-yyyy').format(startDate);
     // final formattedEndDate = DateFormat('dd-MM-yyyy').format(endDate);
-
+    print("$_startDate $_endDate");
+    var startDate = "23-09-2023";
+    var endDate = "24-12-2023";
+    var format = DateFormat('dd-MM-yyyy');
+    if (_startDate != null) {
+      startDate = format.format(_startDate!);
+    }
+    if (_endDate != null) {
+      endDate = format.format(_endDate!);
+    }
     final apiUrl =
         // 'http://192.168.1.28:8080/vdf-report?vdfId=10001&fromDate=$formattedStartDate&toDate=$formattedEndDate';
-        '$base/vdf-report?vdfId=10001&fromDate=23-09-2023&toDate=24-12-2023';
+        '$base/vdf-report?vdfId=10001&fromDate=$startDate&toDate=$endDate';
 
     final response = await http.get(Uri.parse(apiUrl));
 
@@ -112,6 +121,7 @@ class _HomeReportState extends State<HomeReport> {
         _startDate = picked.start;
         _endDate = picked.end;
       });
+      fetchReportData();
     }
   }
 

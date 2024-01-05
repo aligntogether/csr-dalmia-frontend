@@ -1,9 +1,13 @@
 import 'dart:async';
 
 import 'package:dalmia/Constants/constant_export.dart';
+import 'package:dalmia/app/modules/chooseRole/views/choose_role_view.dart';
+import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/models/AuthResponse.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:flutter/services.dart';
 import 'package:dalmia/pages/SwitchRole/switchRole.dart';
@@ -168,6 +172,7 @@ class _OtpState extends State<Otp> {
                           loginApiService
                               .loginViaOtp(int.tryParse(widget.mobileNumber!))
                               .then((value) => {
+                                    print(value),
                                     setState(() {
                                       loginController
                                               .selectMobileController.value =
@@ -251,10 +256,7 @@ class _OtpState extends State<Otp> {
       SharedPrefHelper.storeSharedPref(
           EMPLOYEE_SHAREDPREF_KEY, authResponse.employeeName);
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (BuildContext ctx) => SwitchRole()),
-      );
+      Get.toNamed(Routes.CHOOSE_ROLE);
     } catch (e) {
       // show error on screen
     }
@@ -267,7 +269,8 @@ class _OtpState extends State<Otp> {
   Future<AuthResponse> verifyOtp() async {
     setState(() {
       loginController.selectMobileController.value.text = widget.mobileNumber!;
-      loginController.otpTokenId = widget.otpTokenId;
+      if (loginController.otpTokenId == null)
+        loginController.otpTokenId = widget.otpTokenId;
       loginController.referenceId = widget.referenceId;
       loginController.userIdWithTimeStamp =
           'SWP${DateTime.now().millisecondsSinceEpoch}';
