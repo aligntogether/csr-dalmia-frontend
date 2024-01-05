@@ -1,3 +1,4 @@
+import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/Accounts/updatebudget.dart';
 import 'package:dalmia/pages/Accounts/updateexpenditure.dart';
@@ -15,6 +16,17 @@ class AccountsHome extends StatefulWidget {
 }
 
 class _AccountsHomeState extends State<AccountsHome> {
+  String name = "";
+  @override
+  void initState() {
+    super.initState();
+
+    SharedPrefHelper.getSharedPref(USER_NAME_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+              value == '' ? name = 'user' : name = value;
+            }));
+    ;
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -38,7 +50,7 @@ class _AccountsHomeState extends State<AccountsHome> {
                     alignment: Alignment.topLeft,
                     color: Colors.white,
                     child: Text(
-                      'Welcome Suresh!',
+                      'Welcome $name!',
                       style: TextStyle(
                         color: Colors.grey.shade700,
                         fontSize: 16,

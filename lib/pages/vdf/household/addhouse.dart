@@ -1,4 +1,5 @@
 import 'package:dalmia/apis/commonobject.dart';
+import 'package:dalmia/pages/vdf/Draft/draft.dart';
 import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
@@ -131,6 +132,7 @@ class MyForm extends StatefulWidget {
 }
 
 class _MyFormState extends State<MyForm> {
+  List<DraftHousehold> draftHouseholds = [];
   final _formKey = GlobalKey<FormState>();
   String? _selectedPanchayat;
   String? _selectedVillage;
@@ -142,7 +144,6 @@ class _MyFormState extends State<MyForm> {
 
   Future<void> _addHouseholdAPI(
       String vdfid, String streetid, String ishouseholdint) async {
-
     final apiUrl = '$base/add-household';
     final Map<String, dynamic> requestData = {
       'street_id': streetid,
@@ -170,9 +171,7 @@ class _MyFormState extends State<MyForm> {
         final String id = responseBody['resp_body']['id'].toString();
         print('Household Created Successfully with ID: $id');
         Navigator.of(context).push(
-          
-          MaterialPageRoute( 
-            
+          MaterialPageRoute(
             builder: (context) => AddHead(
               vdfid: '10001',
               id: id,
@@ -198,6 +197,12 @@ class _MyFormState extends State<MyForm> {
     fetchPanchayats().then((value) {
       setState(() {
         panchayats = value;
+      });
+    });
+    fetchDraftHouseholds().then((value) {
+      setState(() {
+        draftHouseholds = value;
+        print('length of draft is ${draftHouseholds.length}');
       });
     });
   }
@@ -415,8 +420,11 @@ class _MyFormState extends State<MyForm> {
                           _selectedVillage != null &&
                           _selectedStreet != null) {
                         if (_formKey.currentState?.validate() ?? false) {
-
-                          _addHouseholdAPI('10001', _selectedStreet!, '0');
+                          if (draftHouseholds.length >= 5) {
+                            _showConfirmationDialog(context);
+                          } else {
+                            _addHouseholdAPI('10001', _selectedStreet!, '0');
+                          }
                         }
                       }
                     },
@@ -433,282 +441,132 @@ class _MyFormState extends State<MyForm> {
       ),
     );
   }
+
+  void _showConfirmationDialog(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          alignment: Alignment.topCenter,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          titlePadding: EdgeInsets.all(0),
+          title: Padding(
+            padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+            child: SizedBox(
+              width: 200,
+              // height: 120,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Icon(Icons.close),
+                  ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(),
+                      child: const Text(
+                        'Households already in Drafts',
+                        style: TextStyle(
+                          fontSize: 16,
+                          // fontFamily: 'Inter',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          content: SizedBox(
+            width: 290,
+            height: 120,
+            child: Column(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.only(bottom: 10, left: 20, right: 10),
+                  child: const Text(
+                    'You already have 5 or more HH in the drafts section. Please edit or delete them to proceed.',
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                      color: Color(0xFF181818),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SizedBox(
+                      width: 157,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          // side: const BorderSide(),
+                          backgroundColor: CustomColorTheme.primaryColor,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const Draft(),
+                            ),
+                          );
+                          // Perform actions when 'Yes' is clicked
+                        },
+                        child: const Text(
+                          'Go to Drafts',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: CustomFontTheme.textSize,
+                            fontWeight: CustomFontTheme.labelwt,
+                            letterSpacing: 0.84,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<List<DraftHousehold>> fetchDraftHouseholds() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$base/get-draft-households'),
+        headers: <String, String>{
+          'vdfId': '10001',
+        },
+      );
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+
+        List<dynamic> draftHouseholdsData =
+            commonObject.respBody as List<dynamic>;
+        List<DraftHousehold> draftHouseholds = draftHouseholdsData
+            .map((model) =>
+                DraftHousehold.fromJson(model as Map<String, dynamic>))
+            .toList();
+
+        return draftHouseholds;
+      } else {
+        throw Exception('Failed to load panchayats: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
 }
-
-// import 'package:dalmia/pages/vdf/household/addhead.dart';
-// import 'package:flutter/material.dart';
-// import 'dart:convert';
-// import 'package:http/http.dart' as http;
-// // import 'package:flutter_config/flutter_config.dart';
-
-// // returns 'abcdefgh'
-// class Panchayat {
-//   final String id;
-//   final String name;
-
-//   Panchayat(this.id, this.name);
-// }
-
-// class Village {
-//   final String id;
-//   final String name;
-//   final String panchayatId;
-
-//   Village(this.id, this.name, this.panchayatId);
-// }
-
-// class Street {
-//   final String id;
-//   final String name;
-//   final String villageId;
-
-//   Street(this.id, this.name, this.villageId);
-// }
-
-// class MyForm extends StatefulWidget {
-//   @override
-//   _MyFormState createState() => _MyFormState();
-// }
-
-// class _MyFormState extends State<MyForm> {
-//   final _formKey = GlobalKey<FormState>();
-//   String? _selectedPanchayat;
-//   String? _selectedVillage;
-//   String? _selectedStreet;
-
-//   List<Panchayat> panchayats = [
-//     Panchayat('1', 'Panchayat 1'),
-//     Panchayat('2', 'Panchayat 2'),
-//     Panchayat('3', 'Panchayat 3')
-//   ];
-//   List<Village> villages = [
-//     Village('1', 'Village 1', '1'),
-//     Village('2', 'Village 2', '1'),
-//     Village('3', 'Village 3', '1'),
-//     Village('4', 'Village 4', '2'),
-//     Village('5', 'Village 6', '2'),
-//     Village('6', 'Village 5', '2'),
-//     Village('7', 'Village 7', '3'),
-//     Village('8', 'Village 8', '3'),
-//     Village('9', 'Village 9', '3'),
-//   ];
-//   List<Street> streets = [
-//     Street('1', 'Street 1', '1'),
-//     Street('2', 'Street 2', '1'),
-//     Street('3', 'Street 3', '1'),
-//     Street('4', 'Street 4', '2'),
-//     Street('5', 'Street 5', '2'),
-//     Street('6', 'Street 6', '2'),
-//     Street('7', 'Street 7', '3'),
-//     Street('8', 'Street 8', '3'),
-//     Street('9', 'Street 9', '3'),
-//     Street('9', 'Street 9', '3'),
-//     Street('10', 'Street 10', '4'),
-//     Street('11', 'Street 11', '4'),
-//   ];
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//       child: Scaffold(
-//         appBar: AppBar(
-//           automaticallyImplyLeading: false,
-//           elevation: 0,
-//           iconTheme: const IconThemeData(color: Color(0xFF181818)),
-//           centerTitle: true,
-//           title: const Text(
-//             'Add Household',
-//             style: TextStyle(color: Color(0xFF181818)),
-//           ),
-//           backgroundColor: Colors.grey[50],
-//           actions: <Widget>[
-//             IconButton(
-//               iconSize: 30,
-//               onPressed: () {
-//                 Navigator.of(context).pop();
-//               },
-//               icon: const Icon(
-//                 Icons.close,
-//                 color: Color(0xFF181818),
-//               ),
-//             ),
-//           ],
-//         ),
-//         body: Padding(
-//           padding: const EdgeInsets.all(16.0),
-//           child: Form(
-//             key: _formKey,
-//             child: Container(
-//               padding: const EdgeInsets.only(top: 20),
-//               child: Column(
-//                 mainAxisAlignment: MainAxisAlignment.start,
-//                 children: [
-//                   const SizedBox(height: 20),
-//                   Column(
-//                     children: [
-//                       const Padding(
-//                         padding: EdgeInsets.only(right: 100.0),
-//                         child: Text(
-//                           'Select Panchayat, Village & Street',
-//                           textAlign: TextAlign.start,
-//                           style: TextStyle(
-//                             fontSize: 18,
-//                             fontWeight: FontWeight.w700,
-//                           ),
-//                         ),
-//                       ),
-//                       const SizedBox(height: 20),
-//                       DropdownButtonFormField<String>(
-//                         value: _selectedPanchayat,
-//                         items: panchayats.map((Panchayat panchayat) {
-//                           return DropdownMenuItem<String>(
-//                             value: panchayat.id,
-//                             child: Text(panchayat.name),
-//                           );
-//                         }).toList(),
-//                         onChanged: (String? newValue) {
-//                           setState(() {
-//                             _selectedPanchayat = newValue;
-//                             _selectedVillage = null;
-//                             _selectedStreet = null;
-//                           });
-//                         },
-//                         decoration: InputDecoration(
-//                           labelText: 'Select a Panchayat',
-//                           border: OutlineInputBorder(
-//                             borderSide: const BorderSide(),
-//                             borderRadius: BorderRadius.circular(10),
-//                           ),
-//                           focusedBorder: const OutlineInputBorder(
-//                             borderSide: BorderSide(color: Color(0xFF181818)),
-//                           ),
-//                         ),
-//                         validator: (value) {
-//                           if (value == null || value.isEmpty) {
-//                             return 'Panchayat is required';
-//                           }
-//                           return null;
-//                         },
-//                       ),
-//                       const SizedBox(height: 20),
-//                       DropdownButtonFormField<String>(
-//                         // alignment: AlignmentDirectional.bottomEnd,
-//                         value: _selectedVillage,
-//                         items: villages
-//                             .where((village) =>
-//                                 village.panchayatId == _selectedPanchayat)
-//                             .map((Village village) {
-//                           return DropdownMenuItem<String>(
-//                             value: village.id,
-//                             child: Text(village.name),
-//                           );
-//                         }).toList(),
-//                         onChanged: _selectedPanchayat != null
-//                             ? (String? newValue) {
-//                                 setState(() {
-//                                   _selectedVillage = newValue;
-//                                   _selectedStreet = null;
-//                                 });
-//                               }
-//                             : null,
-//                         decoration: InputDecoration(
-//                           labelText: 'Select a Village',
-//                           border: OutlineInputBorder(
-//                             borderSide: const BorderSide(
-//                               color: Colors.grey,
-//                             ),
-//                             borderRadius: BorderRadius.circular(10),
-//                           ),
-//                           focusedBorder: const OutlineInputBorder(
-//                             borderSide: BorderSide(
-//                                 color:
-//                                     Color(0xFF181818)), // Change the color here
-//                           ),
-//                         ),
-//                         validator: (value) {
-//                           if (_selectedPanchayat == null ||
-//                               value == null ||
-//                               value.isEmpty) {
-//                             return 'Village is required';
-//                           }
-//                           return null;
-//                         },
-//                       ),
-//                       const SizedBox(height: 20),
-//                       DropdownButtonFormField<String>(
-//                         value: _selectedStreet,
-//                         items: streets
-//                             .where((street) =>
-//                                 street.villageId == _selectedVillage)
-//                             .map((Street street) {
-//                           return DropdownMenuItem<String>(
-//                             value: street.id,
-//                             child: Text(street.name),
-//                           );
-//                         }).toList(),
-//                         onChanged: _selectedVillage != null
-//                             ? (String? newValue) {
-//                                 setState(() {
-//                                   _selectedStreet = newValue;
-//                                 });
-//                               }
-//                             : null,
-//                         decoration: InputDecoration(
-//                           labelText: 'Select a Street',
-//                           border: OutlineInputBorder(
-//                             borderSide: const BorderSide(
-//                               color: Colors.grey,
-//                             ),
-//                             borderRadius: BorderRadius.circular(10),
-//                           ),
-//                           focusedBorder: const OutlineInputBorder(
-//                             borderSide: BorderSide(color: Color(0xFF181818)),
-//                             // Change the color here
-//                           ),
-//                         ),
-//                         validator: (value) {
-//                           if (_selectedVillage == null ||
-//                               value == null ||
-//                               value.isEmpty) {
-//                             return 'Street is required';
-//                           }
-//                           return null;
-//                         },
-//                       ),
-//                       const SizedBox(height: 20),
-//                       ElevatedButton(
-//                         style: ElevatedButton.styleFrom(
-//                           minimumSize: const Size(350, 50),
-//                           backgroundColor: _selectedPanchayat != null &&
-//                                   _selectedVillage != null &&
-//                                   _selectedStreet != null
-//                               ? Colors.blue[900]
-//                               : Colors.blue[100],
-//                         ),
-//                         onPressed: _selectedPanchayat != null &&
-//                                 _selectedVillage != null &&
-//                                 _selectedStreet != null
-//                             ? () {
-//                                 if (_formKey.currentState?.validate() ??
-//                                     false) {
-//                                   Navigator.of(context).push(
-//                                     MaterialPageRoute(
-//                                       builder: (context) => const AddHead(),
-//                                     ),
-//                                   );
-//                                 }
-//                               }
-//                             : null,
-//                         child: const Text('Next'),
-//                       ),
-//                     ],
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }

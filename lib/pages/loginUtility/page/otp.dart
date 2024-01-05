@@ -168,6 +168,17 @@ class _OtpState extends State<Otp> {
                           loginApiService
                               .loginViaOtp(int.tryParse(widget.mobileNumber!))
                               .then((value) => {
+                                    setState(() {
+                                      loginController
+                                              .selectMobileController.value =
+                                          loginController
+                                              .selectMobileController.value;
+                                      loginController.otpTokenId =
+                                          value['otpTokenId'];
+                                      loginController.referenceId =
+                                          value['referenceId'];
+                                      print(value['otpTokenId']);
+                                    }),
                                     startResendTimer(),
                                     setState(() {
                                       isResendEnabled =
@@ -181,7 +192,7 @@ class _OtpState extends State<Otp> {
                       child: Text(
                         isResendEnabled
                             ? 'Resend OTP'
-                            : ' ${resendTimer ~/ 60}:${(resendTimer % 60).toString().padLeft(2, '0')}',
+                            : 'Resend OTP in ${resendTimer ~/ 60}:${(resendTimer % 60).toString().padLeft(2, '0')} secs',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Color(0xFF0054A6),

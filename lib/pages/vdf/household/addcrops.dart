@@ -182,6 +182,7 @@ class _AddCropState extends State<AddCrop> {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
+          scrolledUnderElevation: 0,
           centerTitle: true,
           title: const Text(
             'Add Household',
@@ -204,7 +205,7 @@ class _AddCropState extends State<AddCrop> {
               ],
             ),
           ),
-          backgroundColor: Colors.grey[50],
+          // backgroundColor: Colors.grey[50],
           actions: <Widget>[
             IconButton(
               iconSize: 30,

@@ -22,13 +22,19 @@ class CEOHome extends StatefulWidget {
 
 class _CEOHomeState extends State<CEOHome> {
   int length = 0;
-
+  String name = "";
   @override
   void initState() {
     super.initState();
+    SharedPrefHelper.getSharedPref(USER_NAME_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+              value == '' ? name = 'user' : name = value;
+            }));
+    ;
     // fetchDataAndProcess(context);
     fetchData(context);
   }
+  
 
   Future<List<Map<String, dynamic>>> fetchData(BuildContext context) async {
     String userIdSharedPref = await SharedPrefHelper.getSharedPref(
@@ -103,7 +109,7 @@ class _CEOHomeState extends State<CEOHome> {
                     alignment: Alignment.topLeft,
                  
                     child: Text(
-                      'Welcome Suresh!',
+                      'Welcome $name!',
                       style: TextStyle(
                         color: Colors.grey.shade700,
                         fontSize: 16,

@@ -299,7 +299,7 @@ class _MyFormState extends State<AddFamily> {
                                 TextFormField(
                                   controller: _nameControllers[i],
                                   decoration: const InputDecoration(
-                                    labelText: 'Member Name *',
+                                    labelText: 'Member Name ',
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
@@ -314,7 +314,7 @@ class _MyFormState extends State<AddFamily> {
                                   ],
                                   controller: _mobileControllers[i],
                                   decoration: const InputDecoration(
-                                    labelText: 'Mobile Number *',
+                                    labelText: 'Mobile Number ',
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
@@ -336,7 +336,7 @@ class _MyFormState extends State<AddFamily> {
                                           readOnly:
                                               true, // Set the field to be read-only
                                           decoration: InputDecoration(
-                                            labelText: 'Date of Birth *',
+                                            labelText: 'Date of Birth ',
                                             contentPadding:
                                                 const EdgeInsets.symmetric(
                                                     horizontal: 16,
@@ -397,7 +397,7 @@ class _MyFormState extends State<AddFamily> {
                                     });
                                   },
                                   decoration: const InputDecoration(
-                                    labelText: 'Gender *',
+                                    labelText: 'Gender',
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
@@ -424,7 +424,7 @@ class _MyFormState extends State<AddFamily> {
                                     });
                                   },
                                   decoration: const InputDecoration(
-                                    labelText: 'Education *',
+                                    labelText: 'Education',
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
@@ -482,7 +482,7 @@ class _MyFormState extends State<AddFamily> {
                                     color: CustomColorTheme.iconColor,
                                   ),
                                   decoration: const InputDecoration(
-                                    labelText: 'Primary Employment *',
+                                    labelText: 'Primary Employment',
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),

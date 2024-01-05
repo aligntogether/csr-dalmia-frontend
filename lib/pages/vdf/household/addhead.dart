@@ -316,12 +316,14 @@ class _MyFormState extends State<AddHead> {
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
+                    
                     controller: _nameController,
                     decoration: const InputDecoration(
                       labelText: 'Head Name *',
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
+                    
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
@@ -377,6 +379,13 @@ class _MyFormState extends State<AddHead> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         child: TextFormField(
+                          
+                          // validator: (value) {
+                          //   if (value == null || value.isEmpty) {
+                          //     return '';
+                          //   }
+                          //   return null;
+                          // },
                           enabled: false,
                           decoration: InputDecoration(
                             labelText: selectedDate != null
