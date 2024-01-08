@@ -1,5 +1,7 @@
 
 const String USER_ID_SHAREDPREF_KEY = 'userId';
+const String USER_NAME_SHAREDPREF_KEY = 'employeeName';
+
 const String USER_TYPES_SHAREDPREF_KEY = 'userTypes';
 const String USER_TYPE_SHAREDPREF_KEY = 'userType';
 const String APP_NAME_SHAREDPREF_KEY = 'appName';

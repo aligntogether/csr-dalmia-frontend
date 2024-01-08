@@ -1,7 +1,13 @@
+import 'dart:async';
+
 import 'package:dalmia/Constants/constant_export.dart';
+import 'package:dalmia/app/modules/chooseRole/views/choose_role_view.dart';
+import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/models/AuthResponse.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:flutter/services.dart';
 import 'package:dalmia/pages/SwitchRole/switchRole.dart';
@@ -29,20 +35,39 @@ class _OtpState extends State<Otp> {
   String? validationResult;
   LoginController loginController = new LoginController();
   LoginApiService loginApiService = new LoginApiService();
-
+  bool isResendEnabled = false;
+  int resendTimer = 120; // 2 minutes in seconds
+  Timer? timer;
   @override
   void dispose() {
     textFieldFocusNode.dispose();
     pinEditingController.dispose();
+    timer?.cancel();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
+    // Start the countdown timer
+    startResendTimer();
     textFieldFocusNode.addListener(() {
       setState(() {
         isContainerVisible = !textFieldFocusNode.hasFocus;
+      });
+    });
+  }
+
+  void startResendTimer() {
+    timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+      setState(() {
+        if (resendTimer > 0) {
+          resendTimer--;
+        } else {
+          // Enable the resend button after 2 minutes
+          isResendEnabled = true;
+          timer!.cancel(); // Cancel the timer when it reaches 0
+        }
       });
     });
   }
@@ -138,7 +163,53 @@ class _OtpState extends State<Otp> {
                         focusNode: textFieldFocusNode,
                       ),
                     ),
-                    const SizedBox(height: 5.0),
+                    // const SizedBox(height: 5.0),
+                    GestureDetector(
+                      onTap: () {
+                        if (isResendEnabled) {
+                          // Handle resend OTP logic here
+                          // You can call the API to resend OTP and then start the timer again
+                          loginApiService
+                              .loginViaOtp(int.tryParse(widget.mobileNumber!))
+                              .then((value) => {
+                                    print(value),
+                                    setState(() {
+                                      loginController
+                                              .selectMobileController.value =
+                                          loginController
+                                              .selectMobileController.value;
+                                      loginController.otpTokenId =
+                                          value['otpTokenId'];
+                                      loginController.referenceId =
+                                          value['referenceId'];
+                                      print(value['otpTokenId']);
+                                    }),
+                                    startResendTimer(),
+                                    setState(() {
+                                      isResendEnabled =
+                                          false; // Disable the button during the timer
+                                      resendTimer =
+                                          120; // Reset the timer to 2 minutes
+                                    })
+                                  });
+                        }
+                      },
+                      child: Text(
+                        isResendEnabled
+                            ? 'Resend OTP'
+                            : 'Resend OTP in ${resendTimer ~/ 60}:${(resendTimer % 60).toString().padLeft(2, '0')} secs',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Color(0xFF0054A6),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          decoration: isResendEnabled
+                              ? TextDecoration.underline
+                              : TextDecoration.none,
+                        ),
+                      ),
+                    ),
+
                     // Display the error message with red color if there's an error
                     if (validationResult != null)
                       Padding(
@@ -185,17 +256,50 @@ class _OtpState extends State<Otp> {
       SharedPrefHelper.storeSharedPref(
           EMPLOYEE_SHAREDPREF_KEY, authResponse.employeeName);
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (BuildContext ctx) => SwitchRole()),
-      );
+      Get.toNamed(Routes.CHOOSE_ROLE);
     } catch (e) {
       // show error on screen
     }
   }
 
   Future<AuthResponse> verifyOtp() async {
-    return AuthResponse("14001", "GPL", "CSR", "", "", "", "TestName");
+
+    setState(() {
+      loginController.selectMobileController.value.text = widget.mobileNumber!;
+      if (loginController.otpTokenId == null)
+        loginController.otpTokenId = widget.otpTokenId;
+      loginController.referenceId = widget.referenceId;
+      loginController.userIdWithTimeStamp =
+          'SWP${DateTime.now().millisecondsSinceEpoch}';
+    });
+
+    Map<String, String> respBodyMap =
+        await loginApiService.checkValidUserOtp(loginController, otpCode);
+
+    if (respBodyMap == null) {
+      setState(() {
+        validationResult = "Something Went Wrong!";
+      });
+    }
+
+    Map<String, String> userRoleMap = await loginApiService
+        .getUserRoleByReferenceId(loginController.referenceId ?? '');
+
+    if (userRoleMap == null) {
+      setState(() {
+        validationResult = "Something Went Wrong!";
+      });
+    }
+
+    return AuthResponse(
+        loginController.referenceId!,
+        userRoleMap['userRole']!,
+        respBodyMap['appName']!, // appName
+        respBodyMap['accessToken']!, // accessToken
+        respBodyMap['refreshToken']!, //refreshToken
+        respBodyMap['platform']!, // platform
+        userRoleMap['userName']! // employeeName
+        );
   }
 
   // Future<AuthResponse> verifyOtp() async {

@@ -91,7 +91,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
   void _addMessage(message) {
     setState(() {
       print('nurgncguy : $message');
-      messages.insert(0, message);
+      messages.insert(messages.length, message);
     });
   }
 
@@ -106,7 +106,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
 
     if (sent) {
       setState(() {
-        messages.insert(0, 'message sent ......');
+        messages.insert(messages.length, 'message sent ......');
       });
       print('\n \n message sent ...... \n \n ');
       return sent;

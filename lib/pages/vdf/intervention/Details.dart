@@ -4,6 +4,7 @@ import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -11,11 +12,10 @@ String interventionname = '';
 
 class Details extends StatefulWidget {
   final String? interventionname;
+  final String? hid;
+  final String? interId;
 
-  const Details({
-    super.key,
-    this.interventionname,
-  });
+  const Details({super.key, this.interventionname, this.hid, this.interId});
 
   @override
   _DetailsState createState() => _DetailsState();
@@ -40,6 +40,43 @@ class _DetailsState extends State<Details> {
     }
   }
 
+  Future<void> assignIntervention(
+      String householdId, String interventionId) async {
+    print(householdId + " " + interventionId);
+    final String baseUrl = '$base/assign-interventions';
+    final String apiUrl =
+        '$baseUrl?householdId=$householdId&interventionId=$interventionId';
+
+    try {
+      final response = await http.post(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                EnterDetail(hid: widget.hid, interId: widget.interId),
+          ),
+        );
+
+        // Handle the response from the API as needed
+        print('API Response: $jsonResponse');
+      } else {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                EnterDetail(hid: widget.hid, interId: widget.interId),
+          ),
+        );
+        // Handle API error
+        print('Failed to call API: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle other errors, such as network issues
+      print('Error: $error');
+    }
+  }
+
   @override
   void initState() {
     fetchInterventionData();
@@ -60,7 +97,7 @@ class _DetailsState extends State<Details> {
               'Assign Intervention',
               style: TextStyle(color: Colors.black),
             ),
-            backgroundColor: Colors.grey[50],
+            // backgroundColor: Colors.grey[50],
             actions: <Widget>[
               IconButton(
                 iconSize: 30,
@@ -153,11 +190,7 @@ class _DetailsState extends State<Details> {
                           minimumSize: const Size(350, 50),
                         ),
                         onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => EnterDetail(),
-                            ),
-                          );
+                          assignIntervention(widget.hid!, widget.interId!);
                         },
                         child: const Text(
                           'Continue',
@@ -218,13 +251,14 @@ void _confirmitem(BuildContext context) {
           ],
         ),
         content: SizedBox(
-          height: 100,
+          height: 200,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            // mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(10),
+                  fixedSize: Size(250, 60),
                   backgroundColor: Colors.white,
                 ),
                 onPressed: () {
@@ -236,16 +270,26 @@ void _confirmitem(BuildContext context) {
                 },
                 child: Text(
                   'Save HH as draft and add intervention later ',
-                  style: TextStyle(color: CustomColorTheme.primaryColor),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: CustomColorTheme.primaryColor,
+                  ),
                 ),
+              ),
+              SizedBox(
+                height: 20,
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
+                    fixedSize: Size(250, 60),
                     backgroundColor: CustomColorTheme.primaryColor),
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text('Continue adding Intervention'),
+                child: const Text(
+                  'Continue adding Intervention',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),

@@ -12,7 +12,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-
 class RHHome extends StatefulWidget {
   const RHHome({Key? key}) : super(key: key);
 
@@ -27,8 +26,14 @@ class _RHHomeState extends State<RHHome> {
   void initState() {
     super.initState();
     // fetchDataAndProcess(context);
+    SharedPrefHelper.getSharedPref(USER_NAME_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+              value == '' ? name = 'user' : name = value;
+            }));
     fetchData(context);
   }
+
+  String name = "";
 
   Future<List<Map<String, dynamic>>> fetchData(BuildContext context) async {
     String userIdSharedPref = await SharedPrefHelper.getSharedPref(
@@ -67,6 +72,7 @@ class _RHHomeState extends State<RHHome> {
       return [];
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -90,7 +96,7 @@ class _RHHomeState extends State<RHHome> {
                     alignment: Alignment.topLeft,
                     color: Colors.white,
                     child: Text(
-                      'Welcome Suresh!',
+                      'Welcome $name',
                       style: TextStyle(
                         color: Colors.grey.shade700,
                         fontSize: 16,

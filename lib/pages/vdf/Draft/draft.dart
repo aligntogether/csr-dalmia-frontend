@@ -282,10 +282,13 @@ class _DraftState extends State<Draft> {
                         backgroundColor: MaterialStateProperty.all<Color>(
                             CustomColorTheme.backgroundColor),
                       ),
-                      onPressed: () {
+                      onPressed: checkedHousehols.length != 0
+                          ? () {
+                        
                         _deleteConfirmationDialog(context);
                         // deleteCheckedHousehold();
-                      },
+                            }
+                          : null,
                       child: const Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Text(

@@ -1,5 +1,8 @@
+import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/common/common.dart';
+import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
+import 'package:dalmia/pages/vdf/Reports/updateinter.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/dash.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
@@ -67,7 +70,18 @@ class _VdfHomeState extends State<VdfHome> {
       );
     }
   }
+@override
+  void initState() {
+    super.initState();
 
+    SharedPrefHelper.getSharedPref(USER_NAME_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+              value == '' ? name = 'user' : name = value;
+            }));
+    ;
+  }
+
+  String name = "";
   int selectedIndex = 0;
   bool toggle = false;
 
@@ -130,7 +144,7 @@ class _VdfHomeState extends State<VdfHome> {
                   alignment: Alignment.topLeft,
                   // color: Colors.white,
                   child: Text(
-                    'Welcome Suresh!',
+                    'Welcome $name!',
                     style: TextStyle(
                       color: Colors.grey.shade700,
                       fontSize: 16,

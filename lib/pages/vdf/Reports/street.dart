@@ -96,10 +96,12 @@ class _StreetReportState extends State<StreetReport> {
                 'incomeFollowUpDue': entry.value['incomeFollowUpDue'],
                 'selectedHHWithoutIntervention':
                     entry.value['selectedHHWithoutIntervention'],
+                'streetId': entry.value['streetId'],
                 'interventionStartedButNotCompleted':
                     entry.value['interventionStartedButNotCompleted'],
               }
           ];
+        
         });
       } else {
         throw Exception('Failed to load data: ${response.statusCode}');
@@ -108,7 +110,8 @@ class _StreetReportState extends State<StreetReport> {
       print('Error: $e');
     }
   }
-
+  String? Selectedstreet;
+  String? Selectedstreetid;
   int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -376,12 +379,21 @@ class _StreetReportState extends State<StreetReport> {
                         InkWell(
                           onTap: () {
                             setState(() {
-                              // selectedVillage = street['Name'];
+                              setState(() {
+                                Selectedstreet = street['streetName'];
+                                print('village name $Selectedstreet');
+                                Selectedstreetid =
+                                    street['streetId'].toString();
+                                print('street id $Selectedstreetid');
+                              });
+                              
                             });
 
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                  builder: (context) => HhidForm()),
+                                  builder: (context) => HhidForm(
+                                        streetid: Selectedstreetid,
+                                      )),
                             );
                           },
                           child: Text(
@@ -395,14 +407,15 @@ class _StreetReportState extends State<StreetReport> {
                         ),
                       ),
                       DataCell(
-                        Text('${street['incomeFollowUpDue'] ?? 0}'),
-                      ),
-                      DataCell(
-                        Text('${street['selectedHHWithoutIntervention'] ?? 0}'),
+                        Text('${street['incomeFollowUpDue'] ?? ''}'),
                       ),
                       DataCell(
                         Text(
-                            '${street['interventionStartedButNotCompleted'] ?? 0}'),
+                            '${street['selectedHHWithoutIntervention'] ?? ''}'),
+                      ),
+                      DataCell(
+                        Text(
+                            '${street['interventionStartedButNotCompleted'] ?? ''}'),
                       ),
                     ],
                   );
