@@ -142,69 +142,6 @@ class OverviewReportApiService {
   }
 
 
-  Future<String> validateDuplicatePanchayat(int clusterId, String panchayatName, String panchayatCode) async {
-
-    try {
-      String url = '$base/validate-duplicate-panchayat?clusterId=$clusterId&panchayatName=$panchayatName&panchayatCode=$panchayatCode';
-
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
-
-      if (response.statusCode == 200) {
-        print("API Response: ${response.body}");
-
-        // Parse the response and extract regionId and region
-        final Map<String, dynamic> respBody = json.decode(response.body);
-        if (respBody.containsKey('resp_msg')) {
-          final String duplicatePanchayatResMessage = respBody['resp_msg'];
-
-          return duplicatePanchayatResMessage; // Returning a map with 'clusters' key containing the list
-        } else {
-          throw Exception('Response format does not contain expected data');
-        }
-      } else {
-        print("API Error Response: ${response.body}");
-        throw Exception('Failed to load data. Status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      print("Error making API request: $e");
-      throw Exception('Error making API request: $e');
-    }
-  }
-
-
-  Future<String> replaceVdf(int clusterId, String vdfName) async {
-
-    try {
-      String url = '$base/replace-vdf-for-cluster?clusterId=$clusterId&vdfName=$vdfName';
-
-
-
-      final response = await http.put(Uri.parse(url)).timeout(Duration(seconds: 30));
-
-
-      if (response.statusCode == 200) {
-        print("API Response: ${response.body}");
-
-        // Parse the response and extract regionId and region
-        final Map<String, dynamic> respBody = json.decode(response.body);
-
-        if (respBody.containsKey('resp_msg')) {
-          final String replaceVdfResMessage = respBody['resp_msg'];
-
-          return replaceVdfResMessage; // Returning a map with 'clusters' key containing the list
-        } else {
-          throw Exception('Response format does not contain expected data');
-        }
-      } else {
-        print("API Error Response: ${response.body}");
-        throw Exception('Failed to add panchayat. Status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      print("Error making API request: $e");
-      throw Exception('Error making API request: $e');
-    }
-  }
-
 
   Future<List<Map<String, Map<String, dynamic>>>> getPanIndiaReport(List<String> allLocations, List<String> objectKeys) async {
     try {
@@ -310,7 +247,7 @@ class OverviewReportApiService {
 
           List<Map<String, Map<String, dynamic>>> overviewMappedList = await generateOverviewList(locations, allLocations, objectKeys);
 
-          print("overviewMappedList : $overviewMappedList");
+          print("regionWiseMappedList : $overviewMappedList");
 
           if (overviewMappedList.isEmpty)
             return [];
@@ -318,6 +255,67 @@ class OverviewReportApiService {
           return overviewMappedList; // Returning a map with 'locations' key containing the data
         } else {
           throw Exception('Data not found in the response');
+        }
+      } else {
+        throw Exception('Failed to load data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error making API request: $e');
+    }
+  }
+
+
+  Future<List<Map<String, Map<String, dynamic>>>> getLocationWiseReport(List<String> allLocations, List<String> objectKeys, int locationId) async {
+    try {
+
+      String url = '$base/location-wise-report?locationId=$locationId';
+
+      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+
+      if (response.statusCode == 200) {
+        print("API Response: ${response.body}");
+
+        final Map<String, dynamic> respBody = json.decode(response.body);
+
+        if (respBody.containsKey('resp_msg') && respBody['resp_msg'] == 'Data Found') {
+          final Map<String, dynamic> respData = respBody['resp_body'];
+
+          // Example: Extracting the data for each location
+          final Map<String, Map<String, dynamic>> locations = respData.map((location, data) {
+            return MapEntry(
+              location,
+              {
+                'allotted': data['allotted'],
+                'mapped': data['mapped'],
+                'selected': data['selected'],
+                'hhCovered': data['hhCovered'],
+                'planned': data['planned'],
+                'completed': data['completed'],
+                'householdWithAtLeast1Completed': data['householdWithAtLeast1Completed'],
+                'noInterventionPlanned': data['noInterventionPlanned'],
+                'followupOverdue': data['followupOverdue'],
+                'zeroAdditionalIncome': data['zeroAdditionalIncome'],
+                'lessThan25KIncome': data['lessThan25KIncome'],
+                'between25KTO50KIncome': data['between25KTO50KIncome'],
+                'between50KTO75KIncome': data['between50KTO75KIncome'],
+                'between75KTO1LIncome': data['between75KTO1LIncome'],
+                'moreThan1LIncome': data['moreThan1LIncome'],
+
+              },
+            );
+          });
+
+
+          List<Map<String, Map<String, dynamic>>> overviewMappedList = await generateOverviewList(locations, allLocations, objectKeys);
+
+          print("regionWiseMappedList : $overviewMappedList");
+
+          if (overviewMappedList.isEmpty)
+            return [];
+
+          return overviewMappedList; // Returning a map with 'locations' key containing the data
+        } else {
+          return [];
         }
       } else {
         throw Exception('Failed to load data. Status code: ${response.statusCode}');
@@ -338,10 +336,11 @@ class OverviewReportApiService {
     // Iterate through each key (e.g., "allotted", "mapped", etc.)
     for (String key in keys) {
       Map<String, dynamic> keyValues = {};
-      int southSum = 0;
-      int neSum = 0;
-      int eastSum = 0;
-      int sugarSum = 0;
+      num southSum = 0;
+      num neSum = 0;
+      num eastSum = 0;
+      num sugarSum = 0;
+      num totalSum = 0;
 
       var allLocations = ["DPM", "ALR", "BGM", "KDP", "CHA", "SOUTH",
         "MEG", "UMG", "JGR", "LAN","NE",
@@ -354,8 +353,9 @@ class OverviewReportApiService {
         if (panIndiaOverview.containsKey(location)) {
           // Add the value for the current key and location
           keyValues[location] = panIndiaOverview[location]![key] ?? 0;
+          totalSum += panIndiaOverview[location]![key] ?? 0;
           if (location == "DPM" || location == "ALR" || location == "BGM" || location == "KDP" || location == "CHA")
-            southSum = panIndiaOverview[location]![key] ?? 0;
+            southSum += panIndiaOverview[location]![key] ?? 0; // ! at end
           else if (location == "MEG" || location == "UMG" || location == "JGR" || location == "LAN")
             neSum = panIndiaOverview[location]![key] ?? 0;
           else if (location == "CUT" || location == "MED" || location == "BOK" || location == "RAJ" || location == "KAL")
@@ -381,6 +381,8 @@ class OverviewReportApiService {
           keyValues[location] = sugarSum ?? 0;
         else if (location == "PANIND")
           keyValues[location] = ((southSum ?? 0) + (neSum ?? 0) + (eastSum ?? 0) + (sugarSum ?? 0)) ?? 0;
+        else if (location == "TOTAL")
+          keyValues[location] = totalSum ?? 0;
 
       }
 
@@ -390,6 +392,7 @@ class OverviewReportApiService {
     overviewList.add(overviewMap);
     return overviewList;
   }
+
 
 
 }

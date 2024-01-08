@@ -15,6 +15,10 @@ class OverviewPanController extends GetxController {
   List<Map<String, dynamic>>? clusters;
   List<Map<String, Map<String, dynamic>>>? overviewMappedList;
   List<Map<String, Map<String, dynamic>>>? regionWiseMappedList;
+  List<Map<String, Map<String, dynamic>>>? locationWiseMappedList;
+  List<String>? particularWiseList;
+  List<String>? vdfNames;
+
 
 
   void updateLocations(List<Map<String, dynamic>> locations) {
@@ -32,8 +36,22 @@ class OverviewPanController extends GetxController {
     update(["add"]);
   }
 
-void updateRegionWiseMappedList(List<Map<String, Map<String, dynamic>>> regionWiseMappedList) {
+  void updateParticularWiseList(List<String> particularWiseList) {
+    this.particularWiseList = particularWiseList;
+    update(["add"]);
+  }
+
+  void updateLocationVdfNames(List<String> vdfNames) {
+    this.vdfNames = vdfNames;
+    update(["add"]);
+  }
+
+  void updateRegionWiseMappedList(List<Map<String, Map<String, dynamic>>> regionWiseMappedList) {
     this.regionWiseMappedList = regionWiseMappedList;
+    update(["add"]);
+  }
+  void updateLocationWiseMappedList(List<Map<String, Map<String, dynamic>>> locationWiseMappedList) {
+    this.locationWiseMappedList = locationWiseMappedList;
     update(["add"]);
   }
 

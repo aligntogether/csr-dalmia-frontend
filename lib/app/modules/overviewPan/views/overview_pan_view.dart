@@ -169,8 +169,17 @@ class _OverviewPanViewState extends State<OverviewPanView> {
 
                                   List<Map<String, Map<String, dynamic>>> regionWiseMappedList = await overviewReportApiService.getRegionWiseReport(locationsCode, controller.objectKeys, controller.selectRegionId!);
 
+                                  print("regionWiseMappedList : $regionWiseMappedList \n\n");
+                                  // print("regionWiseMappedList1 : ${regionWiseMappedList[0]}");
+                                  // print("regionWiseMappedList2 : ${regionWiseMappedList[0]["allotted"]}");
+                                  // print("regionWiseMappedList3 : ${regionWiseMappedList[0]["mapped"]!["DPM"]}");
+                                  // print("regionWiseMappedList3 : ${regionWiseMappedList[0]["mapped"]!["TOTAL"]}");
+
                                   setState(() {
                                     controller.updateRegionWiseMappedList(regionWiseMappedList);
+                                    controller.updateParticularWiseList(locationsCode);
+                                    controller.locationWiseMappedList = null;
+                                    controller.vdfNames = null;
                                   });
 
 
@@ -251,9 +260,45 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                                 print("clusters.length : ${clusters.length}");
                                 print("clusters : $clusters");
 
-                                controller.updateClusters(clusters);
+
+                                setState(() {
+                                  controller.updateClusters(clusters);
+                                });
                                 controller.update(["add"]);
+
+
+                                var clustersVdfNameList = clusters.map((
+                                    cluster) => cluster['vdfName'].toString())
+                                    .toList();
+                                clustersVdfNameList.add("TOTAL");
+
+                                List<Map<String,
+                                    Map<String,
+                                        dynamic>>> locationWiseMappedList = await overviewReportApiService
+                                    .getLocationWiseReport(
+                                    clustersVdfNameList, controller.objectKeys,
+                                    controller.selectLocationId!);
+
+                                if (locationWiseMappedList.isNotEmpty) {
+                                  setState(() {
+                                    controller.updateLocationWiseMappedList(
+                                        locationWiseMappedList);
+                                    controller.updateLocationVdfNames(
+                                        clustersVdfNameList);
+                                  });
+                                }
+
+                                if (locationWiseMappedList.isEmpty) {
+                                  setState(() {
+                                    controller.updateLocationWiseMappedList([]);
+                                  });
+                                }
+
+
                               }
+
+
+                              print("controller.vdfNames : ${controller.vdfNames}");
 
                               // setState(() {
                               //   controller.selectClusterId =
@@ -288,7 +333,7 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                             ? allRegionsTables(0)
                             : controller.selectLocation == null &&
                                     controller.selectRegion != "All Regions"
-                                ? tableDataLocation()
+                                ? tableDataLocation(0)
                                 : tableDataLocationView()
                         : SizedBox();
                   },
@@ -1496,87 +1541,87 @@ class _OverviewPanViewState extends State<OverviewPanView> {
 
   }
 
-  Widget tableDataLocation() {
+  Widget tableDataLocation(int i) {
 
-    // List<DataColumn> dataColumns = [];
-    //
-    // // Create the "Details" DataColumn
-    // dataColumns.add(DataColumn(
-    //   label: Expanded(
-    //     child: Container(
-    //       height: 60,
-    //       decoration: BoxDecoration(
-    //         color: Color(0xff008CD3),
-    //         borderRadius: BorderRadius.only(
-    //           topLeft: Radius.circular(10.0),
-    //         ),
-    //       ),
-    //       padding: EdgeInsets.only(left: 10),
-    //       child: Center(
-    //         child: Text(
-    //           'Details',
-    //           style: TextStyle(
-    //             fontWeight: CustomFontTheme.headingwt,
-    //             fontSize: CustomFontTheme.textSize,
-    //             color: Colors.white,
-    //           ),
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // ));
-    //
-    // // Create DataColumns based on controller.locationName
-    // for (String location in controller.locations!.map((location) => location['locationCode'].toString()).toList()) {
-    //   dataColumns.add(DataColumn(
-    //     label: Container(
-    //       height: 60,
-    //       width: 80,
-    //       color: Color(0xff008CD3),
-    //       padding: EdgeInsets.symmetric(horizontal: 10),
-    //       child: Center(
-    //         child: Text(
-    //           location,
-    //           style: TextStyle(
-    //             fontWeight: CustomFontTheme.headingwt,
-    //             fontSize: CustomFontTheme.textSize,
-    //             color: Colors.white,
-    //           ),
-    //         ),
-    //       ),
-    //     ),
-    //   ));
-    // }
-    //
-    // // Add the "Total" DataColumn
-    // dataColumns.add(DataColumn(
-    //   label: Container(
-    //     decoration: BoxDecoration(
-    //       color: Color(0xff096C9F),
-    //       borderRadius: BorderRadius.only(
-    //         topRight: Radius.circular(10.0),
-    //       ),
-    //     ),
-    //     height: 60,
-    //     width: 80,
-    //     padding: EdgeInsets.symmetric(horizontal: 10),
-    //     child: Center(
-    //       child: Text(
-    //         'Total',
-    //         style: TextStyle(
-    //           fontWeight: CustomFontTheme.headingwt,
-    //           fontSize: CustomFontTheme.textSize,
-    //           color: Colors.white,
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // ));
+    List<DataColumn> dataColumns = [];
+
+    // Create the "Details" DataColumn
+    dataColumns.add(DataColumn(
+      label: Expanded(
+        child: Container(
+          height: 60,
+          decoration: BoxDecoration(
+            color: Color(0xff008CD3),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10.0),
+            ),
+          ),
+          padding: EdgeInsets.only(left: 10),
+          child: Center(
+            child: Text(
+              'Details',
+              style: TextStyle(
+                fontWeight: CustomFontTheme.headingwt,
+                fontSize: CustomFontTheme.textSize,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ),
+    ));
+
+    // Create DataColumns based on controller.locationName
+    for (String location in controller.locations!.map((location) => location['locationCode'].toString()).toList()) {
+      dataColumns.add(DataColumn(
+        label: Container(
+          height: 60,
+          width: 80,
+          color: Color(0xff008CD3),
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: Center(
+            child: Text(
+              location,
+              style: TextStyle(
+                fontWeight: CustomFontTheme.headingwt,
+                fontSize: CustomFontTheme.textSize,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ));
+    }
+
+    // Add the "Total" DataColumn
+    dataColumns.add(DataColumn(
+      label: Container(
+        decoration: BoxDecoration(
+          color: Color(0xff096C9F),
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(10.0),
+          ),
+        ),
+        height: 60,
+        width: 80,
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Center(
+          child: Text(
+            'Total',
+            style: TextStyle(
+              fontWeight: CustomFontTheme.headingwt,
+              fontSize: CustomFontTheme.textSize,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    ));
 
 
 
     return Visibility(
-        visible: true /* controller.regionWiseMappedList != null && controller.regionWiseMappedList!.isNotEmpty */,
+        visible: controller.regionWiseMappedList != null && controller.regionWiseMappedList!.isNotEmpty,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
@@ -1596,138 +1641,7 @@ class _OverviewPanViewState extends State<OverviewPanView> {
               ),
               columnSpacing: 0,
               horizontalMargin: 0,
-              columns: <DataColumn>[
-                DataColumn(
-                  label: Expanded(
-                    child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                          color: Color(0xff008CD3),
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10.0))),
-                      padding: EdgeInsets.only(left: 10),
-                      child: Center(
-                        child: Text(
-                          'Details',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Container(
-                    height: 60,
-                    width: 80,
-                    color: Color(0xff008CD3),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Center(
-                      child: Text(
-                        'DPM',
-                        style: TextStyle(
-                            fontWeight: CustomFontTheme.headingwt,
-                            fontSize: CustomFontTheme.textSize,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Container(
-                    height: 60,
-                    width: 80,
-                    color: Color(0xff008CD3),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Center(
-                      child: Text(
-                        'ALR',
-                        style: TextStyle(
-                            fontWeight: CustomFontTheme.headingwt,
-                            fontSize: CustomFontTheme.textSize,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Container(
-                    height: 60,
-                    width: 80,
-                    color: Color(0xff008CD3),
-                    child: Center(
-                      child: Text(
-                        'BGM',
-                        style: TextStyle(
-                            fontWeight: CustomFontTheme.headingwt,
-                            fontSize: CustomFontTheme.textSize,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Container(
-                    height: 60,
-                    width: 80,
-                    color: Color(0xff008CD3),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Center(
-                      child: Text(
-                        'KDP',
-                        style: TextStyle(
-                            fontWeight: CustomFontTheme.headingwt,
-                            fontSize: CustomFontTheme.textSize,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Container(
-                    height: 60,
-                    width: 80,
-                    color: Color(0xff008CD3),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Center(
-                      child: Text(
-                        'CHA',
-                        style: TextStyle(
-                            fontWeight: CustomFontTheme.headingwt,
-                            fontSize: CustomFontTheme.textSize,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-
-                //PANIND
-                DataColumn(
-                  label: Container(
-                    decoration: BoxDecoration(
-                        color: Color(0xff096C9F),
-                        borderRadius:
-                        BorderRadius.only(topRight: Radius.circular(10.0))),
-                    height: 60,
-                    width: 80,
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Center(
-                      child: Text(
-                        'Total',
-                        style: TextStyle(
-                            fontWeight: CustomFontTheme.headingwt,
-                            fontSize: CustomFontTheme.textSize,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-
-
-
+              columns: dataColumns,
               rows: List<DataRow>.generate(
                 controller.locationsList.length,
                 (index) => DataRow(
@@ -1774,148 +1688,31 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         ),
                       ),
                     ),
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locationsList[index] == "Households" ||
-                                    controller.locationsList[index] ==
-                                        "Interventions" ||
-                                    controller.locationsList[index] ==
-                                        "HH with Annual\nAddl. Income"
-                                ? ""
-                                : controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
+
+                    for (String location in controller.locations!.map((location) => location['locationCode'].toString()).toList())
+                    // for (String key in controller.objectKeys)
+                      DataCell(
+                        Row(
+                          children: [
+                            Spacer(),
+                            Text(
+                              (controller.locationsList[index] == "Households" ||
+                                  controller.locationsList[index] == "Interventions" ||
+                                  controller.locationsList[index] == "HH with Annual\nAddl. Income"
+                                  ? ""
+                                  : controller.regionWiseMappedList![0][controller.locationsListMapping[index]] != null ? controller.regionWiseMappedList![0][controller.locationsListMapping[index]]![location].toString() : '0'),
+                              // : controller.DPM[index].toString()),
+                              style: AppStyle.textStyleInterMed(fontSize: 14),
+                            ),
+                            Spacer(),
+                            VerticalDivider(
+                              width: 1,
+                              color: Color(0xff181818).withOpacity(0.3),
+                              thickness: 1,
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    //alr
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locationsList[index] == "Households" ||
-                                    controller.locationsList[index] ==
-                                        "Interventions" ||
-                                    controller.locationsList[index] ==
-                                        "HH with Annual\nAddl. Income"
-                                ? ""
-                                : controller.ALR[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),
-                    //bgm
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locationsList[index] == "Households" ||
-                                    controller.locationsList[index] ==
-                                        "Interventions" ||
-                                    controller.locationsList[index] ==
-                                        "HH with Annual\nAddl. Income"
-                                ? ""
-                                : controller.BGM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),
-                    //kdp
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locationsList[index] == "Households" ||
-                                    controller.locationsList[index] ==
-                                        "Interventions" ||
-                                    controller.locationsList[index] ==
-                                        "HH with Annual\nAddl. Income"
-                                ? ""
-                                : controller.KDP[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),
-                    //cha
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locationsList[index] == "Households" ||
-                                    controller.locationsList[index] ==
-                                        "Interventions" ||
-                                    controller.locationsList[index] ==
-                                        "HH with Annual\nAddl. Income"
-                                ? ""
-                                : controller.CHA[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),
-                    // DataCell(
-                    //   Row(
-                    //     children: [
-                    //       Spacer(),
-                    //       Text(
-                    //         (controller.locationsList[index] == "Households" ||
-                    //                 controller.locationsList[index] ==
-                    //                     "Interventions" ||
-                    //                 controller.locationsList[index] ==
-                    //                     "HH with Annual\nAddl. Income"
-                    //             ? ""
-                    //             : controller.CHA[index].toString()),
-                    //         style: AppStyle.textStyleInterMed(fontSize: 14),
-                    //       ),
-                    //       Spacer(),
-                    //       VerticalDivider(
-                    //         width: 1,
-                    //         color: Color(0xff181818).withOpacity(0.3),
-                    //         thickness: 1,
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
 
                     ///__________________________ South _______________________
                     DataCell(
@@ -1931,7 +1728,8 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                                     controller.locationsList[index] ==
                                         "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.SOUTH[index].toString(),
+                                : controller.regionWiseMappedList![0][controller.locationsListMapping[index]] != null ? controller.regionWiseMappedList![0][controller.locationsListMapping[index]]!["TOTAL"].toString() : '0',
+                                // : controller.SOUTH[index].toString(),
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14, color: Colors.white),
                           ),
@@ -1985,8 +1783,88 @@ class _OverviewPanViewState extends State<OverviewPanView> {
     replacement: Container());
   }
 
+
   Widget tableDataLocationView() {
-    return SingleChildScrollView(
+
+    List<DataColumn> dataColumns = [];
+
+    // Create the "Details" DataColumn
+    dataColumns.add(DataColumn(
+      label: Expanded(
+        child: Container(
+          height: 60,
+          decoration: BoxDecoration(
+            color: Color(0xff008CD3),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10.0),
+            ),
+          ),
+          padding: EdgeInsets.only(left: 10),
+          child: Center(
+            child: Text(
+              'Details',
+              style: TextStyle(
+                fontWeight: CustomFontTheme.headingwt,
+                fontSize: CustomFontTheme.textSize,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ),
+    ));
+
+    // Create DataColumns based on controller.locationName
+    for (int i = 0; i < controller.clusters!.map((cluster) => cluster['clusterId'].toString()).toList().length; i++) {
+      dataColumns.add(DataColumn(
+        label: Container(
+          height: 60,
+          width: 80,
+          color: Color(0xff008CD3),
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: Center(
+            child: Text(
+              "VDF ${i+1}",
+              style: TextStyle(
+                fontWeight: CustomFontTheme.headingwt,
+                fontSize: CustomFontTheme.textSize,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ));
+    }
+
+    // Add the "Total" DataColumn
+    dataColumns.add(DataColumn(
+      label: Container(
+        decoration: BoxDecoration(
+          color: Color(0xff096C9F),
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(10.0),
+          ),
+        ),
+        height: 60,
+        width: 80,
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Center(
+          child: Text(
+            'Total',
+            style: TextStyle(
+              fontWeight: CustomFontTheme.headingwt,
+              fontSize: CustomFontTheme.textSize,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    ));
+
+
+    return Visibility(
+      visible: controller.locationWiseMappedList != null && controller.locationWiseMappedList!.isNotEmpty,
+      child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -2005,148 +1883,20 @@ class _OverviewPanViewState extends State<OverviewPanView> {
               ),
               columnSpacing: 0,
               horizontalMargin: 0,
-              columns: <DataColumn>[
-                DataColumn(
-                  label: Expanded(
-                    child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                          color: Color(0xff008CD3),
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10.0))),
-                      padding: EdgeInsets.only(left: 10),
-                      child: Center(
-                        child: Text(
-                          'Details',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Container(
-                    height: 60,
-                    width: 80,
-                    color: Color(0xff008CD3),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Center(
-                      child: Text(
-                        'VDF1',
-                        style: TextStyle(
-                            fontWeight: CustomFontTheme.headingwt,
-                            fontSize: CustomFontTheme.textSize,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Container(
-                    height: 60,
-                    width: 80,
-                    color: Color(0xff008CD3),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Center(
-                      child: Text(
-                        'VDF2',
-                        style: TextStyle(
-                            fontWeight: CustomFontTheme.headingwt,
-                            fontSize: CustomFontTheme.textSize,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Container(
-                    height: 60,
-                    width: 80,
-                    color: Color(0xff008CD3),
-                    child: Center(
-                      child: Text(
-                        'VDF3',
-                        style: TextStyle(
-                            fontWeight: CustomFontTheme.headingwt,
-                            fontSize: CustomFontTheme.textSize,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Container(
-                    height: 60,
-                    width: 80,
-                    color: Color(0xff008CD3),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Center(
-                      child: Text(
-                        'VDF4',
-                        style: TextStyle(
-                            fontWeight: CustomFontTheme.headingwt,
-                            fontSize: CustomFontTheme.textSize,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Container(
-                    height: 60,
-                    width: 80,
-                    color: Color(0xff008CD3),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Center(
-                      child: Text(
-                        'VDF5',
-                        style: TextStyle(
-                            fontWeight: CustomFontTheme.headingwt,
-                            fontSize: CustomFontTheme.textSize,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-
-                //PANIND
-                DataColumn(
-                  label: Container(
-                    decoration: BoxDecoration(
-                        color: Color(0xff096C9F),
-                        borderRadius:
-                            BorderRadius.only(topRight: Radius.circular(10.0))),
-                    height: 60,
-                    width: 80,
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Center(
-                      child: Text(
-                        'Total',
-                        style: TextStyle(
-                            fontWeight: CustomFontTheme.headingwt,
-                            fontSize: CustomFontTheme.textSize,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              columns: dataColumns,
               rows: List<DataRow>.generate(
                 controller.locationsList.length,
-                (index) => DataRow(
+                    (index) => DataRow(
                   color: MaterialStateColor.resolveWith(
-                    (states) {
+                        (states) {
                       return controller.locationsList[index] == "Households" ||
-                              controller.locationsList[index] == "Interventions" ||
-                              controller.locationsList[index] ==
-                                  "HH with Annual\nAddl. Income"
+                          controller.locationsList[index] == "Interventions" ||
+                          controller.locationsList[index] ==
+                              "HH with Annual\nAddl. Income"
                           ? Color(0xff008CD3).withOpacity(0.3)
                           : index.isEven
-                              ? Colors.blue.shade50
-                              : Colors.white;
+                          ? Colors.blue.shade50
+                          : Colors.white;
                     },
                   ),
                   cells: [
@@ -2159,15 +1909,15 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                             Text(
                               controller.locationsList[index],
                               style: controller.locationsList[index] ==
-                                          "Households" ||
-                                      controller.locationsList[index] ==
-                                          "Interventions" ||
-                                      controller.locationsList[index] ==
-                                          "HH with Annual\nAddl. Income"
+                                  "Households" ||
+                                  controller.locationsList[index] ==
+                                      "Interventions" ||
+                                  controller.locationsList[index] ==
+                                      "HH with Annual\nAddl. Income"
                                   ? TextStyle(
-                                      color: CustomColorTheme.textColor,
-                                      fontWeight: CustomFontTheme.headingwt,
-                                      fontSize: CustomFontTheme.textSize)
+                                  color: CustomColorTheme.textColor,
+                                  fontWeight: CustomFontTheme.headingwt,
+                                  fontSize: CustomFontTheme.textSize)
                                   : AppStyle.textStyleInterMed(fontSize: 14),
                             ),
                             Spacer(),
@@ -2180,125 +1930,34 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         ),
                       ),
                     ),
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locationsList[index] == "Households" ||
-                                    controller.locationsList[index] ==
-                                        "Interventions" ||
-                                    controller.locationsList[index] ==
-                                        "HH with Annual\nAddl. Income"
-                                ? ""
-                                : controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
+
+                    for (String cluster in controller.clusters!.map((cluster) => cluster['vdfName'].toString()).toList())
+                    // for (String key in controller.objectKeys)
+                      DataCell(
+                        Row(
+                          children: [
+                            Spacer(),
+                            Text(
+                              (controller.locationsList[index] == "Households" ||
+                                  controller.locationsList[index] == "Interventions" ||
+                                  controller.locationsList[index] == "HH with Annual\nAddl. Income"
+                                  ? ""
+                                  : controller.locationWiseMappedList!.isNotEmpty ?
+                              (controller.locationWiseMappedList![0][controller.locationsListMapping[index]] != null ? controller.locationWiseMappedList![0][controller.locationsListMapping[index]]![cluster].toString() : '0')
+                                  : '0'),
+                                  // : controller.locationWiseMappedList![0][controller.locationsListMapping[index]] != null ? controller.locationWiseMappedList![0][controller.locationsListMapping[index]]![cluster].toString() : '0'),
+                              // : controller.DPM[index].toString()),
+                              style: AppStyle.textStyleInterMed(fontSize: 14),
+                            ),
+                            Spacer(),
+                            VerticalDivider(
+                              width: 1,
+                              color: Color(0xff181818).withOpacity(0.3),
+                              thickness: 1,
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    //alr
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locationsList[index] == "Households" ||
-                                    controller.locationsList[index] ==
-                                        "Interventions" ||
-                                    controller.locationsList[index] ==
-                                        "HH with Annual\nAddl. Income"
-                                ? ""
-                                : controller.ALR[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),
-                    //bgm
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locationsList[index] == "Households" ||
-                                    controller.locationsList[index] ==
-                                        "Interventions" ||
-                                    controller.locationsList[index] ==
-                                        "HH with Annual\nAddl. Income"
-                                ? ""
-                                : controller.BGM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),
-                    //kdp
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locationsList[index] == "Households" ||
-                                    controller.locationsList[index] ==
-                                        "Interventions" ||
-                                    controller.locationsList[index] ==
-                                        "HH with Annual\nAddl. Income"
-                                ? ""
-                                : controller.KDP[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),
-                    //cha
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locationsList[index] == "Households" ||
-                                    controller.locationsList[index] ==
-                                        "Interventions" ||
-                                    controller.locationsList[index] ==
-                                        "HH with Annual\nAddl. Income"
-                                ? ""
-                                : controller.CHA[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),
 
                     ///__________________________ South _______________________
                     DataCell(
@@ -2309,12 +1968,15 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         child: Center(
                           child: Text(
                             controller.locationsList[index] == "Households" ||
-                                    controller.locationsList[index] ==
-                                        "Interventions" ||
-                                    controller.locationsList[index] ==
-                                        "HH with Annual\nAddl. Income"
+                                controller.locationsList[index] ==
+                                    "Interventions" ||
+                                controller.locationsList[index] ==
+                                    "HH with Annual\nAddl. Income"
                                 ? ""
-                                : controller.SOUTH[index].toString(),
+                                : controller.locationWiseMappedList!.isNotEmpty ?
+                                    (controller.locationWiseMappedList![0][controller.locationsListMapping[index]] != null ? controller.locationWiseMappedList![0][controller.locationsListMapping[index]]!["TOTAL"].toString() : '0')
+                            : '0',
+                            // : controller.SOUTH[index].toString(),
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14, color: Colors.white),
                           ),
@@ -2325,9 +1987,13 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                     // Additional row for total
                   ],
                 ),
-              )),
-        ));
+              )
+          ),
+        )),
+    replacement: Container());
   }
+
+
 }
 
 Container viewOtherReports(BuildContext context, {String? title}) {
