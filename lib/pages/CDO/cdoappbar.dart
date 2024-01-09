@@ -1,4 +1,4 @@
-import 'package:dalmia/pages/login.dart';
+import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +8,7 @@ class CdoAppBar extends StatelessWidget {
     super.key,
     required this.heading,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,7 @@ class CdoAppBar extends StatelessWidget {
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(50),
               child: Container(
+                
                 padding: const EdgeInsets.only(bottom: 10),
                 color: Colors.white,
                 child: Text(
@@ -74,6 +76,7 @@ void _showConfirmationDialog(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
+        alignment: Alignment.topCenter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         title: SizedBox(
           width: 283,

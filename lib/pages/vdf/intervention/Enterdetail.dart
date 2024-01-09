@@ -1,13 +1,20 @@
 import 'dart:convert';
 
+import 'package:dalmia/pages/vdf/intervention/Addinter.dart';
 import 'package:dalmia/pages/vdf/intervention/Followup.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
+import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
 class EnterDetail extends StatefulWidget {
+  final String? hid;
+  final String? interId;
+
+  const EnterDetail({super.key, this.hid, this.interId});
   @override
   _EnterDetailState createState() => _EnterDetailState();
 }
@@ -20,11 +27,12 @@ class _EnterDetailState extends State<EnterDetail> {
   Map<String, String> memberIdNameMap = {};
 
   Future<void> fetchFamilyMembers() async {
-    final apiUrl = '$base/get-familymembers?householdId=1';
+    final apiUrl = '$base/get-familymembers?householdId=${widget.hid}';
 
     final response = await http.get(Uri.parse(apiUrl));
 
     if (response.statusCode == 200) {
+      // print('object');
       final jsonResponse = json.decode(response.body);
       final respBody = jsonResponse['resp_body'];
 
@@ -33,6 +41,7 @@ class _EnterDetailState extends State<EnterDetail> {
           for (var member in respBody)
             member['memberId'].toString(): member['memberName'].toString()
         };
+        print('memberID is $memberIdNameMap');
       });
     }
   }
@@ -41,6 +50,41 @@ class _EnterDetailState extends State<EnterDetail> {
   void initState() {
     fetchFamilyMembers();
     super.initState();
+  }
+
+  Future<void> _updateinterAPI(
+      // String benificiaryId
+      ) async {
+    final apiUrl =
+        'https://mobiledevcloud.dalmiabharat.com:443/csr/update-interventions?householdId=${widget.hid}&interventionId=${widget.interId}';
+    final Map<String, dynamic> requestData = {
+      'interventionId': widget.interId,
+      'beneficiaryMemberId': selectedMemberId,
+    };
+
+    try {
+      final response = await http.put(
+        Uri.parse(apiUrl),
+        headers: {
+          "Content-Type": "application/json",
+          // Add any additional headers if needed
+        },
+        body: jsonEncode(requestData),
+      );
+
+      if (response.statusCode == 200) {
+        // Handle successful response
+        _successmsg(context, widget.hid);
+        print('updated successfully');
+      } else {
+        // Handle error response
+        print('Failed to update. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (error) {
+      // Handle network or other errors
+      print('Error: $error');
+    }
   }
 
   DateTime? selectedDate;
@@ -73,7 +117,7 @@ class _EnterDetailState extends State<EnterDetail> {
             'Assign Intervention',
             style: TextStyle(color: Colors.black),
           ),
-          backgroundColor: Colors.grey[50],
+          // backgroundColor: Colors.grey[50],
           actions: <Widget>[
             IconButton(
               iconSize: 30,
@@ -93,7 +137,15 @@ class _EnterDetailState extends State<EnterDetail> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Enter Details'),
+                const Text(
+                  'Enter Details',
+                  style: TextStyle(
+                    color: Color(0xFF181818),
+                    fontSize: 16,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -136,7 +188,7 @@ class _EnterDetailState extends State<EnterDetail> {
                   ),
                   validator: (value) {
                     if (value?.isEmpty ?? true) {
-                      return 'Date of Birth is required';
+                      return 'Date  is required';
                     }
                     return null;
                   },
@@ -162,20 +214,29 @@ class _EnterDetailState extends State<EnterDetail> {
                           backgroundColor: isButtonEnabled
                               ? CustomColorTheme.primaryColor
                               : CustomColorTheme.primaryColor.withOpacity(0.5)),
-                      onPressed: isButtonEnabled
-                          ? () {
-                              if (_completeController.text.isNotEmpty) {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => Followup(),
-                                  ),
-                                );
-                              } else {
-                                _successmsg(context);
-                              }
-                            }
-                          : null,
-                      child: const Text('Continue'),
+                      onPressed: () {
+                        if (isButtonEnabled) {
+                          if (_completeController.text.isNotEmpty) {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => Followup(
+                                  hid: widget.hid,
+                                  interId: widget.interId,
+                                  memberId: selectedMemberId,
+                                  date: _completeController,
+                                ),
+                              ),
+                            );
+                          } else {
+                            _updateinterAPI();
+                          }
+                        }
+                      },
+                      // : null,
+                      child: const Text(
+                        'Continue',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ],
                 ),
@@ -188,61 +249,109 @@ class _EnterDetailState extends State<EnterDetail> {
   }
 }
 
-void _successmsg(BuildContext context) {
+void _successmsg(BuildContext context, String? hid) {
+  Future<void> addreason(String? hid, BuildContext context) async {
+    final apiUrl =
+        'https://mobiledevcloud.dalmiabharat.com:443/csr/add-household';
+
+    // Replace these values with the actual data you want to send
+    final Map<String, dynamic> requestData = {"id": hid, "is_draft": 0};
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          "Content-Type": "application/json",
+          // Add any additional headers if needed
+        },
+        body: jsonEncode(requestData),
+      );
+
+      if (response.statusCode == 200) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => VdfHome(),
+          ),
+        );
+        // Successful response
+        print("Reason added");
+        // Handle success as needed
+      } else {
+        // Handle error response
+        print("Failed to add data: ${response.statusCode}");
+        print(response.body);
+        // Handle error as needed
+      }
+    } catch (e) {
+      // Handle network errors
+      print("Error: $e");
+    }
+  }
+
   showDialog(
+    barrierDismissible: false,
     context: context,
     builder: (BuildContext context) {
-      return AlertDialog(
-        title: const SizedBox(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+      return PopScope(
+        // canPop: false,
+        child: AlertDialog(
+          title: const SizedBox(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 40,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                    'Intervention 1 is added successfully. What do you wish to do next?'),
+              ],
+            ),
+          ),
+          content: Column(
+            // mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Icon(
-                Icons.check_circle,
-                color: Colors.green,
-                size: 40,
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: Colors.white,
+                  side: const BorderSide(
+                      width: 1, color: CustomColorTheme.primaryColor),
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => Addinter(),
+                    ),
+                  );
+                },
+                child: const Text(
+                  'Add another intervention',
+                  style: TextStyle(color: CustomColorTheme.primaryColor),
+                ),
               ),
-              SizedBox(
-                height: 20,
+              const SizedBox(
+                height: 10,
               ),
-              Text(
-                  'Intervention 1 is added successfully. What do you wish to do next?'),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue[900],
+                  minimumSize: const Size(250, 50),
+                ),
+                onPressed: () {
+                  addreason(hid, context);
+                },
+                child: const Text(
+                  'Save and Close',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
             ],
           ),
-        ),
-        content: Column(
-          // mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                backgroundColor: Colors.white,
-                side: const BorderSide(width: 1, color: Colors.blue),
-              ),
-              onPressed: () {
-                // Perform actions with the field values
-
-                // Save as draft
-              },
-              child: const Text(
-                'Add another intervention',
-                style: TextStyle(color: Colors.blue),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[900],
-                minimumSize: const Size(250, 50),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Save and Close'),
-            ),
-          ],
         ),
       );
     },
