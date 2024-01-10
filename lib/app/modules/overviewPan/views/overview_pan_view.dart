@@ -1,3 +1,4 @@
+import 'package:dalmia/app/modules/downloadExcelFromTable/ExportTableToExcel.dart';
 import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/common/app_bar.dart';
 import 'package:dalmia/common/app_style.dart';
@@ -28,9 +29,52 @@ class _OverviewPanViewState extends State<OverviewPanView> {
   OverviewPanController controller = Get.put(OverviewPanController());
   late Future<Map<String, dynamic>> regionsFuture;
   late Future<Map<String, dynamic>> clustersFuture;
+  ExportTableToExcel exportsTableToExcel = new ExportTableToExcel();
 
   void downloadExcel() {
-    controller.downloadExcel(context);
+    try {
+      exportsTableToExcel.exportPanIndiaReportAllRegion(
+        controller,
+      );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Download Successful'),
+            content: Text(
+                'The Excel file has been downloaded successfully in your download folder.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      // Show error dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Download Error'),
+            content:
+                Text('An error occurred while downloading the Excel file.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -315,8 +359,10 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         borderRadius: BorderRadius.circular(5)),
                     child: GestureDetector(
                       onTap: () {
-                        // print("manav");
-                        downloadExcel();
+                        if (controller.selectRegion == "All Regions") {
+                          downloadExcel();
+                        } else
+                          print("something wrong on download button");
                       },
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
