@@ -18,7 +18,7 @@ class LocationWiseView extends GetView<LocationWiseController> {
     return SafeArea(
       child: Scaffold(
           appBar: appBarCommon(controller, context,
-              centerAlignText: true, title: "Reportss"),
+              centerAlignText: true, title: "Reports"),
           body: SingleChildScrollView(
             child: Column(
               children: [

@@ -1,3 +1,4 @@
+
 import 'dart:io';
 
 import 'package:dalmia/app/modules/addIntervention/controllers/add_intervention_controller.dart';
@@ -7,6 +8,7 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ExportTableToExcel {
+<<<<<<< HEAD
   Future<Directory?> getDownloadPath() async {
     Directory? directory;
     try {
@@ -26,14 +28,19 @@ class ExportTableToExcel {
 
   Future<void> exportTableToExcel(AddInterventionController controller,
       List<String> excelHeadings, List<String> dataRowHeadingKeys) async {
+=======
+
+  Future<void> exportTableToExcel(
+      AddInterventionController controller, List<String> excelHeadings, List<String> dataRowHeadingKeys) async {
+>>>>>>> parent of 128dc3e (GPL Pan India report excel sheet download successfull)
     // Get the table data as a list of lists
     List<List<String>> tableData = controller.interventionsData!
         .map((row) => [
-              '${row[dataRowHeadingKeys[0]]}',
-              '${row[dataRowHeadingKeys[1]]}',
-              '${row[dataRowHeadingKeys[2]]}',
-              '${row[dataRowHeadingKeys[3]]}',
-            ])
+      '${row[dataRowHeadingKeys[0]]}',
+      '${row[dataRowHeadingKeys[1]]}',
+      '${row[dataRowHeadingKeys[2]]}',
+      '${row[dataRowHeadingKeys[3]]}',
+    ])
         .toList();
 
     // Create an Excel workbook and worksheet
@@ -56,6 +63,7 @@ class ExportTableToExcel {
     await OpenFile.open(file.path);
   }
 
+<<<<<<< HEAD
   Future<void> exportPanIndiaReportAllRegion(
       OverviewPanController controller) async {
     // Get the table data as a list of lists
@@ -132,3 +140,6 @@ class ExportTableToExcel {
     await OpenFile.open(file.path);
   }
 }
+=======
+}
+>>>>>>> parent of 128dc3e (GPL Pan India report excel sheet download successfull)

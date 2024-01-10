@@ -18,7 +18,7 @@ class ReportsView extends GetView<ReportsController> {
           appBar: AppBar(
             automaticallyImplyLeading: false,
             title: Text(
-              'Reportss',
+              'Reports',
               style: AppStyle.textStyleInterMed(
                   fontSize: 16, fontWeight: FontWeight.w800),
             ),
@@ -43,24 +43,30 @@ class ReportsView extends GetView<ReportsController> {
                 listData(
                     "Location wise EAAI and AAAI Achieved(as on <19 Oct 2023>)",
                     () {
-                  Get.toNamed(Routes.LOCATION_WISE);
-                }),
+                      Get.toNamed(Routes.LOCATION_WISE);
+
+                    }),
                 listData("Lever wise number of interventions", () {
                   Get.toNamed(Routes.LEVER_WISE);
+
                 }),
                 listData(
                     "Amount utilized by each location for livelihood activities ",
                     () {
-                  Get.toNamed(Routes.AMOUNT_UTILIZED);
-                }),
+                      Get.toNamed(Routes.AMOUNT_UTILIZED);
+
+                    }),
                 listData("Source of funds", () {
                   Get.toNamed(Routes.SOURCE_FUNDS);
+
                 }),
                 listData("Expected and actual additional incomes", () {
                   Get.toNamed(Routes.EXPECTED_ACTUAL);
+
                 }),
                 listData("Performance of VDFs", () {
                   Get.toNamed(Routes.PERFORMANCE_VDF);
+
                 }),
               ],
             ),

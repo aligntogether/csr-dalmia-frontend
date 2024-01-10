@@ -4,6 +4,7 @@ import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/LL/ll_home_screen.dart';
 
+
 import 'package:dalmia/pages/SwitchRole/switchRole.dart';
 
 import 'package:dalmia/pages/loginUtility/controller/loginController.dart';
@@ -11,6 +12,7 @@ import 'package:dalmia/pages/loginUtility/controller/loginController.dart';
 import 'package:dalmia/pages/loginUtility/service/loginApiService.dart';
 import 'package:dalmia/pages/loginUtility/page/otp.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,7 +41,10 @@ class _LoginState extends State<Login> {
     // get usertype from shared pref
     SharedPrefHelper.getSharedPref(USER_TYPES_SHAREDPREF_KEY, context, false)
         .then((userType) => {
-              if (userType != "") {Get.toNamed(Routes.CHOOSE_ROLE)}
+              if (userType != "")
+                {
+                Get.toNamed(Routes.CHOOSE_ROLE)
+                }
               // if not null redirect to switchRole
             })
         .catchError((e) => {
@@ -192,7 +197,7 @@ class _LoginState extends State<Login> {
                           });
                         }
                       },
-                    ),
+                        ),
                     const SizedBox(height: 20.0),
                   ],
                 ),
