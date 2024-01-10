@@ -399,8 +399,6 @@ class _MyFormState extends State<AddHead> {
                   DropdownButtonFormField<String>(
                     value: _selectedGender,
                     items: genderOptions
-                        .where(
-                            (gender) => gender['titleData'].toString() != 'asd')
                         .map<DropdownMenuItem<String>>((dynamic gender) {
                       return DropdownMenuItem<String>(
                         value: gender['titleData'].toString(),
