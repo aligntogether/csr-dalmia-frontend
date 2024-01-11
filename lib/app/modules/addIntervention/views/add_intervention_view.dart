@@ -27,9 +27,21 @@ class _AddInterventionViewState extends State<AddInterventionView> {
   AddInterventionApiService addInterventionApiService =
       new AddInterventionApiService();
   String? validationResult;
+  final List<String> lever = <String>[
+    'Agriculture',
+    'Livestock',
+    'Horticulture',
+    'Water',
+    'IGA',
+    'Micro Enterprice',
+        'Non DIKSHA Skills',
+  ];
+  late String dropdownValue;
+
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -50,7 +62,9 @@ class _AddInterventionViewState extends State<AddInterventionView> {
         ),
         body: SingleChildScrollView(
           child: Column(
+
             children: [
+
               Space.height(50),
               GetBuilder<AddInterventionController>(
                 id: "add",
@@ -75,19 +89,45 @@ class _AddInterventionViewState extends State<AddInterventionView> {
               GetBuilder<AddInterventionController>(
                 id: "add",
                 builder: (controller) {
+
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 34),
-                    child: TextFormField(
-                      controller: controller.lever.value,
-                      onChanged: (value) {
-                        controller.update(["add"]);
-                      },
-                      decoration: const InputDecoration(
-                        labelText: "Lever",
+
+                    child: DropdownMenu<String>(
+                      width: MySize.safeWidth! * 0.8,
+                      inputDecorationTheme: InputDecorationTheme(
+
+                        border: OutlineInputBorder(
+
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+
                         contentPadding: EdgeInsets.symmetric(
                             horizontal: 16, vertical: 20.0),
                       ),
+                      initialSelection: lever.first,
+                      controller: controller.lever.value,
+                      onSelected: (String? value) {
+                        setState(() {
+                          dropdownValue = value!;
+                        });
+                      },
+                      dropdownMenuEntries: lever.map<DropdownMenuEntry<String>>((String value) {
+                        return DropdownMenuEntry<String>(value: value, label: value);
+                      }).toList(),
                     ),
+
+                    // TextFormField(
+                    //   controller: controller.lever.value,
+                    //   onChanged: (value) {
+                    //     controller.update(["add"]);
+                    //   },
+                    //   decoration: const InputDecoration(
+                    //     labelText: "Lever",
+                    //     contentPadding: EdgeInsets.symmetric(
+                    //         horizontal: 16, vertical: 20.0),
+                    //   ),
+                    // ),
                   );
                 },
               ),
@@ -124,6 +164,10 @@ class _AddInterventionViewState extends State<AddInterventionView> {
                     padding: const EdgeInsets.symmetric(horizontal: 34),
                     child: TextFormField(
                       controller: controller.noOfDay.value,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
                       onChanged: (value) {
                         controller.update(["add"]);
                       },
@@ -142,9 +186,10 @@ class _AddInterventionViewState extends State<AddInterventionView> {
                 builder: (controller) {
                   return GestureDetector(
                     onTap: () async {
+
                       if (controller
                               .newInterventionTitle.value.text.isNotEmpty &&
-                          controller.lever.value.text.isNotEmpty &&
+                          dropdownValue.isNotEmpty &&
                           controller.exAnnualIncome.value.text.isNotEmpty &&
                           controller.noOfDay.value.text.isNotEmpty) {
                         String duplicateResponse =
@@ -159,15 +204,17 @@ class _AddInterventionViewState extends State<AddInterventionView> {
                           });
                         } else {
                           try {
+                            print(dropdownValue);
                             String addResponse =
                                 await addInterventionApiService.addIntervention(
                                     controller.newInterventionTitle.value.text,
-                                    controller.lever.value.text,
+
+                                    dropdownValue,
                                     int.tryParse(
                                         controller.exAnnualIncome.value.text)!,
                                     int.tryParse(
                                         controller.noOfDay.value.text)!);
-
+                          print("addResponse : $addResponse");
                             if (addResponse == "Data Added") {
                               showConfirmationDialog(context);
                             } else {
