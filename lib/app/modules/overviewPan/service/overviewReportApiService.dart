@@ -9,6 +9,7 @@ class OverviewReportApiService {
 
 
   String? base = dotenv.env['BASE_URL'];
+
   // String? base = 'https://mobiledevcloud.dalmiabharat.com:443/csr';
   // String? base = 'http://192.168.1.16:8082';
 
@@ -18,7 +19,8 @@ class OverviewReportApiService {
       String url = '$base/list-regions';
 
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.get(Uri.parse(url)).timeout(
+          Duration(seconds: 30));
 
 
       if (response.statusCode == 200) {
@@ -30,27 +32,32 @@ class OverviewReportApiService {
         if (respBody.containsKey('resp_body')) {
           final List<dynamic> regionsData = respBody['resp_body'];
 
-          final List<Map<String, dynamic>> regions = regionsData.map<Map<String, dynamic>>((region) => {
+          final List<Map<String, dynamic>> regions = regionsData.map<
+              Map<String, dynamic>>((region) =>
+          {
             'regionId': region['regionId'],
             'region': region['region'],
             'rhId': region['rhId'],
           }).toList();
-          
+
           Map<String, dynamic> newMap = new Map<String, dynamic>();
-          
+
           newMap.putIfAbsent("regionId", () => 1001);
           newMap.putIfAbsent("region", () => "All Regions");
           newMap.putIfAbsent("rhId", () => "0000");
           regions.add(newMap);
 
 
-          return {'regions': regions}; // Returning a map with 'regions' key containing the list
+          return {
+            'regions': regions
+          }; // Returning a map with 'regions' key containing the list
         } else {
           throw Exception('Response format does not contain expected data');
         }
       } else {
         print("API Error Response: ${response.body}");
-        throw Exception('Failed to load data. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to load data. Status code: ${response.statusCode}');
       }
     } catch (e) {
       print("Error making API request: $e");
@@ -61,11 +68,10 @@ class OverviewReportApiService {
 
   Future<Map<String, dynamic>> getListOfLocations(int regionId) async {
     try {
-
-      final response = await http.get(Uri.parse('$base/list-locations?regionId=$regionId'));
+      final response = await http.get(
+          Uri.parse('$base/list-locations?regionId=$regionId'));
 
       if (response.statusCode == 200) {
-
         print("API Response: ${response.body}");
 
         final Map<String, dynamic> respBody = json.decode(response.body);
@@ -75,20 +81,23 @@ class OverviewReportApiService {
 
           print("Object3");
 
-          final List<Map<String, dynamic>> locations = locationsData.map<Map<String, dynamic>>((location) => {
+          final List<Map<String, dynamic>> locations = locationsData.map<
+              Map<String, dynamic>>((location) =>
+          {
             'locationId': location['locationId'],
             'location': location['location'],
             'locationCode': location['locationCode']
-
           }).toList();
 
-          return {'locations': locations}; // Returning a map with 'regions' key containing the list
+          return {
+            'locations': locations
+          }; // Returning a map with 'regions' key containing the list
         } else {
           throw Exception('Response format does not contain expected data');
         }
-
       } else {
-        throw Exception('Failed to load data. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to load data. Status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Error making API request: $e');
@@ -97,11 +106,11 @@ class OverviewReportApiService {
 
 
   Future<Map<String, dynamic>?> getListOfClusters(int locationId) async {
-
     try {
       String url = '$base/list-cluster-by-location?locationId=$locationId';
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.get(Uri.parse(url)).timeout(
+          Duration(seconds: 30));
 
 
       if (response.statusCode == 200) {
@@ -119,7 +128,9 @@ class OverviewReportApiService {
         if (respBody.containsKey('resp_body')) {
           final List<dynamic> clustersData = respBody['resp_body'];
 
-          final List<Map<String, dynamic>> clusters = clustersData.map<Map<String, dynamic>>((cluster) => {
+          final List<Map<String, dynamic>> clusters = clustersData.map<
+              Map<String, dynamic>>((cluster) =>
+          {
             'clusterId': cluster['clusterId'],
             'clusterName': cluster['clusterName'],
             'vdfName': cluster['vdfName'],
@@ -127,13 +138,16 @@ class OverviewReportApiService {
 
           print("sgncy $clusters");
 
-          return {'clusters': clusters}; // Returning a map with 'clusters' key containing the list
+          return {
+            'clusters': clusters
+          }; // Returning a map with 'clusters' key containing the list
         } else {
           throw Exception('Response format does not contain expected data');
         }
       } else {
         print("API Error Response: ${response.body}");
-        throw Exception('Failed to load data. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to load data. Status code: ${response.statusCode}');
       }
     } catch (e) {
       print("Error making API request: $e");
@@ -142,12 +156,13 @@ class OverviewReportApiService {
   }
 
 
-  Future<String> validateDuplicatePanchayat(int clusterId, String panchayatName, String panchayatCode) async {
-
+  Future<String> validateDuplicatePanchayat(int clusterId, String panchayatName,
+      String panchayatCode) async {
     try {
       String url = '$base/validate-duplicate-panchayat?clusterId=$clusterId&panchayatName=$panchayatName&panchayatCode=$panchayatCode';
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.get(Uri.parse(url)).timeout(
+          Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         print("API Response: ${response.body}");
@@ -163,7 +178,8 @@ class OverviewReportApiService {
         }
       } else {
         print("API Error Response: ${response.body}");
-        throw Exception('Failed to load data. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to load data. Status code: ${response.statusCode}');
       }
     } catch (e) {
       print("Error making API request: $e");
@@ -173,13 +189,12 @@ class OverviewReportApiService {
 
 
   Future<String> replaceVdf(int clusterId, String vdfName) async {
-
     try {
       String url = '$base/replace-vdf-for-cluster?clusterId=$clusterId&vdfName=$vdfName';
 
 
-
-      final response = await http.put(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.put(Uri.parse(url)).timeout(
+          Duration(seconds: 30));
 
 
       if (response.statusCode == 200) {
@@ -197,7 +212,8 @@ class OverviewReportApiService {
         }
       } else {
         print("API Error Response: ${response.body}");
-        throw Exception('Failed to add panchayat. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to add panchayat. Status code: ${response.statusCode}');
       }
     } catch (e) {
       print("Error making API request: $e");
@@ -206,23 +222,26 @@ class OverviewReportApiService {
   }
 
 
-  Future<List<Map<String, Map<String, dynamic>>>> getPanIndiaReport(List<String> allLocations, List<String> objectKeys) async {
+  Future<List<Map<String, Map<String, dynamic>>>> getPanIndiaReport(
+      List<String> allLocations, List<String> objectKeys) async {
     try {
-
       String url = '$base/pan-india-report';
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.get(Uri.parse(url)).timeout(
+          Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         print("API Response: ${response.body}");
 
         final Map<String, dynamic> respBody = json.decode(response.body);
 
-        if (respBody.containsKey('resp_msg') && respBody['resp_msg'] == 'Data Found') {
+        if (respBody.containsKey('resp_msg') &&
+            respBody['resp_msg'] == 'Data Found') {
           final Map<String, dynamic> respData = respBody['resp_body'];
 
           // Example: Extracting the data for each location
-          final Map<String, Map<String, dynamic>> locations = respData.map((location, data) {
+          final Map<String, Map<String, dynamic>> locations = respData.map((
+              location, data) {
             return MapEntry(
               location,
               {
@@ -247,7 +266,10 @@ class OverviewReportApiService {
           });
 
 
-          List<Map<String, Map<String, dynamic>>> overviewMappedList = await generateOverviewList(locations, allLocations, objectKeys);
+          List<Map<String,
+              Map<String,
+                  dynamic>>> overviewMappedList = await generateOverviewList(
+              locations, allLocations, objectKeys);
 
           print("overviewMappedList : $overviewMappedList");
 
@@ -259,7 +281,8 @@ class OverviewReportApiService {
           throw Exception('Data not found in the response');
         }
       } else {
-        throw Exception('Failed to load data. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to load data. Status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Error making API request: $e');
@@ -267,23 +290,26 @@ class OverviewReportApiService {
   }
 
 
-  Future<List<Map<String, Map<String, dynamic>>>> getRegionWiseReport(List<String> allLocations, List<String> objectKeys, int regionId) async {
+  Future<List<Map<String, Map<String, dynamic>>>> getRegionWiseReport(
+      List<String> allLocations, List<String> objectKeys, int regionId) async {
     try {
-
       String url = '$base/region-wise-report?regionId=$regionId';
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.get(Uri.parse(url)).timeout(
+          Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         print("API Response: ${response.body}");
 
         final Map<String, dynamic> respBody = json.decode(response.body);
 
-        if (respBody.containsKey('resp_msg') && respBody['resp_msg'] == 'Data Found') {
+        if (respBody.containsKey('resp_msg') &&
+            respBody['resp_msg'] == 'Data Found') {
           final Map<String, dynamic> respData = respBody['resp_body'];
 
           // Example: Extracting the data for each location
-          final Map<String, Map<String, dynamic>> locations = respData.map((location, data) {
+          final Map<String, Map<String, dynamic>> locations = respData.map((
+              location, data) {
             return MapEntry(
               location,
               {
@@ -308,7 +334,10 @@ class OverviewReportApiService {
           });
 
 
-          List<Map<String, Map<String, dynamic>>> overviewMappedList = await generateOverviewList(locations, allLocations, objectKeys);
+          List<Map<String,
+              Map<String,
+                  dynamic>>> overviewMappedList = await generateOverviewList(
+              locations, allLocations, objectKeys);
 
           print("overviewMappedList : $overviewMappedList");
 
@@ -320,7 +349,8 @@ class OverviewReportApiService {
           throw Exception('Data not found in the response');
         }
       } else {
-        throw Exception('Failed to load data. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to load data. Status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Error making API request: $e');
@@ -330,8 +360,7 @@ class OverviewReportApiService {
   List<Map<String, Map<String, dynamic>>> generateOverviewList(
       Map<String, Map<String, dynamic>> panIndiaOverview,
       List<String> locations,
-      List<String> keys,
-      ) {
+      List<String> keys,) {
     List<Map<String, Map<String, dynamic>>> overviewList = [];
     Map<String, Map<String, dynamic>> overviewMap = {};
 
@@ -344,7 +373,7 @@ class OverviewReportApiService {
       int sugarSum = 0;
 
       var allLocations = ["DPM", "ALR", "BGM", "KDP", "CHA", "SOUTH",
-        "MEG", "UMG", "JGR", "LAN","NE",
+        "MEG", "UMG", "JGR", "LAN", "NE",
         "CUT", "MED", "BOK", "RAJ", "KAL", "EAST", "CEMENT",
         "NIG", "RAM", "JOW", "NIN", "KOL", "SUGAR", "PANINDIA"];
 
@@ -354,16 +383,21 @@ class OverviewReportApiService {
         if (panIndiaOverview.containsKey(location)) {
           // Add the value for the current key and location
           keyValues[location] = panIndiaOverview[location]![key] ?? 0;
-          if (location == "DPM" || location == "ALR" || location == "BGM" || location == "KDP" || location == "CHA")
+          if (location == "DPM" || location == "ALR" || location == "BGM" ||
+              location == "KDP" || location == "CHA")
             southSum = panIndiaOverview[location]![key] ?? 0;
-          else if (location == "MEG" || location == "UMG" || location == "JGR" || location == "LAN")
+          else
+          if (location == "MEG" || location == "UMG" || location == "JGR" ||
+              location == "LAN")
             neSum = panIndiaOverview[location]![key] ?? 0;
-          else if (location == "CUT" || location == "MED" || location == "BOK" || location == "RAJ" || location == "KAL")
+          else
+          if (location == "CUT" || location == "MED" || location == "BOK" ||
+              location == "RAJ" || location == "KAL")
             eastSum = panIndiaOverview[location]![key] ?? 0;
-          else if (location == "NIG" || location == "RAM" || location == "JOW" || location == "NIN" || location == "KOL")
+          else
+          if (location == "NIG" || location == "RAM" || location == "JOW" ||
+              location == "NIN" || location == "KOL")
             sugarSum = panIndiaOverview[location]![key] ?? 0;
-
-
         } else {
           // If the location doesn't exist, set the value to 0
           keyValues[location] = 0;
@@ -376,12 +410,14 @@ class OverviewReportApiService {
         else if (location == "EAST")
           keyValues[location] = eastSum ?? 0;
         else if (location == "CEMENT")
-          keyValues[location] = ((southSum ?? 0) + (neSum ?? 0) + (eastSum ?? 0)) ?? 0;
+          keyValues[location] =
+              ((southSum ?? 0) + (neSum ?? 0) + (eastSum ?? 0)) ?? 0;
         else if (location == "SUGAR")
           keyValues[location] = sugarSum ?? 0;
         else if (location == "PANIND")
-          keyValues[location] = ((southSum ?? 0) + (neSum ?? 0) + (eastSum ?? 0) + (sugarSum ?? 0)) ?? 0;
-
+          keyValues[location] =
+              ((southSum ?? 0) + (neSum ?? 0) + (eastSum ?? 0) +
+                  (sugarSum ?? 0)) ?? 0;
       }
 
       overviewMap[key] = keyValues;
@@ -390,6 +426,4 @@ class OverviewReportApiService {
     overviewList.add(overviewMap);
     return overviewList;
   }
-
-
 }
