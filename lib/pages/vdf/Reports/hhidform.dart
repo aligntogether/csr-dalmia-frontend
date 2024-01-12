@@ -788,7 +788,10 @@ class _HhidFormState extends State<HhidForm> {
                         if (selectedRadio == 1) {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => Addinter(),
+                              builder: (context) => Addinter(
+                                id: hhid,
+
+                              ),
                             ),
                           );
                         } else if (selectedRadio == 2) {
