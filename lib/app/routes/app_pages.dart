@@ -110,7 +110,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.AMOUNT_UTILIZED,
-      page: () => const AmountUtilizedView(),
+      page: () => AmountUtilizedView(),
       binding: AmountUtilizedBinding(),
     ),
     GetPage(
