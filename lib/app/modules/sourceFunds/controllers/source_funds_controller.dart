@@ -77,7 +77,6 @@ class SourceFundsController extends GetxController {
   ];
 
   List<String> locations = [
-    'Cement',
     'South and Chandrapur',
     'East',
     'North East',
@@ -146,5 +145,10 @@ class SourceFundsController extends GetxController {
     7,
     8,
   ];
+
+  List<String> header=
+    [ 'noOfHouseholds', 'beneficiary', 'subsidy', 'credits', 'dbf','Total'];
+
+
 
 }

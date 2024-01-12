@@ -1,3 +1,4 @@
+import 'package:dalmia/app/modules/downloadExcelFromTable/ExportTableToExcel.dart';
 import 'package:dalmia/app/modules/overviewPan/views/overview_pan_view.dart';
 import 'package:dalmia/app/modules/sourceFunds/controllers/source_funds_controller.dart';
 import 'package:dalmia/app/modules/sourceFunds/service/sourceOfFundsApiService.dart';
@@ -27,6 +28,51 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
 
   SourceFundsController controller = Get.put(SourceFundsController());
   SourceOfFundsApiService sourceOfFundsApiService = new SourceOfFundsApiService();
+
+  final ExportTableToExcel exportTableToExcel = ExportTableToExcel();
+  void downloadExcel() {
+    try {
+      exportTableToExcel.exportSourceFundsReport(controller);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Download Successful'),
+            content: Text(
+                'The Excel file has been downloaded successfully in your download folder.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      // Show error dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Download Error'),
+            content:
+            Text('An error occurred while downloading the Excel file.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
 
   @override
@@ -153,7 +199,7 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
           ),*/
               Space.height(20),
               GestureDetector(onTap: () {
-
+                downloadExcel();
               },
                 child: Container(height: MySize.size48,width: MySize.size168,
                   decoration: BoxDecoration(border: Border.all(color: darkBlueColor),
