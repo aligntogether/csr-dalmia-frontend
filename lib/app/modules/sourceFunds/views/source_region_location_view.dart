@@ -23,6 +23,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
       new SourceOfFundsApiService();
   SourceFundsController controller = new SourceFundsController();
   late Future<Map<String, dynamic>> regionsFuture;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -130,10 +131,10 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                 controller.updateLocations(locations);
                                 controller.update(["add"]);
 
-// to be picked from here and changes in apiservice for fetchClusterWiseSourceOfFundsData and fetch data to use it
                                 // Update the controller with the new list of locations
                                 if (locationsData != null) {
                                   setState(() {
+                                    // isLoading = false;
                                     controller.regions = controller
                                                 .locationsList !=
                                             null
@@ -152,6 +153,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                             controller);
 
                                 setState(() {
+                                  isLoading = false;
                                   controller.regionWiseSourceOfFundsData =
                                       fetchRegionWiseSourceOfFundsData;
                                   print(
@@ -184,6 +186,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                         targetKeys);
 
                                 setState(() {
+                                  // isLoading = false;
                                   controller.regionWiseSourceOfFundsData!
                                       .putIfAbsent('Total', () => allTotal);
                                 });
@@ -367,8 +370,11 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
     );
   }
 
+
   Widget tableDataRegionsView(SourceFundsController controller) {
-    return SingleChildScrollView(
+    return Visibility(
+        visible: controller.regionWiseSourceOfFundsData != null && controller.regionWiseSourceOfFundsData!.isNotEmpty,
+        child: !isLoading ? SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -776,7 +782,9 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                               ),
                             ],*/
               ),
-        ));
+        )) : Center(child: new CircularProgressIndicator()),
+      replacement: Container(),
+    );
   }
 
   // Widget tableDataLocationView(SourceFundsController controller) {

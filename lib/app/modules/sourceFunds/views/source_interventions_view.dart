@@ -28,6 +28,7 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
 
   SourceFundsController controller = Get.put(SourceFundsController());
   SourceOfFundsApiService sourceOfFundsApiService = new SourceOfFundsApiService();
+  bool isLoading = true;
 
   final ExportTableToExcel exportTableToExcel = ExportTableToExcel();
   void downloadExcel() {
@@ -83,7 +84,10 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
 
   void fetchSourceFundsData() async {
     await sourceOfFundsApiService.fetchSourceOfFundsData(controller).then((value) => {
-      setState( () => controller.updateSourceOfFundsData(value!))
+      setState(() {
+        isLoading = false;
+        controller.updateSourceOfFundsData(value!);
+      })
     });
 
     addCementTotalInSourceOfFundsData();
@@ -226,7 +230,7 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
   }
 
   Widget tableDataLocationView(SourceFundsController controller) {
-    return SingleChildScrollView(
+    return !isLoading ? SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -551,7 +555,7 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
                               ),
                             ],*/
           ),
-        ));
+        )) : Center(child: CircularProgressIndicator());
   }
 
 

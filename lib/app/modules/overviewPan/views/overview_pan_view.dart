@@ -391,7 +391,9 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                 ),
                 Space.height(34),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    downloadExcel();
+                  },
                   child: Container(
                     height: MySize.size48,
                     width: MySize.size168,
