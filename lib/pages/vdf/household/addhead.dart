@@ -1,4 +1,5 @@
 import 'package:dalmia/apis/commonobject.dart';
+import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/pages/vdf/household/addfamily.dart';
 import 'dart:convert';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
@@ -37,6 +38,8 @@ class _MyFormState extends State<AddHead> {
   int? _selectedSecondaryEmployment;
   bool _validateFields = false;
   String? memberId;
+  double height = MySize.screenHeight;
+  double width = MySize.screenWidth;
 
   Future<void> fetchGenderOptions() async {
     try {
@@ -306,26 +309,24 @@ class _MyFormState extends State<AddHead> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 16),
-                  const Text(
+                  SizedBox(height: MySize.screenHeight * 0.02),
+                  Text(
                     'Head of Family',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: height * 0.021,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: height * 0.02),
                   TextFormField(
-                    
                     controller: _nameController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Head Name *',
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+                      contentPadding: EdgeInsets.symmetric(
+                          horizontal: width * 0.03, vertical: height * 0.019),
                     ),
-                    
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: height * 0.02),
                   TextFormField(
                     keyboardType: TextInputType.phone,
                     inputFormatters: [
@@ -345,7 +346,7 @@ class _MyFormState extends State<AddHead> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: height * 0.02),
                   Row(
                     children: [
                       Expanded(
@@ -379,7 +380,6 @@ class _MyFormState extends State<AddHead> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         child: TextFormField(
-                          
                           // validator: (value) {
                           //   if (value == null || value.isEmpty) {
                           //     return '';
@@ -398,7 +398,7 @@ class _MyFormState extends State<AddHead> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: height * 0.02),
                   DropdownButtonFormField<String>(
                     value: _selectedGender,
                     items: genderOptions
@@ -423,7 +423,7 @@ class _MyFormState extends State<AddHead> {
                       color: CustomColorTheme.iconColor,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: height * 0.02),
                   DropdownButtonFormField<int>(
                     value: _selectedCaste,
                     items: casteOptions
@@ -475,7 +475,7 @@ class _MyFormState extends State<AddHead> {
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: height * 0.02),
                   DropdownButtonFormField<int>(
                     value: _selectedPrimaryEmployment,
                     items: primaryEmploymentOptions.map<DropdownMenuItem<int>>(
@@ -500,7 +500,7 @@ class _MyFormState extends State<AddHead> {
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: height * 0.02),
                   DropdownButtonFormField<int>(
                     value: _selectedSecondaryEmployment,
                     items: secondaryEmploymentOptions
@@ -527,7 +527,7 @@ class _MyFormState extends State<AddHead> {
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: height * 0.02),
                   if (_validateFields &&
                       !(_formKey.currentState?.validate() ?? false))
                     const Padding(
@@ -598,7 +598,7 @@ class _MyFormState extends State<AddHead> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: height * 0.02),
                 ],
               ),
             ),

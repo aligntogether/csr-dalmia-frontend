@@ -10,8 +10,6 @@ import '../../addPanchayat/Service/apiService.dart';
 import '../controllers/add_cluster_controller.dart';
 import '../service/addClusterApiService.dart';
 
-
-
 class AddClusterView extends StatefulWidget {
   String? region, location;
 
@@ -76,7 +74,7 @@ class _AddClusterViewState extends State<AddClusterView> {
 
                       if (responseData.containsKey('regions')) {
                         List<Map<String, dynamic>> regionOptions =
-                        responseData['regions'];
+                            responseData['regions'];
 
                         return CustomDropdownFormField(
                           title: "Select a Region",
@@ -87,27 +85,27 @@ class _AddClusterViewState extends State<AddClusterView> {
                           onChanged: (String? newValue) async {
                             // Find the selected region and get its corresponding regionId
                             Map<String, dynamic>? selectedRegion =
-                            regionOptions.firstWhereOrNull(
+                                regionOptions.firstWhereOrNull(
                                     (region) => region['region'] == newValue);
 
                             // print('controller.selectedRegions: ${selectedRegion}');
 
-
                             if (selectedRegion != null &&
                                 selectedRegion['regionId'] != null) {
                               controller.selectRegionId =
-                              selectedRegion['regionId'];
+                                  selectedRegion['regionId'];
                               controller.selectRegion = newValue;
                               controller.update(["add"]);
 
                               // Get locations based on the selected regionId
                               Map<String, dynamic> locationsData =
-                              await addPanchayatApiService.getListOfLocations(
-                                  controller.selectRegionId!);
+                                  await addPanchayatApiService
+                                      .getListOfLocations(
+                                          controller.selectRegionId!);
 
                               // Extract the list of locations from the returned data
                               List<Map<String, dynamic>> locations =
-                              locationsData['locations'];
+                                  locationsData['locations'];
 
                               // Update the controller with the new list of locations
                               controller.updateLocations(locations);
@@ -115,9 +113,10 @@ class _AddClusterViewState extends State<AddClusterView> {
 
                               // Update the selected location's name and ID in the controller
                               controller.selectLocation =
-                              null; // Assuming you initially set it to null
+                                  null; // Assuming you initially set it to null
                               controller.selectLocationId = null;
-                              controller.nameController.value = new TextEditingController();
+                              controller.nameController.value =
+                                  new TextEditingController();
                             }
                           },
                         );
@@ -137,50 +136,52 @@ class _AddClusterViewState extends State<AddClusterView> {
               builder: (controller) {
                 return CustomDropdownFormField(
                   title: "Select Location",
-                  options:
-                  controller.locations != null ? (controller.locations!
-                      .map((location) =>
-                      location['location'].toString())
-                      .toList()) : [],
+                  options: controller.locations != null
+                      ? (controller.locations!
+                          .map((location) => location['location'].toString())
+                          .toList())
+                      : [],
                   selectedValue: controller.selectLocation,
                   onChanged: (String? newValue) async {
-
                     // Find the selected location and get its corresponding locationId
                     if (controller.locations != null) {
                       // Find the selected location object based on the 'location' property
 
                       // print('controller.locations: ${controller.locations}');
 
-
-                      Map<String, dynamic>? selectedLocation = controller.locations
-                          ?.firstWhere((location) => location['location'] == newValue);
+                      Map<String, dynamic>? selectedLocation =
+                          controller.locations?.firstWhere(
+                              (location) => location['location'] == newValue);
 
                       if (selectedLocation != null) {
-
                         // Access the locationId property and convert it to int
                         int? selectedLocationId =
-                        selectedLocation['locationId'];
+                            selectedLocation['locationId'];
 
                         // print('selectedLocationId: $selectedLocationId');
 
                         if (selectedLocationId != null) {
                           // Assign 'location' to controller.selectLocation
                           controller.selectLocation =
-                          selectedLocation['location'] as String;
+                              selectedLocation['location'] as String;
                           controller.selectLocationId = selectedLocationId;
                           controller.update(["add"]);
 
-                          controller.nameController.value = new TextEditingController();
+                          controller.nameController.value =
+                              new TextEditingController();
                           setState(() {
                             clusterCount = 0;
                           });
 
-                          Map<String, dynamic> clustersData = await addPanchayatApiService.getListOfClusters(controller.selectLocationId ?? 0);
+                          Map<String, dynamic> clustersData =
+                              await addPanchayatApiService.getListOfClusters(
+                                  controller.selectLocationId ?? 0);
 
                           List<Map<String, dynamic>> clusters =
-                          clustersData['clusters'];
+                              clustersData['clusters'];
 
-                          controller.nameController.value.text = clusters.length.toString() ?? '0';
+                          controller.nameController.value.text =
+                              clusters.length.toString() ?? '0';
                           controller.clusterCounts = clusters.length ?? 0;
 
                           setState(() {
@@ -189,8 +190,6 @@ class _AddClusterViewState extends State<AddClusterView> {
 
                           print("clusters.length : ${clusters.length}");
                           print("clusters : $clusters");
-
-
                         }
                       }
                     }
@@ -207,45 +206,39 @@ class _AddClusterViewState extends State<AddClusterView> {
                   child: TextFormField(
                     controller: controller.nameController.value,
                     onChanged: (value) {
-
                       if (clusterCount! > 4 && int.tryParse(value)! > 5) {
                         setState(() {
                           validationResult = "Cannot add more than 5 Clusters";
                         });
-                      }
-                      else if (int.tryParse(value)! > 5) {
+                      } else if (int.tryParse(value)! > 5) {
                         setState(() {
                           validationResult = "Cannot add more than 5 Clusters";
                         });
-                      }
-                      else if (controller.clusterCounts! > int.tryParse(value)!){
+                      } else if (controller.clusterCounts! >
+                          int.tryParse(value)!) {
                         setState(() {
                           validationResult = "Cannot reduce Clusters!";
                         });
-                      }
-                      else if (controller.clusterCounts == int.tryParse(value!)){
+                      } else if (controller.clusterCounts ==
+                          int.tryParse(value!)) {
                         setState(() {
-                          validationResult = "Already contains $value Clusters!";
+                          validationResult =
+                              "Already contains $value Clusters!";
                         });
-                      }
-                      else {
-
+                      } else {
                         setState(() {
                           validationResult = null;
                         });
                         print("value : $value : $clusterCount");
                         clusterCount = int.tryParse(value);
                         print("value1 : $value : $clusterCount");
-
                       }
-
                       print("validationResult : $validationResult");
-
 
                       controller.update(["add"]);
                     },
                     decoration: const InputDecoration(
-                      labelText: "Total Clusters added",
+                      labelText: "Total Cluster",
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
@@ -263,13 +256,13 @@ class _AddClusterViewState extends State<AddClusterView> {
                         controller.selectRegion != null &&
                         clusterCount != 0 &&
                         validationResult == null) {
-
                       try {
-
-                        Map<String, dynamic> clusterMap = await addClusterApiService
-                            .updateAddCluster(controller.selectLocationId ?? 0,
-                            clusterCount ?? int.tryParse(
-                                controller.nameController.value.text)!);
+                        Map<String, dynamic> clusterMap =
+                            await addClusterApiService.updateAddCluster(
+                                controller.selectLocationId ?? 0,
+                                clusterCount ??
+                                    int.tryParse(
+                                        controller.nameController.value.text)!);
 
                         controller.addedClusterName = clusterMap['clusterName'];
                         controller.addedClusterId = clusterMap['clusterId'];
@@ -277,38 +270,30 @@ class _AddClusterViewState extends State<AddClusterView> {
                         // controller.addedClusterName = "31";
                         // controller.addedClusterId = 10073;
 
-
                         if (clusterMap != null) {
                           showConfirmationDialog(context,
                               location: controller.selectLocation,
                               p: controller.nameController.value.text,
                               r: controller.selectRegion);
-                        }
-                        else {
+                        } else {
                           validationResult = "Something went wrong!";
                         }
-
+                      } catch (e) {
+                        validationResult = "Something went wrong!, $e";
                       }
-                    catch (e) {
-                    validationResult = "Something went wrong!, $e";
-
-                    }
-
-
-
                     }
 
                     showConfirmationDialog(context,
                         location: controller.selectLocation,
                         p: controller.nameController.value.text,
                         r: controller.selectRegion);
-
                   },
                   child: commonButton(
                       title: "Continue",
                       color: controller.selectLocation != null &&
                               controller.selectRegion != null &&
-                          clusterCount != 0 && validationResult == null
+                              clusterCount != 0 &&
+                              validationResult == null
                           ? Color(0xff27528F)
                           : Color(0xff27528F).withOpacity(0.7)),
                 );
@@ -405,7 +390,6 @@ class _AddClusterViewState extends State<AddClusterView> {
                   GestureDetector(
                     onTap: () {
                       Get.offAll(GPLHomeScreen());
-
                     },
                     child: Container(
                       height: 50,
@@ -431,9 +415,6 @@ class _AddClusterViewState extends State<AddClusterView> {
   }
 }
 
-
-
-
 class AddVdfView extends StatefulWidget {
   String? location, regions, p;
 
@@ -444,7 +425,6 @@ class AddVdfView extends StatefulWidget {
 }
 
 class _AddVdfViewState extends State<AddVdfView> {
-
   final ApiService addPanchayatApiService = ApiService();
   final AddClusterApiService addClusterApiService = AddClusterApiService();
 
@@ -455,7 +435,6 @@ class _AddVdfViewState extends State<AddVdfView> {
   void initState() {
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -552,8 +531,8 @@ class _AddVdfViewState extends State<AddVdfView> {
                 child: TextFormField(
                   controller: controller.vdfNameController.value,
                   onChanged: (value) {
-
-                    print("controller.vdfNameController.value : ${controller.vdfNameController.value}");
+                    print(
+                        "controller.vdfNameController.value : ${controller.vdfNameController.value}");
 
                     controller.update(["add"]);
                   },
@@ -575,8 +554,8 @@ class _AddVdfViewState extends State<AddVdfView> {
                 child: TextFormField(
                   controller: controller.vdfMobileController.value,
                   onChanged: (value) {
-
-                    print("controller.vdfMobileController.value : ${controller.vdfMobileController.value}");
+                    print(
+                        "controller.vdfMobileController.value : ${controller.vdfMobileController.value}");
                     controller.update(["add"]);
                   },
                   decoration: const InputDecoration(
@@ -591,28 +570,27 @@ class _AddVdfViewState extends State<AddVdfView> {
           Space.height(19),
           GestureDetector(
             onTap: () async {
-
               if (controller.vdfMobileController.value.text.length < 10) {
                 setState(() {
                   validationResult = "Mobile number should have 10 digits.";
                 });
               }
 
-
-              String addNewVdf = await addClusterApiService.addVDFToCluster(controller.selectLocationId ?? 0, controller.addedClusterId ?? 0, controller.vdfNameController.value.text!, int.tryParse(controller.vdfMobileController.value.text)!);
-
+              String addNewVdf = await addClusterApiService.addVDFToCluster(
+                  controller.selectLocationId ?? 0,
+                  controller.addedClusterId ?? 0,
+                  controller.vdfNameController.value.text!,
+                  int.tryParse(controller.vdfMobileController.value.text)!);
 
               print("addNewVdf : $addNewVdf");
 
               if (addNewVdf == "VDF Added") {
                 showConfirmationDialog(context);
-              }
-              else {
+              } else {
                 setState(() {
                   validationResult = "Something Went Wrong";
                 });
               }
-
             },
             child: commonButton(title: "Add VDF", color: Color(0xff27528F)),
           ),
@@ -667,7 +645,6 @@ class _AddVdfViewState extends State<AddVdfView> {
                   GestureDetector(
                     onTap: () {
                       Get.offAll(GPLHomeScreen());
-
                     },
                     child: Container(
                       height: 50,

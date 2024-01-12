@@ -1,3 +1,6 @@
+import 'package:dalmia/app/modules/downloadExcelFromTable/ExportTableToExcel.dart';
+import 'package:dalmia/app/modules/leverWise/services/lever_wise_api_services.dart';
+import 'package:dalmia/app/modules/overviewPan/service/overviewReportApiService.dart';
 import 'package:dalmia/app/modules/overviewPan/views/overview_pan_view.dart';
 import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/common/app_bar.dart';
@@ -14,10 +17,91 @@ import 'package:get/get.dart';
 
 import '../controllers/lever_wise_controller.dart';
 
-class LeverWiseView extends GetView<LeverWiseController> {
-  const LeverWiseView({Key? key}) : super(key: key);
+class LeverWiseView extends StatefulWidget {
+  LeverWiseView({Key? key}) : super(key: key);
+
+  @override
+  _LeverWiseViewState createState() => new _LeverWiseViewState();
+}
+
+class _LeverWiseViewState extends State<LeverWiseView> {
+  final LeverWiseApiServices leverWiseApiServices =
+  new LeverWiseApiServices();
+final ExportTableToExcel exportTableToExcel = new ExportTableToExcel();
+  LeverWiseController controller = Get.put(LeverWiseController());
+bool isLoading = true  ;
+  void downloadExcel() {
+    try {
+      exportTableToExcel.exportLeverWiseReport(controller);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Download Successful'),
+            content: Text(
+                'The Excel file has been downloaded successfully in your download folder.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      // Show error dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Download Error'),
+            content:
+            Text('An error occurred while downloading the Excel file.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getLeverWiseReport();
+
+  }
+
+
+  void getLeverWiseReport() async {
+    try {
+      List<Map<String, Map<String, dynamic>>> leverWiseReportData =
+      await leverWiseApiServices.getLeverWiseReport(controller.allLocations, controller.levers);
+
+      setState(() {
+        isLoading=false;
+        controller.updateLeverWiseApiReportList(leverWiseReportData);
+      });
+
+    } catch (error) {
+      // Handle errors
+      print("Error fetching report: $error");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final LeverWiseApiServices leverWiseApiServices = LeverWiseApiServices();
+
     LeverWiseController leverWiseController = Get.put(LeverWiseController());
     return SafeArea(
       child: Scaffold(
@@ -26,7 +110,6 @@ class LeverWiseView extends GetView<LeverWiseController> {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                // appBar(context, title: "Reports"),
                 Space.height(16),
 
                 ///_________________________________ main menu __________________________///
@@ -59,10 +142,12 @@ class LeverWiseView extends GetView<LeverWiseController> {
                   style: AppStyle.textStyleBoldMed(fontSize: 14),
                 ),
                 Space.height(14),
-                allRegionsTables(),
+                allRegionsTables(0),
                 Space.height(14),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                   downloadExcel();
+                  },
                   child: Container(
                     height: MySize.size48,
                     width: MySize.size168,
@@ -96,8 +181,8 @@ class LeverWiseView extends GetView<LeverWiseController> {
     );
   }
 
-  Widget allRegionsTables() {
-    return SingleChildScrollView(
+  Widget allRegionsTables(int i) {
+    return isLoading==true?Center(child:CircularProgressIndicator()): SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -247,6 +332,8 @@ class LeverWiseView extends GetView<LeverWiseController> {
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
+
+
                         'MEG',
                         style: TextStyle(
                             fontWeight: CustomFontTheme.headingwt,
@@ -585,13 +672,14 @@ class LeverWiseView extends GetView<LeverWiseController> {
                 ),
               ],
               rows: List<DataRow>.generate(
-                controller.locations.length,
-                (index) => DataRow(
+                controller.levers.length,
+                    (index) => DataRow(
                   color: MaterialStateColor.resolveWith(
-                    (states) {
-                      return controller.locations[index] == "Households" ||
-                              controller.locations[index] == "Interventions" ||
-                              controller.locations[index] ==
+                        (states) {
+                      i = 0;
+                      return controller.levers[index] == "Households" ||
+                              controller.levers[index] == "Interventions" ||
+                              controller.levers[index] ==
                                   "HH with Annual Addl. Income"
                           ? Color(0xff008CD3).withOpacity(0.3)
                           : index.isEven
@@ -607,12 +695,12 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         child: Row(
                           children: [
                             Text(
-                              controller.locations[index],
-                              style: controller.locations[index] ==
+                              controller.levers[index],
+                              style: controller.levers[index] ==
                                           "Households" ||
-                                      controller.locations[index] ==
+                                      controller.levers[index] ==
                                           "Interventions" ||
-                                      controller.locations[index] ==
+                                      controller.levers[index] ==
                                           "HH with Annual Addl. Income"
                                   ? TextStyle(
                                       color: CustomColorTheme.textColor,
@@ -635,13 +723,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.DPM[index].toString()),
+                            (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                                null
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -659,13 +744,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.ALR[index].toString()),
+                            (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                                null
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -683,13 +765,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.BGM[index].toString()),
+                            (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                                null
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -707,13 +786,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.KDP[index].toString()),
+                            (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                                null
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -730,14 +806,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                       Row(
                         children: [
                           Spacer(),
-                          Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.CHA[index].toString()),
+                          Text( (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                              null
+                              ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                              : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -758,13 +830,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         width: 80,
                         child: Center(
                           child: Text(
-                            controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.SOUTH[index].toString(),
+                            (controller.leverWiseApiReportList![0][controller.levers[index]]!=
+                                0
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14, color: Colors.white),
                           ),
@@ -777,13 +846,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.CHA[index].toString()),
+                            (controller.leverWiseApiReportList![0][controller.levers[index]]!=
+                                0
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -801,13 +867,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.CHA[index].toString()),
+                            (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                                null
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -825,13 +888,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.CHA[index].toString()),
+                            (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                                null
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -849,13 +909,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.CHA[index].toString()),
+                            (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                                null
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -876,13 +933,11 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         width: 80,
                         child: Center(
                           child: Text(
-                            controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.SOUTH[index].toString(),
+                              (controller.leverWiseApiReportList![0][controller.levers[index]]!=
+                                  0
+                                  ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                  : '0'),
+                                // : controller.SOUTH[index].toString(),
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14, color: Colors.white),
                           ),
@@ -895,13 +950,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.CHA[index].toString()),
+                            (controller.leverWiseApiReportList![0][controller.levers[index]]!=
+                                0
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -919,13 +971,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.CHA[index].toString()),
+                            (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                                null
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -943,13 +992,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.CHA[index].toString()),
+                            (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                                0
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -967,13 +1013,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.CHA[index].toString()),
+                            (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                                null
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -991,13 +1034,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.CHA[index].toString()),
+                            (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                                null
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -1018,13 +1058,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         width: 80,
                         child: Center(
                           child: Text(
-                            controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.SOUTH[index].toString(),
+                            (controller.leverWiseApiReportList![0][controller.levers[index]]!=
+                                0
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14, color: Colors.white),
                           ),
@@ -1039,13 +1076,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         width: 80,
                         child: Center(
                           child: Text(
-                            controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.SOUTH[index].toString(),
+                            (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                                null
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14, color: Colors.white),
                           ),
@@ -1059,13 +1093,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.CHA[index].toString()),
+                            (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                                null
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -1084,13 +1115,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.CHA[index].toString()),
+                            (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                                null
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -1109,13 +1137,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.CHA[index].toString()),
+                            (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                                null
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -1134,13 +1159,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.CHA[index].toString()),
+                            (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                                null
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -1159,13 +1181,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         children: [
                           Spacer(),
                           Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.CHA[index].toString()),
+                            (controller.leverWiseApiReportList?[0][controller.levers[index]] !=
+                                0
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
@@ -1186,13 +1205,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         width: 80,
                         child: Center(
                           child: Text(
-                            controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.SOUTH[index].toString(),
+                            (controller.leverWiseApiReportList![0][controller.levers[index]]!=
+                                0
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14, color: Colors.white),
                           ),
@@ -1208,13 +1224,10 @@ class LeverWiseView extends GetView<LeverWiseController> {
                         width: 80,
                         child: Center(
                           child: Text(
-                            controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                : controller.SOUTH[index].toString(),
+                            (controller.leverWiseApiReportList![0][controller.levers[index]]!=
+                                0
+                                ? controller.leverWiseApiReportList![0][controller.levers[index]]![controller.allLocations[i++]].toString()
+                                : '0'),
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14, color: Colors.white),
                           ),

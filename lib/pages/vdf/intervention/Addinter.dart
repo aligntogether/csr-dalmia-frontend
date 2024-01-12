@@ -74,7 +74,7 @@ class _AddinterState extends State<Addinter> {
   @override
   Widget build(BuildContext context) {
     
-    print("sttt ${widget.id}");
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -190,6 +190,7 @@ class _AddinterState extends State<Addinter> {
                           onPressed: isButtonEnabled
                               ? () {
                                   print(selectedInterventionId);
+                                  print(widget.id);
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => Details(
@@ -202,6 +203,7 @@ class _AddinterState extends State<Addinter> {
                                   );
                                 }
                               : null,
+
                           child: const Text(
                             'Confirm',
                             style: TextStyle(color: Colors.white),

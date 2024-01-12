@@ -35,9 +35,9 @@ class OverviewReportApiService {
             'region': region['region'],
             'rhId': region['rhId'],
           }).toList();
-          
+
           Map<String, dynamic> newMap = new Map<String, dynamic>();
-          
+
           newMap.putIfAbsent("regionId", () => 1001);
           newMap.putIfAbsent("region", () => "All Regions");
           newMap.putIfAbsent("rhId", () => "0000");

@@ -105,7 +105,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.LEVER_WISE,
-      page: () => const LeverWiseView(),
+      page: () => LeverWiseView(),
       binding: LeverWiseBinding(),
     ),
     GetPage(
