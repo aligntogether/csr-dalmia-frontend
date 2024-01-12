@@ -30,6 +30,7 @@ class ChooseRoleView extends GetView<ChooseRoleController> {
       } catch (e) {
         return;
       }
+
       if (!userType.contains(',')) {
         switch (userType) {
           case VDF_USERTYPE:
@@ -85,199 +86,207 @@ class ChooseRoleView extends GetView<ChooseRoleController> {
       print(userType.split(","));
 
       controller.roleList = userType.split(",");
+      controller.update();
     }
 
     checkUserType();
 
     return SafeArea(
       child: Scaffold(
-          body: Column(
-        children: [
-          Space.height(65.5),
-          Center(
-            child: Container(
-                height: MySize.size70,
-                width: MySize.size70,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle, color: Color(0xff008CD3)),
-                child: Center(
-                    child: Image.asset(
-                  ImageConstant.profile,
-                  height: 38,
-                  width: 38,
-                  fit: BoxFit.cover,
-                ))),
-          ),
-          Space.height(10),
-          Text(
-            "Choose a role to continue",
-            style: AppStyle.textStyleInterMed(fontSize: 16),
-          ),
-          Space.height(31),
-          GetBuilder<ChooseRoleController>(
-            builder: (controller) {
-              return SizedBox(
-                height: 230,
-                child: ListView.builder(
-                  itemCount: controller.roleList.length,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        controller.roleIndex = index;
-                        controller.update();
-                      },
-                      child: Container(
-                        height: MySize.size50,
-                        width: MySize.size250,
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 55, vertical: 15),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: controller.roleIndex == index
-                                  ? Color(0xffF15A22)
-                                  : Color(0xff181818).withOpacity(0.6),
-                            ),
-                            color: controller.roleIndex == index
-                                ? Color(0xffF15A22).withOpacity(0.2)
-                                : Colors.white),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Space.width(15),
-                            controller.roleIndex == index
-                                ? Image.asset(
-                                    ImageConstant.radio,
-                                    height: 17,
-                                    width: 17,
-                                  )
-                                : Container(
-                                    height: 17,
-                                    width: 17,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                            color: Color(0xff2D2D2D))),
-                                  ),
-                            Space.width(20),
-                            Text(
-                              controller.roleList[index],
-                              style: AppStyle.textStyleBoldMed(
-                                  fontSize: 14,
+          body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Space.height(65.5),
+            Center(
+              child: Container(
+                  height: MySize.size70,
+                  width: MySize.size70,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle, color: Color(0xff008CD3)),
+                  child: Center(
+                      child: Image.asset(
+                    ImageConstant.profile,
+                    height: 38,
+                    width: 38,
+                    fit: BoxFit.cover,
+                  ))),
+            ),
+            Space.height(10),
+            Text(
+              "Choose a role to continue",
+              style: AppStyle.textStyleInterMed(fontSize: 16),
+            ),
+            Space.height(31),
+            GetBuilder<ChooseRoleController>(
+              builder: (controller) {
+                return SizedBox(
+                  height: 230,
+                  child: SingleChildScrollView(
+                    child: ListView.builder(
+                      itemCount: controller.roleList.length,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            controller.roleIndex = index;
+                            controller.update();
+                          },
+                          child: Container(
+                            height: MySize.size50,
+                            width: MySize.size250,
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 55, vertical: 15),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
                                   color: controller.roleIndex == index
                                       ? Color(0xffF15A22)
-                                      : Color(0xff181818).withOpacity(0.6)),
+                                      : Color(0xff181818).withOpacity(0.6),
+                                ),
+                                color: controller.roleIndex == index
+                                    ? Color(0xffF15A22).withOpacity(0.2)
+                                    : Colors.white),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Space.width(15),
+                                controller.roleIndex == index
+                                    ? Image.asset(
+                                        ImageConstant.radio,
+                                        height: 17,
+                                        width: 17,
+                                      )
+                                    : Container(
+                                        height: 17,
+                                        width: 17,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                                color: Color(0xff2D2D2D))),
+                                      ),
+                                Space.width(20),
+                                Text(
+                                  controller.roleList[index],
+                                  style: AppStyle.textStyleBoldMed(
+                                      fontSize: 14,
+                                      color: controller.roleIndex == index
+                                          ? Color(0xffF15A22)
+                                          : Color(0xff181818).withOpacity(0.6)),
+                                ),
+                                Spacer()
+                              ],
                             ),
-                            Spacer()
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+            GestureDetector(
+              onTap: () async {
+                var userType;
+                try {
+                  userType = controller.roleList[controller.roleIndex];
+                } catch (e) {
+                  return;
+                }
+                switch (userType) {
+                  case VDF_USERTYPE:
+                    await SharedPrefHelper.storeSharedPref(
+                        USER_TYPE_SHAREDPREF_KEY, userType);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => VdfHome()));
+                    break;
+                  case CDO_USERTYPE:
+                    await SharedPrefHelper.storeSharedPref(
+                        USER_TYPE_SHAREDPREF_KEY, userType);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => CDOHome()));
+                    break;
+                  case GPL_USERTYPE:
+                    await SharedPrefHelper.storeSharedPref(
+                        USER_TYPE_SHAREDPREF_KEY, userType);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => GPLHomeScreen()));
+                    break;
+                  case LL_USERTYPE:
+                    await SharedPrefHelper.storeSharedPref(
+                        USER_TYPE_SHAREDPREF_KEY, userType);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LLHome()));
+                    break;
+                  case RH_USERTYPE:
+                    await SharedPrefHelper.storeSharedPref(
+                        USER_TYPE_SHAREDPREF_KEY, userType);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => RHHome()));
+                    break;
+                  case CEO_USERTYPE:
+                    await SharedPrefHelper.storeSharedPref(
+                        USER_TYPE_SHAREDPREF_KEY, userType);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => CEOHome()));
+                    break;
+                  case ACCOUNTS_USERTYPE:
+                    await SharedPrefHelper.storeSharedPref(
+                        USER_TYPE_SHAREDPREF_KEY, userType);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AccountsHome()));
+                    break;
+                  default:
+                    // For any other userType we have to show a prompt "You  can not use the Application" and redirect on Login page
+                    await SharedPrefHelper.clearSharedPrefAccess();
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Login()));
+                }
+              },
+              child: Container(
+                height: MySize.size50,
+                margin: EdgeInsets.symmetric(horizontal: 33),
+                decoration: BoxDecoration(
+                    color: Color(0xff0054A6),
+                    borderRadius: BorderRadius.circular(5)),
+                child: Center(
+                  child: Text(
+                    "Continue",
+                    style: AppStyle.textStyleBoldMed(
+                        fontSize: 16, color: Colors.white),
+                  ),
                 ),
-              );
-            },
-          ),
-         
-          GestureDetector(
-          
-            onTap: () async {
-              var userType;
-              try {
-                userType = controller.roleList[controller.roleIndex];
-              } catch (e) {
-                return;
-              }
-              switch (userType) {
-                case VDF_USERTYPE:
-                  await SharedPrefHelper.storeSharedPref(
-                      USER_TYPE_SHAREDPREF_KEY, userType);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => VdfHome()));
-                  break;
-                case CDO_USERTYPE:
-                  await SharedPrefHelper.storeSharedPref(
-                      USER_TYPE_SHAREDPREF_KEY, userType);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => CDOHome()));
-                  break;
-                case GPL_USERTYPE:
-                  await SharedPrefHelper.storeSharedPref(
-                      USER_TYPE_SHAREDPREF_KEY, userType);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => GPLHomeScreen()));
-                  break;
-                case LL_USERTYPE:
-                  await SharedPrefHelper.storeSharedPref(
-                      USER_TYPE_SHAREDPREF_KEY, userType);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => LLHome()));
-                  break;
-                case RH_USERTYPE:
-                  await SharedPrefHelper.storeSharedPref(
-                      USER_TYPE_SHAREDPREF_KEY, userType);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => RHHome()));
-                  break;
-                case CEO_USERTYPE:
-                  await SharedPrefHelper.storeSharedPref(
-                      USER_TYPE_SHAREDPREF_KEY, userType);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => CEOHome()));
-                  break;
-                case ACCOUNTS_USERTYPE:
-                  await SharedPrefHelper.storeSharedPref(
-                      USER_TYPE_SHAREDPREF_KEY, userType);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => AccountsHome()));
-                  break;
-                default:
-                  // For any other userType we have to show a prompt "You  can not use the Application" and redirect on Login page
-                  await SharedPrefHelper.clearSharedPrefAccess();
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Login()));
-              }
-            },
-            child: Container(
-              height: MySize.size50,
-              margin: EdgeInsets.symmetric(horizontal: 33),
-              decoration: BoxDecoration(
+              ),
+            ),
+            Space.height(34),
+            GestureDetector(
+              onTap: () async {
+                await SharedPrefHelper.clearSharedPrefAccess();
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const Login(),
+                  ),
+                );
+              },
+              child: Text(
+                "Logout",
+                style: TextStyle(
                   color: Color(0xff0054A6),
-                  borderRadius: BorderRadius.circular(5)),
-              child: Center(
-                child: Text(
-                  "Continue",
-                  style: AppStyle.textStyleBoldMed(
-                      fontSize: 16, color: Colors.white),
+                  fontSize: 16,
+                  fontFamily: 'Inter-Bold',
+                  fontWeight: FontWeight.w500,
+                  decorationThickness: 1.5,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Color(0xff0054A6),
                 ),
               ),
-            ),
-          ),
-          Space.height(34),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const Login(),
-                ),
-              );
-            },
-            child: Text(
-              "Logout",
-              style: TextStyle(
-                color: Color(0xff0054A6),
-                fontSize: 16,
-                fontFamily: 'Inter-Bold',
-                fontWeight: FontWeight.w500,
-                decorationThickness: 1.5,
-                decoration: TextDecoration.underline,
-                decorationColor: Color(0xff0054A6),
-              ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       )),
     );
   }
