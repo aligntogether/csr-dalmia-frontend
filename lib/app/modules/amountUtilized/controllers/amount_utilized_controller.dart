@@ -4,7 +4,7 @@ class AmountUtilizedController extends GetxController {
 
 
   List<Map<String, Map<String, dynamic>>>? amountUtilizedMappedList;
-  List<String>? rhlocationsList;
+  List<String> rhlocationsList = [];
 
 
   List<String> locations = [
@@ -25,12 +25,15 @@ class AmountUtilizedController extends GetxController {
     "CUT", "MED", "BOK", "RAJ", "KAL", "EAST", "CEMENT",
     "NIG", "RAM", "JOW", "NIN", "KOL", "SUGAR", "PANIND"];
 
-  var rhRegions = [
-    {
+  var rhRegions = {
       "SOUTH": {"DPM", "ALR", "BGM", "KDP", "CHA"},
       "SUGAR": {"NIG", "RAM", "JOW", "NIN", "KOL"}
-    }
-  ];
+    };
+
+  // var rhRegions = {
+  //     "SOUTH": {"DPM", "ALR", "BGM", "KDP", "CHA"},
+  //     "NE": {"MEG", "UMG", "JGR", "LAN"}
+  //   };
 
 
   var objectKeys = ["allocated", "utilized"];

@@ -43,26 +43,31 @@ class _AmountUtilizedViewState extends State<AmountUtilizedView> {
         setRHLocations();
       }
       else {
-        getAmountUtilizedReport();
+        getAmountUtilizedReport(controller.allLocations);
       }
+
+
     });
 
   }
 
-  void setRHLocations() {
+  void setRHLocations() async {
 
-    List<dynamic>? ls = amountUtilizedApiService.convertMapToList(controller.rhRegions);
+    List<dynamic>? ls = await amountUtilizedApiService.convertMapToList(controller.rhRegions);
 
     setState(() {
       isLoading = false;
-      controller.rhlocationsList = ls?.cast<String>();
+      controller.rhlocationsList = ls != null ? ls.cast<String>() : [];
     });
+
+    getAmountUtilizedReport(controller.rhlocationsList);
+
 
   }
 
-  void getAmountUtilizedReport() async {
+  void getAmountUtilizedReport(List<String> allLocations) async {
 
-    List<Map<String, Map<String, dynamic>>> amountUtilizedMappedData = await amountUtilizedApiService.getAmountUtilizedAllRegions(controller.allLocations, controller.objectKeys);
+    List<Map<String, Map<String, dynamic>>> amountUtilizedMappedData = await amountUtilizedApiService.getAmountUtilizedAllRegions(allLocations, controller.objectKeys);
 
     setState(() {
       isLoading = false;
@@ -905,6 +910,7 @@ class _AmountUtilizedViewState extends State<AmountUtilizedView> {
 
                     // Additional row for total
                   ],
+
                 ),
               ) /*+
                             [
@@ -983,7 +989,7 @@ class _AmountUtilizedViewState extends State<AmountUtilizedView> {
     ));
 
     // Create DataColumns based on controller.locationName
-    for (String location in controller.rhlocationsList!) {
+    for (String location in controller.rhlocationsList) {
       dataColumns.add(DataColumn(
         label: Container(
           height: 60,
@@ -1005,7 +1011,7 @@ class _AmountUtilizedViewState extends State<AmountUtilizedView> {
     }
 
     return Visibility(
-        visible: true /* controller.amountUtilizedMappedList != null && controller.amountUtilizedMappedList!.isNotEmpty */,
+        visible: controller.amountUtilizedMappedList != null && controller.amountUtilizedMappedList!.isNotEmpty,
         child: !isLoading ? SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
@@ -1042,7 +1048,682 @@ class _AmountUtilizedViewState extends State<AmountUtilizedView> {
                               : Colors.white;
                     },
                   ),
+                  // cells: [
+                  //   DataCell(
+                  //     Container(
+                  //       width: 150,
+                  //       padding: EdgeInsets.only(left: 10),
+                  //       child: Row(
+                  //         children: [
+                  //           Text(
+                  //             controller.locations[index],
+                  //             style: controller.locations[index] ==
+                  //                         "Households" ||
+                  //                     controller.locations[index] ==
+                  //                         "Interventions" ||
+                  //                     controller.locations[index] ==
+                  //                         "HH with Annual Addl. Income"
+                  //                 ? TextStyle(
+                  //                     color: CustomColorTheme.textColor,
+                  //                     fontWeight: CustomFontTheme.headingwt,
+                  //                     fontSize: CustomFontTheme.textSize)
+                  //                 : AppStyle.textStyleInterMed(fontSize: 14),
+                  //           ),
+                  //           Spacer(),
+                  //           VerticalDivider(
+                  //             width: 1,
+                  //             color: Color(0xff181818).withOpacity(0.3),
+                  //             thickness: 1,
+                  //           )
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  //   DataCell(
+                  //     Row(
+                  //       children: [
+                  //         Spacer(),
+                  //         Text(
+                  //           (controller.locations[index] == "Households" ||
+                  //                   controller.locations[index] ==
+                  //                       "Interventions" ||
+                  //                   controller.locations[index] ==
+                  //                       "HH with Annual Addl. Income"
+                  //               ? ""
+                  //               // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //               : controller.DPM[index].toString()),
+                  //           style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //         ),
+                  //         Spacer(),
+                  //         VerticalDivider(
+                  //           width: 1,
+                  //           color: Color(0xff181818).withOpacity(0.3),
+                  //           thickness: 1,
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  //   //alr
+                  //   DataCell(
+                  //     Row(
+                  //       children: [
+                  //         Spacer(),
+                  //         Text(
+                  //           (controller.locations[index] == "Households" ||
+                  //                   controller.locations[index] ==
+                  //                       "Interventions" ||
+                  //                   controller.locations[index] ==
+                  //                       "HH with Annual Addl. Income"
+                  //               ? ""
+                  //               // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //               : controller.ALR[index].toString()),
+                  //           style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //         ),
+                  //         Spacer(),
+                  //         VerticalDivider(
+                  //           width: 1,
+                  //           color: Color(0xff181818).withOpacity(0.3),
+                  //           thickness: 1,
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  //   //bgm
+                  //   DataCell(
+                  //     Row(
+                  //       children: [
+                  //         Spacer(),
+                  //         Text(
+                  //           (controller.locations[index] == "Households" ||
+                  //                   controller.locations[index] ==
+                  //                       "Interventions" ||
+                  //                   controller.locations[index] ==
+                  //                       "HH with Annual Addl. Income"
+                  //               ? ""
+                  //               // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //               : controller.BGM[index].toString()),
+                  //           style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //         ),
+                  //         Spacer(),
+                  //         VerticalDivider(
+                  //           width: 1,
+                  //           color: Color(0xff181818).withOpacity(0.3),
+                  //           thickness: 1,
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  //   //kdp
+                  //   DataCell(
+                  //     Row(
+                  //       children: [
+                  //         Spacer(),
+                  //         Text(
+                  //           (controller.locations[index] == "Households" ||
+                  //                   controller.locations[index] ==
+                  //                       "Interventions" ||
+                  //                   controller.locations[index] ==
+                  //                       "HH with Annual Addl. Income"
+                  //               ? ""
+                  //               // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //               : controller.KDP[index].toString()),
+                  //           style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //         ),
+                  //         Spacer(),
+                  //         VerticalDivider(
+                  //           width: 1,
+                  //           color: Color(0xff181818).withOpacity(0.3),
+                  //           thickness: 1,
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  //   //cha
+                  //   DataCell(
+                  //     Row(
+                  //       children: [
+                  //         Spacer(),
+                  //         Text(
+                  //           (controller.locations[index] == "Households" ||
+                  //                   controller.locations[index] ==
+                  //                       "Interventions" ||
+                  //                   controller.locations[index] ==
+                  //                       "HH with Annual Addl. Income"
+                  //               ? ""
+                  //               // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //               : controller.CHA[index].toString()),
+                  //           style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //         ),
+                  //         Spacer(),
+                  //         VerticalDivider(
+                  //           width: 1,
+                  //           color: Color(0xff181818).withOpacity(0.3),
+                  //           thickness: 1,
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  //
+                  //   ///__________________________ South _______________________
+                  //   DataCell(
+                  //     Container(
+                  //       height: 60,
+                  //       color: Color(0xff096C9F),
+                  //       width: 80,
+                  //       child: Center(
+                  //         child: Text(
+                  //           controller.locations[index] == "Households" ||
+                  //                   controller.locations[index] ==
+                  //                       "Interventions" ||
+                  //                   controller.locations[index] ==
+                  //                       "HH with Annual Addl. Income"
+                  //               ? ""
+                  //               // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0',
+                  //               : controller.SOUTH[index].toString(),
+                  //           style: AppStyle.textStyleInterMed(
+                  //               fontSize: 14, color: Colors.white),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  //   // meg
+                  //   DataCell(
+                  //     Row(
+                  //       children: [
+                  //         Spacer(),
+                  //         Text(
+                  //           (controller.locations[index] == "Households" ||
+                  //                   controller.locations[index] ==
+                  //                       "Interventions" ||
+                  //                   controller.locations[index] ==
+                  //                       "HH with Annual Addl. Income"
+                  //               ? ""
+                  //               // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //               : controller.CHA[index].toString()),
+                  //           style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //         ),
+                  //         Spacer(),
+                  //         VerticalDivider(
+                  //           width: 1,
+                  //           color: Color(0xff181818).withOpacity(0.3),
+                  //           thickness: 1,
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  //   //umg
+                  //   DataCell(
+                  //     Row(
+                  //       children: [
+                  //         Spacer(),
+                  //         Text(
+                  //           (controller.locations[index] == "Households" ||
+                  //                   controller.locations[index] ==
+                  //                       "Interventions" ||
+                  //                   controller.locations[index] ==
+                  //                       "HH with Annual Addl. Income"
+                  //               ? ""
+                  //               // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //               : controller.CHA[index].toString()),
+                  //           style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //         ),
+                  //         Spacer(),
+                  //         VerticalDivider(
+                  //           width: 1,
+                  //           color: Color(0xff181818).withOpacity(0.3),
+                  //           thickness: 1,
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  //   //jgr
+                  //   DataCell(
+                  //     Row(
+                  //       children: [
+                  //         Spacer(),
+                  //         Text(
+                  //           (controller.locations[index] == "Households" ||
+                  //                   controller.locations[index] ==
+                  //                       "Interventions" ||
+                  //                   controller.locations[index] ==
+                  //                       "HH with Annual Addl. Income"
+                  //               ? ""
+                  //               // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //               : controller.CHA[index].toString()),
+                  //           style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //         ),
+                  //         Spacer(),
+                  //         VerticalDivider(
+                  //           width: 1,
+                  //           color: Color(0xff181818).withOpacity(0.3),
+                  //           thickness: 1,
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  //   //lan
+                  //   DataCell(
+                  //     Row(
+                  //       children: [
+                  //         Spacer(),
+                  //         Text(
+                  //           (controller.locations[index] == "Households" ||
+                  //                   controller.locations[index] ==
+                  //                       "Interventions" ||
+                  //                   controller.locations[index] ==
+                  //                       "HH with Annual Addl. Income"
+                  //               ? ""
+                  //               // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //               : controller.CHA[index].toString()),
+                  //           style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //         ),
+                  //         Spacer(),
+                  //         VerticalDivider(
+                  //           width: 1,
+                  //           color: Color(0xff181818).withOpacity(0.3),
+                  //           thickness: 1,
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),//lan
+                  //   DataCell(
+                  //     Row(
+                  //       children: [
+                  //         Spacer(),
+                  //         Text(
+                  //           (controller.locations[index] == "Households" ||
+                  //                   controller.locations[index] ==
+                  //                       "Interventions" ||
+                  //                   controller.locations[index] ==
+                  //                       "HH with Annual Addl. Income"
+                  //               ? ""
+                  //               // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //               : controller.CHA[index].toString()),
+                  //           style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //         ),
+                  //         Spacer(),
+                  //         VerticalDivider(
+                  //           width: 1,
+                  //           color: Color(0xff181818).withOpacity(0.3),
+                  //           thickness: 1,
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  //
+                  //   ///__________________________ NE _______________________
+                  //   DataCell(
+                  //     Container(
+                  //       height: 60,
+                  //       color: Color(0xff096C9F),
+                  //       width: 80,
+                  //       child: Center(
+                  //         child: Text(
+                  //           controller.locations[index] == "Households" ||
+                  //                   controller.locations[index] ==
+                  //                       "Interventions" ||
+                  //                   controller.locations[index] ==
+                  //                       "HH with Annual Addl. Income"
+                  //               ? ""
+                  //               // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0',
+                  //               : controller.SOUTH[index].toString(),
+                  //           style: AppStyle.textStyleInterMed(
+                  //               fontSize: 14, color: Colors.white),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  //   //CUT
+                  //   // DataCell(
+                  //   //   Row(
+                  //   //     children: [
+                  //   //       Spacer(),
+                  //   //       Text(
+                  //   //         (controller.locations[index] == "Households" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "Interventions" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "HH with Annual Addl. Income"
+                  //   //             ? ""
+                  //   //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //   //             // : controller.CHA[index].toString()),
+                  //   //         style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //   //       ),
+                  //   //       Spacer(),
+                  //   //       VerticalDivider(
+                  //   //         width: 1,
+                  //   //         color: Color(0xff181818).withOpacity(0.3),
+                  //   //         thickness: 1,
+                  //   //       )
+                  //   //     ],
+                  //   //   ),
+                  //   // ),
+                  //   // //MED
+                  //   // DataCell(
+                  //   //   Row(
+                  //   //     children: [
+                  //   //       Spacer(),
+                  //   //       Text(
+                  //   //         (controller.locations[index] == "Households" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "Interventions" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "HH with Annual Addl. Income"
+                  //   //             ? ""
+                  //   //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //   //             // : controller.CHA[index].toString()),
+                  //   //         style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //   //       ),
+                  //   //       Spacer(),
+                  //   //       VerticalDivider(
+                  //   //         width: 1,
+                  //   //         color: Color(0xff181818).withOpacity(0.3),
+                  //   //         thickness: 1,
+                  //   //       )
+                  //   //     ],
+                  //   //   ),
+                  //   // ),
+                  //   // //BOK
+                  //   // DataCell(
+                  //   //   Row(
+                  //   //     children: [
+                  //   //       Spacer(),
+                  //   //       Text(
+                  //   //         (controller.locations[index] == "Households" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "Interventions" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "HH with Annual Addl. Income"
+                  //   //             ? ""
+                  //   //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //   //             // : controller.CHA[index].toString()),
+                  //   //         style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //   //       ),
+                  //   //       Spacer(),
+                  //   //       VerticalDivider(
+                  //   //         width: 1,
+                  //   //         color: Color(0xff181818).withOpacity(0.3),
+                  //   //         thickness: 1,
+                  //   //       )
+                  //   //     ],
+                  //   //   ),
+                  //   // ),
+                  //   // //RAJ
+                  //   // DataCell(
+                  //   //   Row(
+                  //   //     children: [
+                  //   //       Spacer(),
+                  //   //       Text(
+                  //   //         (controller.locations[index] == "Households" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "Interventions" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "HH with Annual Addl. Income"
+                  //   //             ? ""
+                  //   //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //   //             // : controller.CHA[index].toString()),
+                  //   //         style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //   //       ),
+                  //   //       Spacer(),
+                  //   //       VerticalDivider(
+                  //   //         width: 1,
+                  //   //         color: Color(0xff181818).withOpacity(0.3),
+                  //   //         thickness: 1,
+                  //   //       )
+                  //   //     ],
+                  //   //   ),
+                  //   // ),
+                  //   // //KAL
+                  //   // DataCell(
+                  //   //   Row(
+                  //   //     children: [
+                  //   //       Spacer(),
+                  //   //       Text(
+                  //   //         (controller.locations[index] == "Households" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "Interventions" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "HH with Annual Addl. Income"
+                  //   //             ? ""
+                  //   //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //   //             // : controller.CHA[index].toString()),
+                  //   //         style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //   //       ),
+                  //   //       Spacer(),
+                  //   //       VerticalDivider(
+                  //   //         width: 1,
+                  //   //         color: Color(0xff181818).withOpacity(0.3),
+                  //   //         thickness: 1,
+                  //   //       )
+                  //   //     ],
+                  //   //   ),
+                  //   // ),
+                  //   // //EAST
+                  //   // ///__________________________ EAST _______________________
+                  //   // DataCell(
+                  //   //   Container(
+                  //   //     height: 60,
+                  //   //     color: Color(0xff096C9F),
+                  //   //     width: 80,
+                  //   //     child: Center(
+                  //   //       child: Text(
+                  //   //         controller.locations[index] == "Households" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "Interventions" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "HH with Annual Addl. Income"
+                  //   //             ? ""
+                  //   //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0',
+                  //   //             // : controller.SOUTH[index].toString(),
+                  //   //         style: AppStyle.textStyleInterMed(
+                  //   //             fontSize: 14, color: Colors.white),
+                  //   //       ),
+                  //   //     ),
+                  //   //   ),
+                  //   // ),
+                  //   // //CEMENT
+                  //   // DataCell(
+                  //   //   Container(
+                  //   //     height: 60,
+                  //   //     color: Color(0xff2E8CBB),
+                  //   //     width: 80,
+                  //   //     child: Center(
+                  //   //       child: Text(
+                  //   //         controller.locations[index] == "Households" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "Interventions" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "HH with Annual Addl. Income"
+                  //   //             ? ""
+                  //   //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0',
+                  //   //             // : controller.SOUTH[index].toString(),
+                  //   //         style: AppStyle.textStyleInterMed(
+                  //   //             fontSize: 14, color: Colors.white),
+                  //   //       ),
+                  //   //     ),
+                  //   //   ),
+                  //   // ),
+                  //   //
+                  //   // //NIG
+                  //   // DataCell(
+                  //   //   Row(
+                  //   //     children: [
+                  //   //       Spacer(),
+                  //   //       Text(
+                  //   //         (controller.locations[index] == "Households" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "Interventions" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "HH with Annual Addl. Income"
+                  //   //             ? ""
+                  //   //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //   //             // : controller.CHA[index].toString()),
+                  //   //         style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //   //       ),
+                  //   //       Spacer(),
+                  //   //       VerticalDivider(
+                  //   //         width: 1,
+                  //   //         color: Color(0xff181818).withOpacity(0.3),
+                  //   //         thickness: 1,
+                  //   //       )
+                  //   //     ],
+                  //   //   ),
+                  //   // ),
+                  //   // //RAM
+                  //   //
+                  //   // DataCell(
+                  //   //   Row(
+                  //   //     children: [
+                  //   //       Spacer(),
+                  //   //       Text(
+                  //   //         (controller.locations[index] == "Households" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "Interventions" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "HH with Annual Addl. Income"
+                  //   //             ? ""
+                  //   //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //   //             // : controller.CHA[index].toString()),
+                  //   //         style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //   //       ),
+                  //   //       Spacer(),
+                  //   //       VerticalDivider(
+                  //   //         width: 1,
+                  //   //         color: Color(0xff181818).withOpacity(0.3),
+                  //   //         thickness: 1,
+                  //   //       )
+                  //   //     ],
+                  //   //   ),
+                  //   // ),
+                  //   //
+                  //   // //JOW
+                  //   // DataCell(
+                  //   //   Row(
+                  //   //     children: [
+                  //   //       Spacer(),
+                  //   //       Text(
+                  //   //         (controller.locations[index] == "Households" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "Interventions" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "HH with Annual Addl. Income"
+                  //   //             ? ""
+                  //   //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //   //             // : controller.CHA[index].toString()),
+                  //   //         style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //   //       ),
+                  //   //       Spacer(),
+                  //   //       VerticalDivider(
+                  //   //         width: 1,
+                  //   //         color: Color(0xff181818).withOpacity(0.3),
+                  //   //         thickness: 1,
+                  //   //       )
+                  //   //     ],
+                  //   //   ),
+                  //   // ),
+                  //   //
+                  //   // //NIN
+                  //   // DataCell(
+                  //   //   Row(
+                  //   //     children: [
+                  //   //       Spacer(),
+                  //   //       Text(
+                  //   //         (controller.locations[index] == "Households" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "Interventions" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "HH with Annual Addl. Income"
+                  //   //             ? ""
+                  //   //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //   //               // : controller.CHA[index].toString()),
+                  //   //         style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //   //       ),
+                  //   //       Spacer(),
+                  //   //       VerticalDivider(
+                  //   //         width: 1,
+                  //   //         color: Color(0xff181818).withOpacity(0.3),
+                  //   //         thickness: 1,
+                  //   //       )
+                  //   //     ],
+                  //   //   ),
+                  //   // ),
+                  //   //
+                  //   // //KOL
+                  //   // DataCell(
+                  //   //   Row(
+                  //   //     children: [
+                  //   //       Spacer(),
+                  //   //       Text(
+                  //   //         (controller.locations[index] == "Households" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "Interventions" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "HH with Annual Addl. Income"
+                  //   //             ? ""
+                  //   //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
+                  //   //             // : controller.CHA[index].toString()),
+                  //   //         style: AppStyle.textStyleInterMed(fontSize: 14),
+                  //   //       ),
+                  //   //       Spacer(),
+                  //   //       VerticalDivider(
+                  //   //         width: 1,
+                  //   //         color: Color(0xff181818).withOpacity(0.3),
+                  //   //         thickness: 1,
+                  //   //       )
+                  //   //     ],
+                  //   //   ),
+                  //   // ),
+                  //   //
+                  //   // //SUGAR
+                  //   // DataCell(
+                  //   //   Container(
+                  //   //     height: 60,
+                  //   //     color: Color(0xff2E8CBB),
+                  //   //     width: 80,
+                  //   //     child: Center(
+                  //   //       child: Text(
+                  //   //         controller.locations[index] == "Households" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "Interventions" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "HH with Annual Addl. Income"
+                  //   //             ? ""
+                  //   //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0',
+                  //   //             // : controller.SOUTH[index].toString(),
+                  //   //         style: AppStyle.textStyleInterMed(
+                  //   //             fontSize: 14, color: Colors.white),
+                  //   //       ),
+                  //   //     ),
+                  //   //   ),
+                  //   // ),
+                  //   //
+                  //   // //PANIND
+                  //   // DataCell(
+                  //   //   Container(
+                  //   //     height: 60,
+                  //   //     color: Color(0xff096C9F),
+                  //   //     width: 80,
+                  //   //     child: Center(
+                  //   //       child: Text(
+                  //   //         controller.locations[index] == "Households" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "Interventions" ||
+                  //   //                 controller.locations[index] ==
+                  //   //                     "HH with Annual Addl. Income"
+                  //   //             ? ""
+                  //   //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0',
+                  //   //             // : controller.SOUTH[index].toString(),
+                  //   //         style: AppStyle.textStyleInterMed(
+                  //   //             fontSize: 14, color: Colors.white),
+                  //   //       ),
+                  //   //     ),
+                  //   //   ),
+                  //   // ),
+                  //
+                  //   // Additional row for total
+                  // ],
                   cells: [
+
                     DataCell(
                       Container(
                         width: 150,
@@ -1052,15 +1733,15 @@ class _AmountUtilizedViewState extends State<AmountUtilizedView> {
                             Text(
                               controller.locations[index],
                               style: controller.locations[index] ==
-                                          "Households" ||
-                                      controller.locations[index] ==
-                                          "Interventions" ||
-                                      controller.locations[index] ==
-                                          "HH with Annual Addl. Income"
+                                  "Households" ||
+                                  controller.locations[index] ==
+                                      "Interventions" ||
+                                  controller.locations[index] ==
+                                      "HH with Annual Addl. Income"
                                   ? TextStyle(
-                                      color: CustomColorTheme.textColor,
-                                      fontWeight: CustomFontTheme.headingwt,
-                                      fontSize: CustomFontTheme.textSize)
+                                  color: CustomColorTheme.textColor,
+                                  fontWeight: CustomFontTheme.headingwt,
+                                  fontSize: CustomFontTheme.textSize)
                                   : AppStyle.textStyleInterMed(fontSize: 14),
                             ),
                             Spacer(),
@@ -1073,648 +1754,29 @@ class _AmountUtilizedViewState extends State<AmountUtilizedView> {
                         ),
                       ),
                     ),
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                                : controller.DPM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),
-                    //alr
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                                : controller.ALR[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),
-                    //bgm
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                                : controller.BGM[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),
-                    //kdp
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                                : controller.KDP[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),
-                    //cha
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                                : controller.CHA[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),
 
-                    ///__________________________ South _______________________
-                    DataCell(
-                      Container(
-                        height: 60,
-                        color: Color(0xff096C9F),
-                        width: 80,
-                        child: Center(
-                          child: Text(
-                            controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0',
-                                : controller.SOUTH[index].toString(),
-                            style: AppStyle.textStyleInterMed(
-                                fontSize: 14, color: Colors.white),
-                          ),
+                    for (String location in controller.rhlocationsList)
+                    // for (String key in controller.objectKeys)
+                      DataCell(
+                        Row(
+                          children: [
+                            Spacer(),
+                            Text(
+                              controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.rhlocationsList[i++]].toString() : '0',
+                              // controller.amountUtilizedMappedList![0][controller.locationsListMapping[index]] != null ? controller.regionWiseMappedList![0][controller.locationsListMapping[index]]![location].toString() : '0',
+                              // : controller.DPM[index].toString()),
+                              style: AppStyle.textStyleInterMed(fontSize: 14),
+                            ),
+                            Spacer(),
+                            VerticalDivider(
+                              width: 1,
+                              color: Color(0xff181818).withOpacity(0.3),
+                              thickness: 1,
+                            )
+                          ],
                         ),
                       ),
-                    ),
-                    // meg
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                                : controller.CHA[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),
-                    //umg
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                                : controller.CHA[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),
-                    //jgr
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                                : controller.CHA[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),
-                    //lan
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                                : controller.CHA[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),//lan
-                    DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            (controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                                : controller.CHA[index].toString()),
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
-                    ),
 
-                    ///__________________________ NE _______________________
-                    DataCell(
-                      Container(
-                        height: 60,
-                        color: Color(0xff096C9F),
-                        width: 80,
-                        child: Center(
-                          child: Text(
-                            controller.locations[index] == "Households" ||
-                                    controller.locations[index] ==
-                                        "Interventions" ||
-                                    controller.locations[index] ==
-                                        "HH with Annual Addl. Income"
-                                ? ""
-                                // : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0',
-                                : controller.SOUTH[index].toString(),
-                            style: AppStyle.textStyleInterMed(
-                                fontSize: 14, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                    //CUT
-                    // DataCell(
-                    //   Row(
-                    //     children: [
-                    //       Spacer(),
-                    //       Text(
-                    //         (controller.locations[index] == "Households" ||
-                    //                 controller.locations[index] ==
-                    //                     "Interventions" ||
-                    //                 controller.locations[index] ==
-                    //                     "HH with Annual Addl. Income"
-                    //             ? ""
-                    //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                    //             // : controller.CHA[index].toString()),
-                    //         style: AppStyle.textStyleInterMed(fontSize: 14),
-                    //       ),
-                    //       Spacer(),
-                    //       VerticalDivider(
-                    //         width: 1,
-                    //         color: Color(0xff181818).withOpacity(0.3),
-                    //         thickness: 1,
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
-                    // //MED
-                    // DataCell(
-                    //   Row(
-                    //     children: [
-                    //       Spacer(),
-                    //       Text(
-                    //         (controller.locations[index] == "Households" ||
-                    //                 controller.locations[index] ==
-                    //                     "Interventions" ||
-                    //                 controller.locations[index] ==
-                    //                     "HH with Annual Addl. Income"
-                    //             ? ""
-                    //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                    //             // : controller.CHA[index].toString()),
-                    //         style: AppStyle.textStyleInterMed(fontSize: 14),
-                    //       ),
-                    //       Spacer(),
-                    //       VerticalDivider(
-                    //         width: 1,
-                    //         color: Color(0xff181818).withOpacity(0.3),
-                    //         thickness: 1,
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
-                    // //BOK
-                    // DataCell(
-                    //   Row(
-                    //     children: [
-                    //       Spacer(),
-                    //       Text(
-                    //         (controller.locations[index] == "Households" ||
-                    //                 controller.locations[index] ==
-                    //                     "Interventions" ||
-                    //                 controller.locations[index] ==
-                    //                     "HH with Annual Addl. Income"
-                    //             ? ""
-                    //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                    //             // : controller.CHA[index].toString()),
-                    //         style: AppStyle.textStyleInterMed(fontSize: 14),
-                    //       ),
-                    //       Spacer(),
-                    //       VerticalDivider(
-                    //         width: 1,
-                    //         color: Color(0xff181818).withOpacity(0.3),
-                    //         thickness: 1,
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
-                    // //RAJ
-                    // DataCell(
-                    //   Row(
-                    //     children: [
-                    //       Spacer(),
-                    //       Text(
-                    //         (controller.locations[index] == "Households" ||
-                    //                 controller.locations[index] ==
-                    //                     "Interventions" ||
-                    //                 controller.locations[index] ==
-                    //                     "HH with Annual Addl. Income"
-                    //             ? ""
-                    //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                    //             // : controller.CHA[index].toString()),
-                    //         style: AppStyle.textStyleInterMed(fontSize: 14),
-                    //       ),
-                    //       Spacer(),
-                    //       VerticalDivider(
-                    //         width: 1,
-                    //         color: Color(0xff181818).withOpacity(0.3),
-                    //         thickness: 1,
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
-                    // //KAL
-                    // DataCell(
-                    //   Row(
-                    //     children: [
-                    //       Spacer(),
-                    //       Text(
-                    //         (controller.locations[index] == "Households" ||
-                    //                 controller.locations[index] ==
-                    //                     "Interventions" ||
-                    //                 controller.locations[index] ==
-                    //                     "HH with Annual Addl. Income"
-                    //             ? ""
-                    //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                    //             // : controller.CHA[index].toString()),
-                    //         style: AppStyle.textStyleInterMed(fontSize: 14),
-                    //       ),
-                    //       Spacer(),
-                    //       VerticalDivider(
-                    //         width: 1,
-                    //         color: Color(0xff181818).withOpacity(0.3),
-                    //         thickness: 1,
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
-                    // //EAST
-                    // ///__________________________ EAST _______________________
-                    // DataCell(
-                    //   Container(
-                    //     height: 60,
-                    //     color: Color(0xff096C9F),
-                    //     width: 80,
-                    //     child: Center(
-                    //       child: Text(
-                    //         controller.locations[index] == "Households" ||
-                    //                 controller.locations[index] ==
-                    //                     "Interventions" ||
-                    //                 controller.locations[index] ==
-                    //                     "HH with Annual Addl. Income"
-                    //             ? ""
-                    //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0',
-                    //             // : controller.SOUTH[index].toString(),
-                    //         style: AppStyle.textStyleInterMed(
-                    //             fontSize: 14, color: Colors.white),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                    // //CEMENT
-                    // DataCell(
-                    //   Container(
-                    //     height: 60,
-                    //     color: Color(0xff2E8CBB),
-                    //     width: 80,
-                    //     child: Center(
-                    //       child: Text(
-                    //         controller.locations[index] == "Households" ||
-                    //                 controller.locations[index] ==
-                    //                     "Interventions" ||
-                    //                 controller.locations[index] ==
-                    //                     "HH with Annual Addl. Income"
-                    //             ? ""
-                    //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0',
-                    //             // : controller.SOUTH[index].toString(),
-                    //         style: AppStyle.textStyleInterMed(
-                    //             fontSize: 14, color: Colors.white),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                    //
-                    // //NIG
-                    // DataCell(
-                    //   Row(
-                    //     children: [
-                    //       Spacer(),
-                    //       Text(
-                    //         (controller.locations[index] == "Households" ||
-                    //                 controller.locations[index] ==
-                    //                     "Interventions" ||
-                    //                 controller.locations[index] ==
-                    //                     "HH with Annual Addl. Income"
-                    //             ? ""
-                    //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                    //             // : controller.CHA[index].toString()),
-                    //         style: AppStyle.textStyleInterMed(fontSize: 14),
-                    //       ),
-                    //       Spacer(),
-                    //       VerticalDivider(
-                    //         width: 1,
-                    //         color: Color(0xff181818).withOpacity(0.3),
-                    //         thickness: 1,
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
-                    // //RAM
-                    //
-                    // DataCell(
-                    //   Row(
-                    //     children: [
-                    //       Spacer(),
-                    //       Text(
-                    //         (controller.locations[index] == "Households" ||
-                    //                 controller.locations[index] ==
-                    //                     "Interventions" ||
-                    //                 controller.locations[index] ==
-                    //                     "HH with Annual Addl. Income"
-                    //             ? ""
-                    //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                    //             // : controller.CHA[index].toString()),
-                    //         style: AppStyle.textStyleInterMed(fontSize: 14),
-                    //       ),
-                    //       Spacer(),
-                    //       VerticalDivider(
-                    //         width: 1,
-                    //         color: Color(0xff181818).withOpacity(0.3),
-                    //         thickness: 1,
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
-                    //
-                    // //JOW
-                    // DataCell(
-                    //   Row(
-                    //     children: [
-                    //       Spacer(),
-                    //       Text(
-                    //         (controller.locations[index] == "Households" ||
-                    //                 controller.locations[index] ==
-                    //                     "Interventions" ||
-                    //                 controller.locations[index] ==
-                    //                     "HH with Annual Addl. Income"
-                    //             ? ""
-                    //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                    //             // : controller.CHA[index].toString()),
-                    //         style: AppStyle.textStyleInterMed(fontSize: 14),
-                    //       ),
-                    //       Spacer(),
-                    //       VerticalDivider(
-                    //         width: 1,
-                    //         color: Color(0xff181818).withOpacity(0.3),
-                    //         thickness: 1,
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
-                    //
-                    // //NIN
-                    // DataCell(
-                    //   Row(
-                    //     children: [
-                    //       Spacer(),
-                    //       Text(
-                    //         (controller.locations[index] == "Households" ||
-                    //                 controller.locations[index] ==
-                    //                     "Interventions" ||
-                    //                 controller.locations[index] ==
-                    //                     "HH with Annual Addl. Income"
-                    //             ? ""
-                    //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                    //               // : controller.CHA[index].toString()),
-                    //         style: AppStyle.textStyleInterMed(fontSize: 14),
-                    //       ),
-                    //       Spacer(),
-                    //       VerticalDivider(
-                    //         width: 1,
-                    //         color: Color(0xff181818).withOpacity(0.3),
-                    //         thickness: 1,
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
-                    //
-                    // //KOL
-                    // DataCell(
-                    //   Row(
-                    //     children: [
-                    //       Spacer(),
-                    //       Text(
-                    //         (controller.locations[index] == "Households" ||
-                    //                 controller.locations[index] ==
-                    //                     "Interventions" ||
-                    //                 controller.locations[index] ==
-                    //                     "HH with Annual Addl. Income"
-                    //             ? ""
-                    //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0'),
-                    //             // : controller.CHA[index].toString()),
-                    //         style: AppStyle.textStyleInterMed(fontSize: 14),
-                    //       ),
-                    //       Spacer(),
-                    //       VerticalDivider(
-                    //         width: 1,
-                    //         color: Color(0xff181818).withOpacity(0.3),
-                    //         thickness: 1,
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
-                    //
-                    // //SUGAR
-                    // DataCell(
-                    //   Container(
-                    //     height: 60,
-                    //     color: Color(0xff2E8CBB),
-                    //     width: 80,
-                    //     child: Center(
-                    //       child: Text(
-                    //         controller.locations[index] == "Households" ||
-                    //                 controller.locations[index] ==
-                    //                     "Interventions" ||
-                    //                 controller.locations[index] ==
-                    //                     "HH with Annual Addl. Income"
-                    //             ? ""
-                    //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0',
-                    //             // : controller.SOUTH[index].toString(),
-                    //         style: AppStyle.textStyleInterMed(
-                    //             fontSize: 14, color: Colors.white),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                    //
-                    // //PANIND
-                    // DataCell(
-                    //   Container(
-                    //     height: 60,
-                    //     color: Color(0xff096C9F),
-                    //     width: 80,
-                    //     child: Center(
-                    //       child: Text(
-                    //         controller.locations[index] == "Households" ||
-                    //                 controller.locations[index] ==
-                    //                     "Interventions" ||
-                    //                 controller.locations[index] ==
-                    //                     "HH with Annual Addl. Income"
-                    //             ? ""
-                    //             : controller.amountUtilizedMappedList![0][controller.objectKeys[index]] != null ? controller.amountUtilizedMappedList![0][controller.objectKeys[index]]![controller.allLocations[i++]].toString() : '0',
-                    //             // : controller.SOUTH[index].toString(),
-                    //         style: AppStyle.textStyleInterMed(
-                    //             fontSize: 14, color: Colors.white),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-
-                    // Additional row for total
                   ],
                 ),
               ) /*+

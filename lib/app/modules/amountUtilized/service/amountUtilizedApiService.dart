@@ -261,7 +261,7 @@ class AmountUtilizedApiService {
 
 
 
-  List<dynamic>? convertMapToList(List<Map<String, dynamic>> rhRegions) {
+  List<dynamic>? convertMapToList(Map<String, dynamic> rhRegions) {
     // var rhRegions = [
     //   {
     //     "SOUTH": {"DPM", "ALR", "BGM", "KDP", "CHA"},
@@ -271,7 +271,7 @@ class AmountUtilizedApiService {
       if (rhRegions.isNotEmpty) {
         var combinedList = <dynamic>[];
 
-        for (var entry in rhRegions[0].entries) {
+        for (var entry in rhRegions.entries) {
           combinedList.addAll(entry.value); // Add values
           combinedList.add(entry.key);      // Add key
         }
