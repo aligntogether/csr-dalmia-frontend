@@ -406,7 +406,7 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
   Widget allRegionsTables(int i) {
     return Visibility(
       visible: controller.performanceReport != null && controller.performanceReport!.isNotEmpty,
-      child: false?Center(child: CircularProgressIndicator()):
+      child: !isLoading?Center(child: CircularProgressIndicator()):
       SingleChildScrollView(
           scrollDirection: Axis.horizontal,
 
