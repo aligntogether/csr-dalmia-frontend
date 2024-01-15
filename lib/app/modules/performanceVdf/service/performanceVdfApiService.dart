@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:dalmia/helper/sharedpref.dart';
 import 'package:http/http.dart' as http;
 
 
@@ -114,6 +113,7 @@ class PerformanceVdfApiService {
             'clusterId': cluster['clusterId'],
             'clusterName': cluster['clusterName'],
             'vdfName': cluster['vdfName'],
+            'vdfId': cluster['vdfId'],
           }).toList();
 
           print("sgncy $clusters");
@@ -195,6 +195,35 @@ class PerformanceVdfApiService {
       throw Exception('Error making API request: $e');
     }
   }
+
+  Future<Map<String, dynamic>> getPerformanceReport(int vdfId) async {
+
+    try {
+      String url = '$base/gpl-vdf-performance?vdfId=$vdfId';
+
+      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+
+      if (response.statusCode == 200) {
+       // Parse the response and extract regionId and region
+        final Map<String, dynamic> respBody = json.decode(response.body);
+
+        if (respBody.containsKey('resp_body')) {
+          final Map<String, dynamic> performanceReportData = respBody['resp_body'];
+
+          return performanceReportData;
+        } else {
+          throw Exception('Response format does not contain expected data');
+        }
+      } else {
+        throw Exception('Failed to add panchayat. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error making API request: $e');
+    }
+
+  }
+
+
 
 
 }

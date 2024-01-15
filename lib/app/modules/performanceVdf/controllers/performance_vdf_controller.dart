@@ -9,11 +9,23 @@ class PerformanceVdfController extends GetxController {
   String? selectCluster;
   int? selectClusterId;
   String? selectVdfName;
+  int? selectVdfId;
+  List<String>? headerList;
   List<Map<String, dynamic>>? locations;
   List<Map<String, dynamic>>? clusters;
+  Map<String, dynamic>? performanceReport;
+  List<String>? details;
 
   void updateLocations(List<Map<String, dynamic>> locations) {
     this.locations = locations;
+    update(["add"]);
+  }
+  void updateHeaderList(List<String> headerList) {
+    this.headerList = headerList;
+    update(["add"]);
+  }
+  void updateDetails(List<String> details) {
+    this.details = details;
     update(["add"]);
   }
 
@@ -26,4 +38,11 @@ class PerformanceVdfController extends GetxController {
     openMenu.value = !openMenu.value;
     update();
   }
+
+  void updatePerformanceReport(Map<String, dynamic> performanceReport) {
+    this.performanceReport = performanceReport;
+    update(["add"]);
+  }
+
+
 }

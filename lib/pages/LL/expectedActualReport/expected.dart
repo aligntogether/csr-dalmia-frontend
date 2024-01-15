@@ -51,7 +51,9 @@ List<int> LL = [
 ];
 
 class ExpectedincomeLL extends StatefulWidget {
-  const ExpectedincomeLL({Key? key}) : super(key: key);
+
+  final String? refId;
+  const ExpectedincomeLL({Key? key,required this.refId}) : super(key: key);
 
   @override
   State<ExpectedincomeLL> createState() => _ExpectedincomeLLState();

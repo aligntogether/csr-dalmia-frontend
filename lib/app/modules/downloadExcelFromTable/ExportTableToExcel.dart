@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dalmia/app/modules/addIntervention/controllers/add_intervention_controller.dart';
 import 'package:dalmia/app/modules/leverWise/controllers/lever_wise_controller.dart';
 import 'package:dalmia/app/modules/overviewPan/controllers/overview_pan_controller.dart';
+import 'package:dalmia/app/modules/performanceVdf/controllers/performance_vdf_controller.dart';
 import 'package:dalmia/app/modules/sourceFunds/controllers/source_funds_controller.dart';
 import 'package:excel/excel.dart';
 import 'package:open_file/open_file.dart';
@@ -320,7 +321,56 @@ Future<void> exportVdfPerformance(LeverWiseController controller) async {
     await OpenFile.open(file.path);
 
   }
+  Future<void> exportLocationWisePerformanceToExcel(PerformanceVdfController controller) async{
+    // Get the table data as a list of lists
+    Map<String, dynamic> performanceReport =
+    controller.performanceReport!;
 
+    // print(sourceOfFundsDataList["South and Chandrapur"]!["noOfHouseholds"]);
+
+    // Create an Excel workbook and worksheet
+    final Excel excel = Excel.createExcel();
+    final Sheet sheetObject = excel['Sheet1'];
+
+    sheetObject
+        .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: 0))
+        .value = "details";
+
+    for (int col = 1; col <= controller.headerList!.length; col++) {
+      sheetObject
+          .cell(CellIndex.indexByColumnRow(columnIndex: col, rowIndex: 0))
+          .value = controller.headerList![col - 1];
+      print(controller.headerList![col - 1]);
+    }
+
+    // add value to the first column
+    for (int i = 0; i < controller.details!.length; i++) {
+      sheetObject
+          .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: i + 1))
+          .value = controller.details![i];
+    }
+
+   for(int i=0;i<controller.details!.length;i++){
+     for(int j=0;j<controller.headerList!.length;j++){
+       sheetObject
+           .cell(CellIndex.indexByColumnRow(columnIndex: j+1, rowIndex: i+1))
+           .value = performanceReport[controller.headerList![j]]![controller.details![i]]==null?"0":performanceReport[controller.headerList![j]]![controller.details![i]];
+     }
+    }
+
+    // Create folder if not exists
+    final downloadFolderPath =
+    await createDownloadFolder("dalmia_report");
+
+    // Save Excel file
+    final bytes = excel.save();
+    final file = File('$downloadFolderPath/vdf_performance_report.xlsx');
+    await file.writeAsBytes(bytes!);
+
+    // Open the file
+    await OpenFile.open(file.path);
+
+  }
 
   Future<String> createDownloadFolder(String folderName) async {
     final downloadDirectory = await getDownloadPath();

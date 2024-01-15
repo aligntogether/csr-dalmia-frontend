@@ -2,7 +2,7 @@ import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/LL/action.dart';
-import 'package:dalmia/pages/LL/expected.dart';
+import 'package:dalmia/pages/LL/expectedActualReport/expected.dart';
 
 import 'package:dalmia/pages/LL/sourceoffunds.dart';
 import 'package:dalmia/pages/LL/vdffund.dart';
@@ -24,6 +24,7 @@ class LLHome extends StatefulWidget {
 
 class _LLHomeState extends State<LLHome> {
   String name = "";
+  String? refId;
   @override
   void initState() {
     super.initState();
@@ -31,6 +32,11 @@ class _LLHomeState extends State<LLHome> {
     SharedPrefHelper.getSharedPref(USER_NAME_SHAREDPREF_KEY, context, false)
         .then((value) => setState(() {
               value == '' ? name = 'user' : name = value;
+            }));
+    ;
+    SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+              value == '' ? refId = 'user' : refId = value;
             }));
     ;
   }
@@ -161,7 +167,7 @@ class _LLHomeState extends State<LLHome> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const ExpectedincomeLL(),
+                        builder: (context) =>  ExpectedincomeLL(refId: refId,),
                       ),
                     );
                   },
