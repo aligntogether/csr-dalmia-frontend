@@ -1,6 +1,7 @@
 import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/app/modules/chooseRole/views/choose_role_view.dart';
 import 'package:dalmia/app/routes/app_pages.dart';
+import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/LL/ll_home_screen.dart';
 
@@ -72,7 +73,9 @@ class _LoginState extends State<Login> {
               widthFactor: 1.0,
               child: Image(
                 image: AssetImage('images/home.png'),
-                fit: BoxFit.fill,
+                fit:MySize.safeWidth! * 0.8 > MySize.safeHeight! * 0.4 ? BoxFit.fitHeight : BoxFit.fill,
+                width: MySize.safeWidth! * 0.8,
+                height: MySize.safeHeight! * 0.4,
               ),
             ),
             FractionallySizedBox(

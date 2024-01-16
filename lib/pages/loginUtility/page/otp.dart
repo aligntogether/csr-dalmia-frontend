@@ -13,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:dalmia/pages/SwitchRole/switchRole.dart';
 import '../../../Constants/constants.dart';
 import '../../../common/common.dart';
+import '../../../common/size_constant.dart';
 import '../controller/loginController.dart';
 import '../service/loginApiService.dart';
 
@@ -86,7 +87,9 @@ class _OtpState extends State<Otp> {
               widthFactor: 1.0,
               child: Image(
                 image: AssetImage('images/home.png'),
-                fit: BoxFit.fill,
+                fit:MySize.safeWidth! * 0.8 > MySize.safeHeight! * 0.4 ? BoxFit.fitHeight : BoxFit.fill,
+                width: MySize.safeWidth! * 0.8,
+                height: MySize.safeHeight! * 0.4,
               ),
             ),
             FractionallySizedBox(
