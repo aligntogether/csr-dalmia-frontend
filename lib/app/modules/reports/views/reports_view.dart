@@ -13,6 +13,8 @@ class ReportsView extends GetView<ReportsController> {
 
   @override
   Widget build(BuildContext context) {
+    //format jan-17 2024
+    String todayDateIst = DateTime.now().toString().substring(0, 10);
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
@@ -41,9 +43,9 @@ class ReportsView extends GetView<ReportsController> {
                   Get.toNamed(Routes.OVERVIEW_PAN);
                 }),
                 listData(
-                    "Location wise EAAI and AAAI Achieved(as on <19 Oct 2023>)",
+                    "Number of interventions complete\n(as on <$todayDateIst>)",
                     () {
-                      Get.toNamed(Routes.LOCATION_WISE);
+                      Get.toNamed(Routes.INTERVENTION_COMPLETE);
 
                     }),
                 listData("Lever wise number of interventions", () {

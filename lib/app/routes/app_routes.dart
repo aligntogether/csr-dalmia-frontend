@@ -14,7 +14,7 @@ abstract class Routes {
   static const REPLACE_VDF = _Paths.REPLACE_VDF;
   static const FEEDBACK = _Paths.FEEDBACK;
   static const OVERVIEW_PAN = _Paths.OVERVIEW_PAN;
-  static const LOCATION_WISE = _Paths.LOCATION_WISE;
+  static const INTERVENTION_COMPLETE = _Paths.INTERVENTION_COMPLETE;
   static const LEVER_WISE = _Paths.LEVER_WISE;
   static const AMOUNT_UTILIZED = _Paths.AMOUNT_UTILIZED;
   static const SOURCE_FUNDS = _Paths.SOURCE_FUNDS;
@@ -37,7 +37,7 @@ abstract class _Paths {
   static const FEEDBACK = '/feedback';
   static const FEEDBACKLL = '/feedbackll';
   static const OVERVIEW_PAN = '/overview-pan';
-  static const LOCATION_WISE = '/location-wise';
+  static const INTERVENTION_COMPLETE = '/location-wise';
   static const LEVER_WISE = '/lever-wise';
   static const AMOUNT_UTILIZED = '/amount-utilized';
   static const SOURCE_FUNDS = '/source-funds';

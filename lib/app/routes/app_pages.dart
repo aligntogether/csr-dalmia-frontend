@@ -99,7 +99,7 @@ class AppPages {
       binding: OverviewPanBinding(),
     ),
     GetPage(
-      name: _Paths.LOCATION_WISE,
+      name: _Paths.INTERVENTION_COMPLETE,
       page: () => const LocationWiseView(),
       binding: LocationWiseBinding(),
     ),

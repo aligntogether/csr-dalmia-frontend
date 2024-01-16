@@ -1,18 +1,29 @@
 import 'package:get/get.dart';
 
 class LocationWiseController extends GetxController {
-  List<String> locations = [
+
+  Map<String,dynamic>? allReport;
+
+  void setAllReport(Map<String,dynamic> report){
+    allReport = report;
+    update();
+  }
+
+
+  List<String> details = [
+    "target",
     'HH Alloted',
     'HH Selected',
     'No. of HHs with planned int.\nabove 50K and 1L EAAI',
     'No. of HHs with AAAI above\n 50K and 1L',
 
   ];
-  List<int> DPM = [
-    128036,
-    37765,
-    387004,
-    1687825,
+  List<String> details2 = [
+    "target",
+    'hhAlloted',
+    'hhSelected',
+    'plannedEaai',
+    'actualAaai',
 
   ];
 

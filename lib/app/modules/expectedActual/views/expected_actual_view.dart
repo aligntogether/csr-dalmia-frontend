@@ -1,7 +1,6 @@
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/pages/LL/llappbar.dart';
-import 'package:dalmia/pages/RH/rhhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -68,11 +67,7 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const RHHome(),
-                      ),
-                    );
+                    Navigator.of(context).pop();
                   },
                   child: Row(
                     children: [
