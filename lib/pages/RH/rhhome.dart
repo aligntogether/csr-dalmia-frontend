@@ -4,6 +4,7 @@ import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/app/modules/sourceFunds/views/source_region_location_view.dart';
 import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/helper/sharedpref.dart';
+import 'package:dalmia/pages/RH/rh_lever_wise_report/rh_lever_wise_report_view.dart';
 
 import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
@@ -21,6 +22,7 @@ class RHHome extends StatefulWidget {
 
 class _RHHomeState extends State<RHHome> {
   int length = 0;
+  String? refId;
 
   @override
   void initState() {
@@ -29,6 +31,10 @@ class _RHHomeState extends State<RHHome> {
     SharedPrefHelper.getSharedPref(USER_NAME_SHAREDPREF_KEY, context, false)
         .then((value) => setState(() {
               value == '' ? name = 'user' : name = value;
+            }));
+    SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+              refId = value;
             }));
     fetchData(context);
   }
@@ -201,7 +207,11 @@ class _RHHomeState extends State<RHHome> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.toNamed(Routes.LEVER_WISE);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => RhLeverWiseView(refId: refId),
+                      ),
+                    );
                   },
                   child: cards(
                     title: 'Lever wise details of HH & int.',
