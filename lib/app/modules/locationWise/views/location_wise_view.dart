@@ -1,32 +1,43 @@
-import 'package:dalmia/app/modules/locationWise/services/location_wise_services.dart';
-import 'package:dalmia/app/modules/overviewPan/views/overview_pan_view.dart';
-import 'package:dalmia/common/app_style.dart';
-import 'package:dalmia/common/size_constant.dart';
-import 'package:dalmia/pages/gpl/gpl_home_screen.dart';
-import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../common/app_style.dart';
+import '../../../../common/size_constant.dart';
+import '../../../../pages/gpl/gpl_home_screen.dart';
+import '../../../../theme.dart';
+import '../../overviewPan/views/overview_pan_view.dart';
 import '../controllers/location_wise_controller.dart';
+import '../services/location_wise_services.dart';
 
-class LocationWiseView extends GetView<LocationWiseController> {
+class LocationWiseView extends StatefulWidget {
   const LocationWiseView({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    Map<String, dynamic> allReport = {};
+  _LocationWiseViewState createState() => _LocationWiseViewState();
+}
 
-    LocationWiseServices locationWiseServices = LocationWiseServices();
+class _LocationWiseViewState extends State<LocationWiseView> {
+  bool isLoading = true;
+  LocationWiseController controller = Get.put(LocationWiseController());
+  LocationWiseServices locationWiseServices = LocationWiseServices();
 
-    void getReport() async {
-
-      Map<String, dynamic> allReport = await locationWiseServices.getAllReport();
-
-      controller.setAllReport(allReport);
-
-    }
+  @override
+  void initState() {
+    super.initState();
 
     getReport();
+  }
+
+  void getReport() async {
+    Map<String, dynamic> allReport = await locationWiseServices.getAllReport();
+    controller.setAllReport(allReport);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     String todayDateIst = DateTime.now().toString().substring(0, 10);
     return SafeArea(
@@ -79,8 +90,8 @@ class LocationWiseView extends GetView<LocationWiseController> {
                       ],
                     )),
                 Space.height(14),
-
                 allRegionsTables()
+                    ,
               ],
             ),
           )),
@@ -89,7 +100,7 @@ class LocationWiseView extends GetView<LocationWiseController> {
 
   Widget allRegionsTables() {
     
-    return SingleChildScrollView(
+    return isLoading?Center(child: CircularProgressIndicator()):SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
