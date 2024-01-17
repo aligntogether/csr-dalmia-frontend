@@ -1,17 +1,14 @@
 import 'package:dalmia/apis/commonobject.dart';
+import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/pages/vdf/household/addfamily.dart';
 import 'dart:convert';
-import 'dart:io';
-import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
-
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 
 class AddHead extends StatefulWidget {
   final String? vdfid;
@@ -25,34 +22,24 @@ class AddHead extends StatefulWidget {
 
 class _MyFormState extends State<AddHead> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _mobileController = TextEditingController();
-  final TextEditingController _dobController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _mobileController = TextEditingController();
+  TextEditingController _dobController = TextEditingController();
   String? _selectedGender;
   List<dynamic> genderOptions = [];
-  String? _selectedEducation;
+  int? _selectedEducation;
   List<dynamic> educationOptions = [];
   List<dynamic> primaryEmploymentOptions = [];
   List<dynamic> secondaryEmploymentOptions = [];
 
-  String? _selectedCaste;
+  int? _selectedCaste;
   List<dynamic> casteOptions = [];
-  String? _selectedPrimaryEmployment;
-  String? _selectedSecondaryEmployment;
+  int? _selectedPrimaryEmployment;
+  int? _selectedSecondaryEmployment;
   bool _validateFields = false;
-  // List<String> genderOptions = ['Male', 'Female'];
-  // List<String> educationOptions = [
-  //   'Option 1',
-  //   'Option 2',
-  //   'Option 3'
-  // ]; // Replace with actual options
-  // List<String> casteOptions = [
-  //   'Option 1',
-  //   'Option 2',
-  //   'Option 3'
-  // ]; // Replace with actual options
-  // List<String> employmentOptions = ['Option 1', 'Option 2', 'Option 3'];
-  // Replace with actual options
+  String? memberId;
+  double height = MySize.screenHeight;
+  double width = MySize.screenWidth;
 
   Future<void> fetchGenderOptions() async {
     try {
@@ -152,6 +139,7 @@ class _MyFormState extends State<AddHead> {
     }
   }
 
+  List<Map<String, dynamic>> familyMembers = [];
   @override
   void initState() {
     super.initState();
@@ -160,6 +148,47 @@ class _MyFormState extends State<AddHead> {
     fetchEducationOptions();
     fetchPrimaryOptions();
     fetchSecondaryOptions();
+
+    getFamilyMembers(widget.id ?? '0').then(
+      (familyMembers) {
+        var headIndex = getHeadIndex(familyMembers);
+        print('head index is $headIndex');
+        if (familyMembers.length > headIndex) {
+          _nameController = TextEditingController(
+              text: familyMembers[headIndex]['memberName']);
+          _mobileController = TextEditingController(
+              text: familyMembers[headIndex]['mobile'].toString());
+          if (familyMembers[headIndex]['gender'] != null)
+            _selectedGender = familyMembers[headIndex]['gender'].toString();
+          // _selectedCaste = familyMembers[headIndex]['caste']?.toString() ?? '0';
+          _selectedEducation = familyMembers[headIndex]['education'];
+          if (familyMembers[headIndex]['primaryEmployment'] != null)
+            _selectedPrimaryEmployment =
+                familyMembers[headIndex]['primaryEmployment'];
+          if (familyMembers[headIndex]['secondaryEmployment'] != null)
+            _selectedSecondaryEmployment =
+                familyMembers[headIndex]['secondaryEmployment'];
+          if (familyMembers[headIndex]['caste'] != null)
+            _selectedCaste = familyMembers[headIndex]['caste'];
+
+          setState(() {
+            selectedDate = DateTime.fromMillisecondsSinceEpoch(
+                familyMembers[headIndex]['dob']);
+            if (selectedDate != null)
+              _dobController.text =
+                  DateFormat('dd/MM/yyyy').format(selectedDate!);
+            memberId = familyMembers[headIndex]['memberId'].toString();
+            print('member id $memberId');
+          });
+        }
+        // _selectedCaste = familyMembers[0]['education'];
+
+        // _selectedPrimaryEmployment =
+        //     familyMembers[0]['primaryEmployment'].toString();
+        // _selectedSecondaryEmployment =
+        //     familyMembers[0]['secondaryEmployment'].toString();
+      },
+    );
   }
 
   DateTime? selectedDate;
@@ -193,6 +222,9 @@ class _MyFormState extends State<AddHead> {
 
   Future<void> addMember() async {
     try {
+      print('member id $memberId');
+
+      print('dsb ${widget.id}');
       final response = await http.put(
         Uri.parse('$base/add-member?houseHoldId=${widget.id}'),
         headers: {
@@ -205,13 +237,23 @@ class _MyFormState extends State<AddHead> {
             'mobile': int.parse(_mobileController.text),
             'dob': selectedDate?.toIso8601String(),
             'gender': _selectedGender,
-            'education': 0, // You may replace this with the actual value
+            'education':
+                _selectedEducation, // You may replace this with the actual value
             'isFamilyHead': 1, // You may replace this with the actual value
             // You may replace this with the actual value
+            'memberId': memberId,
             'primaryEducation': 0, // You may replace this with the actual value
             'relationship': 0, // You may replace this with the actual value
             'secondaryEducation':
                 0, // You may replace this with the actual value
+            'primaryEmployment':
+                _selectedPrimaryEmployment, // You may replace this with the actual value, // You may replace this with the actual value
+            'secondaryEmployment':
+                _selectedSecondaryEmployment, // You may replace this with the actual value
+            'caste': _selectedCaste,
+            // 'relationship': 0, // You may replace this with the actual value
+            // 'secondaryEmployment':
+            //     _selectedSecondaryEmployment,
           }
         ]),
       );
@@ -223,6 +265,31 @@ class _MyFormState extends State<AddHead> {
       }
     } catch (e) {
       print('Error: $e');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getFamilyMembers(
+      String householdId) async {
+    final String apiUrl = '$base/get-familymembers?householdId=$householdId';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+        if (jsonResponse['resp_code'] == 200 &&
+            jsonResponse['resp_msg'] == 'Family Found') {
+          final List<dynamic> respBody = jsonResponse['resp_body'];
+          return List<Map<String, dynamic>>.from(respBody);
+        } else {
+          throw Exception('API Error: ${jsonResponse['resp_msg']}');
+        }
+      } else {
+        throw Exception('HTTP Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw Exception('Error: $error');
     }
   }
 
@@ -242,24 +309,24 @@ class _MyFormState extends State<AddHead> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 16),
-                  const Text(
+                  SizedBox(height: MySize.screenHeight * 0.02),
+                  Text(
                     'Head of Family',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: height * 0.021,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: height * 0.02),
                   TextFormField(
                     controller: _nameController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Head Name *',
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+                      contentPadding: EdgeInsets.symmetric(
+                          horizontal: width * 0.03, vertical: height * 0.019),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: height * 0.02),
                   TextFormField(
                     keyboardType: TextInputType.phone,
                     inputFormatters: [
@@ -279,7 +346,7 @@ class _MyFormState extends State<AddHead> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: height * 0.02),
                   Row(
                     children: [
                       Expanded(
@@ -313,6 +380,12 @@ class _MyFormState extends State<AddHead> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         child: TextFormField(
+                          // validator: (value) {
+                          //   if (value == null || value.isEmpty) {
+                          //     return '';
+                          //   }
+                          //   return null;
+                          // },
                           enabled: false,
                           decoration: InputDecoration(
                             labelText: selectedDate != null
@@ -325,7 +398,7 @@ class _MyFormState extends State<AddHead> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: height * 0.02),
                   DropdownButtonFormField<String>(
                     value: _selectedGender,
                     items: genderOptions
@@ -350,13 +423,13 @@ class _MyFormState extends State<AddHead> {
                       color: CustomColorTheme.iconColor,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
+                  SizedBox(height: height * 0.02),
+                  DropdownButtonFormField<int>(
                     value: _selectedCaste,
                     items: casteOptions
-                        .map<DropdownMenuItem<String>>((dynamic caste) {
-                      return DropdownMenuItem<String>(
-                        value: caste['titleData'].toString(),
+                        .map<DropdownMenuItem<int>>((dynamic caste) {
+                      return DropdownMenuItem<int>(
+                        value: caste['dataId'],
                         child: Text(caste['titleData'].toString()),
                       );
                     }).toList(),
@@ -378,12 +451,12 @@ class _MyFormState extends State<AddHead> {
                   const SizedBox(
                     height: 16,
                   ),
-                  DropdownButtonFormField<String>(
+                  DropdownButtonFormField<int>(
                     value: _selectedEducation,
                     items: educationOptions
-                        .map<DropdownMenuItem<String>>((dynamic education) {
-                      return DropdownMenuItem<String>(
-                        value: education['titleData'].toString(),
+                        .map<DropdownMenuItem<int>>((dynamic education) {
+                      return DropdownMenuItem<int>(
+                        value: education['dataId'],
                         child: Text(education['titleData'].toString()),
                       );
                     }).toList(),
@@ -402,14 +475,13 @@ class _MyFormState extends State<AddHead> {
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
+                  SizedBox(height: height * 0.02),
+                  DropdownButtonFormField<int>(
                     value: _selectedPrimaryEmployment,
-                    items: primaryEmploymentOptions
-                        .map<DropdownMenuItem<String>>(
-                            (dynamic primaryemployment) {
-                      return DropdownMenuItem<String>(
-                        value: primaryemployment['titleData'].toString(),
+                    items: primaryEmploymentOptions.map<DropdownMenuItem<int>>(
+                        (dynamic primaryemployment) {
+                      return DropdownMenuItem<int>(
+                        value: primaryemployment['dataId'],
                         child: Text(primaryemployment['titleData'].toString()),
                       );
                     }).toList(),
@@ -428,14 +500,14 @@ class _MyFormState extends State<AddHead> {
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
+                  SizedBox(height: height * 0.02),
+                  DropdownButtonFormField<int>(
                     value: _selectedSecondaryEmployment,
                     items: secondaryEmploymentOptions
-                        .map<DropdownMenuItem<String>>(
+                        .map<DropdownMenuItem<int>>(
                             (dynamic secondaryemployment) {
-                      return DropdownMenuItem<String>(
-                        value: secondaryemployment['titleData'].toString(),
+                      return DropdownMenuItem<int>(
+                        value: secondaryemployment['dataId'],
                         child:
                             Text(secondaryemployment['titleData'].toString()),
                       );
@@ -450,12 +522,12 @@ class _MyFormState extends State<AddHead> {
                       color: CustomColorTheme.iconColor,
                     ),
                     decoration: const InputDecoration(
-                      labelText: 'Secondary Employment *',
+                      labelText: 'Secondary Employment',
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: height * 0.02),
                   if (_validateFields &&
                       !(_formKey.currentState?.validate() ?? false))
                     const Padding(
@@ -487,27 +559,20 @@ class _MyFormState extends State<AddHead> {
                             _validateFields = true;
                           });
                           if (_formKey.currentState?.validate() ?? false) {
-                            addMember();
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => AddFamily(
-                                  id: widget.id,
-                                ),
-                              ),
-                            );
-                            // Navigator.of(context).push(
-                            //   MaterialPageRoute(
-                            //     builder: (context) => const AddFamily(),
-                            //   ),
-                            // );
-                            // final name = _nameController.text;
-                            // final mobile = _mobileController.text;
-                            // final dob = _dobController.text;
+                            addMember().then((value) =>
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => AddFamily(
+                                    id: widget.id,
+                                  ),
+                                )));
+
+                            // addstockData()
                           }
                         },
                         child: const Text(
                           'Next',
                           style: TextStyle(
+                              color: Colors.white,
                               fontSize: CustomFontTheme.textSize,
                               fontWeight: CustomFontTheme.labelwt),
                         ),
@@ -521,16 +586,7 @@ class _MyFormState extends State<AddHead> {
                           backgroundColor: Colors.white,
                         ),
                         onPressed: () {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            // All fields are valid, you can process the data
-                            final name = _nameController.text;
-                            final mobile = _mobileController.text;
-                            final dob = _dobController.text;
-
-                            // Perform actions with the field values
-
-                            // Save as draft
-                          }
+                          addMember().then((value) => _savedata(context));
                         },
                         child: Text(
                           'Save as Draft',
@@ -542,7 +598,7 @@ class _MyFormState extends State<AddHead> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: height * 0.02),
                 ],
               ),
             ),
@@ -551,11 +607,81 @@ class _MyFormState extends State<AddHead> {
       ),
     );
   }
+
+  void _savedata(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // backgroundColor: Colors.white,
+          backgroundColor: Colors.white,
+          title: SizedBox(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 40,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text('Saved Data to Draft'),
+              ],
+            ),
+          ),
+          content: SizedBox(
+            height: 80,
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(100, 50),
+                    elevation: 0,
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    side: const BorderSide(
+                      width: 1,
+                      color: CustomColorTheme.primaryColor,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Ok',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: CustomFontTheme.textSize,
+                        fontWeight: CustomFontTheme.headingwt),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  int getHeadIndex(List<Map<String, dynamic>> familyMembers) {
+    int index = 0;
+    for (var element in familyMembers) {
+      if (element['isFamilyHead'] == 1) {
+        return index;
+      }
+      index++;
+    }
+    return 0;
+  }
 }
 
 AppBar houseappbar(BuildContext context) {
   return AppBar(
     elevation: 0,
+    scrolledUnderElevation: 0,
     centerTitle: true,
     automaticallyImplyLeading: false,
     title: const Text(
@@ -583,7 +709,7 @@ AppBar houseappbar(BuildContext context) {
         ],
       ),
     ),
-    backgroundColor: Colors.grey[50],
+    // backgroundColor: Colors.grey[50],
     actions: <Widget>[
       IconButton(
         iconSize: 30,

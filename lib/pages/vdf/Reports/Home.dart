@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/common/navmenu.dart';
-import 'package:dalmia/components/reportappbar.dart';
+
 import 'package:dalmia/components/reportpop.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
 
@@ -11,7 +11,7 @@ import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -69,10 +69,19 @@ class _HomeReportState extends State<HomeReport> {
       ) async {
     // final formattedStartDate = DateFormat('dd-MM-yyyy').format(startDate);
     // final formattedEndDate = DateFormat('dd-MM-yyyy').format(endDate);
-
+    print("$_startDate $_endDate");
+    var startDate = "23-09-2023";
+    var endDate = "24-12-2023";
+    var format = DateFormat('dd-MM-yyyy');
+    if (_startDate != null) {
+      startDate = format.format(_startDate!);
+    }
+    if (_endDate != null) {
+      endDate = format.format(_endDate!);
+    }
     final apiUrl =
         // 'http://192.168.1.28:8080/vdf-report?vdfId=10001&fromDate=$formattedStartDate&toDate=$formattedEndDate';
-        '$base/vdf-report?vdfId=10001&fromDate=23-09-2023&toDate=24-12-2023';
+        '$base/vdf-report?vdfId=10001&fromDate=$startDate&toDate=$endDate';
 
     final response = await http.get(Uri.parse(apiUrl));
 
@@ -112,6 +121,7 @@ class _HomeReportState extends State<HomeReport> {
         _startDate = picked.start;
         _endDate = picked.end;
       });
+      fetchReportData();
     }
   }
 
@@ -141,6 +151,7 @@ class _HomeReportState extends State<HomeReport> {
             children: [
               AppBar(
                 titleSpacing: 20,
+                scrolledUnderElevation: 0,
                 backgroundColor: Colors.white,
                 title: const Image(image: AssetImage('images/icon.jpg')),
                 automaticallyImplyLeading: false,
@@ -170,9 +181,20 @@ class _HomeReportState extends State<HomeReport> {
                 bottom: PreferredSize(
                   preferredSize: const Size.fromHeight(50),
                   child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 0,
+                          blurRadius: 4,
+                          offset: Offset(0, 4), // changes position of shadow
+                        ),
+                      ],
+                    ),
                     padding: const EdgeInsets.only(left: 30, bottom: 10),
                     alignment: Alignment.topCenter,
-                    color: Colors.white,
+                    // color: Colors.white,
                     child: Text(
                       'Reports',
                       style: const TextStyle(
@@ -371,42 +393,54 @@ class _HomeReportState extends State<HomeReport> {
             ),
           ),
         ),
-        bottomNavigationBar: BottomAppBar(
-          elevation: 10,
-          child: SizedBox(
-            height: 67,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                CustomTabItem(
-                  imagePath: 'images/Dashboard_Outline.svg',
-                  label: "Dashboard",
-                  index: 0,
-                  selectedIndex: 5,
-                  onTabTapped: _onTabTapped,
-                ),
-                CustomTabItem(
-                  imagePath: 'images/Household_Outline.svg',
-                  label: "Add Household",
-                  index: 1,
-                  selectedIndex: 5,
-                  onTabTapped: _onTabTapped,
-                ),
-                CustomTabItem(
-                  imagePath: 'images/Street_Outline.svg',
-                  label: "Add Street",
-                  index: 2,
-                  selectedIndex: 5,
-                  onTabTapped: _onTabTapped,
-                ),
-                CustomTabItem(
-                  imagePath: 'images/Drafts_Outline.svg',
-                  label: "Drafts",
-                  index: 3,
-                  selectedIndex: 5,
-                  onTabTapped: _onTabTapped,
-                ),
-              ],
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 0,
+                blurRadius: 10,
+                offset: Offset(4, 0), // changes position of shadow
+              ),
+            ],
+          ),
+          child: BottomAppBar(
+            color: Colors.white,
+            child: SizedBox(
+              height: 67,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  CustomTabItem(
+                    imagePath: 'images/Dashboard_Outline.svg',
+                    label: "Dashboard",
+                    index: 0,
+                    selectedIndex: 5,
+                    onTabTapped: _onTabTapped,
+                  ),
+                  CustomTabItem(
+                    imagePath: 'images/Household_Outline.svg',
+                    label: "Add Household",
+                    index: 1,
+                    selectedIndex: 5,
+                    onTabTapped: _onTabTapped,
+                  ),
+                  CustomTabItem(
+                    imagePath: 'images/Street_Outline.svg',
+                    label: "Add Street",
+                    index: 2,
+                    selectedIndex: 5,
+                    onTabTapped: _onTabTapped,
+                  ),
+                  CustomTabItem(
+                    imagePath: 'images/Drafts_Outline.svg',
+                    label: "Drafts",
+                    index: 3,
+                    selectedIndex: 5,
+                    onTabTapped: _onTabTapped,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -17,6 +17,64 @@ class AddCrop extends StatefulWidget {
 }
 
 class _AddCropState extends State<AddCrop> {
+  void _savedata(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // backgroundColor: Colors.white,
+          backgroundColor: Colors.white,
+          title: SizedBox(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 40,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text('Saved Data to Draft'),
+              ],
+            ),
+          ),
+          content: SizedBox(
+            height: 80,
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(100, 50),
+                    elevation: 0,
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    side: const BorderSide(
+                      width: 1,
+                      color: CustomColorTheme.primaryColor,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Ok',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: CustomFontTheme.textSize,
+                        fontWeight: CustomFontTheme.headingwt),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   List<DropdownOption> cropOptions = [];
   Set<String> selectedDataIds = {};
 
@@ -24,6 +82,40 @@ class _AddCropState extends State<AddCrop> {
   void initState() {
     super.initState();
     fetchCropOptions();
+    getcropData(widget.id ?? '0').then(
+      (crop) {
+        print("test $crop");
+        setState(() {
+          selectedDataIds = crop['crops'].toString().split(",").toSet();
+          print(selectedDataIds);
+        });
+      },
+    );
+  }
+
+  Future<Map<String, dynamic>> getcropData(String householdId) async {
+    final String apiUrl = '$base/get-household?householdId=$householdId';
+
+    try {
+      final response = await http.post(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+        if (jsonResponse['resp_code'] == 200 &&
+            jsonResponse['resp_msg'] == 'Data Found') {
+          final Map<String, dynamic> respBody = jsonResponse['resp_body'];
+          return Map<String, dynamic>.from(respBody);
+        } else {
+          throw Exception('API Error: ${jsonResponse['resp_msg']}');
+        }
+      } else {
+        throw Exception('HTTP Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      // error.printError();
+      throw Exception('Error: $error');
+    }
   }
 
   Future<void> addcropData() async {
@@ -90,6 +182,7 @@ class _AddCropState extends State<AddCrop> {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
+          scrolledUnderElevation: 0,
           centerTitle: true,
           title: const Text(
             'Add Household',
@@ -112,7 +205,7 @@ class _AddCropState extends State<AddCrop> {
               ],
             ),
           ),
-          backgroundColor: Colors.grey[50],
+          // backgroundColor: Colors.grey[50],
           actions: <Widget>[
             IconButton(
               iconSize: 30,
@@ -239,6 +332,7 @@ class _AddCropState extends State<AddCrop> {
                     child: const Text(
                       'Next',
                       style: TextStyle(
+                        color: Colors.white,
                         fontSize: CustomFontTheme.textSize,
                         fontWeight: CustomFontTheme.labelwt,
                       ),
@@ -255,9 +349,7 @@ class _AddCropState extends State<AddCrop> {
                       ),
                     ),
                     onPressed: () {
-                      // Perform actions with the field values
-
-                      // Save as draft
+                      addcropData().then((value) => _savedata(context));
                     },
                     child: Text(
                       'Save as Draft',

@@ -92,13 +92,35 @@ class _CheckStreetState extends State<CheckStreet> {
           appBar: AppBar(
             automaticallyImplyLeading: false,
             elevation: 0,
+            scrolledUnderElevation: 0,
             iconTheme: const IconThemeData(color: Colors.black),
             centerTitle: true,
             title: const Text(
-              'Add Street',
-              style: TextStyle(color: Colors.black),
+              'Add a Street',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: CustomFontTheme.headingSize,
+                  fontWeight: CustomFontTheme.headingwt),
             ),
-            backgroundColor: Colors.grey[50],
+            // backgroundColor: Colors.grey[50],
+            leading: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.keyboard_arrow_left_outlined,
+                    color: Color(0xFF181818),
+                  ),
+                  Text(
+                    'Back',
+                    style: TextStyle(
+                        color: Color(0xFF181818), fontWeight: FontWeight.w500),
+                  )
+                ],
+              ),
+            ),
             actions: <Widget>[
               IconButton(
                 iconSize: 30,
@@ -117,12 +139,13 @@ class _CheckStreetState extends State<CheckStreet> {
             ],
           ),
           body: SingleChildScrollView(
-            child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 // crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   Container(
                     width: 300,
@@ -149,6 +172,9 @@ class _CheckStreetState extends State<CheckStreet> {
                             ],
                           ),
                         ),
+                        SizedBox(
+                          height: 10,
+                        ),
                         RichText(
                           text: TextSpan(
                             style: const TextStyle(
@@ -173,7 +199,9 @@ class _CheckStreetState extends State<CheckStreet> {
                   ),
                   const Text(
                     'Check whether the street is already added?',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                    style: TextStyle(
+                        fontSize: CustomFontTheme.textSize,
+                        fontWeight: CustomFontTheme.headingwt),
                   ),
                   const SizedBox(
                     height: 20,
@@ -230,6 +258,7 @@ class _CheckStreetState extends State<CheckStreet> {
                       backgroundColor: CustomColorTheme.primaryColor,
                     ),
                     onPressed: () {
+                      print(widget.selectedVillagId);
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => Addnew(
@@ -242,7 +271,9 @@ class _CheckStreetState extends State<CheckStreet> {
                     },
                     child: const Text(
                       'Add New Street',
-                      style: TextStyle(fontSize: CustomFontTheme.textSize),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: CustomFontTheme.textSize),
                     ),
                   ),
                   SizedBox(
