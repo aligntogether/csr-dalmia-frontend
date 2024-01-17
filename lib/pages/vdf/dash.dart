@@ -248,7 +248,7 @@ class _DashTabState extends State<DashTab> {
                         CustomCard(
                           imageUrl: 'images/income.svg',
                           subtitle: 'Less than 25k',
-                          title: apiData['lessThan25K'].toString(),
+                          title: apiData['lessThan25K'].toString()=="null"?"0":apiData['lessThan25K'].toString(),
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
                           bg: const Color(0xFFC2DEEC),
@@ -256,7 +256,7 @@ class _DashTabState extends State<DashTab> {
                         ),
                         CustomCard(
                           imageUrl: 'images/income.svg',
-                          title: apiData['between25KTo50K'].toString(),
+                          title: apiData['between25KTo50K'].toString()=="null"?"0":apiData['between25KTo50K'].toString(),
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
                           subtitle: '25k to 50k',
@@ -265,7 +265,7 @@ class _DashTabState extends State<DashTab> {
                         ),
                         CustomCard(
                           imageUrl: 'images/income.svg',
-                          title: apiData['between50KTo75K'].toString(),
+                          title: apiData['between50KTo75K'].toString()=="null"?"0":apiData['between50KTo75K'].toString(),
                           subtitle: '50k to 75k',
                           bg: const Color(0xFFC2DEEC),
                           bordercolor:
@@ -274,7 +274,7 @@ class _DashTabState extends State<DashTab> {
                         ),
                         CustomCard(
                           imageUrl: 'images/income.svg',
-                          title: apiData['between75KTo1L'].toString(),
+                          title: apiData['between75KTo1L'].toString()=="null"?"0":apiData['between75KTo1L'].toString(),
                           subtitle: '75k to 1L',
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),

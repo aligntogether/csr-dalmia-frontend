@@ -43,16 +43,16 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
 
   Widget dataList() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding:  EdgeInsets.symmetric(horizontal: MySize.safeHeight! * (16/MySize.screenHeight)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "View Data",
             style: AppStyle.textStyleInterMed(
-                fontSize: 16, fontWeight: FontWeight.w600),
+                fontSize: MySize.safeHeight! * (16/MySize.screenHeight), fontWeight: FontWeight.w600),
           ),
-          Space.height(10),
+          Space.height(MySize.screenHeight * 0.01),
           Row(
             children: [
               Expanded(
@@ -61,7 +61,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                     Get.toNamed(Routes.REPORTS);
                   },
                   child: Container(
-                    height: 100,
+                      height: MySize.safeHeight! * 0.15,
                     decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(),
                       shadows: [
@@ -101,7 +101,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                               child: Text(
                                 "Reports",
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: MySize.safeHeight! * (14/MySize.screenHeight),
                                   fontWeight: FontWeight.w500,
                                   color: Color(0xffB94217),
                                 ),
@@ -237,20 +237,21 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
 
           ///__________________________________Add intervational Details ___________________
 
-          Space.height(40),
+          Space.height(MySize.screenHeight * 0.02),
           Text(
             "Add Intervention Details",
             style: AppStyle.textStyleInterMed(
-                fontSize: 16, fontWeight: FontWeight.w600),
+                fontSize: MySize.safeHeight! * (16/MySize.screenHeight), fontWeight: FontWeight.w600),
           ),
-          Space.height(10),
+          Space.height(MySize.screenHeight * 0.01),
           GestureDetector(
             onTap: () {
               Get.toNamed(Routes.ADD_INTERVAL);
             },
             child: Container(
-              height: 110,
-              width: 95,
+              height: MySize.safeHeight! * 0.15,
+              width: MySize.safeWidth! ,
+
               decoration: ShapeDecoration(
                 shape: RoundedRectangleBorder(),
                 shadows: [
@@ -270,11 +271,11 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                     width: 1,
                     color: Colors.black.withOpacity(0.10000000149011612),
                   ),
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(MySize.safeWidth! * 0.03),
                 ),
                 child: Container(
-                  padding: const EdgeInsets.only(
-                    left: 10,
+                  padding:  EdgeInsets.only(
+                    left: MySize.safeWidth! * 0.03,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -282,15 +283,15 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                     children: [
                       Image.asset(
                         "images/bp_t.png",
-                        width: 38,
-                        height: 38,
+                        width: MySize.safeWidth! * 0.1,
+                        height: MySize.safeHeight! * 0.05,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(0.0),
                         child: Text(
                           "Add\nInterv.",
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: MySize.safeHeight! * (14/MySize.screenHeight),
                             fontWeight: FontWeight.w500,
                             color: Color(0xff0D7344),
                           ),
@@ -304,11 +305,11 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
           ),
 
           ///__________________________________Add Location Details ___________________
-          Space.height(40),
+          Space.height(MySize.screenHeight * 0.02),
           Text(
             "Add Location Details",
             style: AppStyle.textStyleInterMed(
-                fontSize: 16, fontWeight: FontWeight.w600),
+                fontSize: MySize.safeHeight! * (16/MySize.screenHeight), fontWeight: FontWeight.w600),
           ),
           Space.height(10),
           SingleChildScrollView(
@@ -342,7 +343,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                     }
                   },
                   child: Container(
-                    height: 100,
+                    height: MySize.safeHeight! * (100/MySize.screenHeight),
                     decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(),
                       shadows: [
@@ -383,7 +384,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                               child: Text(
                                 locationList[index]["text"],
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: MySize.safeHeight! * (14/MySize.screenHeight),
                                   fontWeight: FontWeight.w500,
                                   color: Color(0xff064F96),
                                 ),
@@ -704,13 +705,13 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
               ),
             ],
           ),*/
-          Space.height(40),
+          Space.height(MySize.screenHeight * 0.02),
 
           ///__________________________ feed back _________________________
           Text(
             "Feedback",
             style: AppStyle.textStyleInterMed(
-                fontSize: 16, fontWeight: FontWeight.w600),
+                fontSize: MySize.safeHeight! * (16/MySize.screenHeight), fontWeight: FontWeight.w600),
           ),
           Space.height(10),
           GestureDetector(
@@ -718,8 +719,8 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
               Get.toNamed(Routes.FEEDBACK);
             },
             child: Container(
-              height: 110,
-              width: 95,
+              height:  MySize.safeHeight! * (110/MySize.screenHeight),
+              width: MySize.safeWidth!,
               decoration: ShapeDecoration(
                 shape: RoundedRectangleBorder(),
                 shadows: [
@@ -759,7 +760,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                         child: Text(
                           "Feedback",
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: MySize.safeHeight! * (14/MySize.screenHeight),
                             fontWeight: FontWeight.w500,
                             color: Color(0xffED4949),
                           ),
@@ -802,7 +803,7 @@ void showConfirmationDialog(BuildContext context) {
               SizedBox(
                 child: Text(
                     'Are you sure you want to\nlogout of the application?',
-                    style: AppStyle.textStyleInterMed(fontSize: 16)),
+                    style: AppStyle.textStyleInterMed(fontSize: MySize.safeHeight! * (16/MySize.screenHeight))),
               ),
               Space.height(30),
               GestureDetector(
@@ -825,7 +826,7 @@ void showConfirmationDialog(BuildContext context) {
                     child: Text(
                       "Yes",
                       style: AppStyle.textStyleInterMed(
-                          fontSize: 14, color: Colors.white),
+                          fontSize: MySize.safeHeight! * (14/MySize.screenHeight), color: Colors.white),
                     ),
                   ),
                 ),

@@ -74,7 +74,7 @@ class _VdfHomeState extends State<VdfHome> {
   void initState() {
     super.initState();
 
-    SharedPrefHelper.getSharedPref(USER_NAME_SHAREDPREF_KEY, context, false)
+    SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
         .then((value) => setState(() {
               value == '' ? name = 'user' : name = value;
             }));
@@ -144,7 +144,7 @@ class _VdfHomeState extends State<VdfHome> {
                   alignment: Alignment.topLeft,
                   // color: Colors.white,
                   child: Text(
-                    'Welcome $name!',
+                    'Welcome $name',
                     style: TextStyle(
                       color: Colors.grey.shade700,
                       fontSize: 16,

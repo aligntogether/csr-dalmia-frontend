@@ -8,6 +8,9 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../../../Constants/constants.dart';
+import '../../../helper/sharedpref.dart';
+
 class Panchayat {
   final String panchayatId;
   final String clusterId;
@@ -57,18 +60,17 @@ class Street {
 }
 
 final String panchayatUrl = '$base/list-Panchayat';
-Future<List<Panchayat>> fetchPanchayats() async {
+Future<List<Panchayat>> fetchPanchayats(String vdfId) async {
   try {
     final response = await http.get(
       Uri.parse(panchayatUrl),
       headers: <String, String>{
-        'vdfId': '10001',
+        'vdfId': '$vdfId',
       },
     );
     if (response.statusCode == 200) {
       CommonObject commonObject =
           CommonObject.fromJson(json.decode(response.body));
-      print(commonObject.respBody);
       List<dynamic> panchayatsData = commonObject.respBody as List<dynamic>;
       List<Panchayat> panchayats = panchayatsData
           .map((model) => Panchayat.fromJson(model as Map<String, dynamic>))
@@ -137,6 +139,7 @@ class _MyFormState extends State<MyForm> {
   String? _selectedPanchayat;
   String? _selectedVillage;
   String? _selectedStreet;
+  String? vdfid;
 
   List<Panchayat> panchayats = [];
   List<Village> villages = [];
@@ -163,8 +166,6 @@ class _MyFormState extends State<MyForm> {
       );
 
       if (response.statusCode >= 200 && response.statusCode < 400) {
-        // Handle successful response
-        print('dikh rha h 2');
 
         final Map<String, dynamic> responseBody = json.decode(response.body);
         print('dikh rha h $responseBody');
@@ -173,7 +174,7 @@ class _MyFormState extends State<MyForm> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => AddHead(
-              vdfid: '10001',
+              vdfid: '$vdfid',
               id: id,
             ),
           ),
@@ -194,11 +195,21 @@ class _MyFormState extends State<MyForm> {
   @override
   void initState() {
     super.initState();
-    fetchPanchayats().then((value) {
+    SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
+        .then((value) {
       setState(() {
-        panchayats = value;
+        vdfid = value == '' ? '10001' : value;
+        print('vdfid is $vdfid');
+
+        fetchPanchayats('$vdfid').then((value) {
+          setState(() {
+            panchayats = value;
+            print("panchayats length is ${panchayats}");
+          });
+        });
       });
     });
+    print("panchayats length is ${panchayats}");
     fetchDraftHouseholds().then((value) {
       setState(() {
         draftHouseholds = value;
@@ -218,7 +229,7 @@ class _MyFormState extends State<MyForm> {
           iconTheme: const IconThemeData(color: Color(0xFF181818)),
           centerTitle: true,
           title: const Text(
-            'Add Household',
+            'Add Household ',
             style: TextStyle(
                 color: Color(0xFF181818),
                 fontSize: CustomFontTheme.headingSize,
@@ -423,7 +434,7 @@ class _MyFormState extends State<MyForm> {
                           if (draftHouseholds.length >= 5) {
                             _showConfirmationDialog(context);
                           } else {
-                            _addHouseholdAPI('10001', _selectedStreet!, '0');
+                            _addHouseholdAPI('$vdfid', _selectedStreet!, '0');
                           }
                         }
                       }
@@ -547,7 +558,7 @@ class _MyFormState extends State<MyForm> {
       final response = await http.get(
         Uri.parse('$base/get-draft-households'),
         headers: <String, String>{
-          'vdfId': '10001',
+          'vdfId': '$vdfid',
         },
       );
       if (response.statusCode == 200) {

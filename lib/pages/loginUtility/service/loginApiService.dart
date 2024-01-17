@@ -18,7 +18,7 @@ class LoginApiService {
   Future<Map<String, String>> loginViaOtp(int? mobileNumber) async {
 
     try {
-      String url = 'https://mobiledevcloud.dalmiabharat.com/dalmiabharat-auth-test/auth/login_otp';
+      String url = 'https://mobileqacloud.dalmiabharat.com/dalmiabharat-auth/auth/login_otp';
 
       Map<String, dynamic> requestBody = {
         "appName": "CSR",
@@ -91,7 +91,7 @@ class LoginApiService {
   Future<Map<String, String>> checkValidUserOtp(LoginController controller, String? otpCode) async {
 
     try {
-      String url = 'https://mobiledevcloud.dalmiabharat.com/dalmiabharat-auth-test/auth/checkValidUserNewOTP';
+      String url = 'https://mobileqacloud.dalmiabharat.com/dalmiabharat-auth/auth/checkValidUserNewOTP';
 
       print("controller.referenceId ${controller.referenceId}");
       print("mobileNumber : ${controller.selectMobileController.value.text}");

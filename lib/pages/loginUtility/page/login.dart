@@ -172,7 +172,6 @@ class _LoginState extends State<Login> {
                           Map<String, String> respBody = await loginApiService
                               .loginViaOtp(int.tryParse(loginController
                                   .selectMobileController.value.text));
-
                           if (respBody != null) {
                             setState(() {
                               loginController.selectMobileController.value =
