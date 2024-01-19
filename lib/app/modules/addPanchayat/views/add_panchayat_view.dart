@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/add_panchayat_controller.dart';
-import '../Service/apiService.dart';
+import '../service/apiService.dart';
 
 class AddPanchayatView extends StatefulWidget {
   AddPanchayatView({Key? key}) : super(key: key);

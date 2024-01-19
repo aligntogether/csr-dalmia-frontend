@@ -6,7 +6,7 @@ import 'package:dalmia/pages/gpl/gpl_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../addLocation/Service/apiService.dart';
+import '../../addLocation/service/apiService.dart';
 
 
 class AddClusterViewL extends StatefulWidget {

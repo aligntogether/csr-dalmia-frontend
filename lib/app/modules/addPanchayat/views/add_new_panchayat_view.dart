@@ -8,7 +8,7 @@ import 'package:dalmia/pages/gpl/gpl_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../Service/apiService.dart';
+import '../service/apiService.dart';
 
 // final AddPanchayatController controller = Get.put(AddPanchayatController());
 // clustersFuture = apiService.getListOfClusters(controller.selectLocationId!);

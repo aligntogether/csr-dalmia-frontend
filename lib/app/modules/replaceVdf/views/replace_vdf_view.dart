@@ -6,7 +6,7 @@ import 'package:dalmia/pages/gpl/gpl_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../addPanchayat/Service/apiService.dart';
+import '../../addPanchayat/service/apiService.dart';
 import '../controllers/replace_vdf_controller.dart';
 import '../service/replaceVdfApiService.dart';
 

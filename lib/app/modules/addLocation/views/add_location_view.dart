@@ -5,7 +5,7 @@ import 'package:dalmia/common/size_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../addLocation/Service/apiService.dart';
+import '../../addLocation/service/apiService.dart';
 import '../controllers/add_location_controller.dart';
 
 
