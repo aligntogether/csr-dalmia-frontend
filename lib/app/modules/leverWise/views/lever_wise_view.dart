@@ -15,6 +15,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:get/get.dart';
 
+import '../../../../Constants/constants.dart';
+import '../../../../helper/sharedpref.dart';
 import '../controllers/lever_wise_controller.dart';
 
 class LeverWiseView extends StatefulWidget {
@@ -73,10 +75,16 @@ bool isLoading = true  ;
       );
     }
   }
+  String name=' ';
 
   @override
   void initState() {
     super.initState();
+    SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+      value == '' ? name = 'user' : name = value;
+    }));
+    ;
     getLeverWiseReport();
 
   }
@@ -105,7 +113,7 @@ bool isLoading = true  ;
     LeverWiseController leverWiseController = Get.put(LeverWiseController());
     return SafeArea(
       child: Scaffold(
-          appBar: appBarCommon(controller, context,
+          appBar: appBarCommon(controller, context,name!,
               centerAlignText: true, title: "Reports"),
           body: SingleChildScrollView(
             child: Column(

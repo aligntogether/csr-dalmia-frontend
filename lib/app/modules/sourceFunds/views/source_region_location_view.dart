@@ -11,6 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
+import '../../../../Constants/constants.dart';
+import '../../../../helper/sharedpref.dart';
+
 class SourceRegionsView extends StatefulWidget {
   const SourceRegionsView({super.key});
 
@@ -19,6 +22,7 @@ class SourceRegionsView extends StatefulWidget {
 }
 
 class _SourceRegionsViewState extends State<SourceRegionsView> {
+  String name=' ';
   final SourceOfFundsApiService sourceOfFundsApiService =
       new SourceOfFundsApiService();
   SourceFundsController controller = new SourceFundsController();
@@ -28,6 +32,11 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
   @override
   void initState() {
     super.initState();
+    SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+      value == '' ? name = 'user' : name = value;
+    }));
+    ;
     regionsFuture = sourceOfFundsApiService.getListOfRegions(controller);
   }
 
@@ -36,7 +45,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
     SourceFundsController controller = Get.put(SourceFundsController());
     return SafeArea(
       child: Scaffold(
-        appBar: appBarCommon(controller, context,
+        appBar: appBarCommon(controller, context,name,
             centerAlignText: true, title: "Reports"),
         body: SingleChildScrollView(
           child: Column(

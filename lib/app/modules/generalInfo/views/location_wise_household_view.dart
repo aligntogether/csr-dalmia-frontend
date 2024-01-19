@@ -7,21 +7,38 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LocationWiseViewHouseHold extends StatelessWidget {
+import '../../../../Constants/constants.dart';
+import '../../../../helper/sharedpref.dart';
+class LocationWiseViewHouseHold extends StatefulWidget {
   const LocationWiseViewHouseHold({super.key});
+
+  @override
+  State<LocationWiseViewHouseHold> createState() => _LocationWiseViewHouseHoldState();
+}
+class _LocationWiseViewHouseHoldState extends State<LocationWiseViewHouseHold> {
+  String name=' ';
+  @override
+  void initState() {
+    super.initState();
+    SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+      value == '' ? name = 'user' : name = value;
+    }));
+    ;
+  }
 
   @override
   Widget build(BuildContext context) {
     GeneralInfoController controller = Get.put(GeneralInfoController());
     return SafeArea(
         child: Scaffold(
-      appBar: appBarCommon(controller, context,
+      appBar: appBarCommon(controller, context,name!,
           centerAlignText: true, title: "General Information"),
       body: SingleChildScrollView(
         child: Column(
           children: [
             Space.height(16),
-        
+
             ///_________________________________ main menu __________________________///
             GestureDetector(
               onTap: () {

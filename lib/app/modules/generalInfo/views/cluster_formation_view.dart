@@ -7,15 +7,34 @@ import 'package:dalmia/pages/gpl/gpl_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ClusterFormationView extends StatelessWidget {
+import '../../../../Constants/constants.dart';
+import '../../../../helper/sharedpref.dart';
+class ClusterFormationView extends StatefulWidget {
   const ClusterFormationView({super.key});
 
+  @override
+  State<ClusterFormationView> createState() => _ClusterFormationViewState();
+}
+class _ClusterFormationViewState extends State<ClusterFormationView> {
+  String name=' ';
+  @override
+  void initState() {
+    super.initState();
+    getName();
+  }
+  void getName(){
+    SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+      value == '' ? name = 'user' : name = value;
+    }));
+    ;
+  }
   @override
   Widget build(BuildContext context) {
     GeneralInfoController controller = Get.put(GeneralInfoController());
     return SafeArea(
         child: Scaffold(
-      appBar: appBarCommon(controller, context,
+      appBar: appBarCommon(controller, context, name!,
           centerAlignText: true, title: "General Information"),
       body: SingleChildScrollView(
         child: Column(

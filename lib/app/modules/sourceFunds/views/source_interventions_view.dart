@@ -11,6 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
+import '../../../../Constants/constants.dart';
+import '../../../../helper/sharedpref.dart';
+
 
 
 
@@ -29,6 +32,7 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
   SourceFundsController controller = Get.put(SourceFundsController());
   SourceOfFundsApiService sourceOfFundsApiService = new SourceOfFundsApiService();
   bool isLoading = true;
+  String name=' ';
 
   final ExportTableToExcel exportTableToExcel = ExportTableToExcel();
   void downloadExcel() {
@@ -79,6 +83,11 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
   @override
   void initState() {
     super.initState();
+    SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+      value == '' ? name = 'user' : name = value;
+    }));
+    ;
     fetchSourceFundsData();
   }
 
@@ -137,7 +146,7 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
     SourceFundsController controller = Get.put(SourceFundsController());
     return SafeArea(
       child: Scaffold(
-        appBar: appBarCommon(controller, context,
+        appBar: appBarCommon(controller, context,name,
             centerAlignText: true, title: "Reports"),
         body: SingleChildScrollView(
           child: Column(

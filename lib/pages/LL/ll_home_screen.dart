@@ -48,7 +48,7 @@ class _LLHomeState extends State<LLHome> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: appBarCommon(controller, context),
+        appBar: appBarCommon(controller, context,name),
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: MySize.screenWidth*(40/MySize.screenWidth), vertical: MySize.screenHeight*(40/MySize.screenHeight)),

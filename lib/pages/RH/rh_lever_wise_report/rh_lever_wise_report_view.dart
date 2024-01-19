@@ -16,11 +16,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:get/get.dart';
 
+import '../../../Constants/constants.dart';
 import '../../../common/dropdown_filed.dart';
+import '../../../helper/sharedpref.dart';
 
 
 class RhLeverWiseView extends StatefulWidget {
   String? refId;
+
   RhLeverWiseView({Key? key,required this.refId}) : super(key: key);
 
   @override
@@ -28,6 +31,7 @@ class RhLeverWiseView extends StatefulWidget {
 }
 
 class _RhLeverWiseViewState extends State<RhLeverWiseView> {
+  String name='';
   final RhLeverWiseReportServices rhLeverWiseReportServices =new RhLeverWiseReportServices();
   final ExportTableToExcel exportTableToExcel = new ExportTableToExcel();
   final RhLeverWiseController controller = Get.put(RhLeverWiseController());
@@ -84,6 +88,11 @@ class _RhLeverWiseViewState extends State<RhLeverWiseView> {
   @override
   void initState() {
     super.initState();
+    SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+      value == '' ? name = 'user' : name = value;
+    }));
+    ;
     getLeverWiseReport();
 
   }
@@ -110,7 +119,7 @@ class _RhLeverWiseViewState extends State<RhLeverWiseView> {
 
     return SafeArea(
       child: Scaffold(
-          appBar: appBarCommon(controller, context,
+          appBar: appBarCommon(controller, context,name,
               centerAlignText: true, title: "Reports"),
           body:  SingleChildScrollView(
                 child: Column(

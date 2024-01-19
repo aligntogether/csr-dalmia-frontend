@@ -93,7 +93,7 @@ class _VdfHomeState extends State<VdfHome> {
     Widget build(BuildContext context) {
       return SafeArea(
           child: Scaffold(
-        appBar:  appBarCommon(controller, context),
+        appBar:  appBarCommon(controller, context,name),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: DashTab(),

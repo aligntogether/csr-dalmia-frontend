@@ -30,12 +30,18 @@ class _AmountUtilizedViewState extends State<AmountUtilizedView> {
   final AmountUtilizedApiService amountUtilizedApiService = new AmountUtilizedApiService();
   int isRH = 0;
   bool isLoading = true;
+  String name = "";
 
   AmountUtilizedController controller = Get.put(AmountUtilizedController());
 
   @override
   void initState() {
     super.initState();
+    SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+      value == '' ? name = 'user' : name = value;
+    }));
+    ;
     SharedPrefHelper.getSharedPref(USER_TYPE_SHAREDPREF_KEY, context, true).then((value) {
       print("userType : $value");
       if (value == RH_USERTYPE) {
@@ -84,7 +90,7 @@ class _AmountUtilizedViewState extends State<AmountUtilizedView> {
         Get.put(AmountUtilizedController());
     return SafeArea(
       child: Scaffold(
-          appBar: appBarCommon(controller, context,
+          appBar: appBarCommon(controller, context,name,
               centerAlignText: true, title: "Reports"),
           body: Column(
             children: [

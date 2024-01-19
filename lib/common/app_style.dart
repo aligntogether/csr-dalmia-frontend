@@ -5,7 +5,8 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-
+import '../Constants/constants.dart';
+import '../helper/sharedpref.dart';
 import 'size_constant.dart';
 
 class AppStyle {
@@ -70,7 +71,7 @@ Widget commonTitleText(String title) {
   );
 }
 
-PreferredSize appBarCommon(controller, BuildContext context,
+PreferredSize appBarCommon(controller, BuildContext context,String name,
     {bool? centerAlignText, String? title}) {
   return PreferredSize(
       preferredSize: Size.fromHeight(180),
@@ -136,11 +137,6 @@ PreferredSize appBarCommon(controller, BuildContext context,
                   GestureDetector(
                     onTap: () {
                       showConfirmationDialog(context);
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder: (context) => const Login(),
-                      //   ),
-                      // );
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -205,12 +201,12 @@ PreferredSize appBarCommon(controller, BuildContext context,
                   centerAlignText == true
                       ? Center(
                           child: Text(
-                            title ?? "Welcome Balamurugan !",
+                            title ?? "Welcome ${name} !",
                             style: AppStyle.textStyleBoldMed( fontSize: CustomFontTheme.textSize,fontWeight: CustomFontTheme.headingwt),
                           ),
                         )
                       : Text(
-                          title ?? "Welcome Balamurugan !",
+                          title ?? "Welcome ${name} !",
                           style: TextStyle(
                               fontFamily: "Inter-Medium",
                               fontSize: 12,

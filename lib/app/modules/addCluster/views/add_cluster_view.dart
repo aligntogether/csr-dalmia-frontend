@@ -91,6 +91,9 @@ class _AddClusterViewState extends State<AddClusterView> {
 
                             if (selectedRegion != null &&
                                 selectedRegion['regionId'] != null) {
+                              setState(() {
+                                validationResult = null;
+                              });
                               controller.selectRegionId =
                                   selectedRegion['regionId'];
                               controller.selectRegion = newValue;
@@ -144,6 +147,9 @@ class _AddClusterViewState extends State<AddClusterView> {
                   onChanged: (String? newValue) async {
                     // Find the selected location and get its corresponding locationId
                     if (controller.locations != null) {
+                      setState(() {
+                        validationResult = null;
+                      });
                       // Find the selected location object based on the 'location' property
 
                       // print('controller.locations: ${controller.locations}');
@@ -186,9 +192,6 @@ class _AddClusterViewState extends State<AddClusterView> {
                           setState(() {
                             clusterCount = clusters.length ?? 0;
                           });
-
-                          print("clusters.length : ${clusters.length}");
-                          print("clusters : $clusters");
                         }
                       }
                     }
@@ -252,31 +255,34 @@ class _AddClusterViewState extends State<AddClusterView> {
               builder: (controller) {
                 return GestureDetector(
                   onTap: () async {
+                    if(controller.nameController.value.text.length == 0) {
+                      setState(() {
+                        validationResult = null;
+                      });
+                    }
                     if (controller.selectLocation != null &&
                         controller.selectRegion != null &&
-                         clusterCount! <= 5 &&
-                        validationResult == null) {
+                         clusterCount! < 5 &&
+                        validationResult == null ) {
                       try {
                         Map<String, dynamic> clusterMap =
                             await addClusterApiService.updateAddCluster(
                                 controller.selectLocationId ?? 0,
-                                clusterCount ??
-                                    int.tryParse(
-                                        controller.nameController.value.text)!);
+                                clusterCount ?? 0);
 
                         controller.addedClusterName = clusterMap['clusterName']==null?"":clusterMap['clusterName'];
                         controller.addedClusterId = clusterMap['clusterId'];
 
 
-                        // controller.addedClusterName = "31";
-                        // controller.addedClusterId = 10073;
-
                         if (clusterMap != null && clusterMap['clusterId'] != null && clusterCount! <= 5 ) {
                           clusterCount = clusterCount! + 1;
+                          controller.nameController.value.text =
+                              clusterCount.toString();
                           showConfirmationDialog(context,
                               location: controller.selectLocation,
                               p: controller.nameController.value.text,
                               r: controller.selectRegion);
+                          validationResult=null;
                         } else {
                           validationResult = "Something went wrong!";
                         }
@@ -285,7 +291,7 @@ class _AddClusterViewState extends State<AddClusterView> {
                       }
                     }
 
-                    if(clusterCount! > 5){
+                    if(controller.nameController.value.text =='5') {
                       setState(() {
                         validationResult = "Cannot add more than 5 Clusters";
                       });
@@ -295,7 +301,7 @@ class _AddClusterViewState extends State<AddClusterView> {
                       title: "Continue",
                       color: controller.selectLocation != null &&
                               controller.selectRegion != null &&
-                              clusterCount != 0 &&
+                              clusterCount! < 5 &&
                               validationResult == null
                           ? Color(0xff27528F)
                           : Color(0xff27528F).withOpacity(0.7)),
@@ -329,7 +335,7 @@ class _AddClusterViewState extends State<AddClusterView> {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             content: SizedBox(
-              height: 365,
+              height: MySize.screenHeight*(365/MySize.screenHeight),
               child: Column(
                 children: [
                   Space.height(16),
@@ -348,7 +354,7 @@ class _AddClusterViewState extends State<AddClusterView> {
                   Space.height(30),
                   GestureDetector(
                     onTap: () {
-                      if(controller.clusterCounts! < 5){
+                      if(controller.clusterCounts! < 5 && controller.nameController.value.text == 5){
                         Get.back();
                       }else{
                         Get.to(AddClusterView());
@@ -622,7 +628,7 @@ class _AddVdfViewState extends State<AddVdfView> {
       context: context,
       builder: (BuildContext context) {
         return Padding(
-          padding: const EdgeInsets.only(top: 91),
+          padding:  EdgeInsets.only(top: MySize.screenHeight*(90/MySize.screenHeight)),
           child: AlertDialog(
             backgroundColor: Colors.white,
             alignment: Alignment.topCenter,

@@ -312,11 +312,7 @@ class ChooseRoleView extends GetView<ChooseRoleController> {
                 GestureDetector(
                   onTap: () async {
                     await SharedPrefHelper.clearSharedPrefAccess();
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const Login(),
-                      ),
-                    );
+                    Navigator.of(context).popUntil((route) => route.isFirst);
                   },
                   child: Text(
                     "Logout",

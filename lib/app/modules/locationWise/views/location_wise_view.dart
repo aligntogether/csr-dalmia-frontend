@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../Constants/constants.dart';
 import '../../../../common/app_style.dart';
 import '../../../../common/size_constant.dart';
+import '../../../../helper/sharedpref.dart';
 import '../../../../pages/gpl/gpl_home_screen.dart';
 import '../../../../theme.dart';
 import '../../overviewPan/views/overview_pan_view.dart';
@@ -20,11 +22,15 @@ class _LocationWiseViewState extends State<LocationWiseView> {
   bool isLoading = true;
   LocationWiseController controller = Get.put(LocationWiseController());
   LocationWiseServices locationWiseServices = LocationWiseServices();
-
+  String name=' ';
   @override
   void initState() {
     super.initState();
-
+    SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+      value == '' ? name = 'user' : name = value;
+    }));
+    ;
     getReport();
   }
 
@@ -42,7 +48,7 @@ class _LocationWiseViewState extends State<LocationWiseView> {
     String todayDateIst = DateTime.now().toString().substring(0, 10);
     return SafeArea(
       child: Scaffold(
-          appBar: appBarCommon(controller, context,
+          appBar: appBarCommon(controller, context,name!,
               centerAlignText: true, title: "Reports"),
           body: SingleChildScrollView(
             child: Column(

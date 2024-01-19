@@ -6,7 +6,9 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../../Constants/constants.dart';
 import '../../common/size_constant.dart';
+import '../../helper/sharedpref.dart';
 
 class DashTab extends StatefulWidget {
   @override
@@ -29,15 +31,26 @@ class _DashTabState extends State<DashTab> {
     "between75KTo1L": 0,
     "moreThan1L": 0,
   };
+  String? vdfId;
 
   @override
   void initState() {
     super.initState();
+    initializeData();
+  }
+  void initializeData() async {
+    await getSharedPrefData();
     fetchApiData();
   }
 
+  Future<void> getSharedPrefData() async {
+    String value = await SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false);
+    setState(() {
+      vdfId = (value == '') ? 'user' : value;
+    });
+  }
   Future<void> fetchApiData() async {
-    final apiUrl = '$base/get-home-page-data?vdfId=10001';
+    final apiUrl = '$base/get-home-page-data?vdfId=$vdfId';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -98,7 +111,8 @@ class _DashTabState extends State<DashTab> {
                         ),
                         CustomCard(
                           imageUrl: 'images/m_house.svg',
-                          title: apiData['mappedHouseholds'].toString(),
+                          title: apiData['mappedHouseholds'].toString()==null
+                                  ?'0':apiData['mappedHouseholds'].toString()   ,
                           subtitle: 'Mapped Household',
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
@@ -107,7 +121,8 @@ class _DashTabState extends State<DashTab> {
                         ),
                         CustomCard(
                           imageUrl: 'images/s_house.svg',
-                          title: apiData['selectedHouseholds'].toString(),
+                          title: apiData['selectedHouseholds'].toString()
+                                  ==null?'0':apiData['selectedHouseholds'].toString(),
                           subtitle: 'Selected for Intervention',
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
@@ -144,13 +159,15 @@ class _DashTabState extends State<DashTab> {
                           subtitle: 'Household covered',
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
-                          title: apiData['householdsCovered'].toString(),
+                          title: apiData['householdsCovered'].toString()
+                                  ==null?'0':apiData['householdsCovered'].toString(),
                           bg: Color(0xFFC2D7CD),
                           textcolor: const Color(0xFF0C7243),
                         ),
                         CustomCard(
                           imageUrl: 'images/i_planned.svg',
-                          title: apiData['interventionPlanned'].toString(),
+                          title: apiData['interventionPlanned'].toString()
+                                  ==null?'0':apiData['interventionPlanned'].toString(),
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
                           subtitle: 'Intervention planned',
@@ -159,7 +176,8 @@ class _DashTabState extends State<DashTab> {
                         ),
                         CustomCard(
                           imageUrl: 'images/icompleted.svg',
-                          title: apiData['interventionCompleted'].toString(),
+                          title: apiData['interventionCompleted'].toString()
+                                  ==null?'0':apiData['interventionCompleted'].toString()  ,
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
                           bg: Color(0xFFC2D7CD),
@@ -198,7 +216,7 @@ class _DashTabState extends State<DashTab> {
                           subtitle: 'Overdue',
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
-                          title: apiData['overdue'].toString(),
+                          title: apiData['overdue'].toString()=="null"?"0":apiData['overdue'].toString(),
                           bg: Color(0xFFC2D3E3),
                           textcolor: const Color(0xFF064F96),
                         ),
@@ -285,7 +303,8 @@ class _DashTabState extends State<DashTab> {
                         ),
                         CustomCard(
                           imageUrl: 'images/income.svg',
-                          title: apiData['moreThan1L'].toString(),
+                          title: apiData['moreThan1L'].toString()
+                                  =="null"?"0":apiData['moreThan1L'].toString(),
                           subtitle: 'More than 1L',
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
@@ -294,7 +313,8 @@ class _DashTabState extends State<DashTab> {
                         ),
                         CustomCard(
                           imageUrl: 'images/income.svg',
-                          title: apiData['equalToZero'].toString(),
+                          title: apiData['equalToZero'].toString()
+                                    =="null"?"0":apiData['equalToZero'].toString(),
                           subtitle: 'Zero Income',
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),

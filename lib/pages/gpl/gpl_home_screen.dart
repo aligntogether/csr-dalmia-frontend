@@ -9,6 +9,7 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../Constants/constants.dart';
 class GPLHomeScreen extends StatefulWidget {
   const GPLHomeScreen({super.key});
 
@@ -17,6 +18,7 @@ class GPLHomeScreen extends StatefulWidget {
 }
 
 class _GPLHomeScreenState extends State<GPLHomeScreen> {
+  String name=' ';
   GplController controller = Get.put(GplController());
   List locationList = [
     {"text": "Add Location", "img": "images/Location.png"},
@@ -25,12 +27,21 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
     {"text": "Add Cluster", "img": "images/Vector.png"},
     {"text": "Replace VDF", "img": "images/male-icon.png"},
   ];
+  @override
+  void initState() {
+    super.initState();
+    SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+      value == '' ? name = 'user' : name = value;
+    }));
+    ;
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: appBarCommon(controller, context),
+        appBar: appBarCommon(controller, context,name),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -809,12 +820,7 @@ void showConfirmationDialog(BuildContext context) {
               GestureDetector(
                 onTap: () async {
                   await SharedPrefHelper.clearSharedPrefAccess();
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const Login(),
-                    ),
-                  );
-                  // Perform actions when 'Yes' is clicked
+                  Navigator.of(context).popUntil((route) => route.isFirst);
                 },
                 child: Container(
                   height: 50,

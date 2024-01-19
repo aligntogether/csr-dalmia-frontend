@@ -10,8 +10,12 @@ import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
+import '../../common/app_style.dart';
 import '../../common/size_constant.dart';
+import 'CdoController.dart';
 int LLid = 0;
 
 class CDOHome extends StatefulWidget {
@@ -35,83 +39,12 @@ class _CDOHomeState extends State<CDOHome> {
             }));
     ;
   }
+  CdoController controller = Get.put(CdoController());
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      appBar: PreferredSize(
-        preferredSize:
-            //  isMenuOpen ? Size.fromHeight(150) :
-            Size.fromHeight(100),
-        child: Stack(
-          children: [
-            AppBar(
-              titleSpacing: 20,
-              backgroundColor: Colors.white,
-              title: Image(image: AssetImage('images/icon.jpg')),
-              centerTitle: false,
-              scrolledUnderElevation: 0,
-              automaticallyImplyLeading: false,
-              bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(50),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 0,
-                        blurRadius: 4,
-                        offset: Offset(0, 4), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.only(left: 30, bottom: 10),
-                  alignment: Alignment.topLeft,
-                  // color: Colors.white,
-                  child: Text(
-                    'Welcome $name!',
-                    style: TextStyle(
-                      color: Colors.grey.shade700,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 10,
-              right: 20,
-              child: Column(
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      _showConfirmationDialog(context);
-                    },
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: CustomColorTheme.primaryColor,
-                          foregroundColor: Colors.white,
-                          child: Icon(Icons.logout),
-                        ),
-                        Text(
-                          'Logout',
-                          style: TextStyle(
-                              color: CustomColorTheme.labelColor,
-                              fontSize: CustomFontTheme.textSize,
-                              fontWeight: CustomFontTheme.labelwt),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
+      appBar:appBarCommon(controller, context,name),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: MySize.screenWidth*(40/MySize.screenWidth), vertical: MySize.screenHeight*(40/MySize.screenHeight)),

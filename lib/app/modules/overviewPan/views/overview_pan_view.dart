@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
+import '../../../../Constants/constants.dart';
+import '../../../../helper/sharedpref.dart';
 import '../controllers/overview_pan_controller.dart';
 import '../service/overviewReportApiService.dart';
 
@@ -79,12 +81,19 @@ class _OverviewPanViewState extends State<OverviewPanView> {
       );
     }
   }
+  String name=' ';
 
 
   @override
   void initState() {
     super.initState();
+    SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+      value == '' ? name = 'user' : name = value;
+    }));
+    ;
     getPanIndiaReport();
+
     regionsFuture = overviewReportApiService.getListOfRegions();
     controller.selectRegion = "All Regions";
   }
@@ -109,7 +118,7 @@ class _OverviewPanViewState extends State<OverviewPanView> {
     final int columnCount = 5;
     return SafeArea(
       child: Scaffold(
-          appBar: appBarCommon(controller, context,
+          appBar: appBarCommon(controller, context,name,
               centerAlignText: true, title: "Reports"),
           body: SingleChildScrollView(
             child: Column(

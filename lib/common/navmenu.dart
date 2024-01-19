@@ -1,3 +1,4 @@
+import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/pages/vdf/reports/Home.dart';
@@ -106,8 +107,8 @@ void _showConfirmationDialog(BuildContext context) {
         title: Padding(
           padding: const EdgeInsets.only(top: 10, left: 20, right: 10),
           child: SizedBox(
-            width: 283,
-            height: 90,
+            width: MySize.screenWidth*(280/MySize.screenWidth),
+            height: MySize.screenHeight*(800/MySize.screenHeight),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -145,11 +146,7 @@ void _showConfirmationDialog(BuildContext context) {
                 ),
                 onPressed: () async {
                   await SharedPrefHelper.clearSharedPrefAccess();
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const Login(),
-                    ),
-                  );
+                  Navigator.of(context).popUntil((route) => route.isFirst);
                   // Perform actions when 'Yes' is clicked
                 },
                 child: const Text(

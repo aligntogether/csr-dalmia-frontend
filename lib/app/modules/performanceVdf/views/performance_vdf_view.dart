@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
+import '../../../../Constants/constants.dart';
+import '../../../../helper/sharedpref.dart';
 import '../../../../theme.dart';
 import '../controllers/performance_vdf_controller.dart';
 
@@ -74,9 +76,15 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
       );
     }
   }
+  String name='';
   @override
   void initState() {
     super.initState();
+    SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+      value == '' ? name = 'user' : name = value;
+    }));
+    ;
     regionsFuture = performanceVdfApiService.getListOfRegions();
   }
 
@@ -111,7 +119,7 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
     PerformanceVdfController c = Get.put(PerformanceVdfController());
     return SafeArea(
       child: Scaffold(
-          appBar: appBarCommon(controller, context,
+          appBar: appBarCommon(controller, context,name,
               centerAlignText: true, title: "Reports"),
           body: SingleChildScrollView(
             child: Column(
