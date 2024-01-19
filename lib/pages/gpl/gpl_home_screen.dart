@@ -121,7 +121,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
               //       Get.toNamed(Routes.GENERAL_INFO);
               //     },
               //     child: Container(
-              //       height: 100,
+              //       height: MySize.safeHeight! * (100/MySize.screenHeight),
               //       decoration: ShapeDecoration(
               //         shape: RoundedRectangleBorder(),
               //         shadows: [
@@ -161,7 +161,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
               //                 child: Text(
               //                   "General Info",
               //                   style: TextStyle(
-              //                     fontSize: 14,
+              //                     fontSize: MySize.safeHeight! * (14/MySize.screenHeight),
               //                     fontWeight: FontWeight.w500,
               //                     color: Color(0xffB94217),
               //                   ),
@@ -181,7 +181,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
               //       Get.toNamed(Routes.MONITOR_PROGRESS);
               //     },
               //     child: Container(
-              //       height: 100,
+              //       height: MySize.safeHeight! * (100/MySize.screenHeight),
               //       decoration: ShapeDecoration(
               //         shape: RoundedRectangleBorder(),
               //         shadows: [
@@ -219,7 +219,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
               //                 child: Text(
               //                   "Monitor Progress",
               //                   style: TextStyle(
-              //                     fontSize: 14,
+              //                     fontSize: MySize.safeHeight! * (14/MySize.screenHeight),
               //                     fontWeight: FontWeight.w500,
               //                     color: Color(0xffB94217),
               //                   ),
@@ -407,7 +407,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                     Get.toNamed(Routes.ADD_LOCATION);
                   },
                   child: Container(
-                    height: 100,
+                    height: MySize.safeHeight! * (100/MySize.screenHeight),
                     decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(),
                       shadows: [
@@ -447,7 +447,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                               child: Text(
                                 "Add Location",
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: MySize.safeHeight! * (14/MySize.screenHeight),
                                   fontWeight: FontWeight.w500,
                                   color: Color(0xff064F96),
                                 ),
@@ -467,7 +467,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                     Get.toNamed(Routes.ADD_PANCHAYAT);
                   },
                   child: Container(
-                    height: 100,
+                    height: MySize.safeHeight! * (100/MySize.screenHeight),
                     decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(),
                       shadows: [
@@ -507,7 +507,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                               child: Text(
                                 "Add Panchayat",
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: MySize.safeHeight! * (14/MySize.screenHeight),
                                   fontWeight: FontWeight.w500,
                                   color: Color(0xff064F96),
                                 ),
@@ -527,7 +527,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                     Get.toNamed(Routes.ADD_VILLAGE);
                   },
                   child: Container(
-                    height: 100,
+                    height: MySize.safeHeight! * (100/MySize.screenHeight),
                     decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(),
                       shadows: [
@@ -567,7 +567,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                               child: Text(
                                 "Add Village",
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: MySize.safeHeight! * (14/MySize.screenHeight),
                                   fontWeight: FontWeight.w500,
                                   color: Color(0xff064F96),
                                 ),
@@ -591,7 +591,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                   Get.toNamed(Routes.ADD_CLUSTER);
                 },
                 child: Container(
-                  height: 100,
+                  height: MySize.safeHeight! * (100/MySize.screenHeight),
                   width: 110,
                   decoration: ShapeDecoration(
                     shape: RoundedRectangleBorder(),
@@ -632,7 +632,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                             child: Text(
                               "Add\nCluster",
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: MySize.safeHeight! * (14/MySize.screenHeight),
                                 fontWeight: FontWeight.w500,
                                 color: Color(0xff064F96),
                               ),
@@ -650,7 +650,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                   Get.toNamed(Routes.REPLACE_VDF);
                 },
                 child: Container(
-                  height: 100,
+                  height: MySize.safeHeight! * (100/MySize.screenHeight),
                   width: 110,
                   decoration: ShapeDecoration(
                     shape: RoundedRectangleBorder(),
@@ -691,7 +691,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                             child: Text(
                               "Replace VDF",
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: MySize.safeHeight! * (14/MySize.screenHeight),
                                 fontWeight: FontWeight.w500,
                                 color: Color(0xff064F96),
                               ),

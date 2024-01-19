@@ -7,6 +7,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import '../../../Constants/constants.dart';
+import '../../../helper/sharedpref.dart';
 String selectedPanchayat = "";
 String selectedVillage = "";
 String selectedVillageId = "";
@@ -54,18 +56,19 @@ class _AddStreetState extends State<AddStreet> {
   final _formKey = GlobalKey<FormState>();
   String? _selectedPanchayat;
   String? _selectedVillage;
+  String? vdfid;
 
   List<Panchayat> panchayats = [];
   List<Village> villages = [];
 
   final String panchayatUrl = '$base/list-Panchayat';
 
-  Future<List<Panchayat>> fetchPanchayats() async {
+  Future<List<Panchayat>> fetchPanchayats(String vdfId) async {
     try {
       final response = await http.get(
         Uri.parse(panchayatUrl),
         headers: <String, String>{
-          'vdfId': '10001',
+          'vdfId': vdfId,
         },
       );
       if (response.statusCode == 200) {
@@ -111,9 +114,17 @@ class _AddStreetState extends State<AddStreet> {
   @override
   void initState() {
     super.initState();
-    fetchPanchayats().then((value) {
+    SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
+        .then((value) {
       setState(() {
-        panchayats = value;
+        vdfid = value == '' ? '10001' : value;
+        print('vdfid is $vdfid');
+
+          fetchPanchayats(vdfid!).then((value) {
+              setState(() {
+                   panchayats = value;
+      });
+    });
       });
     });
   }

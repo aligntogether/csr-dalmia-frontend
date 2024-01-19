@@ -258,10 +258,13 @@ class _OtpState extends State<Otp> {
           PLATFORM_SHAREDPREF_KEY, authResponse.platform);
       SharedPrefHelper.storeSharedPref(
           EMPLOYEE_SHAREDPREF_KEY, authResponse.employeeName);
+      loginController.userName = authResponse.employeeName;
 
       Get.toNamed(Routes.CHOOSE_ROLE);
     } catch (e) {
-      // show error on screen
+      setState(() {
+        validationResult = "Incorrect OTP. Please try again.";
+      });
     }
   }
 
@@ -278,7 +281,6 @@ class _OtpState extends State<Otp> {
 
     Map<String, String> respBodyMap =
         await loginApiService.checkValidUserOtp(loginController, otpCode);
-
     if (respBodyMap == null) {
       setState(() {
         validationResult = "Something Went Wrong!";
@@ -304,42 +306,4 @@ class _OtpState extends State<Otp> {
         userRoleMap['userName']! // employeeName
         );
   }
-
-  // Future<AuthResponse> verifyOtp() async {
-  //   setState(() {
-  //     loginController.selectMobileController.value.text = widget.mobileNumber!;
-  //     loginController.otpTokenId = widget.otpTokenId;
-  //     loginController.referenceId = widget.referenceId;
-  //     loginController.userIdWithTimeStamp =
-  //         'SWP${DateTime.now().millisecondsSinceEpoch}';
-  //   });
-  //
-  //   Map<String, String> respBodyMap =
-  //       await loginApiService.checkValidUserOtp(loginController, otpCode);
-  //
-  //   if (respBodyMap == null) {
-  //     setState(() {
-  //       validationResult = "Something Went Wrong!";
-  //     });
-  //   }
-  //
-  //   Map<String, String> userRoleMap = await loginApiService
-  //       .getUserRoleByReferenceId(loginController.referenceId ?? '');
-  //
-  //   if (userRoleMap == null) {
-  //     setState(() {
-  //       validationResult = "Something Went Wrong!";
-  //     });
-  //   }
-  //
-  //   return AuthResponse(
-  //       loginController.referenceId!,
-  //       userRoleMap['userRole']!,
-  //       respBodyMap['appName']!, // appName
-  //       respBodyMap['accessToken']!, // accessToken
-  //       respBodyMap['refreshToken']!, //refreshToken
-  //       respBodyMap['platform']!, // platform
-  //       userRoleMap['userName']! // employeeName
-  //       );
-  // }
 }

@@ -10,6 +10,7 @@ class LoginController extends GetxController {
   String? userIdWithTimeStamp;
   String? otpCode;
   String? userRole = "GPL";
+  String? userName;
 
 
 }

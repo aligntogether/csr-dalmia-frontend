@@ -7,6 +7,8 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../../common/size_constant.dart';
+
 class VdfReport extends StatefulWidget {
   const VdfReport({Key? key}) : super(key: key);
 
@@ -847,7 +849,7 @@ class _VdfReportState extends State<VdfReport> {
                   ),
                 ),
                 SizedBox(
-                  height: 40,
+                  height: MySize.screenHeight*(40/MySize.screenHeight),
                 ),
               ],
             ),

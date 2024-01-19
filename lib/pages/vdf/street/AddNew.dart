@@ -12,6 +12,7 @@ import 'package:get/get_state_manager/src/simple/list_notifier.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
+import '../../../common/size_constant.dart';
 class Addnew extends StatefulWidget {
   final String? village;
   final String? panchayat;
@@ -240,8 +241,8 @@ class _AddnewState extends State<Addnew> {
                             label: Text('Enter Number of Households')),
                       ),
                     ),
-                    const SizedBox(
-                      height: 40,
+                     SizedBox(
+                      height: MySize.screenHeight*(40/MySize.screenHeight),
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(

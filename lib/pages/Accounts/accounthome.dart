@@ -8,6 +8,8 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../common/size_constant.dart';
+
 class AccountsHome extends StatefulWidget {
   const AccountsHome({Key? key}) : super(key: key);
 
@@ -94,7 +96,7 @@ class _AccountsHomeState extends State<AccountsHome> {
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -172,7 +174,7 @@ class _AccountsHomeState extends State<AccountsHome> {
                   ),
                 ),
                 SizedBox(
-                  height: 40,
+                  height: MySize.screenHeight*(40/MySize.screenHeight),
                 ),
               ],
             ),

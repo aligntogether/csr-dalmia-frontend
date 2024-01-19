@@ -61,7 +61,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(canPop: false, child: login(context));
+    return PopScope(canPop: true, child: login(context));
   }
 
   SafeArea login(context) {
@@ -140,6 +140,10 @@ class _LoginState extends State<Login> {
                           LengthLimitingTextInputFormatter(10),
                         ],
                         textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: MySize.safeHeight! * (16/MySize.screenHeight),
+                          fontWeight: FontWeight.w600,
+                        ),
                         decoration: InputDecoration(
                           hintText: textFieldFocusNode.hasFocus
                               ? ''
@@ -195,7 +199,7 @@ class _LoginState extends State<Login> {
                         } catch (e) {
                           setState(() {
                             validationResult =
-                                e.toString().split('Exception:').last.trim();
+                               "Incorrect mobile number. Please try again.";
                           });
                         }
                       },

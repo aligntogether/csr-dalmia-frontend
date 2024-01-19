@@ -3,6 +3,7 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../common/size_constant.dart';
 class Followup extends StatefulWidget {
   final String? hid;
   final String? interId;
@@ -112,42 +113,42 @@ class _FollowupState extends State<Followup> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text('Enter Details'),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: MySize.screenHeight*(20/MySize.screenHeight)
                 ),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: MySize.screenHeight*(20/MySize.screenHeight)
                 ),
                 followdate(context, 'Followup 1*', _followController1),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: MySize.screenHeight*(20/MySize.screenHeight)
                 ),
                 followdate(context, 'Followup 2*', _followController2),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: MySize.screenHeight*(20/MySize.screenHeight)
                 ),
                 followdate(context, 'Followup 3*', _followController3),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: MySize.screenHeight*(20/MySize.screenHeight)
                 ),
                 followdate(context, 'Followup 4*', _followController4),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: MySize.screenHeight*(20/MySize.screenHeight)
                 ),
                 followdate(context, 'Followup 5*', _followController5),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: MySize.screenHeight*(20/MySize.screenHeight)
                 ),
                 followdate(context, 'Followup 6*', _followController6),
-                const SizedBox(
-                  height: 40,
+                 SizedBox(
+                  height: MySize.screenHeight*(40/MySize.screenHeight),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(350, 50),
+                        minimumSize: Size(MySize.screenWidth*0.8, MySize.screenHeight*(50/MySize.screenHeight)),
                         backgroundColor: isButtonEnabled
                             ? Colors.blue.shade900
                             : Colors.lightBlue,
@@ -193,7 +194,8 @@ class _FollowupState extends State<Followup> {
       decoration: InputDecoration(
         labelText: labeltext,
         contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+            EdgeInsets.symmetric(horizontal: MySize.screenWidth*(16/MySize.screenWidth),
+                vertical: MySize.screenHeight*(20/MySize.screenHeight)),
         suffixIcon: IconButton(
           onPressed: () {
             _selectDate(context, controller);

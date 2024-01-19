@@ -302,7 +302,7 @@ class _MyFormState extends State<AddHead> {
         appBar: houseappbar(context),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            padding:  EdgeInsets.symmetric(horizontal: MySize.screenWidth*(16/MySize.screenWidth)),
             child: Form(
               key: _formKey,
               child: Column(
@@ -323,7 +323,7 @@ class _MyFormState extends State<AddHead> {
                     decoration: InputDecoration(
                       labelText: 'Head Name *',
                       contentPadding: EdgeInsets.symmetric(
-                          horizontal: width * 0.03, vertical: height * 0.019),
+                          horizontal:  MySize.screenWidth*(16/MySize.screenWidth), vertical: MySize.screenHeight*(20/MySize.screenHeight)),
                     ),
                   ),
                   SizedBox(height: height * 0.02),
@@ -334,10 +334,10 @@ class _MyFormState extends State<AddHead> {
                       LengthLimitingTextInputFormatter(10),
                     ],
                     controller: _mobileController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Mobile Number *',
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+                          EdgeInsets.symmetric(horizontal: MySize.screenWidth*(16/MySize.screenWidth), vertical: MySize.screenHeight*(20/MySize.screenHeight)),
                     ),
                     validator: (value) {
                       if (value!.length != 10) {
@@ -357,8 +357,8 @@ class _MyFormState extends State<AddHead> {
                             readOnly: true, // Set the field to be read-only
                             decoration: InputDecoration(
                               labelText: 'Date of Birth *',
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 20.0),
+                              contentPadding:  EdgeInsets.symmetric(
+                                  horizontal: MySize.screenWidth*(16/MySize.screenWidth), vertical: MySize.screenHeight*(20/MySize.screenHeight)),
                               suffixIcon: IconButton(
                                 onPressed: () {
                                   _selectDate(context);
@@ -372,9 +372,9 @@ class _MyFormState extends State<AddHead> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10), // Adjust the width here
+                       SizedBox(width: MySize.screenWidth*(10/MySize.screenWidth)), // Adjust the width here
                       Container(
-                        width: 100,
+                        width: MySize.screenWidth*(100/MySize.screenWidth),
                         decoration: BoxDecoration(
                           color: Colors.grey[200],
                           borderRadius: BorderRadius.circular(5.0),
@@ -413,10 +413,10 @@ class _MyFormState extends State<AddHead> {
                         _selectedGender = newValue;
                       });
                     },
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Gender *',
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+                          EdgeInsets.symmetric(horizontal: MySize.screenWidth*(16/MySize.screenWidth), vertical: MySize.screenHeight*(20/MySize.screenHeight)),
                     ),
                     icon: const Icon(
                       Icons.keyboard_arrow_down_sharp,
@@ -442,10 +442,10 @@ class _MyFormState extends State<AddHead> {
                       Icons.keyboard_arrow_down_sharp,
                       color: CustomColorTheme.iconColor,
                     ),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Caste *',
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+                          EdgeInsets.symmetric(horizontal: MySize.screenWidth*(16/MySize.screenWidth), vertical: MySize.screenHeight*(20/MySize.screenHeight)),
                     ),
                   ),
                   const SizedBox(
@@ -469,10 +469,10 @@ class _MyFormState extends State<AddHead> {
                       Icons.keyboard_arrow_down_sharp,
                       color: CustomColorTheme.iconColor,
                     ),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Education *',
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+                          EdgeInsets.symmetric(horizontal: MySize.screenWidth*(16/MySize.screenWidth), vertical: MySize.screenHeight*(20/MySize.screenHeight)),
                     ),
                   ),
                   SizedBox(height: height * 0.02),
@@ -482,7 +482,12 @@ class _MyFormState extends State<AddHead> {
                         (dynamic primaryemployment) {
                       return DropdownMenuItem<int>(
                         value: primaryemployment['dataId'],
-                        child: Text(primaryemployment['titleData'].toString()),
+                        child: Container(
+                          width: width*0.6,
+                          child: Text(
+                            primaryemployment['titleData'].toString(),
+                          ),
+                        ),
                       );
                     }).toList(),
                     onChanged: (newValue) {
@@ -494,10 +499,10 @@ class _MyFormState extends State<AddHead> {
                       Icons.keyboard_arrow_down_sharp,
                       color: CustomColorTheme.iconColor,
                     ),
-                    decoration: const InputDecoration(
+                    decoration:  InputDecoration(
                       labelText: 'Primary Employment *',
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+                          EdgeInsets.symmetric(horizontal: MySize.screenWidth*(16/MySize.screenWidth), vertical: MySize.screenHeight*(20/MySize.screenHeight)),
                     ),
                   ),
                   SizedBox(height: height * 0.02),
@@ -508,8 +513,13 @@ class _MyFormState extends State<AddHead> {
                             (dynamic secondaryemployment) {
                       return DropdownMenuItem<int>(
                         value: secondaryemployment['dataId'],
-                        child:
-                            Text(secondaryemployment['titleData'].toString()),
+                        child:Container(
+                          width: width*0.6,
+
+                          child: Text(
+                            secondaryemployment['titleData'].toString(),
+                          ),
+                        ),
                       );
                     }).toList(),
                     onChanged: (newValue) {
@@ -521,26 +531,26 @@ class _MyFormState extends State<AddHead> {
                       Icons.keyboard_arrow_down_sharp,
                       color: CustomColorTheme.iconColor,
                     ),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Secondary Employment',
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+                          EdgeInsets.symmetric(horizontal: MySize.screenWidth*(16/MySize.screenWidth), vertical: MySize.screenHeight*(20/MySize.screenHeight)),
                     ),
                   ),
                   SizedBox(height: height * 0.02),
                   if (_validateFields &&
                       !(_formKey.currentState?.validate() ?? false))
                     const Padding(
-                      padding: EdgeInsets.only(top: 16.0, bottom: 16),
+                      padding: EdgeInsets.all(10),
                       child: Center(
                         child: Text(
                           'Please fill all the mandatory fields',
                           style: TextStyle(
                             color: Color(0xFFEC2828),
-                            fontSize: 14,
+
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w500,
-                            height: 0.10,
+
                           ),
                         ),
                       ),
@@ -551,7 +561,7 @@ class _MyFormState extends State<AddHead> {
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
-                          minimumSize: const Size(130, 50),
+                          minimumSize:  Size(MySize.screenWidth*(130/MySize.screenWidth), MySize.screenHeight*(50/MySize.screenHeight)),
                           backgroundColor: CustomColorTheme.primaryColor,
                         ),
                         onPressed: () {
@@ -580,7 +590,7 @@ class _MyFormState extends State<AddHead> {
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
-                          minimumSize: const Size(130, 50),
+    minimumSize:  Size(MySize.screenWidth*(130/MySize.screenWidth), MySize.screenHeight*(50/MySize.screenHeight)),
                           side: BorderSide(
                               color: CustomColorTheme.primaryColor, width: 1),
                           backgroundColor: Colors.white,
@@ -623,23 +633,23 @@ class _MyFormState extends State<AddHead> {
                 Icon(
                   Icons.check_circle,
                   color: Colors.green,
-                  size: 40,
+                  size: MySize.screenHeight*(40/MySize.screenHeight),
                 ),
                 SizedBox(
-                  height: 20,
+                  height:  MySize.screenHeight*(20/MySize.screenHeight),
                 ),
                 Text('Saved Data to Draft'),
               ],
             ),
           ),
           content: SizedBox(
-            height: 80,
+            height: MySize.screenHeight*(80/MySize.screenHeight),
             child: Column(
               // mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(100, 50),
+                    minimumSize:  Size(MySize.screenWidth*(100/MySize.screenWidth), MySize.screenHeight*(40/MySize.screenHeight)),
                     elevation: 0,
                     backgroundColor: CustomColorTheme.primaryColor,
                     side: const BorderSide(
@@ -712,7 +722,7 @@ AppBar houseappbar(BuildContext context) {
     // backgroundColor: Colors.grey[50],
     actions: <Widget>[
       IconButton(
-        iconSize: 30,
+        iconSize: MySize.screenHeight*(30/MySize.screenHeight),
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(

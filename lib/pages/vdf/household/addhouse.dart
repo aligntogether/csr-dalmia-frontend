@@ -155,8 +155,6 @@ class _MyFormState extends State<MyForm> {
     };
 
     try {
-      print('dikh rha h 1');
-
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: <String, String>{

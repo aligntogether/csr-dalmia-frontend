@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../common/size_constant.dart';
 class HhidForm extends StatefulWidget {
   final String? streetid;
   const HhidForm({super.key, this.streetid});
@@ -556,8 +557,8 @@ class _HhidFormState extends State<HhidForm> {
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: MySize.screenHeight*(20/MySize.screenHeight)
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,

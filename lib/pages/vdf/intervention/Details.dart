@@ -8,6 +8,7 @@ import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../../../common/size_constant.dart';
 String interventionname = '';
 
 class Details extends StatefulWidget {
@@ -179,7 +180,7 @@ class _DetailsState extends State<Details> {
                     ],
                   ),
                   SizedBox(
-                    height: 40,
+                    height: MySize.screenHeight*(40/MySize.screenHeight),
                   ),
                   Wrap(
                     alignment: WrapAlignment.center,

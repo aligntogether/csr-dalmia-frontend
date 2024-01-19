@@ -174,8 +174,8 @@ class _UpdateBudgetState extends State<UpdateBudget> {
                       ),
                     ),
                     Container(
-                      width: 169,
-                      height: 40,
+                      width: MySize.screenWidth*(169/MySize.screenWidth),
+                      height: MySize.screenHeight*(40/MySize.screenHeight),
                       decoration: ShapeDecoration(
                         color: Color(0xFF008CD3),
                         shape: RoundedRectangleBorder(

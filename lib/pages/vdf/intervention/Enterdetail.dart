@@ -10,6 +10,7 @@ import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../common/size_constant.dart';
 class EnterDetail extends StatefulWidget {
   final String? hid;
   final String? interId;
@@ -146,8 +147,8 @@ class _EnterDetailState extends State<EnterDetail> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: MySize.screenHeight*(20/MySize.screenHeight)
                 ),
                 DropdownButtonFormField<String>(
                   value: selectedMemberId,
@@ -169,8 +170,8 @@ class _EnterDetailState extends State<EnterDetail> {
                     labelText: 'Select the Beneficiary *',
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: MySize.screenHeight*(20/MySize.screenHeight)
                 ),
                 TextFormField(
                   controller: _completeController,
@@ -193,8 +194,8 @@ class _EnterDetailState extends State<EnterDetail> {
                     return null;
                   },
                 ),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: MySize.screenHeight*(20/MySize.screenHeight)
                 ),
                 const TextField(
                   decoration: InputDecoration(
@@ -202,8 +203,8 @@ class _EnterDetailState extends State<EnterDetail> {
                   ),
                   maxLines: 3,
                 ),
-                const SizedBox(
-                  height: 40,
+                SizedBox(
+                  height: MySize.screenHeight*(40/MySize.screenHeight),
                 ),
                 Wrap(
                   alignment: WrapAlignment.center,
@@ -340,7 +341,7 @@ void _successmsg(BuildContext context, String? hid) {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue[900],
-                  minimumSize: const Size(250, 50),
+                  minimumSize:  Size(MySize.screenWidth*250, MySize.screenHeight*(50/MySize.screenHeight)),
                 ),
                 onPressed: () {
                   addreason(hid, context);

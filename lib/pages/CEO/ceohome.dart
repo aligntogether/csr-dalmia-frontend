@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
+import '../../common/size_constant.dart';
 class CEOHome extends StatefulWidget {
   const CEOHome({Key? key}) : super(key: key);
 
@@ -153,7 +154,7 @@ class _CEOHomeState extends State<CEOHome> {
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+            padding: EdgeInsets.symmetric(horizontal: MySize.screenWidth*(40/MySize.screenWidth), vertical: MySize.screenHeight*(40/MySize.screenHeight)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -224,7 +225,7 @@ class _CEOHomeState extends State<CEOHome> {
                   ),
                 ),
                 SizedBox(
-                  height: 40,
+                  height: MySize.screenHeight*(40/MySize.screenHeight),
                 ),
                 Text(
                   'Take Action',

@@ -204,6 +204,7 @@ class _AddClusterViewState extends State<AddClusterView> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 34),
                   child: TextFormField(
+                    readOnly: true,
                     controller: controller.nameController.value,
                     onChanged: (value) {
                       if (clusterCount! > 4 && int.tryParse(value)! > 5) {
@@ -254,7 +255,7 @@ class _AddClusterViewState extends State<AddClusterView> {
                   onTap: () async {
                     if (controller.selectLocation != null &&
                         controller.selectRegion != null &&
-                        clusterCount != 0 &&
+                         clusterCount! <= 5 &&
                         validationResult == null) {
                       try {
                         Map<String, dynamic> clusterMap =
@@ -264,13 +265,15 @@ class _AddClusterViewState extends State<AddClusterView> {
                                     int.tryParse(
                                         controller.nameController.value.text)!);
 
-                        controller.addedClusterName = clusterMap['clusterName'];
+                        controller.addedClusterName = clusterMap['clusterName']==null?"":clusterMap['clusterName'];
                         controller.addedClusterId = clusterMap['clusterId'];
+
 
                         // controller.addedClusterName = "31";
                         // controller.addedClusterId = 10073;
 
-                        if (clusterMap != null) {
+                        if (clusterMap != null && clusterMap['clusterId'] != null && clusterCount! <= 5 ) {
+                          clusterCount = clusterCount! + 1;
                           showConfirmationDialog(context,
                               location: controller.selectLocation,
                               p: controller.nameController.value.text,
@@ -283,10 +286,11 @@ class _AddClusterViewState extends State<AddClusterView> {
                       }
                     }
 
-                    showConfirmationDialog(context,
-                        location: controller.selectLocation,
-                        p: controller.nameController.value.text,
-                        r: controller.selectRegion);
+                    if(clusterCount! > 5){
+                      setState(() {
+                        validationResult = "Cannot add more than 5 Clusters";
+                      });
+                    }
                   },
                   child: commonButton(
                       title: "Continue",
@@ -345,7 +349,11 @@ class _AddClusterViewState extends State<AddClusterView> {
                   Space.height(30),
                   GestureDetector(
                     onTap: () {
-                      Get.to(AddClusterView());
+                      if(controller.clusterCounts! < 5){
+                        Get.back();
+                      }else{
+                        Get.to(AddClusterView());
+                      }
                     },
                     child: Container(
                       height: 50,

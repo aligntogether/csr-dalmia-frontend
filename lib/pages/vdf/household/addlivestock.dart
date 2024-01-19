@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../common/size_constant.dart';
 class AddStock extends StatefulWidget {
   final String? id;
   const AddStock({super.key, this.id});
@@ -229,8 +230,8 @@ class _AddStockState extends State<AddStock> {
                           ),
                         ),
                         SizedBox(
-                          width: 90,
-                          height: 40,
+                          width: MySize.screenWidth*(90/MySize.screenWidth),
+                          height: MySize.screenHeight*(40/MySize.screenHeight),
                           child: TextField(
                             maxLength: 15,
                             onChanged: (value) {
@@ -299,8 +300,8 @@ class _AddStockState extends State<AddStock> {
                           ),
                         ),
                         SizedBox(
-                          width: 90,
-                          height: 40,
+                          width: MySize.screenWidth*(90/MySize.screenWidth),
+                          height: MySize.screenHeight*(40/MySize.screenHeight),
                           child: TextField(
                             maxLength: 15,
                             onChanged: (value) {
@@ -428,7 +429,7 @@ class _AddStockState extends State<AddStock> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
-            width: 90,
+            width: MySize.screenWidth*(90/MySize.screenWidth),
             child: Text(
               text,
               style: TextStyle(

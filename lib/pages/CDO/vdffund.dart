@@ -94,8 +94,8 @@ class _VDFFundsState extends State<VDFFunds> {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 40,
+               SizedBox(
+                height: MySize.screenHeight*(40/MySize.screenHeight),
               ),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,

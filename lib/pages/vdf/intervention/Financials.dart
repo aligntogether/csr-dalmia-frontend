@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../common/size_constant.dart';
 class Financial extends StatefulWidget {
   final String? hid;
   final String? interId;
@@ -149,8 +150,8 @@ class _FinancialState extends State<Financial> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text('Enter Intervention 1 Financials'),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: MySize.screenHeight*(20/MySize.screenHeight)
                 ),
                 TextField(
                   keyboardType:
@@ -167,8 +168,8 @@ class _FinancialState extends State<Financial> {
                     setState(() {});
                   },
                 ),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: MySize.screenHeight*(20/MySize.screenHeight)
                 ),
                 TextField(
                   keyboardType:
@@ -185,8 +186,8 @@ class _FinancialState extends State<Financial> {
                     setState(() {});
                   },
                 ),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: MySize.screenHeight*(20/MySize.screenHeight)
                 ),
                 TextField(
                   keyboardType:
@@ -203,8 +204,8 @@ class _FinancialState extends State<Financial> {
                     setState(() {});
                   },
                 ),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: MySize.screenHeight*(20/MySize.screenHeight)
                 ),
                 TextField(
                   keyboardType:
@@ -221,15 +222,15 @@ class _FinancialState extends State<Financial> {
                     setState(() {});
                   },
                 ),
-                const SizedBox(
-                  height: 40,
+                 SizedBox(
+                  height: MySize.screenHeight*(40/MySize.screenHeight),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(350, 50),
+                        minimumSize:  Size(MySize.screenWidth*0.8, MySize.screenHeight*(50/MySize.screenHeight)),
                         backgroundColor: isButtonEnabled
                             ? CustomColorTheme.primaryColor
                             : Colors.grey.shade300,
@@ -274,6 +275,7 @@ void _successmsg(BuildContext context, String? hid) {
       );
 
       if (response.statusCode == 200) {
+        Navigator.of(context).popUntil((route) => route.isFirst);
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => VdfHome(),

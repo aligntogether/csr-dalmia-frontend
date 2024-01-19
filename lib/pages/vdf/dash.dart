@@ -6,6 +6,8 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../../common/size_constant.dart';
+
 class DashTab extends StatefulWidget {
   @override
   State<DashTab> createState() => _DashTabState();
@@ -116,8 +118,8 @@ class _DashTabState extends State<DashTab> {
                     ))
               ],
             ),
-            const SizedBox(
-              height: 40,
+             SizedBox(
+              height: MySize.screenHeight*(40/MySize.screenHeight),
             ),
             Column(
               children: [
@@ -168,8 +170,8 @@ class _DashTabState extends State<DashTab> {
                     ))
               ],
             ),
-            const SizedBox(
-              height: 40,
+             SizedBox(
+              height: MySize.screenHeight*(40/MySize.screenHeight),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,8 +214,8 @@ class _DashTabState extends State<DashTab> {
                 )
               ],
             ),
-            const SizedBox(
-              height: 40,
+             SizedBox(
+              height: MySize.screenHeight*(40/MySize.screenHeight),
             ),
             Column(
               children: [

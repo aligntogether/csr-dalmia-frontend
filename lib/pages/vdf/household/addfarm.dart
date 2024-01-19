@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../common/size_constant.dart';
 class AddFarm extends StatefulWidget {
   final String? id;
   const AddFarm({Key? key, this.id}) : super(key: key);
@@ -225,8 +226,8 @@ class _AddFarmState extends State<AddFarm> {
                           ),
                         ),
                         SizedBox(
-                          width: 90,
-                          height: 40,
+                          width: MySize.screenWidth*(90/MySize.screenWidth),
+                          height: MySize.screenHeight*(40/MySize.screenHeight),
                           child: TextField(
                             onChanged: (value) {
                               other1 = MapEntry(value, other1.value);
@@ -291,8 +292,8 @@ class _AddFarmState extends State<AddFarm> {
                           ),
                         ),
                         SizedBox(
-                          width: 90,
-                          height: 40,
+                          width: MySize.screenWidth*(90/MySize.screenWidth),
+                          height: MySize.screenHeight*(40/MySize.screenHeight),
                           child: TextField(
                             onChanged: (value) {
                               other2 = MapEntry(value, other2.value);
@@ -419,7 +420,7 @@ class _AddFarmState extends State<AddFarm> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
-            width: 90,
+            width: MySize.screenWidth*(90/MySize.screenWidth),
             child: Text(
               text,
               style: TextStyle(

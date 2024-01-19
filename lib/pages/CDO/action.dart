@@ -7,6 +7,7 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../../common/size_constant.dart';
 class ActionAgainstHH extends StatefulWidget {
   const ActionAgainstHH({Key? key}) : super(key: key);
 
@@ -88,8 +89,8 @@ class _ActionAgainstHHState extends State<ActionAgainstHH> {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 40,
+               SizedBox(
+                height: MySize.screenHeight*(40/MySize.screenHeight),
               ),
               Center(
                 child: Text(

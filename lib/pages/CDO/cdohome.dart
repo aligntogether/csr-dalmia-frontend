@@ -11,6 +11,7 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../common/size_constant.dart';
 int LLid = 0;
 
 class CDOHome extends StatefulWidget {
@@ -113,7 +114,7 @@ class _CDOHomeState extends State<CDOHome> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+          padding: EdgeInsets.symmetric(horizontal: MySize.screenWidth*(40/MySize.screenWidth), vertical: MySize.screenHeight*(40/MySize.screenHeight)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -204,7 +205,7 @@ class _CDOHomeState extends State<CDOHome> {
                 ),
               ),
               SizedBox(
-                height: 40,
+                height: MySize.screenHeight*(40/MySize.screenHeight),
               ),
               Text(
                 'Take Action',
@@ -213,7 +214,7 @@ class _CDOHomeState extends State<CDOHome> {
                     fontWeight: CustomFontTheme.headingwt),
               ),
               SizedBox(
-                height: 20,
+                height: MySize.screenHeight*(20/MySize.screenHeight),
               ),
               GestureDetector(
                 onTap: () {
@@ -226,7 +227,7 @@ class _CDOHomeState extends State<CDOHome> {
                 child: Stack(
                   children: [
                     Container(
-                      height: 75,
+                      height: MySize.screenHeight*(75/MySize.screenHeight),
                       color: Colors.white,
                       child: Center(
                         child: Container(
@@ -256,11 +257,11 @@ class _CDOHomeState extends State<CDOHome> {
                           child: Row(children: [
                             SvgPicture.asset(
                               'images/takeaction.svg',
-                              width: 34,
-                              height: 31,
+                              width: MySize.screenWidth*(34/MySize.screenWidth),
+                              height: MySize.screenHeight*(31/MySize.screenHeight),
                             ),
                             SizedBox(
-                              width: 20,
+                              width: MySize.screenWidth*(20/MySize.screenWidth),
                             ),
                             Flexible(
                               child: Text(
@@ -343,8 +344,8 @@ class cards extends StatelessWidget {
       child: Row(children: [
         SvgPicture.asset(
           imageUrl,
-          width: 34,
-          height: 31,
+          width: MySize.screenWidth*(34/MySize.screenWidth),
+          height: MySize.screenHeight*(31/MySize.screenHeight),
         ),
         SizedBox(
           width: 20,

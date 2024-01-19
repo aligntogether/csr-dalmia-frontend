@@ -89,8 +89,8 @@ class _LLVDFFundsState extends State<LLVDFFunds> {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 40,
+               SizedBox(
+                height: MySize.screenHeight*(40/MySize.screenHeight),
               ),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,

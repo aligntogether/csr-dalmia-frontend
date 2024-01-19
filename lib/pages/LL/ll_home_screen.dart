@@ -15,6 +15,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import '../../common/app_style.dart';
+import '../../common/size_constant.dart';
+import 'll_controller.dart';
 class LLHome extends StatefulWidget {
   const LLHome({Key? key}) : super(key: key);
 
@@ -25,11 +28,12 @@ class LLHome extends StatefulWidget {
 class _LLHomeState extends State<LLHome> {
   String name = "";
   String? refId;
+  LLController controller = Get.put(LLController());
   @override
   void initState() {
     super.initState();
 
-    SharedPrefHelper.getSharedPref(USER_NAME_SHAREDPREF_KEY, context, false)
+    SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
         .then((value) => setState(() {
               value == '' ? name = 'user' : name = value;
             }));
@@ -44,81 +48,10 @@ class _LLHomeState extends State<LLHome> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize:
-              //  isMenuOpen ? Size.fromHeight(150) :
-              Size.fromHeight(100),
-          child: Stack(
-            children: [
-              AppBar(
-                titleSpacing: 20,
-                backgroundColor: Colors.white,
-                title: Image(image: AssetImage('images/icon.jpg')),
-                centerTitle: false,
-                automaticallyImplyLeading: false,
-                bottom: PreferredSize(
-                  preferredSize: const Size.fromHeight(50),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 0,
-                          blurRadius: 4,
-                          offset: Offset(0, 4), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    padding: const EdgeInsets.only(left: 30, bottom: 10),
-                    alignment: Alignment.topLeft,
-                    // color: Colors.white,
-                    child: Text(
-                      'Welcome $name!',
-                      style: TextStyle(
-                        color: Colors.grey.shade700,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 10,
-                right: 20,
-                child: Column(
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        _showConfirmationDialog(context);
-                      },
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: CustomColorTheme.primaryColor,
-                            foregroundColor: Colors.white,
-                            child: Icon(Icons.logout),
-                          ),
-                          Text(
-                            'Logout',
-                            style: TextStyle(
-                                color: CustomColorTheme.labelColor,
-                                fontSize: CustomFontTheme.textSize,
-                                fontWeight: CustomFontTheme.labelwt),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
+        appBar: appBarCommon(controller, context),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+            padding: EdgeInsets.symmetric(horizontal: MySize.screenWidth*(40/MySize.screenWidth), vertical: MySize.screenHeight*(40/MySize.screenHeight)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -193,7 +126,7 @@ class _LLHomeState extends State<LLHome> {
                   ),
                 ),
                 SizedBox(
-                  height: 40,
+                  height: MySize.screenHeight*(40/MySize.screenHeight),
                 ),
                 Text(
                   'Take Action',
@@ -483,6 +416,7 @@ void _showConfirmationDialog(BuildContext context) {
                 ),
                 onPressed: () async {
                   await SharedPrefHelper.clearSharedPrefAccess();
+                  Navigator.of(context).popUntil((route) => route.isFirst);
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const Login(),
