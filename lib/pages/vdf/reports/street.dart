@@ -7,13 +7,15 @@ import 'package:dalmia/common/navmenu.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:dalmia/pages/vdf/Reports/hhidform.dart';
-import 'package:dalmia/pages/vdf/Reports/home.dart';
+
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+
+import 'Home.dart';
+import 'hhidform.dart';
 
 class StreetReport extends StatefulWidget {
   final String? selectedvillage;

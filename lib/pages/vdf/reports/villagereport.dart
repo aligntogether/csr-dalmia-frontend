@@ -4,25 +4,32 @@ import 'dart:math';
 import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/common/navmenu.dart';
 
+
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
-import 'package:dalmia/pages/vdf/Reports/villagereport.dart';
+import 'package:dalmia/pages/vdf/reports/street.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:dalmia/pages/vdf/Reports/home.dart';
+
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
-class Cumulative extends StatefulWidget {
-  const Cumulative({super.key});
+import 'Home.dart';
+
+class VillageReport extends StatefulWidget {
+  final String? selectedPanchayat;
+  final String? selectedPanchayatid;
+  const VillageReport(
+      {super.key, this.selectedPanchayat, this.selectedPanchayatid});
 
   @override
-  State<Cumulative> createState() => _CumulativeState();
+  State<VillageReport> createState() => _VillageReportState();
 }
 
-class _CumulativeState extends State<Cumulative> {
+class _VillageReportState extends State<VillageReport> {
   bool isreportMenuOpen = false;
   void _toggleMenu() {
     setState(() {
@@ -30,9 +37,10 @@ class _CumulativeState extends State<Cumulative> {
     });
   }
 
-  String? selectedPanchayat;
-  String? selectedVillage;
-
+  String? Selectedvillage;
+  String? Selectedvillageid;
+  // int _selectedpanchayatindex = 0;
+  // int _selectedvillagetindex = 0;
   int? selectedRadio;
   void _onTabTapped(int index) {
     setState(() {
@@ -65,38 +73,40 @@ class _CumulativeState extends State<Cumulative> {
     }
   }
 
-  String? panchayatid;
   @override
   void initState() {
     super.initState();
-    fetchPanchayatData(); // Call the method to fetch API data when the page initializes
+    fetchvillageData(); // Call the method to fetch API data when the page initializes
   }
 
-  List<Map<String, dynamic>> panchayatData = [];
-  Future<void> fetchPanchayatData() async {
+  List<Map<String, dynamic>> villagetData = [];
+  Future<void> fetchvillageData() async {
     try {
       final response = await http.get(
-        Uri.parse('$base/report-panchayat-wise?vdfId=10001'),
+        Uri.parse(
+            '$base/report-village-wise?vdfId=10001&panchayatId=${widget.selectedPanchayatid}'),
       );
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(response.body);
 
         setState(() {
-          panchayatData = [
+          villagetData = [
             for (var entry in jsonData['resp_body'].entries)
               {
-                'panchayatName': entry.key,
+                'villageName': entry.key,
                 'incomeFollowUpDue': entry.value['incomeFollowUpDue'],
                 'selectedHHWithoutIntervention':
                     entry.value['selectedHHWithoutIntervention'],
-                'panchayatid': entry.value['panchayatId'],
                 'interventionStartedButNotCompleted':
                     entry.value['interventionStartedButNotCompleted'],
+                'villageid': entry.value['villageId'],
               }
           ];
+          print(villagetData);
         });
       } else {
+        print('${widget.selectedPanchayatid}');
         throw Exception('Failed to load data: ${response.statusCode}');
       }
     } catch (e) {
@@ -221,7 +231,17 @@ class _CumulativeState extends State<Cumulative> {
                     height: 20,
                   ),
                   Container(
-                    child: panchayattab(random)
+                    // child: () {
+                    //   if (selectedPanchayat ==
+                    //       _selectedpanchayatindex.toInt()) {
+                    //     return villagetab(random);
+                    //   } else if (selectedVillage ==
+                    //           'Village ${_selectedvillagetindex + 1}' &&
+                    //       selectedPanchayat == null) {
+                    //     return streettab(random);
+                    //   } else {
+                    //     return
+                    child: villagetab(random)
                     // }
                     // }()
                     ,
@@ -286,26 +306,21 @@ class _CumulativeState extends State<Cumulative> {
     ));
   }
 
-  Center panchayattab(Random random) {
+  Widget villagetab(Random random) {
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text(
-            '<Location name>',
-            style: TextStyle(
-                fontSize: CustomFontTheme.textSize,
-                fontWeight: CustomFontTheme.labelwt),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          const Text('Panchayats wise report',
+          Text(widget.selectedPanchayat!,
               style: TextStyle(
                   fontSize: CustomFontTheme.textSize,
                   fontWeight: CustomFontTheme.labelwt)),
-          const SizedBox(
-            height: 10,
+          const Text('Village wise report',
+              style: TextStyle(
+                  fontSize: CustomFontTheme.textSize,
+                  fontWeight: CustomFontTheme.labelwt)),
+          SizedBox(
+            height: 20,
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -315,7 +330,6 @@ class _CumulativeState extends State<Cumulative> {
               ),
               elevation: 5,
               child: DataTable(
-                dividerThickness: 00,
                 decoration: const BoxDecoration(
                   color: Color(0xFF008CD3),
                   borderRadius: BorderRadius.only(
@@ -323,11 +337,12 @@ class _CumulativeState extends State<Cumulative> {
                     topRight: Radius.circular(10),
                   ),
                 ),
+                dividerThickness: 0,
                 columnSpacing: 15,
                 columns: const <DataColumn>[
                   DataColumn(
                     label: Text(
-                      'Panchayat Name',
+                      'Village Name',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -339,22 +354,22 @@ class _CumulativeState extends State<Cumulative> {
                   ),
                   DataColumn(
                     label: Text(
-                      'Number of selected \n HHs without intervention',
+                      'Number of selected HHs without intervention',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
                   DataColumn(
                     label: Text(
-                      'No. of Interventions \n started but not completed',
+                      'No. of Interventions started but not completed',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
-                rows: panchayatData.map<DataRow>((panchayat) {
+                rows: villagetData.map<DataRow>((village) {
                   return DataRow(
                     color: MaterialStateColor.resolveWith((states) {
                       // Alternating row colors
-                      return panchayatData.indexOf(panchayat) % 2 == 0
+                      return villagetData.indexOf(village) % 2 == 0
                           ? Colors.lightBlue[50]!
                           : Colors.white;
                     }),
@@ -363,21 +378,24 @@ class _CumulativeState extends State<Cumulative> {
                         InkWell(
                           onTap: () {
                             setState(() {
-                              selectedPanchayat = panchayat['panchayatName'];
-                              panchayatid = panchayat['panchayatid'].toString();
-                              print(panchayatid);
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => VillageReport(
-                                    selectedPanchayat: selectedPanchayat,
-                                    selectedPanchayatid: panchayatid,
-                                  ),
-                                ),
-                              );
+                              Selectedvillage = village['villageName'];
+                              print('village name $Selectedvillage');
+                              Selectedvillageid =
+                                  village['villageid'].toString();
+                              print('village id $Selectedvillageid');
                             });
+
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => StreetReport(
+                                        selectedvillage: Selectedvillage,
+                                        selectedvillageId: Selectedvillageid,
+                                       
+                                      )),
+                            );
                           },
                           child: Text(
-                            panchayat['panchayatName'] ?? '',
+                            village['villageName'] ?? '',
                             style: const TextStyle(
                               color: CustomColorTheme.iconColor,
                               decoration: TextDecoration.underline,
@@ -387,17 +405,15 @@ class _CumulativeState extends State<Cumulative> {
                         ),
                       ),
                       DataCell(
-                        Text(
-                          '${panchayat['incomeFollowUpDue'] ?? 0}',
-                        ),
+                        Text('${village['incomeFollowUpDue'] ?? 0}'),
                       ),
                       DataCell(
                         Text(
-                            '${panchayat['selectedHHWithoutIntervention'] ?? 0}'),
+                            '${village['selectedHHWithoutIntervention'] ?? 0}'),
                       ),
                       DataCell(
                         Text(
-                            '${panchayat['interventionStartedButNotCompleted'] ?? 0}'),
+                            '${village['interventionStartedButNotCompleted'] ?? 0}'),
                       ),
                     ],
                   );

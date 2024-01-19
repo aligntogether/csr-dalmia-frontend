@@ -4,28 +4,64 @@ import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/common/navmenu.dart';
 
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
-import 'package:dalmia/pages/vdf/Reports/home.dart';
+
+import 'package:http/http.dart' as http;
+
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
-import 'package:http/http.dart' as http;
+import 'Home.dart';
 
-class BusinessPlan extends StatefulWidget {
-  const BusinessPlan({Key? key}) : super(key: key);
+class LivehoodPlan extends StatefulWidget {
+  const LivehoodPlan({Key? key}) : super(key: key);
 
   @override
-  State<BusinessPlan> createState() => _BusinessPlanState();
+  State<LivehoodPlan> createState() => _LivehoodPlanState();
 }
 
-class _BusinessPlanState extends State<BusinessPlan> {
+class _LivehoodPlanState extends State<LivehoodPlan> {
   bool isreportMenuOpen = false;
   void _toggleMenu() {
     setState(() {
       isreportMenuOpen = !isreportMenuOpen;
     });
+  }
+
+  List<Map<String, dynamic>> livehoodData = []; // List to store API data
+
+  @override
+  void initState() {
+    super.initState();
+    fetchLivehoodData(); // Call the method to fetch API data when the page initializes
+  }
+
+  Future<void> fetchLivehoodData() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$base/get-livelihood-funds-utilization?vdfId=10001'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        setState(() {
+          livehoodData = [
+            {
+              'allocated': jsonData['resp_body']['allocated'] ?? 0,
+              'spent': jsonData['resp_body']['spent'] ?? 0,
+              'balance': jsonData['resp_body']['balance'] ?? 0,
+            },
+          ];
+        });
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   int? selectedRadio;
@@ -56,42 +92,15 @@ class _BusinessPlanState extends State<BusinessPlan> {
     } else if (selectedIndex == 3) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => const Draft(),
+          builder: (context) => Draft(),
         ),
       );
     }
   }
 
-  List<Map<String, dynamic>> businessData = []; // List to store API data
-
-  @override
-  void initState() {
-    super.initState();
-    fetchbusinessData(); // Call the method to fetch API data when the page initializes
-  }
-
-  Future<void> fetchbusinessData() async {
-    try {
-      final response = await http.get(
-        Uri.parse('$base/get-business-plans-engaged?vdfId=10001'),
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonData = json.decode(response.body);
-
-        setState(() {
-          businessData = List<Map<String, dynamic>>.from(jsonData['resp_body']);
-        });
-      } else {
-        throw Exception('Failed to load data: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    // ;
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
@@ -196,7 +205,7 @@ class _BusinessPlanState extends State<BusinessPlan> {
                   child: Column(
                     children: [
                       const Text(
-                        ' Business Plans Engaged',
+                        ' Livelihood Funds Utilization',
                         style: TextStyle(
                             fontSize: CustomFontTheme.textSize,
                             fontWeight: FontWeight.w700),
@@ -207,63 +216,65 @@ class _BusinessPlanState extends State<BusinessPlan> {
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
                           elevation: 5,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
                           child: DataTable(
                             dividerThickness: 00,
-                            decoration: const BoxDecoration(
-                              color: Color(0xFF008CD3),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
-                              ),
-                            ),
-                            columns: const [
-                              DataColumn(
-                                label: Text(
-                                  'Sno.',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  'Business Plan Titles',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  'Total HHs',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
+                            headingRowHeight: 0.0,
+                            columns: const <DataColumn>[
+                              DataColumn(label: Text('Details')),
+                              DataColumn(label: Text('Values')),
                             ],
-                            rows: businessData.map<DataRow>((data) {
-                              return DataRow(
-                                color: MaterialStateColor.resolveWith(
-                                  (states) {
-                                    // Alternating row colors
-                                    return businessData.indexOf(data).isOdd
-                                        ? Colors.lightBlue[50] as Color
-                                        : Colors.white as Color;
-                                  },
-                                ),
-                                cells: <DataCell>[
-                                  DataCell(Text((businessData.indexOf(data) + 1)
-                                      .toString())),
-                                  DataCell(
-                                      Text(data['interventionName'] ?? '')),
-                                  DataCell(Text(
-                                      data['householdCount']?.toString() ??
-                                          '')),
-                                ],
-                              );
-                            }).toList(),
+                            rows: livehoodData.map<DataRow>((data) {
+                                  return DataRow(
+                                    color: MaterialStateColor.resolveWith(
+                                      (states) {
+                                        return livehoodData.indexOf(data).isOdd
+                                            ? Colors.lightBlue[50] as Color
+                                            : Colors.white;
+                                      },
+                                    ),
+                                    cells: <DataCell>[
+                                      DataCell(Text('Allocated (Rs.)')),
+                                      DataCell(Text(
+                                          data['allocated']?.toString() ?? '')),
+                                    ],
+                                  );
+                                }).toList() +
+                                livehoodData.map<DataRow>((data) {
+                                  return DataRow(
+                                    color: MaterialStateColor.resolveWith(
+                                      (states) {
+                                        return Colors.lightBlue[50] as Color;
+                                      },
+                                    ),
+                                    cells: <DataCell>[
+                                      DataCell(Text('Spent (Rs.)')),
+                                      DataCell(Text(
+                                          data['spent']?.toString() ?? '')),
+                                    ],
+                                  );
+                                }).toList() +
+                                livehoodData.map<DataRow>((data) {
+                                  return DataRow(
+                                    color: MaterialStateColor.resolveWith(
+                                      (states) {
+                                        return Colors.white as Color;
+                                      },
+                                    ),
+                                    cells: <DataCell>[
+                                      DataCell(Text('Balance (Rs.)')),
+                                      DataCell(Text(
+                                          data['balance']?.toString() ?? '')),
+                                    ],
+                                  );
+                                }).toList(),
                           ),
                         ),
-                      )
+                      ),
+                      // const Text('Last updated on:12/07/23')
                     ],
                   ),
                 )

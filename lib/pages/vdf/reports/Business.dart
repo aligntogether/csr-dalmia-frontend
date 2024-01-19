@@ -4,22 +4,24 @@ import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/common/navmenu.dart';
 
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
-import 'package:dalmia/pages/vdf/Reports/home.dart';
-import 'package:http/http.dart' as http;
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
-class Leverwise extends StatefulWidget {
-  const Leverwise({super.key});
+import 'package:http/http.dart' as http;
+
+import 'Home.dart';
+
+class BusinessPlan extends StatefulWidget {
+  const BusinessPlan({Key? key}) : super(key: key);
 
   @override
-  State<Leverwise> createState() => _LeverwiseState();
+  State<BusinessPlan> createState() => _BusinessPlanState();
 }
 
-class _LeverwiseState extends State<Leverwise> {
+class _BusinessPlanState extends State<BusinessPlan> {
   bool isreportMenuOpen = false;
   void _toggleMenu() {
     setState(() {
@@ -61,35 +63,25 @@ class _LeverwiseState extends State<Leverwise> {
     }
   }
 
-  List<Map<String, dynamic>> leverData = []; // List to store API data
+  List<Map<String, dynamic>> businessData = []; // List to store API data
 
   @override
   void initState() {
     super.initState();
-    fetchleverData(); // Call the method to fetch API data when the page initializes
+    fetchbusinessData(); // Call the method to fetch API data when the page initializes
   }
 
-  Future<void> fetchleverData() async {
+  Future<void> fetchbusinessData() async {
     try {
       final response = await http.get(
-        Uri.parse('$base/get-lever-wise-interventions?vdfId=10001'),
+        Uri.parse('$base/get-business-plans-engaged?vdfId=10001'),
       );
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(response.body);
 
         setState(() {
-          leverData = [
-            for (var entry in jsonData['resp_body'].entries)
-              {
-                'leverName': entry.key,
-                'noOfHouseholds': entry.value['noOfHouseholds'],
-                'noOfInterventions': entry.value['noOfInterventions'],
-                'annualIncomeReported': entry.value['annualIncomeReported'],
-                'averageIncomePerIntervention':
-                    entry.value['averageIncomePerIntervention'],
-              }
-          ];
+          businessData = List<Map<String, dynamic>>.from(jsonData['resp_body']);
         });
       } else {
         throw Exception('Failed to load data: ${response.statusCode}');
@@ -204,108 +196,75 @@ class _LeverwiseState extends State<Leverwise> {
                 Center(
                   child: Column(
                     children: [
-                      RichText(
-                          text: TextSpan(
-                              style:
-                                  TextStyle(color: CustomColorTheme.textColor),
-                              children: [
-                            TextSpan(
-                                text: 'Lever wise Interventions',
-                                style: TextStyle(
-                                    fontSize: CustomFontTheme.textSize,
-                                    fontWeight: CustomFontTheme.headingwt)),
-                            TextSpan(
-                                text: ' (income in Lakhs)',
-                                style: TextStyle(
-                                    fontSize: CustomFontTheme.textSize))
-                          ])),
+                      const Text(
+                        ' Business Plans Engaged',
+                        style: TextStyle(
+                            fontSize: CustomFontTheme.textSize,
+                            fontWeight: FontWeight.w700),
+                      ),
                       const SizedBox(
                         height: 20,
                       ),
                       SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                        scrollDirection: Axis.horizontal,
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          elevation: 5,
+                          child: DataTable(
+                            dividerThickness: 00,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF008CD3),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                              ),
                             ),
-                            elevation: 5,
-                            child: DataTable(
-                              dividerThickness: 00,
-                              // border: TableBorder(
-                              //     borderRadius:
-                              //         BorderRadius.all(Radius.circular(10))),
-                              decoration: const BoxDecoration(
-                                color: Color(0xFF008CD3),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10),
+                            columns: const [
+                              DataColumn(
+                                label: Text(
+                                  'Sno.',
+                                  style: TextStyle(color: Colors.white),
                                 ),
                               ),
-                              columns: const [
-                                DataColumn(
-                                  label: Text(
-                                    'Levers',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
+                              DataColumn(
+                                label: Text(
+                                  'Business Plan Titles',
+                                  style: TextStyle(color: Colors.white),
                                 ),
-                                DataColumn(
-                                  label: Text(
-                                    'No. of HH',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Total HHs',
+                                  style: TextStyle(color: Colors.white),
                                 ),
-                                DataColumn(
-                                  label: Text(
-                                    'No. of int.',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                DataColumn(
-                                  label: Text(
-                                    'Annual Income Reported',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                DataColumn(
-                                  label: Text(
-                                    'Avg. income/int.',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ],
-                              rows: leverData.map<DataRow>((lever) {
-                                return DataRow(
-                                  color:
-                                      MaterialStateColor.resolveWith((states) {
+                              ),
+                            ],
+                            rows: businessData.map<DataRow>((data) {
+                              return DataRow(
+                                color: MaterialStateColor.resolveWith(
+                                  (states) {
                                     // Alternating row colors
-                                    return leverData.indexOf(lever) % 2 == 0
-                                        ? Colors.lightBlue[50]!
-                                        : Colors.white;
-                                  }),
-                                  cells: <DataCell>[
-                                    DataCell(
-                                      Text('${lever['leverName'] ?? 0}'),
-                                    ),
-                                    DataCell(
-                                      Text('${lever['noOfHouseholds'] ?? 0}'),
-                                    ),
-                                    DataCell(
-                                      Text(
-                                          '${lever['noOfInterventions'] ?? 0}'),
-                                    ),
-                                    DataCell(
-                                      Text(
-                                          '${lever['annualIncomeReported'] ?? 0}'),
-                                    ),
-                                    DataCell(
-                                      Text(
-                                          '${lever['averageIncomePerIntervention'] ?? 0}'),
-                                    ),
-                                  ],
-                                );
-                              }).toList(),
-                            ),
-                          ))
+                                    return businessData.indexOf(data).isOdd
+                                        ? Colors.lightBlue[50] as Color
+                                        : Colors.white as Color;
+                                  },
+                                ),
+                                cells: <DataCell>[
+                                  DataCell(Text((businessData.indexOf(data) + 1)
+                                      .toString())),
+                                  DataCell(
+                                      Text(data['interventionName'] ?? '')),
+                                  DataCell(Text(
+                                      data['householdCount']?.toString() ??
+                                          '')),
+                                ],
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 )
@@ -367,44 +326,4 @@ class _LeverwiseState extends State<Leverwise> {
       ),
     );
   }
-
-  // Widget buildTabItem(IconData icon, String label, int index) {
-  //   final isSelected = index == 0;
-  //   final color = isSelected ? Colors.blue : Colors.black;
-
-  //   return InkWell(
-  //     onTap: () {
-  //       _onTabTapped(index);
-  //       if (index == 1) {
-  //         Navigator.of(context).push(
-  //           MaterialPageRoute(
-  //             builder: (context) => MyForm(),
-  //           ),
-  //         );
-  //       }
-  //       if (index == 2) {
-  //         Navigator.of(context).push(
-  //           MaterialPageRoute(
-  //             builder: (context) => AddStreet(),
-  //           ),
-  //         );
-  //       }
-  //     },
-  //     child: Column(
-  //       mainAxisSize: MainAxisSize.min,
-  //       children: [
-  //         Icon(
-  //           icon,
-  //           color: color,
-  //         ),
-  //         Text(
-  //           label,
-  //           style: TextStyle(
-  //             color: color,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }
