@@ -1,3 +1,4 @@
+import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/pages/vdf/reports/Business.dart';
 import 'package:dalmia/pages/vdf/reports/Cumulative.dart';
 import 'package:dalmia/pages/vdf/reports/Form1.dart';
@@ -28,15 +29,21 @@ class _ReportPopupWidgetState extends State<ReportPopupWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 18),
+                padding: EdgeInsets.all(MySize.screenWidth*(5/MySize.screenWidth)),
                 child: Text(
                   'View other Reports',
-                  style: TextStyle(fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontSize: MySize.screenHeight*(18/MySize.screenHeight),
+                      fontWeight: FontWeight.w500),
                 ),
               ),
+              SizedBox(
+                width: MySize.screenWidth*(10/MySize.screenWidth),
+              )
+              ,
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).pop();

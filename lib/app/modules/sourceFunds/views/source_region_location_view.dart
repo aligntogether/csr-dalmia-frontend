@@ -28,7 +28,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
   SourceFundsController controller = new SourceFundsController();
   late Future<Map<String, dynamic>> regionsFuture;
   bool isLoading = true;
-
+  bool isLoadingLocation=true;
   @override
   void initState() {
     super.initState();
@@ -143,7 +143,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                 // Update the controller with the new list of locations
                                 if (locationsData != null) {
                                   setState(() {
-                                    // isLoading = false;
+
                                     controller.regions = controller
                                                 .locationsList !=
                                             null
@@ -239,6 +239,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                     onChanged: (String? newValue) async {
                       // Find the selected location and get its corresponding locationId
                       if (controller.locationsList != null) {
+
                         // Find the selected location object based on the 'location' property
 
                         // print('controller.locations: ${controller.locations}');
@@ -256,9 +257,11 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
 
                           if (selectedLocationId != null) {
                             setState(() {
+
                               controller.selectLocation =
                                   selectedLocation['location'] as String;
                               controller.selectLocationId = selectedLocationId;
+
                             });
 
                             //
@@ -279,6 +282,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
 
                             setState(() {
                               controller.updateClusters(clusterslist);
+
                             });
 
                             controller.update(["add"]);
@@ -287,6 +291,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
 
                             setState(() {
                               isLoading = false;
+                              isLoadingLocation = false;
                               controller.locationWiseSourceOfFundsData =
                                   fetchLocationWiseSourceOfFundsData;
                               print(
@@ -387,8 +392,8 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                   : GestureDetector(
                       onTap: () {},
                       child: Container(
-                        height: MySize.size48,
-                        width: MySize.size168,
+                        height: MySize.screenHeight*(40/MySize.screenHeight),
+                        width: MySize.screenWidth*(150/MySize.screenWidth),
                         decoration: BoxDecoration(
                             border: Border.all(color: darkBlueColor),
                             borderRadius: BorderRadius.circular(5)),
@@ -398,13 +403,14 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                           children: [
                             SvgPicture.asset(
                               'images/Excel.svg',
-                              height: 25,
-                              width: 25,
+                              height: MySize.screenHeight*(25/MySize.screenHeight),
+                              width: MySize.screenWidth*(25/MySize.screenWidth),
                             ),
                             Space.width(3),
                             Text(
                               'Download  Excel',
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
+                              style: TextStyle(
+                                  fontSize: MySize.screenHeight*(14/MySize.screenHeight), color: CustomColorTheme.primaryColor),
                             ),
                           ],
                         ),
@@ -1197,8 +1203,8 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
 
   Widget tableDataLocationView(SourceFundsController controller) {
     return Visibility(
-        visible: controller.locationWiseSourceOfFundsData != null && controller.locationWiseSourceOfFundsData!.isNotEmpty,
-        child: !isLoading ? SingleChildScrollView(
+        visible: controller.locationWiseSourceOfFundsData != null && controller.locationWiseSourceOfFundsData!.isNotEmpty ,
+        child: !isLoadingLocation ? SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
           padding: const EdgeInsets.all(8.0),

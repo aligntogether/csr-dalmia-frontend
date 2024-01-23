@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../Constants/constants.dart';
 import '../../../../common/app_style.dart';
@@ -45,7 +46,8 @@ class _LocationWiseViewState extends State<LocationWiseView> {
   @override
   Widget build(BuildContext context) {
 
-    String todayDateIst = DateTime.now().toString().substring(0, 10);
+    var todayDateIst = DateTime.now();
+    String formattedDate = DateFormat('dd/MM/yyyy').format(todayDateIst);
     return SafeArea(
       child: Scaffold(
           appBar: appBarCommon(controller, context,name!,
@@ -84,17 +86,15 @@ class _LocationWiseViewState extends State<LocationWiseView> {
                 ),
                 Space.height(34),
 
-                SizedBox(
-                    width: MySize.size268,
-                    child: Column(
-                      children: [
-                        Text(
-                          "Number of interventions complete\n(as on <$todayDateIst>)",
-                          style: AppStyle.textStyleBoldMed(fontSize: 14),
-                        ),
 
-                      ],
-                    )),
+                        Text(
+                          "Number of interventions complete\n(as on $formattedDate)",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: CustomFontTheme.headingwt,
+                              fontSize: CustomFontTheme.textSize,
+                              color: Colors.black),
+                          ),
                 Space.height(14),
                 allRegionsTables()
                     ,

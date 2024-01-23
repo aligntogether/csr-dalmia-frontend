@@ -5,17 +5,20 @@ import 'package:dalmia/common/image_constant.dart';
 import 'package:dalmia/common/size_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../controllers/reports_controller.dart';
+import 'gpl_amount_utilized_view.dart';
 
 class ReportsView extends GetView<ReportsController> {
   const ReportsView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    //format jan-17 2024
-    String todayDateIst = DateTime.now().toString().substring(0, 10);
-    return SafeArea(
+    var todayDateIst = DateTime.now();
+  String formattedDate = DateFormat('dd/MM/yyyy').format(todayDateIst);
+
+  return SafeArea(
       child: Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
@@ -43,7 +46,7 @@ class ReportsView extends GetView<ReportsController> {
                   Get.toNamed(Routes.OVERVIEW_PAN);
                 }),
                 listData(
-                    "Number of interventions complete\n(as on <$todayDateIst>)",
+                    "Number of interventions complete\n(as on $formattedDate)",
                     () {
                       Get.toNamed(Routes.INTERVENTION_COMPLETE);
 
@@ -55,7 +58,13 @@ class ReportsView extends GetView<ReportsController> {
                 listData(
                     "Amount utilized by each location for livelihood activities ",
                     () {
-                      Get.toNamed(Routes.AMOUNT_UTILIZED);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => GplAmountUtilizedView(
+
+                          ),
+                        ),
+                      );
 
                     }),
                 listData("Source of funds", () {

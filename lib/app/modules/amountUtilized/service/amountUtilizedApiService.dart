@@ -50,6 +50,43 @@ print(response);
     }
   }
 
+  Future<Map<int, String>> getAllRegions() async {
+    try {
+      String url = '$base/list-regions';
+
+
+      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+
+print(response);
+      if (response.statusCode == 200) {
+
+
+        // Parse the response and extract regionId and region
+        final Map<String, dynamic> respBody = json.decode(response.body);
+
+        if (respBody.containsKey('resp_body')) {
+          final List<dynamic> regionsData = respBody['resp_body'];
+
+         Map<int, String> regions = {};
+          for (var entry in regionsData) {
+            regions[entry['regionId']] = entry['region'];
+          }
+
+
+          return regions; // Returning a map with 'regions' key containing the list
+        } else {
+          throw Exception('Response format does not contain expected data');
+        }
+      } else {
+        print("API Error Response: ${response.body}");
+        throw Exception('Failed to load data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print("Error making API request: $e");
+      throw Exception('Error making API request: $e');
+    }
+  }
+
 
   Future<Map<String, List<String>>> getListOfLocations(Map<int, String> regions) async {
     try {
@@ -150,6 +187,35 @@ print(response);
         if (respBody.containsKey('resp_body')) {
           final Map<String, dynamic> amountUtilized = respBody['resp_body'];
 
+          return amountUtilized; // Returning a map with 'regions' key containing the list
+        } else {
+          throw Exception('Response format does not contain expected data');
+        }
+      } else {
+        print("API Error Response: ${response.body}");
+        throw Exception('Failed to load data. Status code: ${response.statusCode}');
+      }
+
+    } catch (e) {
+      throw Exception('Error making API request: $e');
+    }
+  }
+ Future<Map<String, dynamic>> getAmountUtilized() async {
+    try {
+
+      String url = '$base/gpl-amount-utilized-by-location';
+
+      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+
+      if (response.statusCode == 200) {
+
+
+        // Parse the response and extract regionId and region
+        final Map<String, dynamic> respBody = json.decode(response.body);
+
+        if (respBody.containsKey('resp_body')) {
+          final Map<String, dynamic> amountUtilized = respBody['resp_body'];
+          print(amountUtilized);
           return amountUtilized; // Returning a map with 'regions' key containing the list
         } else {
           throw Exception('Response format does not contain expected data');

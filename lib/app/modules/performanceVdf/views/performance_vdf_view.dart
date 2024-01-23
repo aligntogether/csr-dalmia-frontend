@@ -235,54 +235,39 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                   builder: (controller) {
                     return CustomDropdownFormField(
                       title: "Select Location",
-                      options:
-                      controller.locations != null ? (controller.locations!
-                          .map((location) =>
-                          location['location'].toString())
-                          .toList()) : [],
+                      options: controller.locations != null
+                          ? (controller.locations!
+                          .map((location) => location['location'].toString())
+                          .toList())
+                          : [],
                       selectedValue: controller.selectLocation,
                       onChanged: (String? newValue) async {
-
                         // Find the selected location and get its corresponding locationId
                         if (controller.locations != null) {
                           // Find the selected location object based on the 'location' property
-
-                          // print('controller.locations: ${controller.locations}');
-
-
                           Map<String, dynamic>? selectedLocation = controller.locations
                               ?.firstWhere((location) => location['location'] == newValue);
 
                           if (selectedLocation != null) {
-
                             // Access the locationId property and convert it to int
-                            int? selectedLocationId =
-                            selectedLocation['locationId'];
+                            int? selectedLocationId = selectedLocation['locationId'];
                             print('selectedLocationId: $selectedLocationId');
-
-
-
-                            // print('selectedLocationId: $selectedLocationId');
 
                             if (selectedLocationId != null) {
                               // Assign 'location' to controller.selectLocation
-
-                              controller.selectLocation =
-                              selectedLocation['location'] as String;
+                              controller.selectLocation = selectedLocation['location'] as String;
                               controller.selectLocationId = selectedLocationId;
 
                               controller.update(["add"]);
 
                               controller.selectCluster = null;
 
-
-                              Map<String, dynamic>? clustersData = await performanceVdfApiService.getListOfClusters(controller.selectLocationId ?? 0);
-
+                              Map<String, dynamic>? clustersData =
+                              await performanceVdfApiService.getListOfClusters(
+                                  controller.selectLocationId ?? 0);
 
                               if (clustersData != null) {
-
-                                List<Map<String, dynamic>> clusters =
-                                clustersData?['clusters'];
+                                List<Map<String, dynamic>> clusters = clustersData?['clusters'];
 
                                 controller.updateClusters(clusters);
 
@@ -291,23 +276,23 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
 
                               if (clustersData == null) {
                                 setState(() {
-                                  controller.clusters = List.generate(1, (index) => <String, dynamic>{"vdfName" : "No Data Found"});
+                                  controller.clusters = List.generate(
+                                      1, (index) => <String, dynamic>{"vdfName": "No Data Found"});
                                 });
                               }
 
                               setState(() {
-                                controller.selectClusterId =
-                                0;
+                                controller.selectClusterId = 0;
                                 controller.selectCluster = null;
                                 controller.selectVdfName = null;
                                 controller.selectVdfId = null;
                               });
-
                             }
                           }
                         }
                       },
                     );
+                        ;
                   },
                 ),
                 Space.height(15),
@@ -348,16 +333,24 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
 
                 ),
 
-
+                SizedBox(
+                  height:MySize.screenHeight*(20/MySize.screenHeight),
+                ),
 
                 GetBuilder<PerformanceVdfController>(
                   builder: (controller) {
-                    return !isLoading?Center(child: Text("**Select location to see vdf performance**",style:
-                    TextStyle(
-                      color: Colors.red,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500
-                    ),)):allRegionsTables(0);
+                    return !isLoading?Center(child: Container(
+                      height: MySize.screenHeight*0.1,
+                      width: MySize.screenWidth*0.8,
+
+                      child: Center(
+                        child: Text("**No Data found**",style:
+                      TextStyle(
+                          color: Colors.red,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500
+                      ),),),
+                    )):allRegionsTables(0);
 
 
                   },
@@ -375,15 +368,15 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                 Space.height(30),
                 GestureDetector(
                   onTap: () {
-                   if(controller.selectClusterId!=null && controller.selectLocationId!=null){
+                   if(controller.selectClusterId!=null && controller.selectLocationId!=null && controller.selectVdfId!=null){
                      downloadExcel();}
                    else
                      Get.snackbar("Error", "Please select a VDF",backgroundColor: Colors.red,colorText: Colors.white);
                     //
                   },
                   child: Container(
-                    height: MySize.size48,
-                    width: MySize.size168,
+                    height: MySize.screenHeight*(40/MySize.screenHeight),
+                    width: MySize.screenWidth*(150/MySize.screenWidth),
                     decoration: BoxDecoration(
                         border: Border.all(color: darkBlueColor),
                         borderRadius: BorderRadius.circular(5)),
@@ -393,13 +386,14 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                       children: [
                         SvgPicture.asset(
                           'images/Excel.svg',
-                          height: 25,
-                          width: 25,
+                          height: MySize.screenHeight*(25/MySize.screenHeight),
+                          width: MySize.screenWidth*(25/MySize.screenWidth),
                         ),
                         Space.width(3),
                         Text(
                           'Download  Excel',
-                          style: AppStyle.textStyleInterMed(fontSize: 14),
+                          style: TextStyle(
+                              fontSize: MySize.screenHeight*(14/MySize.screenHeight), color: CustomColorTheme.primaryColor),
                         ),
                       ],
                     ),
@@ -486,7 +480,7 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                     color: MaterialStateColor.resolveWith(
                           (states) {
                         i = 0;
-                        return 
+                        return
                             Colors.white;
                       },
                     ),

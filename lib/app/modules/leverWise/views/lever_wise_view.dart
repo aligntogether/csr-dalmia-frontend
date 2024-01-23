@@ -157,30 +157,29 @@ bool isLoading = true  ;
                    downloadExcel();
                   },
                   child: Container(
-                    height: MySize.size48,
-                    width: MySize.size168,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: darkBlueColor),
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          'images/Excel.svg',
-                          height: 25,
-                          width: 25,
+                        height: MySize.screenHeight*(40/MySize.screenHeight),
+                        width: MySize.screenWidth*(150/MySize.screenWidth),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: darkBlueColor),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              'images/Excel.svg',
+                              height: MySize.screenHeight*(25/MySize.screenHeight),
+                              width: MySize.screenWidth*(25/MySize.screenWidth),
+                            ),
+                            Space.width(3),
+                            Text(
+                              'Download  Excel',
+                              style: TextStyle(
+                                  fontSize: MySize.screenHeight*(14/MySize.screenHeight), color: CustomColorTheme.primaryColor),
+                            ),
+                          ],
                         ),
-                        Space.width(3),
-                        const Text(
-                          'Download  Excel',
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: CustomColorTheme.primaryColor),
-                        ),
-                      ],
-                    ),
-                  ),
+                      )
                 ),
                 Space.height(14),
               ],

@@ -94,8 +94,8 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
   void fetchSourceFundsData() async {
     await sourceOfFundsApiService.fetchSourceOfFundsData(controller).then((value) => {
       setState(() {
-        isLoading = false;
         controller.updateSourceOfFundsData(value!);
+        isLoading = false;
       })
     });
 
