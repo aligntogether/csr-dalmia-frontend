@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dalmia/app/modules/addIntervention/controllers/add_intervention_controller.dart';
+import 'package:dalmia/app/modules/amountUtilized/controllers/amount_utilized_controller.dart';
 import 'package:dalmia/app/modules/leverWise/controllers/lever_wise_controller.dart';
 import 'package:dalmia/app/modules/overviewPan/controllers/overview_pan_controller.dart';
 import 'package:dalmia/app/modules/performanceVdf/controllers/performance_vdf_controller.dart';
@@ -370,6 +371,82 @@ Future<void> exportVdfPerformance(LeverWiseController controller) async {
     // Open the file
     await OpenFile.open(file.path);
 
+  }
+
+  Future<void> exportAmountUtilizedToExcel(AmountUtilizedController controller) async {
+    final Excel excel = Excel.createExcel();
+    final Sheet sheetObject = excel['Sheet1'];
+
+    // Add Locations to the first row
+    int columnIndex = 0;
+    sheetObject
+        .cell(CellIndex.indexByColumnRow(columnIndex: columnIndex++, rowIndex: 0))
+        .value = "Locations";
+
+    for (var region in controller.locations!.keys) {
+      for (var location in controller.locations![region]!) {
+        sheetObject
+            .cell(CellIndex.indexByColumnRow(columnIndex: columnIndex++, rowIndex: 0))
+            .value = location;
+      }
+      // Add an empty cell for the Region column if there are locations in the region
+      if (controller.locations![region]!.isNotEmpty) {
+        sheetObject
+            .cell(CellIndex.indexByColumnRow(columnIndex: columnIndex++, rowIndex: 0))
+            .value = region;
+      }
+    }
+
+    // Add values to the first column
+    for (int i = 0; i < controller.columns!.length; i++) {
+      sheetObject
+          .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: i + 1))
+          .value = controller.columns![i];
+    }
+
+    // Add data values to the Excel sheet
+    for (int i = 0; i < controller.columns!.length; i++) {
+      columnIndex = 1; // Start from the second column (after the 'Locations' column)
+      num sum=0;
+      for (var region in controller.locations!.keys) {
+        for (var location in controller.locations![region]!) {
+          // Check if controller.data is not null and contains the key 'location'
+          if (controller.data != null && controller.data!.containsKey(location)) {
+            sum+=controller.data![location][controller.objectKeys[i]];
+            sheetObject
+                .cell(CellIndex.indexByColumnRow(columnIndex: columnIndex++, rowIndex: i + 1))
+                .value = controller.data![location][controller.objectKeys[i]];
+          } else {
+            sum+=0;
+            // Handle the case where controller.data is null or does not contain the key 'location'
+            sheetObject
+                .cell(CellIndex.indexByColumnRow(columnIndex: columnIndex++, rowIndex: i + 1))
+                .value = '0'; // Or any default value you prefer
+          }
+        }
+        // Check if controller.data is not null and contains the key 'region'
+        if (controller.data != null && controller.data!.containsKey(region)) {
+          sheetObject
+              .cell(CellIndex.indexByColumnRow(columnIndex: columnIndex++, rowIndex: i + 1))
+              .value = sum;
+        } else {
+          // Handle the case where controller.data is null or does not contain the key 'region'
+          sheetObject
+              .cell(CellIndex.indexByColumnRow(columnIndex: columnIndex++, rowIndex: i + 1))
+              .value = sum; // Or any default value you prefer
+        }
+      }
+    }
+
+
+    // Create folder if not exists
+    final downloadFolderPath = await createDownloadFolder("dalmia_report");
+
+    // Save Excel file
+    final bytes = excel.save();
+    final file = File('$downloadFolderPath/amountUtilized.xlsx');
+    await file.writeAsBytes(bytes!);
+    await OpenFile.open(file.path);
   }
 
   Future<String> createDownloadFolder(String folderName) async {

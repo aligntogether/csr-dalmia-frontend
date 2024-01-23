@@ -9,20 +9,20 @@ class AmountUtilizedApiService {
 
 
   String? base = dotenv.env['BASE_URL'];
-  // String? base = 'https://mobiledevcloud.dalmiabharat.com:443/csr';
+  // String? base = 'https://mobileqacloud.dalmiabharat.com:443/csr';
   // String? base = 'http://192.168.1.16:8082';
 
 
-  Future<Map<String, dynamic>> getListOfRegions() async {
+  Future<Map<int, String>> getListOfRegions(String userId) async {
     try {
-      String url = '$base/list-regions';
+      String url = '$base/list-regions-under-user?userId=$userId';
 
 
       final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
 
-
+print(response);
       if (response.statusCode == 200) {
-        print("API Response: ${response.body}");
+
 
         // Parse the response and extract regionId and region
         final Map<String, dynamic> respBody = json.decode(response.body);
@@ -30,21 +30,13 @@ class AmountUtilizedApiService {
         if (respBody.containsKey('resp_body')) {
           final List<dynamic> regionsData = respBody['resp_body'];
 
-          final List<Map<String, dynamic>> regions = regionsData.map<Map<String, dynamic>>((region) => {
-            'regionId': region['regionId'],
-            'region': region['region'],
-            'rhId': region['rhId'],
-          }).toList();
-
-          Map<String, dynamic> newMap = new Map<String, dynamic>();
-
-          newMap.putIfAbsent("regionId", () => 1001);
-          newMap.putIfAbsent("region", () => "All Regions");
-          newMap.putIfAbsent("rhId", () => "0000");
-          regions.add(newMap);
+         Map<int, String> regions = {};
+          for (var entry in regionsData) {
+            regions[entry['regionId']] = entry['region'];
+          }
 
 
-          return {'regions': regions}; // Returning a map with 'regions' key containing the list
+          return regions; // Returning a map with 'regions' key containing the list
         } else {
           throw Exception('Response format does not contain expected data');
         }
@@ -59,37 +51,36 @@ class AmountUtilizedApiService {
   }
 
 
-  Future<Map<String, dynamic>> getListOfLocations(int regionId) async {
+  Future<Map<String, List<String>>> getListOfLocations(Map<int, String> regions) async {
     try {
+      Map<String, List<String>> locations = {};
 
-      final response = await http.get(Uri.parse('$base/list-locations?regionId=$regionId'));
+      for (int regionId in regions.keys) {
+        String url = '$base/locations/search/findByRegionId?regionId=$regionId';
 
-      if (response.statusCode == 200) {
+        final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
 
-        print("API Response: ${response.body}");
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> respBody = json.decode(response.body);
 
-        final Map<String, dynamic> respBody = json.decode(response.body);
-
-        if (respBody.containsKey('resp_body')) {
-          final List<dynamic> locationsData = respBody['resp_body'];
-
-          print("Object3");
-
-          final List<Map<String, dynamic>> locations = locationsData.map<Map<String, dynamic>>((location) => {
-            'locationId': location['locationId'],
-            'location': location['location'],
-            'locationCode': location['locationCode']
-
-          }).toList();
-
-          return {'locations': locations}; // Returning a map with 'regions' key containing the list
+          List<String> locationList = [];
+          if (respBody["_embedded"] != null) {
+            Map<String, dynamic> respData = respBody["_embedded"];
+            List<dynamic> locationsData = respData["locations"];
+            for (var entry in locationsData) {
+              locationList.add(entry['location']);
+            }
+            locations[regions[regionId]!] = locationList;
+          } else {
+            throw Exception('Response format does not contain expected data');
+          }
         } else {
-          throw Exception('Response format does not contain expected data');
+          throw Exception('Failed to load data. Status code: ${response.statusCode}');
         }
-
-      } else {
-        throw Exception('Failed to load data. Status code: ${response.statusCode}');
       }
+
+      print("locations : $locations");
+      return locations;
     } catch (e) {
       throw Exception('Error making API request: $e');
     }
@@ -143,48 +134,31 @@ class AmountUtilizedApiService {
 
 
 
-  Future<List<Map<String, Map<String, dynamic>>>> getAmountUtilizedAllRegions(List<String> allLocations, List<String> objectKeys) async {
+  Future<Map<String, dynamic>> getAmountUtilizedByRhId(String refId) async {
     try {
 
-      String url = '$base/gpl-amount-utilized-by-location';
+      String url = '$base/rh-amount-utilized-by-location?userId=$refId';
 
       final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
-        print("API Response: ${response.body}");
 
+
+        // Parse the response and extract regionId and region
         final Map<String, dynamic> respBody = json.decode(response.body);
 
-        if (respBody.containsKey('resp_msg') && respBody['resp_msg'] == 'Data Found') {
-          final Map<String, dynamic> respData = respBody['resp_body'];
+        if (respBody.containsKey('resp_body')) {
+          final Map<String, dynamic> amountUtilized = respBody['resp_body'];
 
-          // Example: Extracting the data for each location
-          final Map<String, Map<String, dynamic>> locations = respData.map((location, data) {
-            return MapEntry(
-              location,
-              {
-                'allocated': data['allocated'],
-                'utilized': data['utilized'],
-
-              },
-            );
-          });
-
-
-          List<Map<String, Map<String, dynamic>>> amountUtilizedList = await generateAmountUtilizedList(locations, allLocations, objectKeys);
-
-          print("overviewMappedList : $amountUtilizedList");
-
-          if (amountUtilizedList.isEmpty)
-            return [];
-
-          return amountUtilizedList; // Returning a map with 'locations' key containing the data
+          return amountUtilized; // Returning a map with 'regions' key containing the list
         } else {
-          throw Exception('Data not found in the response');
+          throw Exception('Response format does not contain expected data');
         }
       } else {
+        print("API Error Response: ${response.body}");
         throw Exception('Failed to load data. Status code: ${response.statusCode}');
       }
+
     } catch (e) {
       throw Exception('Error making API request: $e');
     }

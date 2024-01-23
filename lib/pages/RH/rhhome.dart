@@ -4,6 +4,7 @@ import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/app/modules/sourceFunds/views/source_region_location_view.dart';
 import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/helper/sharedpref.dart';
+import 'package:dalmia/pages/RH/RhHomeController.dart';
 import 'package:dalmia/pages/RH/rh_lever_wise_report/rh_lever_wise_report_view.dart';
 
 import 'package:dalmia/pages/loginUtility/page/login.dart';
@@ -13,6 +14,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+import '../../app/modules/amountUtilized/views/amount_utilized_view.dart';
+import '../../common/app_style.dart';
 import '../../common/size_constant.dart';
 class RHHome extends StatefulWidget {
   const RHHome({Key? key}) : super(key: key);
@@ -24,6 +27,7 @@ class RHHome extends StatefulWidget {
 class _RHHomeState extends State<RHHome> {
   int length = 0;
   String? refId;
+  String name = "";
 
   @override
   void initState() {
@@ -40,7 +44,7 @@ class _RHHomeState extends State<RHHome> {
     fetchData(context);
   }
 
-  String name = "";
+
 
   Future<List<Map<String, dynamic>>> fetchData(BuildContext context) async {
     String userIdSharedPref = await SharedPrefHelper.getSharedPref(
@@ -79,75 +83,16 @@ class _RHHomeState extends State<RHHome> {
       return [];
     }
   }
+  RhHomeController controller=Get.put(RhHomeController());
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize:
-              //  isMenuOpen ? Size.fromHeight(150) :
-              Size.fromHeight(100),
-          child: Stack(
-            children: [
-              AppBar(
-                titleSpacing: 20,
-                backgroundColor: Colors.white,
-                title: Image(image: AssetImage('images/icon.jpg')),
-                centerTitle: false,
-                automaticallyImplyLeading: false,
-                bottom: PreferredSize(
-                  preferredSize: const Size.fromHeight(50),
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 30, bottom: 10),
-                    alignment: Alignment.topLeft,
-                    color: Colors.white,
-                    child: Text(
-                      'Welcome $name',
-                      style: TextStyle(
-                        color: Colors.grey.shade700,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 10,
-                right: 20,
-                child: Column(
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        _showConfirmationDialog(context);
-                      },
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: CustomColorTheme.primaryColor,
-                            foregroundColor: Colors.white,
-                            child: Icon(Icons.logout),
-                          ),
-                          Text(
-                            'Logout',
-                            style: TextStyle(
-                                color: CustomColorTheme.labelColor,
-                                fontSize: CustomFontTheme.textSize,
-                                fontWeight: CustomFontTheme.labelwt),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
+        appBar: appBarCommon(controller,context, name),
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: MySize.screenWidth*(40/MySize.screenWidth), vertical: MySize.screenHeight*(40/MySize.screenHeight)),
+            padding: EdgeInsets.all(MySize.screenHeight*(20/MySize.screenHeight)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -236,11 +181,19 @@ class _RHHomeState extends State<RHHome> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.toNamed(Routes.AMOUNT_UTILIZED);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => AmountUtilizedView(
+                          refId: refId,
+                        ),
+                      ),
+                    );
                   },
                   child: cards(
                     title: 'Amount utilized by Location',
                     imageUrl: 'images/sendmoney.svg',
+
+
                   ),
                 ),
                 SizedBox(
@@ -362,7 +315,7 @@ class cards extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       // width: 284,
-      // height: 55,
+      height: MySize.screenHeight*(60/MySize.screenHeight),
       padding: const EdgeInsets.all(12),
       decoration: ShapeDecoration(
         color: Color(0x33F15A22),
@@ -386,8 +339,6 @@ class cards extends StatelessWidget {
       child: Row(children: [
         SvgPicture.asset(
           imageUrl,
-          width: 34,
-          height: 31,
         ),
         SizedBox(
           width: 20,

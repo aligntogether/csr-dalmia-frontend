@@ -38,6 +38,7 @@ class _RhLeverWiseViewState extends State<RhLeverWiseView> {
   bool isLoading = true  ;
   List<String> options = ['Option 1', 'Option 2', 'Option 3', 'Option 4'];
   String? dropdown;
+  String message="Loading ...";
 
 
 
@@ -109,8 +110,10 @@ class _RhLeverWiseViewState extends State<RhLeverWiseView> {
       });
 
     } catch (error) {
-      // Handle errors
-      print("Error fetching report: $error");
+      setState(() {
+        message="No Data found in your ID";
+      });
+
     }
   }
 
@@ -143,7 +146,7 @@ class _RhLeverWiseViewState extends State<RhLeverWiseView> {
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
                           Spacer(),
-                          viewOtherReports(context),
+
                           Space.width(16),
                         ],
                       ),
@@ -220,7 +223,15 @@ class _RhLeverWiseViewState extends State<RhLeverWiseView> {
 
   Widget regionsTables(int i) {
 
-    return isLoading==true?Center(child:CircularProgressIndicator()): SingleChildScrollView(
+    return isLoading==true?Center(
+        child:Column(
+      children: [
+       message=="Loading ..."? CircularProgressIndicator(
+
+        ):Container(),
+        Text(message),
+      ],
+    )): SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
           padding: const EdgeInsets.all(8.0),

@@ -70,7 +70,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                       style: AppStyle.textStyleInterMed(fontSize: 14),
                     ),
                     Spacer(),
-                    viewOtherReports(context),
+
                     Space.width(16),
                   ],
                 ),

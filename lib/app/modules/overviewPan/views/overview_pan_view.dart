@@ -143,7 +143,7 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         style: AppStyle.textStyleInterMed(fontSize: 14),
                       ),
                       Spacer(),
-                      viewOtherReports(context),
+
                       Space.width(16),
                     ],
                   ),

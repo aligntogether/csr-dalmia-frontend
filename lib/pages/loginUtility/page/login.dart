@@ -127,13 +127,12 @@ class _LoginState extends State<Login> {
                     ),
                     Container(
                       margin: const EdgeInsets.only(bottom: 40.0),
-                      width: 300.0,
+                      width: MySize.safeWidth! * 0.8,
                       child: TextField(
                         controller:
                             loginController.selectMobileController.value,
                         onChanged: (value) {
-                          print(
-                              "loginController.selectMobileController.value : ${loginController.selectMobileController.value}");
+
                         },
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),

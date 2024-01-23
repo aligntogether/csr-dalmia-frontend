@@ -7,7 +7,7 @@ class AmountUtilizedController extends GetxController {
   List<String> rhlocationsList = [];
 
 
-  List<String> locations = [
+  List<String> columns = [
     'Budget Allocated',
     'Amount Utilized',
   ];
@@ -20,25 +20,24 @@ class AmountUtilizedController extends GetxController {
   }
 
 
-  var allLocations = ["DPM", "ALR", "BGM", "KDP", "CHA", "SOUTH",
-    "MEG", "UMG", "JGR", "LAN","NE",
-    "CUT", "MED", "BOK", "RAJ", "KAL", "EAST", "CEMENT",
-    "NIG", "RAM", "JOW", "NIN", "KOL", "SUGAR", "PANIND"];
+ Map<int,String>? regions;
+  Map<String,List<String>>?locations;
+  Map<String,dynamic>? data;
+  void updateData(Map<String,dynamic> data){
+    this.data=data;
+    update(["add"]);
+  }
 
-  var rhRegions = {
-      "SOUTH": {"DPM", "ALR", "BGM", "KDP", "CHA"},
-      "SUGAR": {"NIG", "RAM", "JOW", "NIN", "KOL"}
-    };
-
-  // var rhRegions = {
-  //     "SOUTH": {"DPM", "ALR", "BGM", "KDP", "CHA"},
-  //     "NE": {"MEG", "UMG", "JGR", "LAN"}
-  //   };
-
+void updateRegions(Map<int,String> regions){
+  this.regions=regions;
+  update(["add"]);
+}
+void updateLocations(Map<String,List<String>> locations){
+  this.locations=locations;
+  update(["add"]);
+}
 
   var objectKeys = ["allocated", "utilized"];
-
-
 
   void updateAmountUtilizedMappedList(List<Map<String, Map<String, dynamic>>> amountUtilizedMappedList) {
     this.amountUtilizedMappedList = amountUtilizedMappedList;
@@ -50,36 +49,5 @@ class AmountUtilizedController extends GetxController {
     update(["add"]);
   }
 
-  List<int> DPM = [
-    128036,
-    37765,
 
-
-  ];
-  List<int> ALR = [
-    128036,
-
-
-    387004,
-  ];
-  List<int> BGM = [
-    128036,
-    37765,
-
-  ];
-  List<int> KDP = [
-    128036,
-    37765,
-
-  ];
-  List<int> CHA = [
-    128036,
-    37765,
-
-  ];
-  List<int> SOUTH = [
-    128036,
-    37765,
-
-  ];
 }

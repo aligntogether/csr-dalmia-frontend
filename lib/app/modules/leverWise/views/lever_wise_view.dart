@@ -138,7 +138,7 @@ bool isLoading = true  ;
                         style: AppStyle.textStyleInterMed(fontSize: 14),
                       ),
                       Spacer(),
-                      viewOtherReports(context),
+
                       Space.width(16),
                     ],
                   ),

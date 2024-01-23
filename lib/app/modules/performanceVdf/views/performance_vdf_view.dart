@@ -124,10 +124,7 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                //appBar(context, title: "Performance of VDF "),
                 Space.height(16),
-
-                ///_________________________________ main menu __________________________///
                 GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
@@ -145,12 +142,18 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                         style: AppStyle.textStyleInterMed(fontSize: 14),
                       ),
                       Spacer(),
-                      viewOtherReports(context),
+
                       Space.width(16),
                     ],
                   ),
                 ),
                 Space.height(32),
+
+                Text(
+                  "Performance of VDF over past 8 weeks",
+                  style: AppStyle.textStyleBoldMed(fontSize: 14),
+                ),
+                Space.height(20),
                 GetBuilder<PerformanceVdfController>(
                   id: "add",
                   builder: (controller) {
@@ -345,12 +348,7 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
 
                 ),
 
-                Space.height(20),
-                Text(
-                  "Performance of VDF over past 8 weeks",
-                  style: AppStyle.textStyleBoldMed(fontSize: 14),
-                ),
-                Space.height(16),
+
 
                 GetBuilder<PerformanceVdfController>(
                   builder: (controller) {
@@ -377,7 +375,11 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                 Space.height(30),
                 GestureDetector(
                   onTap: () {
-                    downloadExcel();
+                   if(controller.selectClusterId!=null && controller.selectLocationId!=null){
+                     downloadExcel();}
+                   else
+                     Get.snackbar("Error", "Please select a VDF",backgroundColor: Colors.red,colorText: Colors.white);
+                    //
                   },
                   child: Container(
                     height: MySize.size48,

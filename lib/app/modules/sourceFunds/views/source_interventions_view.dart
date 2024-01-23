@@ -174,7 +174,7 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
                       style: AppStyle.textStyleInterMed(fontSize: 14),
                     ),
                     Spacer(),
-                    viewOtherReports(context),
+
 
                     Space.width(16),
                   ],
