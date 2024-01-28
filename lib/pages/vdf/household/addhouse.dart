@@ -5,6 +5,7 @@ import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -455,18 +456,27 @@ class _MyFormState extends State<MyForm> {
                           : const Color.fromRGBO(39, 82, 143, 0.5),
                     ),
                     onPressed: () {
-                      if (_selectedPanchayat != null &&
-                          _selectedVillage != null &&
-                          _selectedStreet != null) {
-                        if (_formKey.currentState?.validate() ?? false) {
+                      fetchDraftHouseholds().then((value) {
+                        setState(() {
+                          draftHouseholds = value;
                           print(draftHouseholds.length);
-                          if (draftHouseholds.length! >= 5) {
-                            _showConfirmationDialog(context);
-                          } else {
-                            _addHouseholdAPI('$vdfid', _selectedStreet!, '0');
+                          if (_selectedPanchayat != null &&
+                              _selectedVillage != null &&
+                              _selectedStreet != null) {
+                            if (_formKey.currentState?.validate() ?? false) {
+
+                              if (draftHouseholds.length! >4) {
+
+                                _showConfirmationDialog(context);
+                              } else {
+                                _addHouseholdAPI('$vdfid', _selectedStreet!, '0');
+                              }
+                            }
                           }
-                        }
-                      }
+                        });
+                      });
+
+
                     },
                     child: const Text(
                       'Next',

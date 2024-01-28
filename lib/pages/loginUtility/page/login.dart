@@ -127,7 +127,7 @@ class _LoginState extends State<Login> {
                     ),
                     Container(
                       margin: const EdgeInsets.only(bottom: 40.0),
-                      width: MySize.safeWidth! * 0.8,
+                      width: MySize.screenWidth! >500?MySize.screenWidth!*0.25:MySize.screenWidth!*0.8,
                       child: TextField(
                         controller:
                             loginController.selectMobileController.value,
