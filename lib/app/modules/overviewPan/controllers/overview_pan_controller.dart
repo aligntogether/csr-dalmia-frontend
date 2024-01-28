@@ -16,10 +16,14 @@ class OverviewPanController extends GetxController {
   List<Map<String, Map<String, dynamic>>>? overviewMappedList;
   List<Map<String, Map<String, dynamic>>>? regionWiseMappedList;
   List<Map<String, Map<String, dynamic>>>? locationWiseMappedList;
+  Map<String,List<String>>?regionLocation;
   List<String>? particularWiseList;
   List<String>? vdfNames;
 
-
+  void updateRegionLocation(Map<String,List<String>> regionLocation){
+    this.regionLocation=regionLocation;
+    update(["add"]);
+  }
 
   void updateLocations(List<Map<String, dynamic>> locations) {
     this.locations = locations;
@@ -68,9 +72,12 @@ class OverviewPanController extends GetxController {
     "CUT", "MED", "BOK", "RAJ", "KAL", "EAST", "CEMENT",
     "NIG", "RAM", "JOW", "NIN", "KOL", "SUGAR", "PANIND"];
 
-  var objectKeys = ["allotted", "mapped", "selected",
-    "hhCovered", "planned", "completed", "householdWithAtLeast1Completed", "noInterventionPlanned", "followupOverdue",
-    "zeroAdditionalIncome", "lessThan25KIncome", "between25KTO50KIncome", "between50KTO75KIncome", "between75KTO1LIncome", "moreThan1LIncome", "mapped"];
+  var objectKeys = ['Households',"allotted", "mapped", "selected",
+    'Interventions', "hhCovered", "planned", "completed",
+    "householdWithAtLeast1Completed", "noInterventionPlanned", "followupOverdue",
+    'HH with Annual Addl. Income', "zeroAdditionalIncome", "lessThan25KIncome",
+    "between25KTO50KIncome", "between50KTO75KIncome", "between75KTO1LIncome",
+    "moreThan1LIncome", "mapped"];
 
 
   List<String> regions = [
@@ -94,7 +101,7 @@ class OverviewPanController extends GetxController {
     'householdWithAtLeast1Completed',
     'noInterventionPlanned',
     'followupOverdue',
-    'HH with Annual\nAddl. Income',
+    'HH with Annual Addl. Income',
     'zeroAdditionalIncome',
     'lessThan25KIncome',
     'between25KTO50KIncome',
@@ -116,7 +123,7 @@ class OverviewPanController extends GetxController {
     'HH with atleast\n1 int. completed ',
     'HH with no int.\nplanned',
     'F/u overdue',
-    'HH with Annual\nAddl. Income',
+    'HH with Annual Addl. Income',
     '0',
     '< 25K',
     '25K - 50K',

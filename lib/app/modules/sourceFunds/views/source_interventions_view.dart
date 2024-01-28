@@ -10,6 +10,7 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../Constants/constants.dart';
 import '../../../../helper/sharedpref.dart';
@@ -78,7 +79,10 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
       );
     }
   }
-
+  String formatNumber(int number) {
+    NumberFormat format = NumberFormat('#,##,###', 'en_IN');
+    return format.format(number);
+  }
 
   @override
   void initState() {
@@ -155,11 +159,7 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
               ///_________________________________ main menu __________________________///
               GestureDetector(
                 onTap: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(
-                    builder: (context) {
-                      return GPLHomeScreen();
-                    },
-                  ));
+                  Navigator.pop(context);
                 },
                 child: Row(
                   children: [
@@ -214,7 +214,9 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
               GestureDetector(onTap: () {
                 downloadExcel();
               },
-                child: Container(height: MySize.size48,width: MySize.size168,
+                child: Container(
+                  height: MySize.screenHeight*(50/MySize.screenHeight),
+                  width: MySize.screenWidth*(170/MySize.screenWidth),
                   decoration: BoxDecoration(border: Border.all(color: darkBlueColor),
                       borderRadius: BorderRadius.circular(5)),
                   child: Row(crossAxisAlignment: CrossAxisAlignment.center,
@@ -351,12 +353,12 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
                   ),
                 ),
 
-                //PANIND
+
                 DataColumn(
                   label: Container(
                     decoration: BoxDecoration(color: Color(0xff096C9F),
                         borderRadius: BorderRadius.only(topRight: Radius.circular(10.0))),
-                    height: 60,width: 80,
+                    height: 60,width: MySize.screenWidth*(100/MySize.screenWidth),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
@@ -420,7 +422,7 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
                             controller.locations[index] == "Cement"
                                 ? ""
                                 : controller.sourceOfFundsData!.containsKey(controller.locations[index])
-                                ? (controller.sourceOfFundsData![controller.locations[index]]!['noOfHouseholds'] ?? 0).toString()
+                                ? formatNumber((controller.sourceOfFundsData![controller.locations[index]]!['noOfHouseholds'] ?? 0))
                                 : "0",
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
@@ -440,7 +442,7 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
                             controller.locations[index] == "Cement"
                                 ? ""
                                 : controller.sourceOfFundsData!.containsKey(controller.locations[index])
-                                ? (controller.sourceOfFundsData![controller.locations[index]]!['beneficiary'] ?? 0).toString()
+                                ? formatNumber((controller.sourceOfFundsData![controller.locations[index]]!['beneficiary'] ?? 0))
                                 : "0",
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
@@ -458,7 +460,7 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
                             controller.locations[index] == "Cement"
                                 ? ""
                                 : controller.sourceOfFundsData!.containsKey(controller.locations[index])
-                                ? (controller.sourceOfFundsData![controller.locations[index]]!['subsidy'] ?? 0).toString()
+                                ? formatNumber((controller.sourceOfFundsData![controller.locations[index]]!['subsidy'] ?? 0))
                                 : "0",
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
@@ -476,7 +478,7 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
                             controller.locations[index] == "Cement"
                                 ? ""
                                 : controller.sourceOfFundsData!.containsKey(controller.locations[index])
-                                ? (controller.sourceOfFundsData![controller.locations[index]]!['credits'] ?? 0).toString()
+                                ? formatNumber((controller.sourceOfFundsData![controller.locations[index]]!['credits'] ?? 0))
                                 : "0",
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
@@ -494,7 +496,7 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
                             controller.locations[index] == "Cement"
                                 ? ""
                                 : controller.sourceOfFundsData!.containsKey(controller.locations[index])
-                                ? (controller.sourceOfFundsData![controller.locations[index]]!['dbf'] ?? 0).toString()
+                                ? formatNumber((controller.sourceOfFundsData![controller.locations[index]]!['dbf'] ?? 0))
                                 : "0",
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
@@ -508,12 +510,12 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
                     ///__________________________ South _______________________
                     DataCell(
                       Container(height: 60,color: Color(0xff096C9F),
-                        width: 80,
+
                         child: Center(
                           child: Text(
                             controller.locations[index] == "Cement"?""
                                 : controller.sourceOfFundsData!.containsKey(controller.locations[index])
-                                ? _calculateSumForLocation(controller.locations[index]).toString()
+                                ? formatNumber(_calculateSumForLocation(controller.locations[index]))
                                 : "0",
                             style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),
                           ),
@@ -569,7 +571,7 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
 
 
 
-  num _calculateSumForLocation(String region) {
+  int _calculateSumForLocation(String region) {
     num sum = 0;
     if (controller.sourceOfFundsData!.containsKey(region)) {
       Map<String, dynamic>? regionData = controller.sourceOfFundsData![region];
@@ -581,7 +583,7 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
         }
       }
     }
-    return sum;
+    return sum.toInt();
   }
 
 

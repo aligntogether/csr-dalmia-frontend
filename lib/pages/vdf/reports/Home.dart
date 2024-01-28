@@ -15,6 +15,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+import '../../../Constants/constants.dart';
+import '../../../helper/sharedpref.dart';
+
 class HomeReport extends StatefulWidget {
   const HomeReport({super.key});
 
@@ -23,9 +26,11 @@ class HomeReport extends StatefulWidget {
 }
 
 class _HomeReportState extends State<HomeReport> {
+
   bool isreportMenuOpen = false;
   void _toggleMenu() {
     setState(() {
+
       isreportMenuOpen = !isreportMenuOpen;
     });
   }
@@ -94,6 +99,7 @@ class _HomeReportState extends State<HomeReport> {
       });
     }
   }
+
 
   @override
   void initState() {
@@ -251,7 +257,7 @@ class _HomeReportState extends State<HomeReport> {
                           const Padding(
                             padding: EdgeInsets.only(left: 10),
                             child: Text(
-                              'Report of Balamurugan',
+                              'Report of ',
                               style: TextStyle(
                                   fontSize: CustomFontTheme.textSize,
                                   fontWeight: CustomFontTheme.headingwt),

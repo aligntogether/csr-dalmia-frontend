@@ -17,6 +17,8 @@ import 'package:dalmia/pages/CDO/cdoappbar.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
+import '../../common/app_style.dart';
+
 class UpdateExpenditure extends StatefulWidget {
   const UpdateExpenditure({Key? key}) : super(key: key);
 
@@ -47,24 +49,6 @@ class _UpdateExpenditureState extends State<UpdateExpenditure> {
     regionsFuture = accountsService.getListOfRegions(controller);
   }
 
-  // @override
-  // void dispose() {
-  //   for (var controller in _expenditureControllers) {
-  //     controller.dispose();
-  //   }
-  //   setState(() {
-  //     controller.clustersList = null;
-  //     controller.locationsList = null;
-  //     controller.selectClusterId = null;
-  //     controller.selectLocationId = null;
-  //     controller.selectcluster = null;
-  //     controller.selectLocation = null;
-  //     controller.selectRegion = null;
-  //     controller.selectRegionId = null;
-  //     _expenditureControllers.clear();
-  //   });
-  //   super.dispose();
-  // }
 
   Future<void> _updateExpenditure(int index, String newValue) async {
     try {
@@ -135,12 +119,8 @@ class _UpdateExpenditureState extends State<UpdateExpenditure> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100),
-          child: CdoAppBar(
-            heading: 'Update Expenditure',
-          ),
-        ),
+        appBar: appBarCommon(controller, context,"",
+            centerAlignText: true, title: "Reports"),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.only(left: 20, top: 20),

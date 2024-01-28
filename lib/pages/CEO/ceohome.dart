@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/app/modules/sourceFunds/views/source_region_location_view.dart';
 import 'package:dalmia/app/routes/app_pages.dart';
+import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/helper/sharedpref.dart';
+import 'package:dalmia/pages/gpl/gpl_controller.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -27,7 +29,7 @@ class _CEOHomeState extends State<CEOHome> {
   @override
   void initState() {
     super.initState();
-    SharedPrefHelper.getSharedPref(USER_NAME_SHAREDPREF_KEY, context, false)
+    SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
         .then((value) => setState(() {
               value == '' ? name = 'user' : name = value;
             }));
@@ -74,84 +76,13 @@ class _CEOHomeState extends State<CEOHome> {
       return [];
     }
   }
+  GplController controller = new GplController();
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize:
-              //  isMenuOpen ? Size.fromHeight(150) :
-              Size.fromHeight(100),
-          child: Stack(
-            children: [
-              AppBar(
-                titleSpacing: 20,
-                backgroundColor: Colors.white,
-                scrolledUnderElevation: 0,
-                title: Image(image: AssetImage('images/icon.jpg')),
-                centerTitle: false,
-                automaticallyImplyLeading: false,
-                bottom: PreferredSize(
-                  preferredSize: const Size.fromHeight(50),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 0,
-                          blurRadius: 4,
-                          offset: Offset(0, 4), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    padding: const EdgeInsets.only(left: 30, bottom: 10),
-                    alignment: Alignment.topLeft,
-                 
-                    child: Text(
-                      'Welcome $name!',
-                      style: TextStyle(
-                        color: Colors.grey.shade700,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 10,
-                right: 20,
-                child: Column(
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        _showConfirmationDialog(context);
-                      },
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: CustomColorTheme.primaryColor,
-                            foregroundColor: Colors.white,
-                            child: Icon(Icons.logout),
-                          ),
-                          Text(
-                            'Logout',
-                            style: TextStyle(
-                                color: CustomColorTheme.labelColor,
-                                fontSize: CustomFontTheme.textSize,
-                                fontWeight: CustomFontTheme.labelwt),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
+        appBar:  appBarCommon(controller, context, name),
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: MySize.screenWidth*(40/MySize.screenWidth), vertical: MySize.screenHeight*(40/MySize.screenHeight)),

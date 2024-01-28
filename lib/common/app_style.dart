@@ -103,7 +103,7 @@ PreferredSize appBarCommon(controller, BuildContext context,String name,
                         child: Icon(
                           Icons.clear,
                           color: Colors.black,
-                          size: 30,
+                          size: MySize.screenHeight * (30 / MySize.screenHeight),
                         ),
                       )),
                   Space.height(5),
@@ -180,7 +180,7 @@ PreferredSize appBarCommon(controller, BuildContext context,String name,
                     children: [
                       Image.asset(
                         "images/icon.jpg",
-                        height: MySize.size38,
+                        height: MySize.screenHeight*(37/MySize.screenHeight),
                         width: MySize.size69,
                       ),
                       Spacer(),

@@ -105,7 +105,7 @@ print(response);
             Map<String, dynamic> respData = respBody["_embedded"];
             List<dynamic> locationsData = respData["locations"];
             for (var entry in locationsData) {
-              locationList.add(entry['location']);
+              locationList.add(entry['locationCode']);
             }
             locations[regions[regionId]!] = locationList;
           } else {

@@ -2,12 +2,14 @@ import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/Accounts/updatebudget.dart';
 import 'package:dalmia/pages/Accounts/updateexpenditure.dart';
+import 'package:dalmia/pages/gpl/gpl_controller.dart';
 
 import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../common/app_style.dart';
 import '../../common/size_constant.dart';
 
 class AccountsHome extends StatefulWidget {
@@ -23,7 +25,7 @@ class _AccountsHomeState extends State<AccountsHome> {
   void initState() {
     super.initState();
 
-    SharedPrefHelper.getSharedPref(USER_NAME_SHAREDPREF_KEY, context, false)
+    SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
         .then((value) => setState(() {
               value == '' ? name = 'user' : name = value;
             }));
@@ -33,67 +35,7 @@ class _AccountsHomeState extends State<AccountsHome> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize:
-              //  isMenuOpen ? Size.fromHeight(150) :
-              Size.fromHeight(100),
-          child: Stack(
-            children: [
-              AppBar(
-                titleSpacing: 20,
-                backgroundColor: Colors.white,
-                title: Image(image: AssetImage('images/icon.jpg')),
-                centerTitle: false,
-                automaticallyImplyLeading: false,
-                bottom: PreferredSize(
-                  preferredSize: const Size.fromHeight(50),
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 30, bottom: 10),
-                    alignment: Alignment.topLeft,
-                    color: Colors.white,
-                    child: Text(
-                      'Welcome $name!',
-                      style: TextStyle(
-                        color: Colors.grey.shade700,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 10,
-                right: 20,
-                child: Column(
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        _showConfirmationDialog(context);
-                      },
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: CustomColorTheme.primaryColor,
-                            foregroundColor: Colors.white,
-                            child: Icon(Icons.logout),
-                          ),
-                          Text(
-                            'Logout',
-                            style: TextStyle(
-                                color: CustomColorTheme.labelColor,
-                                fontSize: CustomFontTheme.textSize,
-                                fontWeight: CustomFontTheme.labelwt),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
+        appBar:  appBarCommon(GplController(), context, name),
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 40, vertical: 30),

@@ -168,7 +168,7 @@ class _AddStockState extends State<AddStock> {
       setState(
         () {
           livestockData =
-              Map<String, int>.from(jsonDecode(livestock['livestockNumbers']));
+              Map<String, int>.from(jsonDecode(livestock['livestockNumbers']==null?"{}":livestock['livestockNumbers']));
         },
       );
       print(livestockData['Cows']);
@@ -413,14 +413,13 @@ class _AddStockState extends State<AddStock> {
       Map<String, int>? value) {
     TextEditingController controller = TextEditingController();
 
-    // Set initial value when the widget is created
-    if (value != null && value.containsKey(text)) {
-      controller.text = value[text]?.toString() ?? '';
+    if (value != null) {
+      controller.text = value[text] == null ? "" : value[text].toString()=='0'?"" : value[text].toString();
     }
 
     // Use a listener to update the text field when the underlying value changes
     controller.addListener(() {
-      addData(text, controller.text);
+      addData(text, controller.text==null?"":controller.text);
     });
 
     return Padding(

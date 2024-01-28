@@ -1,5 +1,6 @@
 import 'package:dalmia/apis/commonobject.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
+
 import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
@@ -196,7 +197,7 @@ class _MyFormState extends State<MyForm> {
     SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
         .then((value) {
       setState(() {
-        vdfid = value == '' ? '10001' : value;
+        vdfid = value == '' ? '20120' : value;
         print('vdfid is $vdfid');
 
         fetchPanchayats('$vdfid').then((value) {
@@ -205,16 +206,45 @@ class _MyFormState extends State<MyForm> {
             print("panchayats length is ${panchayats}");
           });
         });
-      });
-    });
-    print("panchayats length is ${panchayats}");
-    fetchDraftHouseholds().then((value) {
-      setState(() {
-        draftHouseholds = value;
-        print('length of draft is ${draftHouseholds.length}');
+        fetchDraftHouseholds().then((value) {
+          setState(() {
+            draftHouseholds = value;
+          });
+        });
       });
     });
   }
+  Future<List<DraftHousehold>> fetchDraftHouseholds() async {
+    try {
+
+
+      final response = await http.get(
+        Uri.parse('$base/get-draft-households'),
+        headers: <String, String>{
+          'vdfId': vdfid.toString(),
+        },
+      );
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+        CommonObject.fromJson(json.decode(response.body));
+
+        List<dynamic> draftHouseholdsData =
+        commonObject.respBody as List<dynamic>;
+
+        List<DraftHousehold> draftHouseholds = draftHouseholdsData
+            .map((model) =>
+            DraftHousehold.fromJson(model as Map<String, dynamic>))
+            .toList();
+
+        return draftHouseholds;
+      } else {
+        throw Exception('Failed to load panchayats: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -429,7 +459,8 @@ class _MyFormState extends State<MyForm> {
                           _selectedVillage != null &&
                           _selectedStreet != null) {
                         if (_formKey.currentState?.validate() ?? false) {
-                          if (draftHouseholds.length >= 5) {
+                          print(draftHouseholds.length);
+                          if (draftHouseholds.length! >= 5) {
                             _showConfirmationDialog(context);
                           } else {
                             _addHouseholdAPI('$vdfid', _selectedStreet!, '0');
@@ -551,31 +582,4 @@ class _MyFormState extends State<MyForm> {
     );
   }
 
-  Future<List<DraftHousehold>> fetchDraftHouseholds() async {
-    try {
-      final response = await http.get(
-        Uri.parse('$base/get-draft-households'),
-        headers: <String, String>{
-          'vdfId': '$vdfid',
-        },
-      );
-      if (response.statusCode == 200) {
-        CommonObject commonObject =
-            CommonObject.fromJson(json.decode(response.body));
-
-        List<dynamic> draftHouseholdsData =
-            commonObject.respBody as List<dynamic>;
-        List<DraftHousehold> draftHouseholds = draftHouseholdsData
-            .map((model) =>
-                DraftHousehold.fromJson(model as Map<String, dynamic>))
-            .toList();
-
-        return draftHouseholds;
-      } else {
-        throw Exception('Failed to load panchayats: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error: $e');
-    }
-  }
 }

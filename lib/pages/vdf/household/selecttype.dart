@@ -485,7 +485,7 @@ class _SelectTypeState extends State<SelectType> {
 }
 
 Widget Rowst(String text, void Function(String?) callback, String? value) {
-  if (value == null) value = "";
+  if (value.toString() == "null") value = "";
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceAround,
     children: [
@@ -502,14 +502,16 @@ Widget Rowst(String text, void Function(String?) callback, String? value) {
         height: 30,
         child: TextFormField(
           initialValue: value.toString(),
-          decoration: InputDecoration(
+          keyboardType: TextInputType.number,
+
+          decoration: const InputDecoration(
+            contentPadding: EdgeInsets.symmetric(horizontal: 10),
             border: OutlineInputBorder(
               borderSide: BorderSide(
                 width: 2,
               ),
             ),
           ),
-          onChanged: callback,
         ),
       )
     ],

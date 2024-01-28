@@ -31,15 +31,12 @@ class _ReportPopupWidgetState extends State<ReportPopupWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Padding(
-                padding: EdgeInsets.all(MySize.screenWidth*(5/MySize.screenWidth)),
-                child: Text(
+             Text(
                   'View other Reports',
                   style: TextStyle(
                     fontSize: MySize.screenHeight*(18/MySize.screenHeight),
                       fontWeight: FontWeight.w500),
                 ),
-              ),
               SizedBox(
                 width: MySize.screenWidth*(10/MySize.screenWidth),
               )

@@ -254,7 +254,7 @@ class _AddnewState extends State<Addnew> {
                       onPressed: () async {
                         print('rdg');
                         final result = await checkStreetCodeExists(
-                          vdfId: '10001',
+                          vdfId: '20120',
                           villageId: widget.villagId,
                           streetName: streetName!,
                           streetCode: streetCode!,
@@ -414,7 +414,7 @@ void _confirmbox(BuildContext context, String streetName) {
                       width: 1, color: CustomColorTheme.primaryColor),
                 ),
                 onPressed: () {
-                  // _addHouseholdAPI('10001', , '0');
+                  // _addHouseholdAPI('20120', , '0');
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => MyForm(),

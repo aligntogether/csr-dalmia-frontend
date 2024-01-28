@@ -33,7 +33,7 @@ class _CDOHomeState extends State<CDOHome> {
   void initState() {
     super.initState();
 
-    SharedPrefHelper.getSharedPref(USER_NAME_SHAREDPREF_KEY, context, false)
+    SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
         .then((value) => setState(() {
               value == '' ? name = 'user' : name = value;
             }));

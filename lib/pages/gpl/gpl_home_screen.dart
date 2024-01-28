@@ -72,7 +72,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                     Get.toNamed(Routes.REPORTS);
                   },
                   child: Container(
-                      height: MySize.safeHeight! * 0.15,
+                      height: MySize.screenHeight*(100/MySize.screenHeight),
                     decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(),
                       shadows: [
@@ -125,124 +125,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                   ),
                 ),
               ),
-              // Space.width(21),
-              // Expanded(
-              //   child: GestureDetector(
-              //     onTap: () {
-              //       Get.toNamed(Routes.GENERAL_INFO);
-              //     },
-              //     child: Container(
-              //       height: MySize.safeHeight! * (100/MySize.screenHeight),
-              //       decoration: ShapeDecoration(
-              //         shape: RoundedRectangleBorder(),
-              //         shadows: [
-              //           BoxShadow(
-              //             color: Color(0x11000000),
-              //             blurRadius: 20,
-              //             offset: Offset(0, 10),
-              //             spreadRadius: 0,
-              //           )
-              //         ],
-              //       ),
-              //       child: Card(
-              //         color: Color(0xFFF2D4C9),
-              //         // elevation: 4.0,
-              //         shape: RoundedRectangleBorder(
-              //           side: BorderSide(
-              //             width: 1,
-              //             color: Colors.black.withOpacity(0.10000000149011612),
-              //           ),
-              //           borderRadius: BorderRadius.circular(10.0),
-              //         ),
-              //         child: Container(
-              //           padding: const EdgeInsets.only(
-              //             left: 10,
-              //           ),
-              //           child: Column(
-              //             crossAxisAlignment: CrossAxisAlignment.start,
-              //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              //             children: [
-              //               Image.asset(
-              //                 "images/General Info.png",
-              //                 width: 38,
-              //                 height: 38,
-              //               ),
-              //               Padding(
-              //                 padding: const EdgeInsets.all(0.0),
-              //                 child: Text(
-              //                   "General Info",
-              //                   style: TextStyle(
-              //                     fontSize: MySize.safeHeight! * (14/MySize.screenHeight),
-              //                     fontWeight: FontWeight.w500,
-              //                     color: Color(0xffB94217),
-              //                   ),
-              //                 ),
-              //               ),
-              //             ],
-              //           ),
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // ),
-              // Space.width(21),
-              // Expanded(
-              //   child: GestureDetector(
-              //     onTap: () {
-              //       Get.toNamed(Routes.MONITOR_PROGRESS);
-              //     },
-              //     child: Container(
-              //       height: MySize.safeHeight! * (100/MySize.screenHeight),
-              //       decoration: ShapeDecoration(
-              //         shape: RoundedRectangleBorder(),
-              //         shadows: [
-              //           BoxShadow(
-              //             color: Color(0x11000000),
-              //             blurRadius: 20,
-              //             offset: Offset(0, 10),
-              //             spreadRadius: 0,
-              //           )
-              //         ],
-              //       ),
-              //       child: Card(
-              //         color: Color(0xFFF2D4C9),
-              //         // elevation: 4.0,
-              //         shape: RoundedRectangleBorder(
-              //           side: BorderSide(
-              //             width: 1,
-              //             color: Colors.black.withOpacity(0.10000000149011612),
-              //           ),
-              //           borderRadius: BorderRadius.circular(10.0),
-              //         ),
-              //         child: Container(
-              //           padding: const EdgeInsets.only(left: 10, top: 10),
-              //           child: Column(
-              //             crossAxisAlignment: CrossAxisAlignment.start,
-              //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              //             children: [
-              //               Image.asset(
-              //                 "images/monitor_p.png",
-              //                 width: 38,
-              //                 height: 38,
-              //               ),
-              //               Padding(
-              //                 padding: const EdgeInsets.all(0.0),
-              //                 child: Text(
-              //                   "Monitor Progress",
-              //                   style: TextStyle(
-              //                     fontSize: MySize.safeHeight! * (14/MySize.screenHeight),
-              //                     fontWeight: FontWeight.w500,
-              //                     color: Color(0xffB94217),
-              //                   ),
-              //                 ),
-              //               ),
-              //             ],
-              //           ),
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // ),
+
             ],
           ),
 

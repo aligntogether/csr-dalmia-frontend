@@ -14,6 +14,7 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../amountUtilized/controllers/amount_utilized_controller.dart';
 
@@ -43,18 +44,9 @@ class _GplAmountUtilizedViewState extends State<GplAmountUtilizedView> {
     setRegions();
   }
   String formatNumber(int number) {
-    String numberString = number.toString();
-    List<String> reversedChars = numberString.split('').reversed.toList();
+    NumberFormat format = NumberFormat('#,##,###', 'en_IN');
 
-    String formattedNumber = '';
-    for (int i = 0; i < reversedChars.length; i++) {
-      if (i > 0 && i % 2 == 0) {
-        formattedNumber = ',' + formattedNumber; // Add a comma after every 2 digits
-      }
-      formattedNumber = reversedChars[i] + formattedNumber;
-    }
-
-    return formattedNumber;
+    return format.format(number);
   }
 
   void main() {
@@ -368,7 +360,7 @@ class _GplAmountUtilizedViewState extends State<GplAmountUtilizedView> {
                   child: Center(
                     child: Text(
                       controller.data!.keys.contains(location)
-                          ? formatNumber(controller.data![location][controller.objectKeys[i]])
+                          ?formatNumber(controller.data![location][controller.objectKeys[i]])
                           : "0",
 
 

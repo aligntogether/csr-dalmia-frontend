@@ -568,7 +568,7 @@ class _HhidFormState extends State<HhidForm> {
                         style: ElevatedButton.styleFrom(
                             side: const BorderSide(
                                 width: 1, color: CustomColorTheme.primaryColor),
-                            minimumSize: const Size(80, 50),
+                            minimumSize:  Size(80, 50),
                             backgroundColor: CustomColorTheme.backgroundColor),
                         onPressed: () {},
                         child: Row(

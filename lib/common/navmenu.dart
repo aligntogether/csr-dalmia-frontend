@@ -108,7 +108,7 @@ void _showConfirmationDialog(BuildContext context) {
           padding: const EdgeInsets.only(top: 10, left: 20, right: 10),
           child: SizedBox(
             width: MySize.screenWidth*(280/MySize.screenWidth),
-            height: MySize.screenHeight*(800/MySize.screenHeight),
+            height: MySize.screenHeight*(100/MySize.screenHeight),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [

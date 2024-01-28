@@ -37,49 +37,51 @@ class ReportsView extends GetView<ReportsController> {
               Space.width(20)
             ],
           ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              children: [
-                Space.height(40),
-                listData("Overview Pan-India locations", () {
-                  Get.toNamed(Routes.OVERVIEW_PAN);
-                }),
-                listData(
-                    "Number of interventions complete\n(as on $formattedDate)",
-                    () {
-                      Get.toNamed(Routes.INTERVENTION_COMPLETE);
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                children: [
+                  Space.height(MySize.screenHeight*(40/MySize.screenHeight)),
+                  listData("Overview Pan-India locations", () {
+                    Get.toNamed(Routes.OVERVIEW_PAN);
+                  }),
+                  listData(
+                      "Number of interventions complete\n(as on $formattedDate)",
+                          () {
+                        Get.toNamed(Routes.INTERVENTION_COMPLETE);
 
-                    }),
-                listData("Lever wise number of interventions", () {
-                  Get.toNamed(Routes.LEVER_WISE);
+                      }),
+                  listData("Lever wise number of interventions", () {
+                    Get.toNamed(Routes.LEVER_WISE);
 
-                }),
-                listData(
-                    "Amount utilized by each location for livelihood activities ",
-                    () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => GplAmountUtilizedView(
+                  }),
+                  listData(
+                      "Amount utilized by each location for livelihood activities ",
+                          () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => GplAmountUtilizedView(
 
+                            ),
                           ),
-                        ),
-                      );
+                        );
 
-                    }),
-                listData("Source of funds", () {
-                  Get.toNamed(Routes.SOURCE_FUNDS);
+                      }),
+                  listData("Source of funds", () {
+                    Get.toNamed(Routes.SOURCE_FUNDS);
 
-                }),
-                listData("Expected and actual additional incomes", () {
-                  Get.toNamed(Routes.EXPECTED_ACTUAL);
+                  }),
+                  listData("Expected and actual additional incomes", () {
+                    Get.toNamed(Routes.EXPECTED_ACTUAL);
 
-                }),
-                listData("Performance of VDFs", () {
-                  Get.toNamed(Routes.PERFORMANCE_VDF);
+                  }),
+                  listData("Performance of VDFs", () {
+                    Get.toNamed(Routes.PERFORMANCE_VDF);
 
-                }),
-              ],
+                  }),
+                ],
+              ),
             ),
           )),
     );
@@ -106,12 +108,12 @@ class ReportsView extends GetView<ReportsController> {
             ],
           ),
         ),
-        Space.height(20),
+        Space.height(MySize.screenHeight*(20/MySize.screenHeight)),
         Divider(
           height: 1,
           color: dividerColor.withOpacity(0.3),
         ),
-        Space.height(20),
+        Space.height(MySize.screenHeight*(20/MySize.screenHeight)),
       ],
     );
   }

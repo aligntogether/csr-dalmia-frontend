@@ -1,5 +1,6 @@
 import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/common/navmenu.dart';
+import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/pages/vdf/household/addhead.dart';
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
@@ -9,9 +10,14 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dalmia/apis/commonobject.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+
+import '../../../Constants/constants.dart';
+import '../../../helper/sharedpref.dart';
 
 class Draft extends StatefulWidget {
   const Draft({Key? key});
@@ -20,11 +26,15 @@ class Draft extends StatefulWidget {
   State<Draft> createState() => _DraftState();
 }
 
-int selectedIndex = 0;
+
+
 
 class _DraftState extends State<Draft> {
+  int selectedIndex = 0;
   String? SelectedId;
   bool isdraftMenuOpen = false;
+  String? refId;
+
   void _toggleMenu() {
     setState(() {
       isdraftMenuOpen = !isdraftMenuOpen;
@@ -37,11 +47,18 @@ class _DraftState extends State<Draft> {
   @override
   void initState() {
     super.initState();
-    fetchDraftHouseholds().then((value) {
-      setState(() {
-        draftHouseholds = value;
+    SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+      refId = value;
+      fetchDraftHouseholds().then((value) {
+        setState(() {
+          draftHouseholds = value;
+
+        });
+
       });
-    });
+    }));
+
   }
 
   void _onTabTapped(int index) {
@@ -208,11 +225,11 @@ class _DraftState extends State<Draft> {
                             Checkbox(
                               value:
                                   checkedHousehols.contains(draftHousehold.id),
+
                               onChanged: (value) {
                                 setState(() {
-                                  checkedHousehols.contains(draftHousehold.id)
-                                      ? SelectedId = null
-                                      : SelectedId = draftHousehold.id;
+                                   SelectedId = draftHousehold.id;
+
                                   if (value != null && value) {
                                     checkedHousehols.add(draftHousehold.id);
                                   } else {
@@ -257,7 +274,7 @@ class _DraftState extends State<Draft> {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => AddHead(
-                                    vdfid: '10001',
+                                    vdfid: refId,
                                     id: SelectedId,
 
                                   ),
@@ -361,10 +378,11 @@ class _DraftState extends State<Draft> {
 
   Future<List<DraftHousehold>> fetchDraftHouseholds() async {
     try {
+      print("refId is $refId");
       final response = await http.get(
         Uri.parse('$base/get-draft-households'),
         headers: <String, String>{
-          'vdfId': '10001',
+          'vdfId': refId.toString(),
         },
       );
       if (response.statusCode == 200) {
@@ -373,6 +391,7 @@ class _DraftState extends State<Draft> {
 
         List<dynamic> draftHouseholdsData =
             commonObject.respBody as List<dynamic>;
+
         List<DraftHousehold> draftHouseholds = draftHouseholdsData
             .map((model) =>
                 DraftHousehold.fromJson(model as Map<String, dynamic>))
@@ -422,8 +441,8 @@ class _DraftState extends State<Draft> {
           title: Padding(
             padding: const EdgeInsets.only(top: 10, left: 20, right: 10),
             child: SizedBox(
-              width: 283,
-              height: 90,
+              width: MySize.screenWidth * (280 / MySize.screenWidth),
+              height: MySize.screenHeight * (100 / MySize.screenHeight),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -453,8 +472,8 @@ class _DraftState extends State<Draft> {
             // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               SizedBox(
-                width: 130,
-                height: 50,
+                width: MySize.screenWidth * (100 / MySize.screenWidth),
+                height: MySize.screenHeight * (50 / MySize.screenHeight),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     side: const BorderSide(),
@@ -477,8 +496,8 @@ class _DraftState extends State<Draft> {
               ),
               SizedBox(width: 20),
               SizedBox(
-                width: 130,
-                height: 50,
+               width: MySize.screenWidth * (100 / MySize.screenWidth),
+                height: MySize.screenHeight * (50 / MySize.screenHeight),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     side: const BorderSide(),

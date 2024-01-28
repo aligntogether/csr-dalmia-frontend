@@ -55,9 +55,8 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(100),
-          child: LLAppBar(
-            heading: 'Reports',
-          ),
+          child:appBarCommon(controller, context,"",
+              centerAlignText: true, title: "Reports"),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -190,7 +189,8 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
                     height: 60,
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
-                      "${cc.clusterPropertyKeys![index]}",
+                      capitalizeFirstLetter(cc.clusterPropertyKeys![index]),
+
                       style: AppStyle.textStyleInterMed(fontSize: 14),
                     ),
                     color: cc.clusterPropertyKeys![index] == "clusterId"
@@ -244,5 +244,11 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
       ),
 
     );
+  }
+  String capitalizeFirstLetter(String input) {
+    if (input.isEmpty) {
+      return input; // Return the original string if it's empty
+    }
+    return input[0].toUpperCase() + input.substring(1);
   }
 }

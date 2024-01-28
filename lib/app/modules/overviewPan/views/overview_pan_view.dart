@@ -11,6 +11,7 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../Constants/constants.dart';
 import '../../../../helper/sharedpref.dart';
@@ -34,6 +35,7 @@ class _OverviewPanViewState extends State<OverviewPanView> {
   late Future<Map<String, dynamic>> regionsFuture;
   late Future<Map<String, dynamic>> clustersFuture;
   bool isLoading = true;
+  bool isLoadingLocation=true;
   ExportTableToExcel exportsTableToExcel = new ExportTableToExcel();
 
   void downloadExcel() {
@@ -97,14 +99,19 @@ class _OverviewPanViewState extends State<OverviewPanView> {
     regionsFuture = overviewReportApiService.getListOfRegions();
     controller.selectRegion = "All Regions";
   }
-
+  String formatNumber(int number) {
+    NumberFormat format = NumberFormat('#,##,###', 'en_IN');
+    return format.format(number);
+  }
   void getPanIndiaReport() async {
 
     List<Map<String, Map<String, dynamic>>> panIndiaMappedData = await overviewReportApiService.getPanIndiaReport(controller.allLocations, controller.objectKeys);
-
+    Map<int,String> regions=await overviewReportApiService.getAllRegions();
+    Map<String,List<String>> regionLocation=await overviewReportApiService.getRegionLocation(regions);
     setState(() {
       isLoading = false;
       controller.updateOverviewMappedList(panIndiaMappedData);
+      controller.updateRegionLocation(regionLocation);
     });
 
   }
@@ -128,6 +135,7 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                 ///_________________________________ main menu __________________________///
                 GestureDetector(
                   onTap: () {
+
                     Navigator.pop(context);
                   },
                   child: Row(
@@ -345,6 +353,7 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                                         locationWiseMappedList);
                                     controller.updateLocationVdfNames(
                                         clustersVdfNameList);
+                                    isLoadingLocation = false;
                                   });
                                 }
 
@@ -393,8 +402,8 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                         ? allRegionsTables(0)
                         : controller.selectLocation == null &&
                         controller.selectRegion != "All Regions"
-                        ? tableDataLocation(0)
-                        : tableDataLocationView()
+                        ? tableParticularRegion(0)
+                        : tableDataLocationView(0)
                         : SizedBox();
                   },
                 ),
@@ -436,1624 +445,786 @@ class _OverviewPanViewState extends State<OverviewPanView> {
   }
 
 
-
   Widget allRegionsTables(int i) {
-    return Visibility(
-      visible: controller.overviewMappedList != null && controller.overviewMappedList!.isNotEmpty,
-      child: isLoading?Center(child: CircularProgressIndicator()):
-      SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: DataTable(
-                dividerThickness: 00,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 0,
-                      blurRadius: 4,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
+    int j =0;
+    List<DataColumn> buildColumns() {
+      List<DataColumn> columns = [];
+      columns.add(
+        DataColumn(
+          label: Expanded(
+            child: Container(
+              height: 60,
+width: MySize.screenWidth*(80/MySize.screenWidth),
+              decoration: BoxDecoration(
+                color: Color(0xff008CD3),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
                 ),
-                columnSpacing: 0,
-                horizontalMargin: 0,
-                columns: <DataColumn>[
-                  DataColumn(
-                    label: Expanded(
-                      child: Container(
-                        height: 60,
-                        decoration: BoxDecoration(
-                            color: Color(0xff008CD3),
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10.0))),
-                        padding: EdgeInsets.only(left: 10),
-                        child: Center(
-                          child: Text(
-                            'Locations',
-                            style: TextStyle(
-                                fontWeight: CustomFontTheme.headingwt,
-                                fontSize: CustomFontTheme.textSize,
-                                color: Colors.white),
-                          ),
-                        ),
+              ),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  'Locations',
+                  style: TextStyle(
+                    fontWeight: CustomFontTheme.headingwt,
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      for (var region in controller.regionLocation!.keys) {
+        for (var location in controller.regionLocation![region]!) {
+          // Add the Location column
+          columns.add(
+            DataColumn(
+              label: Expanded(
+                child: Container(
+                  height: 60,
+                  width:MySize.screenWidth*(80/MySize.screenWidth),
+                  decoration: BoxDecoration(
+                    color: Color(0xff008CD3),
+
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      location,
+                      style: TextStyle(
+                        fontWeight: CustomFontTheme.headingwt,
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.white,
                       ),
                     ),
                   ),
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'DPM',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
+                ),
+              ),
+            ),
+          );
+        }
+        // Add the Region column if there are locations in the region
+        if (controller.regionLocation![region]!.isNotEmpty) {
+          columns.add(
+            DataColumn(
+              label: Expanded(
+                child: Container(
+                  height: 60,
+                  width: MySize.safeWidth!*0.3,
+                  decoration: BoxDecoration(
+                    //#096C9F
+
+                    color: Color(0xFF096C9F),
+
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      region,
+
+                      style: TextStyle(
+
+
+                        fontWeight: CustomFontTheme.headingwt,
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.white,
                       ),
+                      maxLines: 2, // Adjust as needed
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'ALR',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
+                ),
+              ),
+            ),
+          );
+        }
+      }
+      return columns;
+    }
+
+    List<DataRow> buildRows() {
+
+      List<DataRow> rows = [];
+      bool isEven = false;
+      for (var firstColumn in controller.locationsList) {
+        isEven = !isEven;
+        List<DataCell> cells = [];
+        cells.add(
+          DataCell(
+            Container(
+              height: MySize.safeHeight!*(70/MySize.screenHeight),
+              decoration: BoxDecoration(
+                color:firstColumn == "Households" ||
+                    firstColumn == "Interventions" ||
+                    firstColumn ==
+                        "HH with Annual Addl. Income"
+                    ? Color(0xff008CD3).withOpacity(0.3)
+                    :isEven
+                    ? Colors.blue.shade50
+                    : Colors.white,
+
+              ),
+
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  firstColumn,
+                  style: TextStyle(
+                    fontWeight: CustomFontTheme.headingwt,
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.black,
                   ),
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      child: Center(
-                        child: Text(
-                          'BGM',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
+                ),
+              ),
+            ),
+          ),
+
+        );
+        print("j$j");
+
+        for (var region in controller.regionLocation!.keys) {
+          num sum=0;
+          for (var location in controller.regionLocation![region]!) {
+            controller.objectKeys[j] == "Households" ||
+                controller.objectKeys[j] == "Interventions" ||
+                controller.objectKeys[j] == "HH with Annual Addl. Income"
+                ?sum+=0
+                :controller.overviewMappedList![0][controller.objectKeys[j]]![location]==null?sum+=0:sum+=controller.overviewMappedList![0][controller.objectKeys[j]]![location];
+            cells.add(
+              DataCell(
+                Container(
+                  height: 60,
+                  width: MySize.screenWidth*(80/MySize.screenWidth),
+                  decoration: BoxDecoration(
+                    color:
+                        firstColumn == "Households" ||
+                        firstColumn == "Interventions" ||
+                        firstColumn == "HH with Annual Addl. Income"
+                        ? Color(0xff008CD3).withOpacity(0.3)
+                        :isEven
+                        ? Colors.blue.shade50
+                        : Colors.white,
+
                   ),
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'KDP',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
+
+                  child:Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      VerticalDivider(
+                        width: 1,
+                        color: Color(0xff181818).withOpacity(0.3),
+                        thickness: 1,
                       ),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'CHA',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Container(
-                      color: Color(0xff096C9F),
-                      height: 60,
-                      width: 80,
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'SOUTH',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'MEG',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //umg
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'UMG',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //jgr
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'JGR',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //lan
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'LAN',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //NE
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff096C9F),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'NE',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //CUT
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'CUT',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //MED
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'MED',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //BOK
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'BOK',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //RAJ
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'RAJ',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //KAL
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'KAL',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //EAST
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff096C9F),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'East',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //CEMENT
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff2E8CBB),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'Cement',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //NIG
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'NIG',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //RAM
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'RAM',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //JOW
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'JOW',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //NIN
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'NIN',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //KOL
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff008CD3),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'KOL',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //SUGAR
-                  DataColumn(
-                    label: Container(
-                      height: 60,
-                      width: 80,
-                      color: Color(0xff2E8CBB),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'SUGAR',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //PANIND
-                  DataColumn(
-                    label: Container(
-                      decoration: BoxDecoration(
-                          color: Color(0xff096C9F),
-                          borderRadius:
-                          BorderRadius.only(topRight: Radius.circular(10.0))),
-                      height: 60,
-                      width: 80,
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: Text(
-                          'PANIND',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-                rows: List<DataRow>.generate(
-                  controller.locationsList.length,
-                      (index) => DataRow(
-                    color: MaterialStateColor.resolveWith(
-                          (states) {
-                        i = 0;
-                        return controller.locationsList[index] == "Households" ||
-                            controller.locationsList[index] == "Interventions" ||
-                            controller.locationsList[index] ==
-                                "HH with Annual Addl. Income"
-                            ? Color(0xff008CD3).withOpacity(0.3)
-                            : index.isEven
-                            ? Colors.blue.shade50
-                            : Colors.white;
-                      },
-                    ),
-                    cells: [
-                      DataCell(
-                        Container(
-                          width: 150,
-                          padding: EdgeInsets.only(left: 10),
-                          child: Row(
-                            children: [
-                              Text(
-                                controller.locationsList[index],
-                                style: controller.locationsList[index] ==
-                                    "Households" ||
-                                    controller.locationsList[index] ==
-                                        "Interventions" ||
-                                    controller.locationsList[index] ==
-                                        "HH with Annual\nAddl. Income"
-                                    ? TextStyle(
-                                    color: CustomColorTheme.textColor,
-                                    fontWeight: CustomFontTheme.headingwt,
-                                    fontSize: CustomFontTheme.textSize)
-                                    : AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-                              Spacer(),
-                              VerticalDivider(
-                                width: 1,
-                                color: Color(0xff181818).withOpacity(0.3),
-                                thickness: 1,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              //     : controller.DPM[index].toString()), // changes required here
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-                      //alr
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.ALR[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-                      //bgm
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.BGM[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-                      //kdp
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.KDP[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-                      //cha
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.CHA[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
+                      Text(
+                        firstColumn == "Households" ||
+                            firstColumn == "Interventions" ||
+                            firstColumn == "HH with Annual Addl. Income"
+                            ?""
+                        :controller.overviewMappedList![0][controller.objectKeys[j]]![location]==null?"0":formatNumber(controller.overviewMappedList![0][controller.objectKeys[j]]![location])+"  ",
+
+                        style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.black,
                         ),
                       ),
 
-                      ///__________________________ South _______________________
-                      DataCell(
-                        Container(
-                          height: 60,
-                          color: Color(0xff096C9F),
-                          width: 80,
-                          child: Center(
-                            child: Text(
-                              controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0',
-                              // : controller.SOUTH[index].toString(),
-                              style: AppStyle.textStyleInterMed(
-                                  fontSize: 14, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                      // meg
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.CHA[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-                      //umg
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.CHA[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-                      //jgr
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.CHA[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-                      //lan
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.CHA[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
 
-                      ///__________________________ NE _______________________
-                      DataCell(
-                        Container(
-                          height: 60,
-                          color: Color(0xff096C9F),
-                          width: 80,
-                          child: Center(
-                            child: Text(
-                              controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual Addl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0',
-                              // : controller.SOUTH[index].toString(),
-                              style: AppStyle.textStyleInterMed(
-                                  fontSize: 14, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                      //CUT
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.CHA[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-                      //MED
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.CHA[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-                      //BOK
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.CHA[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-                      //RAJ
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.CHA[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-                      //KAL
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.CHA[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-                      //EAST
-                      ///__________________________ EAST _______________________
-                      DataCell(
-                        Container(
-                          height: 60,
-                          color: Color(0xff096C9F),
-                          width: 80,
-                          child: Center(
-                            child: Text(
-                              controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0',
-                              // : controller.SOUTH[index].toString(),
-                              style: AppStyle.textStyleInterMed(
-                                  fontSize: 14, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                      //CEMENT
-                      DataCell(
-                        Container(
-                          height: 60,
-                          color: Color(0xff2E8CBB),
-                          width: 80,
-                          child: Center(
-                            child: Text(
-                              controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0',
-                              // : controller.SOUTH[index].toString(),
-                              style: AppStyle.textStyleInterMed(
-                                  fontSize: 14, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
 
-                      //NIG
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.CHA[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-                      //RAM
-
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.CHA[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-
-                      //JOW
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.CHA[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-
-                      //NIN
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.CHA[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-
-                      //KOL
-                      DataCell(
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              (controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0'),
-                              // : controller.CHA[index].toString()),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-
-                      //SUGAR
-                      DataCell(
-                        Container(
-                          height: 60,
-                          color: Color(0xff2E8CBB),
-                          width: 80,
-                          child: Center(
-                            child: Text(
-                              controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0',
-                              // : controller.SOUTH[index].toString(),
-                              style: AppStyle.textStyleInterMed(
-                                  fontSize: 14, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      //PANIND
-                      DataCell(
-                        Container(
-                          height: 60,
-                          color: Color(0xff096C9F),
-                          width: 80,
-                          child: Center(
-                            child: Text(
-                              controller.locationsList[index] == "Households" ||
-                                  controller.locationsList[index] ==
-                                      "Interventions" ||
-                                  controller.locationsList[index] ==
-                                      "HH with Annual\nAddl. Income"
-                                  ? ""
-                                  : controller.overviewMappedList![0][controller.locationsListMapping[index]] != null ? controller.overviewMappedList![0][controller.locationsListMapping[index]]![controller.allLocations[i++]].toString() : '0',
-                              // : controller.SOUTH[index].toString(),
-                              style: AppStyle.textStyleInterMed(
-                                  fontSize: 14, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      // Additional row for total
                     ],
                   ),
-                )),
-          )),
-      replacement: Container(),
+                ),
+              ),
+            );
+          }
+          // Add an empty cell for the Region column if there are locations in the region
+          if (controller.regionLocation![region]!.isNotEmpty) {
+            cells.add(
+              DataCell(
+                Container(
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF096C9F),
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      firstColumn == "Households" ||
+                          firstColumn == "Interventions" ||
+                          firstColumn == "HH with Annual Addl. Income"
+                          ?"":sum.toString(),
+                      textAlign: TextAlign.right,
+
+                      style: TextStyle(
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          };
+        }
+        rows.add(DataRow(cells: cells));
+        j++;
+      }
+      return rows;
+    }
+    return isLoading == true
+        ? Center(child: CircularProgressIndicator())
+        : SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: DataTable(
+          dividerThickness: 0,
+          columnSpacing: 0,
+          horizontalMargin: 0,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 0,
+                blurRadius: 4,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          columns: buildColumns(),
+          rows: buildRows(),
+        ),
+      ),
     );
-
-
   }
 
-  Widget tableDataLocation(int i) {
-
-    List<DataColumn> dataColumns = [];
-
-    // Create the "Details" DataColumn
-    dataColumns.add(DataColumn(
-      label: Expanded(
-        child: Container(
-          height: 60,
-          decoration: BoxDecoration(
-            color: Color(0xff008CD3),
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10.0),
-            ),
-          ),
-          padding: EdgeInsets.only(left: 10),
-          child: Center(
-            child: Text(
-              'Details',
-              style: TextStyle(
-                fontWeight: CustomFontTheme.headingwt,
-                fontSize: CustomFontTheme.textSize,
-                color: Colors.white,
+  Widget tableParticularRegion(int i) {
+    int j =0;
+    List<DataColumn> buildColumns() {
+      List<DataColumn> columns = [];
+      columns.add(
+        DataColumn(
+          label: Expanded(
+            child: Container(
+              height: 60,
+width: MySize.screenWidth*(80/MySize.screenWidth),
+              decoration: BoxDecoration(
+                color: Color(0xff008CD3),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                ),
+              ),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  'Locations',
+                  style: TextStyle(
+                    fontWeight: CustomFontTheme.headingwt,
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ),
         ),
-      ),
-    ));
+      );
 
-    // Create DataColumns based on controller.locationName
-    for (String location in controller.locations!.map((location) => location['locationCode'].toString()).toList()) {
-      dataColumns.add(DataColumn(
-        label: Container(
-          height: 60,
-          width: 80,
-          color: Color(0xff008CD3),
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Center(
-            child: Text(
-              location,
-              style: TextStyle(
-                fontWeight: CustomFontTheme.headingwt,
-                fontSize: CustomFontTheme.textSize,
-                color: Colors.white,
+
+        for (var location in controller.regionLocation![controller.selectRegion]!) {
+          // Add the Location column
+          columns.add(
+            DataColumn(
+              label: Expanded(
+                child: Container(
+                  height: 60,
+                  width:MySize.screenWidth*(80/MySize.screenWidth),
+                  decoration: BoxDecoration(
+                    color: Color(0xff008CD3),
+
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      location,
+                      style: TextStyle(
+                        fontWeight: CustomFontTheme.headingwt,
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ));
+          );
+        }
+        // Add the Region column if there are locations in the region
+        if (controller.regionLocation![controller.selectRegion]!.isNotEmpty) {
+          columns.add(
+            DataColumn(
+              label: Expanded(
+                child: Container(
+                  height: 60,
+                  width: MySize.safeWidth!*0.3,
+                  decoration: BoxDecoration(
+                    //#096C9F
+
+                    color: Color(0xFF096C9F),
+
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      controller.selectRegion!,
+
+                      style: TextStyle(
+
+
+                        fontWeight: CustomFontTheme.headingwt,
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.white,
+                      ),
+                      maxLines: 2, // Adjust as needed
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
+      return columns;
     }
 
-    // Add the "Total" DataColumn
-    dataColumns.add(DataColumn(
-      label: Container(
-        decoration: BoxDecoration(
-          color: Color(0xff096C9F),
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(10.0),
-          ),
-        ),
-        height: 60,
-        width: 80,
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Center(
-          child: Text(
-            'Total',
-            style: TextStyle(
-              fontWeight: CustomFontTheme.headingwt,
-              fontSize: CustomFontTheme.textSize,
-              color: Colors.white,
+    List<DataRow> buildRows() {
+
+      List<DataRow> rows = [];
+      bool isEven = false;
+      for (var firstColumn in controller.locationsList) {
+        isEven = !isEven;
+        List<DataCell> cells = [];
+        cells.add(
+          DataCell(
+            Container(
+              height: MySize.safeHeight!*(70/MySize.screenHeight),
+              decoration: BoxDecoration(
+                color:firstColumn == "Households" ||
+                    firstColumn == "Interventions" ||
+                    firstColumn ==
+                        "HH with Annual Addl. Income"
+                    ? Color(0xff008CD3).withOpacity(0.3)
+                    :isEven
+                    ? Colors.blue.shade50
+                    : Colors.white,
+
+              ),
+
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  firstColumn,
+                  style: TextStyle(
+                    fontWeight: CustomFontTheme.headingwt,
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-    ));
+
+        );
+        print("j$j");
 
 
-
-    return Visibility(
-        visible: controller.regionWiseMappedList != null && controller.regionWiseMappedList!.isNotEmpty,
-        child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: DataTable(
-                  dividerThickness: 00,
+          num sum=0;
+          for (var location in controller.regionLocation![controller.selectRegion]!) {
+            controller.objectKeys[j] == "Households" ||
+                controller.objectKeys[j] == "Interventions" ||
+                controller.objectKeys[j] == "HH with Annual Addl. Income"
+                ?sum+=0
+                :controller.overviewMappedList![0][controller.objectKeys[j]]![location]==null?sum+=0:sum+=controller.overviewMappedList![0][controller.objectKeys[j]]![location];
+            cells.add(
+              DataCell(
+                Container(
+                  height: 60,
+                  width: MySize.screenWidth*(80/MySize.screenWidth),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 0,
-                        blurRadius: 4,
-                        offset: Offset(0, 4),
+                    color:
+                        firstColumn == "Households" ||
+                        firstColumn == "Interventions" ||
+                        firstColumn == "HH with Annual Addl. Income"
+                        ? Color(0xff008CD3).withOpacity(0.3)
+                        :isEven
+                        ? Colors.blue.shade50
+                        : Colors.white,
+
+                  ),
+
+                  child:Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      VerticalDivider(
+                        width: 1,
+                        color: Color(0xff181818).withOpacity(0.3),
+                        thickness: 1,
                       ),
+                      Text(
+                        firstColumn == "Households" ||
+                            firstColumn == "Interventions" ||
+                            firstColumn == "HH with Annual Addl. Income"
+                            ?""
+                        :controller.overviewMappedList![0][controller.objectKeys[j]]![location]==null?"0":formatNumber(controller.overviewMappedList![0][controller.objectKeys[j]]![location])+"  ",
+
+                        style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.black,
+                        ),
+                      ),
+
+
+
                     ],
                   ),
-                  columnSpacing: 0,
-                  horizontalMargin: 0,
-                  columns: dataColumns,
-                  rows: List<DataRow>.generate(
-                    controller.locationsList.length,
-                        (index) => DataRow(
-                      color: MaterialStateColor.resolveWith(
-                            (states) {
-                          return controller.locationsList[index] == "Households" ||
-                              controller.locationsList[index] == "Interventions" ||
-                              controller.locationsList[index] ==
-                                  "HH with Annual\nAddl. Income"
-                              ? Color(0xff008CD3).withOpacity(0.3)
-                              : index.isEven
-                              ? Colors.blue.shade50
-                              : Colors.white;
-                        },
+                ),
+              ),
+            );
+          }
+          // Add an empty cell for the Region column if there are locations in the region
+          if (controller.regionLocation![controller.selectRegion]!.isNotEmpty) {
+            cells.add(
+              DataCell(
+                Container(
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF096C9F),
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      firstColumn == "Households" ||
+                          firstColumn == "Interventions" ||
+                          firstColumn == "HH with Annual Addl. Income"
+                          ?"":sum.toString(),
+                      textAlign: TextAlign.right,
+
+                      style: TextStyle(
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.white,
                       ),
-                      cells: [
-                        DataCell(
-                          Container(
-                            width: 150,
-                            padding: EdgeInsets.only(left: 10),
-                            child: Row(
-                              children: [
-                                Text(
-                                  controller.locationsList[index],
-                                  style: controller.locationsList[index] ==
-                                      "Households" ||
-                                      controller.locationsList[index] ==
-                                          "Interventions" ||
-                                      controller.locationsList[index] ==
-                                          "HH with Annual\nAddl. Income"
-                                      ? TextStyle(
-                                      color: CustomColorTheme.textColor,
-                                      fontWeight: CustomFontTheme.headingwt,
-                                      fontSize: CustomFontTheme.textSize)
-                                      : AppStyle.textStyleInterMed(fontSize: 14),
-                                ),
-                                Spacer(),
-                                VerticalDivider(
-                                  width: 1,
-                                  color: Color(0xff181818).withOpacity(0.3),
-                                  thickness: 1,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        for (String location in controller.locations!.map((location) => location['locationCode'].toString()).toList())
-                        // for (String key in controller.objectKeys)
-                          DataCell(
-                            Row(
-                              children: [
-                                Spacer(),
-                                Text(
-                                  (controller.locationsList[index] == "Households" ||
-                                      controller.locationsList[index] == "Interventions" ||
-                                      controller.locationsList[index] == "HH with Annual\nAddl. Income"
-                                      ? ""
-                                      : controller.regionWiseMappedList![0][controller.locationsListMapping[index]] != null ? controller.regionWiseMappedList![0][controller.locationsListMapping[index]]![location].toString() : '0'),
-                                  // : controller.DPM[index].toString()),
-                                  style: AppStyle.textStyleInterMed(fontSize: 14),
-                                ),
-                                Spacer(),
-                                VerticalDivider(
-                                  width: 1,
-                                  color: Color(0xff181818).withOpacity(0.3),
-                                  thickness: 1,
-                                )
-                              ],
-                            ),
-                          ),
-
-                        ///__________________________ South _______________________
-                        DataCell(
-                          Container(
-                            height: 60,
-                            color: Color(0xff096C9F),
-                            width: 80,
-                            child: Center(
-                              child: Text(
-                                controller.locationsList[index] == "Households" ||
-                                    controller.locationsList[index] ==
-                                        "Interventions" ||
-                                    controller.locationsList[index] ==
-                                        "HH with Annual\nAddl. Income"
-                                    ? ""
-                                    : controller.regionWiseMappedList![0][controller.locationsListMapping[index]] != null ? controller.regionWiseMappedList![0][controller.locationsListMapping[index]]!["TOTAL"].toString() : '0',
-                                // : controller.SOUTH[index].toString(),
-                                style: AppStyle.textStyleInterMed(
-                                    fontSize: 14, color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        // Additional row for total
-                      ],
                     ),
-                  ) /*+
-                            [
-                              DataRow(
-                                color: MaterialStateColor.resolveWith(
-                                        (states) => Colors.white),
-                                cells: [
-                                  DataCell(
-                                    Text(
-                                      'Total',
-                                      style: TextStyle(
-                                        fontSize: CustomFontTheme.textSize,
-                                        fontWeight: CustomFontTheme.headingwt,
-                                      ),
-                                    ),
-                                  ),
-                                  DataCell(
-                                    Text(
-                                      "44444",
-                                      style: TextStyle(
-                                        color: CustomColorTheme.textColor,
-                                        fontWeight: CustomFontTheme.headingwt,
-                                        fontSize: CustomFontTheme.textSize,
-                                      ),
-                                    ),
-                                  ),
-                                  DataCell(
-                                    Text(
-                                      "64546",
-                                      style: TextStyle(
-                                        color: CustomColorTheme.textColor,
-                                        fontWeight: CustomFontTheme.headingwt,
-                                        fontSize: CustomFontTheme.textSize,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],*/
+                  ),
+                ),
               ),
-            )),
-        replacement: Container());
-  }
+            );
+          };
 
-
-  Widget tableDataLocationView() {
-
-    List<DataColumn> dataColumns = [];
-
-    // Create the "Details" DataColumn
-    dataColumns.add(DataColumn(
-      label: Expanded(
-        child: Container(
-          height: 60,
+        rows.add(DataRow(cells: cells));
+        j++;
+      }
+      return rows;
+    }
+    return isLoading == true
+        ? Center(child: CircularProgressIndicator())
+        : SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: DataTable(
+          dividerThickness: 0,
+          columnSpacing: 0,
+          horizontalMargin: 0,
           decoration: BoxDecoration(
-            color: Color(0xff008CD3),
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10.0),
-            ),
-          ),
-          padding: EdgeInsets.only(left: 10),
-          child: Center(
-            child: Text(
-              'Details',
-              style: TextStyle(
-                fontWeight: CustomFontTheme.headingwt,
-                fontSize: CustomFontTheme.textSize,
-                color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 0,
+                blurRadius: 4,
+                offset: Offset(0, 4),
               ),
-            ),
+            ],
           ),
+          columns: buildColumns(),
+          rows: buildRows(),
         ),
       ),
-    ));
-
-    // Create DataColumns based on controller.locationName
-    for (int i = 0; i < controller.clusters!.map((cluster) => cluster['clusterId'].toString()).toList().length; i++) {
-      dataColumns.add(DataColumn(
-        label: Container(
-          height: 60,
-          width: 80,
-          color: Color(0xff008CD3),
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Center(
-            child: Text(
-              "VDF ${i+1}",
-              style: TextStyle(
-                fontWeight: CustomFontTheme.headingwt,
-                fontSize: CustomFontTheme.textSize,
-                color: Colors.white,
+    );
+  }
+  Widget tableDataLocationView(int i) {
+    int j =0;
+    List<DataColumn> buildColumns() {
+      List<DataColumn> columns = [];
+      columns.add(
+        DataColumn(
+          label: Expanded(
+            child: Container(
+              height: 60,
+              width: MySize.screenWidth*(80/MySize.screenWidth),
+              decoration: BoxDecoration(
+                color: Color(0xff008CD3),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                ),
+              ),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  'Details',
+                  style: TextStyle(
+                    fontWeight: CustomFontTheme.headingwt,
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ),
         ),
-      ));
+      );
+
+
+      for (var name in controller.vdfNames!) {
+        // Add the Location column
+        if(name=="null"){
+          continue;
+        }
+        else {
+          columns.add(
+            DataColumn(
+              label: Expanded(
+                child: Container(
+                  height: 60,
+                  width:MySize.screenWidth*(80/MySize.screenWidth),
+                  decoration: BoxDecoration(
+                    color: Color(0xff008CD3),
+
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      name,
+                      textAlign: TextAlign.center,
+                      softWrap: true,
+                      style: TextStyle(
+                        fontWeight: CustomFontTheme.headingwt,
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+      }
+
+      columns.add(
+        DataColumn(
+          label: Expanded(
+            child: Container(
+              height: 60,
+              width: MySize.safeWidth!*0.3,
+              decoration: BoxDecoration(
+                //#096C9F
+
+                color: Color(0xFF096C9F),
+
+              ),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  "Total",
+
+                  style: TextStyle(
+
+
+                    fontWeight: CustomFontTheme.headingwt,
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+                  maxLines: 2, // Adjust as needed
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+
+      return columns;
     }
 
-    // Add the "Total" DataColumn
-    dataColumns.add(DataColumn(
-      label: Container(
-        decoration: BoxDecoration(
-          color: Color(0xff096C9F),
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(10.0),
-          ),
-        ),
-        height: 60,
-        width: 80,
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Center(
-          child: Text(
-            'Total',
-            style: TextStyle(
-              fontWeight: CustomFontTheme.headingwt,
-              fontSize: CustomFontTheme.textSize,
-              color: Colors.white,
+    List<DataRow> buildRows() {
+
+      List<DataRow> rows = [];
+      bool isEven = false;
+      for (var firstColumn in controller.locationsList) {
+        isEven = !isEven;
+        List<DataCell> cells = [];
+        cells.add(
+          DataCell(
+            Container(
+              height: MySize.safeHeight!*(70/MySize.screenHeight),
+              decoration: BoxDecoration(
+                color:firstColumn == "Households" ||
+                    firstColumn == "Interventions" ||
+                    firstColumn ==
+                        "HH with Annual Addl. Income"
+                    ? Color(0xff008CD3).withOpacity(0.3)
+                    :isEven
+                    ? Colors.blue.shade50
+                    : Colors.white,
+
+              ),
+
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  firstColumn,
+                  style: TextStyle(
+                    fontWeight: CustomFontTheme.headingwt,
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
             ),
           ),
+
+        );
+        print("j$j");
+
+
+        num sum=0;
+        for (var name in controller.vdfNames!) {
+          controller.objectKeys[j] == "Households" ||
+              controller.objectKeys[j] == "Interventions" ||
+              controller.objectKeys[j] == "HH with Annual Addl. Income"
+              ?sum+=0
+              :controller.locationWiseMappedList![0][controller.objectKeys[j]]![name]==null
+              ?sum+=0:sum+=controller.locationWiseMappedList![0][controller.objectKeys[j]]![name];
+         if(name=="null"){
+           continue;
+         }
+         else{
+           cells.add(
+             DataCell(
+               Container(
+                 height: 60,
+                 width: MySize.screenWidth*(80/MySize.screenWidth),
+                 decoration: BoxDecoration(
+                   color:
+                   firstColumn == "Households" ||
+                       firstColumn == "Interventions" ||
+                       firstColumn == "HH with Annual Addl. Income"
+                       ? Color(0xff008CD3).withOpacity(0.3)
+                       :isEven
+                       ? Colors.blue.shade50
+                       : Colors.white,
+
+                 ),
+
+                 child:Row(
+                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                   children: [
+                     VerticalDivider(
+                       width: 1,
+                       color: Color(0xff181818).withOpacity(0.3),
+                       thickness: 1,
+                     ),
+                     Text(
+                       firstColumn == "Households" ||
+                           firstColumn == "Interventions" ||
+                           firstColumn == "HH with Annual Addl. Income"
+                           ?""
+                           :controller.locationWiseMappedList![0][controller.objectKeys[j]]![name]==null
+                           ?"0":formatNumber(controller.locationWiseMappedList![0][controller.objectKeys[j]]![name])+"  ",
+
+                       style: TextStyle(
+                         fontSize: CustomFontTheme.textSize,
+                         color: Colors.black,
+                       ),
+                     ),
+
+
+
+                   ],
+                 ),
+               ),
+             ),
+           );
+         }
+        }
+        // Add an empty cell for the Region column if there are locations in the region
+
+          cells.add(
+            DataCell(
+              Container(
+                height: 60,
+                decoration: BoxDecoration(
+                  color: Color(0xFF096C9F),
+                ),
+                padding: EdgeInsets.only(left: 10),
+                child: Center(
+                  child: Text(
+                    firstColumn == "Households" ||
+                        firstColumn == "Interventions" ||
+                        firstColumn == "HH with Annual Addl. Income"
+                        ?"":sum.toString(),
+                    textAlign: TextAlign.right,
+
+                    style: TextStyle(
+                      fontSize: CustomFontTheme.textSize,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+
+
+        rows.add(DataRow(cells: cells));
+        j++;
+      }
+      return rows;
+    }
+    return isLoadingLocation == true
+        ? Center(child: CircularProgressIndicator())
+        : SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: DataTable(
+          dividerThickness: 0,
+          columnSpacing: 0,
+          horizontalMargin: 0,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 0,
+                blurRadius: 4,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          columns: buildColumns(),
+          rows: buildRows(),
         ),
       ),
-    ));
-
-
-    return Visibility(
-        visible: controller.locationWiseMappedList != null && controller.locationWiseMappedList!.isNotEmpty,
-        child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: DataTable(
-                  dividerThickness: 00,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 0,
-                        blurRadius: 4,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  columnSpacing: 0,
-                  horizontalMargin: 0,
-                  columns: dataColumns,
-                  rows: List<DataRow>.generate(
-                    controller.locationsList.length,
-                        (index) => DataRow(
-                      color: MaterialStateColor.resolveWith(
-                            (states) {
-                          return controller.locationsList[index] == "Households" ||
-                              controller.locationsList[index] == "Interventions" ||
-                              controller.locationsList[index] ==
-                                  "HH with Annual\nAddl. Income"
-                              ? Color(0xff008CD3).withOpacity(0.3)
-                              : index.isEven
-                              ? Colors.blue.shade50
-                              : Colors.white;
-                        },
-                      ),
-                      cells: [
-                        DataCell(
-                          Container(
-                            width: 150,
-                            padding: EdgeInsets.only(left: 10),
-                            child: Row(
-                              children: [
-                                Text(
-                                  controller.locationsList[index],
-                                  style: controller.locationsList[index] ==
-                                      "Households" ||
-                                      controller.locationsList[index] ==
-                                          "Interventions" ||
-                                      controller.locationsList[index] ==
-                                          "HH with Annual\nAddl. Income"
-                                      ? TextStyle(
-                                      color: CustomColorTheme.textColor,
-                                      fontWeight: CustomFontTheme.headingwt,
-                                      fontSize: CustomFontTheme.textSize)
-                                      : AppStyle.textStyleInterMed(fontSize: 14),
-                                ),
-                                Spacer(),
-                                VerticalDivider(
-                                  width: 1,
-                                  color: Color(0xff181818).withOpacity(0.3),
-                                  thickness: 1,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        for (String cluster in controller.clusters!.map((cluster) => cluster['vdfName'].toString()).toList())
-                        // for (String key in controller.objectKeys)
-                          DataCell(
-                            Row(
-                              children: [
-                                Spacer(),
-                                Text(
-                                  (controller.locationsList[index] == "Households" ||
-                                      controller.locationsList[index] == "Interventions" ||
-                                      controller.locationsList[index] == "HH with Annual\nAddl. Income"
-                                      ? ""
-                                      : controller.locationWiseMappedList!.isNotEmpty ?
-                                  (controller.locationWiseMappedList![0][controller.locationsListMapping[index]] != null ? controller.locationWiseMappedList![0][controller.locationsListMapping[index]]![cluster].toString() : '0')
-                                      : '0'),
-                                  // : controller.locationWiseMappedList![0][controller.locationsListMapping[index]] != null ? controller.locationWiseMappedList![0][controller.locationsListMapping[index]]![cluster].toString() : '0'),
-                                  // : controller.DPM[index].toString()),
-                                  style: AppStyle.textStyleInterMed(fontSize: 14),
-                                ),
-                                Spacer(),
-                                VerticalDivider(
-                                  width: 1,
-                                  color: Color(0xff181818).withOpacity(0.3),
-                                  thickness: 1,
-                                )
-                              ],
-                            ),
-                          ),
-
-                        ///__________________________ South _______________________
-                        DataCell(
-                          Container(
-                            height: 60,
-                            color: Color(0xff096C9F),
-                            width: 80,
-                            child: Center(
-                              child: Text(
-                                controller.locationsList[index] == "Households" ||
-                                    controller.locationsList[index] ==
-                                        "Interventions" ||
-                                    controller.locationsList[index] ==
-                                        "HH with Annual\nAddl. Income"
-                                    ? ""
-                                    : controller.locationWiseMappedList!.isNotEmpty ?
-                                (controller.locationWiseMappedList![0][controller.locationsListMapping[index]] != null ? controller.locationWiseMappedList![0][controller.locationsListMapping[index]]!["TOTAL"].toString() : '0')
-                                    : '0',
-                                // : controller.SOUTH[index].toString(),
-                                style: AppStyle.textStyleInterMed(
-                                    fontSize: 14, color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        // Additional row for total
-                      ],
-                    ),
-                  )
-              ),
-            )),
-        replacement: Container());
+    );
   }
+
 
 
 }

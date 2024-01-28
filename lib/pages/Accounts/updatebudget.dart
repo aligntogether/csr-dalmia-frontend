@@ -17,6 +17,8 @@ import 'package:dalmia/pages/CDO/cdoappbar.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
+import '../../common/app_style.dart';
+
 class UpdateBudget extends StatefulWidget {
   const UpdateBudget({Key? key}) : super(key: key);
 
@@ -136,12 +138,8 @@ class _UpdateBudgetState extends State<UpdateBudget> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100),
-          child: CdoAppBar(
-            heading: 'Update Budget',
-          ),
-        ),
+        appBar:appBarCommon(controller, context,"",
+            centerAlignText: true, title: "Reports"),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.only(left: 20, top: 20),

@@ -16,6 +16,8 @@ import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
+import '../../../Constants/constants.dart';
+import '../../../helper/sharedpref.dart';
 import 'Home.dart';
 
 class Cumulative extends StatefulWidget {
@@ -69,17 +71,29 @@ class _CumulativeState extends State<Cumulative> {
   }
 
   String? panchayatid;
+  String? refId;
+
   @override
   void initState() {
     super.initState();
-    fetchPanchayatData(); // Call the method to fetch API data when the page initializes
+    SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
+        .then((value) {
+      setState(() {
+
+        refId = value;
+      });
+
+      // Now that refId is assigned, you can call fetchPanchayatData()
+      fetchPanchayatData();
+    });
   }
 
   List<Map<String, dynamic>> panchayatData = [];
   Future<void> fetchPanchayatData() async {
     try {
+      print('refId: $refId');
       final response = await http.get(
-        Uri.parse('$base/report-panchayat-wise?vdfId=10001'),
+        Uri.parse('$base/report-panchayat-wise?vdfId=$refId'),
       );
 
       if (response.statusCode == 200) {

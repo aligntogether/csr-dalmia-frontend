@@ -2,16 +2,13 @@ import 'dart:convert';
 
 import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/common/navmenu.dart';
-
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
-
-
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'dart:math';
 
 import 'Home.dart';
@@ -35,7 +32,7 @@ class _Form1State extends State<Form1> {
   Future<void> fetchData() async {
     try {
       final response = await http.get(
-        Uri.parse('$base/report-form1?vdfId=10001'),
+        Uri.parse('$base/report-form1?vdfId=20120'),
       );
 
       if (response.statusCode == 200) {
@@ -96,10 +93,6 @@ class _Form1State extends State<Form1> {
   @override
   Widget build(BuildContext context) {
     final Random random = Random();
-    final List<int> householdList =
-        List.generate(10, (index) => random.nextInt(100));
-    final List<int> populationList =
-        List.generate(10, (index) => random.nextInt(100));
 
     return SafeArea(
       child: Scaffold(
@@ -131,9 +124,7 @@ class _Form1State extends State<Form1> {
                       _toggleMenu();
                     },
                     icon: const Icon(Icons.menu,
-                        color: CustomColorTheme
-                            .primaryColor // Update with your color
-                        ),
+                        color: CustomColorTheme.primaryColor),
                   ),
                 ],
                 bottom: PreferredSize(
@@ -152,15 +143,11 @@ class _Form1State extends State<Form1> {
                     ),
                     padding: const EdgeInsets.only(left: 30, bottom: 10),
                     alignment: Alignment.topCenter,
-                    // color: Colors.white,
                     child: Text(
                       'Reports',
                       style: const TextStyle(
                         fontSize: CustomFontTheme.headingSize,
-
-                        // Adjust the font size
-                        fontWeight:
-                            CustomFontTheme.headingwt, // Adjust the font weight
+                        fontWeight: CustomFontTheme.headingwt,
                       ),
                     ),
                   ),
@@ -229,8 +216,6 @@ class _Form1State extends State<Form1> {
                               topRight: Radius.circular(10),
                             ),
                           ),
-                          // headingRowColor: MaterialStateColor.resolveWith(
-                          //     (states) => Color(0xFF008CD3)),
                           columns: const <DataColumn>[
                             DataColumn(
                               label: Text(
@@ -267,11 +252,11 @@ class _Form1State extends State<Form1> {
                           ],
                           rows: List<DataRow>.generate(
                             apiData.length + 1,
-                            (index) {
+                                (index) {
                               if (index < apiData.length) {
                                 return DataRow(
                                   color: MaterialStateColor.resolveWith(
-                                    (states) {
+                                        (states) {
                                       return index.isOdd
                                           ? Colors.blue.shade50
                                           : Colors.white;
@@ -281,45 +266,50 @@ class _Form1State extends State<Form1> {
                                     DataCell(Text(
                                       apiData.isNotEmpty
                                           ? apiData[index]['panchayatName']
-                                              .toString()
+                                          .toString()
                                           : '0',
                                       style: TextStyle(fontSize: 14),
                                     )),
                                     DataCell(Text(
                                       apiData.isNotEmpty
                                           ? apiData[index]['villageName']
-                                              .toString()
+                                          .toString()
                                           : '0',
                                       style: TextStyle(fontSize: 14),
                                     )),
                                     DataCell(Text(
                                       apiData.isNotEmpty
                                           ? apiData[index]['householdCount']
-                                              .toString()
+                                          .toString()
                                           : '0',
                                       style: TextStyle(fontSize: 14),
                                     )),
                                     DataCell(Text(
                                       apiData.isNotEmpty
                                           ? apiData[index]['populationCount']
-                                              .toString()
+                                          .toString()
                                           : '0',
                                       style: TextStyle(fontSize: 14),
                                     )),
                                   ],
                                 );
                               } else {
-                                final totalHouseholds = apiData
-                                    .map<int>((e) => e['householdCount'] as int)
+                                final totalHouseholds = apiData.isEmpty
+                                    ? 0
+                                    : apiData
+                                    .map<int>(
+                                        (e) => e['householdCount'] as int)
                                     .reduce((a, b) => a + b);
-                                final totalPopulation = apiData
+                                final totalPopulation = apiData.isEmpty
+                                    ? 0
+                                    : apiData
                                     .map<int>(
                                         (e) => e['populationCount'] as int)
                                     .reduce((a, b) => a + b);
 
                                 return DataRow(
                                   color: MaterialStateColor.resolveWith(
-                                    (states) => Colors.white,
+                                        (states) => Colors.white,
                                   ),
                                   cells: <DataCell>[
                                     const DataCell(Text('')),

@@ -20,7 +20,7 @@ class AmountUtilizedController extends GetxController {
   }
 
 
- Map<int,String>? regions;
+  Map<int,String>? regions;
   Map<String,List<String>>?locations;
   Map<String,dynamic>? data;
   void updateData(Map<String,dynamic> data){

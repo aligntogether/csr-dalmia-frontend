@@ -120,24 +120,7 @@ class _MyFormState extends State<AddHead> {
     }
   }
 
-  Future<void> fetchSecondaryOptions() async {
-    String url = '$base/dropdown?titleId=104';
-    try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        CommonObject commonObject =
-            CommonObject.fromJson(json.decode(response.body));
-        List<dynamic> options = commonObject.respBody['options'];
-        setState(() {
-          secondaryEmploymentOptions = options;
-        });
-      } else {
-        throw Exception('Failed to load caste options: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error: $e');
-    }
-  }
+
 
   List<Map<String, dynamic>> familyMembers = [];
   @override
@@ -147,12 +130,12 @@ class _MyFormState extends State<AddHead> {
     fetchCasteOptions();
     fetchEducationOptions();
     fetchPrimaryOptions();
-    fetchSecondaryOptions();
+
 
     getFamilyMembers(widget.id ?? '0').then(
       (familyMembers) {
         var headIndex = getHeadIndex(familyMembers);
-        print('head index is $headIndex');
+        print('head index is ${widget.id}');
         if (familyMembers.length > headIndex) {
           _nameController = TextEditingController(
               text: familyMembers[headIndex]['memberName']);
@@ -221,8 +204,8 @@ class _MyFormState extends State<AddHead> {
   }
 
   Future<void> addMember() async {
+    print("i am here");
     try {
-      print('member id $memberId');
 
       print('dsb ${widget.id}');
       final response = await http.put(
@@ -234,8 +217,8 @@ class _MyFormState extends State<AddHead> {
         body: jsonEncode([
           {
             'memberName': _nameController.text,
-            'mobile': int.parse(_mobileController.text),
-            'dob': selectedDate?.toIso8601String(),
+            'mobile': int.parse(_mobileController.text==''?'0':_mobileController.text)  ,
+           'dob': selectedDate?.toIso8601String(),
             'gender': _selectedGender,
             'education':
                 _selectedEducation, // You may replace this with the actual value
@@ -325,6 +308,12 @@ class _MyFormState extends State<AddHead> {
                       contentPadding: EdgeInsets.symmetric(
                           horizontal:  MySize.screenWidth*(16/MySize.screenWidth), vertical: MySize.screenHeight*(20/MySize.screenHeight)),
                     ),
+                    onChanged: (value) {
+
+                      setState(() {
+
+                      });
+                    },
                   ),
                   SizedBox(height: height * 0.02),
                   TextFormField(
@@ -479,49 +468,63 @@ class _MyFormState extends State<AddHead> {
                   DropdownButtonFormField<int>(
                     value: _selectedPrimaryEmployment,
                     items: primaryEmploymentOptions.map<DropdownMenuItem<int>>(
-                        (dynamic primaryemployment) {
-                      return DropdownMenuItem<int>(
-                        value: primaryemployment['dataId'],
-                        child: Container(
-                          width: width*0.6,
-                          child: Text(
-                            primaryemployment['titleData'].toString(),
+                          (dynamic primaryemployment) {
+                        return DropdownMenuItem<int>(
+                          value: primaryemployment['dataId'],
+                          child: Container(
+                            width: width * 0.6,
+                            child: Text(
+                              primaryemployment['titleData'].toString(),
+                            ),
                           ),
-                        ),
-                      );
-                    }).toList(),
+                        );
+                      },
+                    ).toList(),
                     onChanged: (newValue) {
                       setState(() {
                         _selectedPrimaryEmployment = newValue;
+
+                        // Clear secondary employment if it matches the primary employment value
+                        if (_selectedSecondaryEmployment == newValue) {
+                          _selectedSecondaryEmployment = null;
+                        }
+
+                        secondaryEmploymentOptions.clear();
+                        secondaryEmploymentOptions.addAll(
+                          primaryEmploymentOptions.where((e) => e["dataId"] != newValue),
+                        );
                       });
                     },
                     icon: const Icon(
                       Icons.keyboard_arrow_down_sharp,
                       color: CustomColorTheme.iconColor,
                     ),
-                    decoration:  InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Primary Employment *',
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: MySize.screenWidth*(16/MySize.screenWidth), vertical: MySize.screenHeight*(20/MySize.screenHeight)),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: MySize.screenWidth * (16 / MySize.screenWidth),
+                        vertical: MySize.screenHeight * (20 / MySize.screenHeight),
+                      ),
                     ),
                   ),
                   SizedBox(height: height * 0.02),
                   DropdownButtonFormField<int>(
                     value: _selectedSecondaryEmployment,
                     items: secondaryEmploymentOptions
+                        .where((e) => e["dataId"] != _selectedPrimaryEmployment)
                         .map<DropdownMenuItem<int>>(
-                            (dynamic secondaryemployment) {
-                      return DropdownMenuItem<int>(
-                        value: secondaryemployment['dataId'],
-                        child:Container(
-                          width: width*0.6,
-
-                          child: Text(
-                            secondaryemployment['titleData'].toString(),
+                          (dynamic secondaryemployment) {
+                        return DropdownMenuItem<int>(
+                          value: secondaryemployment['dataId'],
+                          child: Container(
+                            width: width * 0.6,
+                            child: Text(
+                              secondaryemployment['titleData'].toString(),
+                            ),
                           ),
-                        ),
-                      );
-                    }).toList(),
+                        );
+                      },
+                    ).toList(),
                     onChanged: (newValue) {
                       setState(() {
                         _selectedSecondaryEmployment = newValue;
@@ -533,10 +536,14 @@ class _MyFormState extends State<AddHead> {
                     ),
                     decoration: InputDecoration(
                       labelText: 'Secondary Employment',
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: MySize.screenWidth*(16/MySize.screenWidth), vertical: MySize.screenHeight*(20/MySize.screenHeight)),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: MySize.screenWidth * (16 / MySize.screenWidth),
+                        vertical: MySize.screenHeight * (20 / MySize.screenHeight),
+                      ),
                     ),
                   ),
+
+
                   SizedBox(height: height * 0.02),
                   if (_validateFields &&
                       !(_formKey.currentState?.validate() ?? false))
