@@ -373,7 +373,13 @@ class _InterventionListViewState extends State<InterventionListView> {
         .fetchInterventionsData(
             controller, controller.skipRecordsCount, controller.recordsCount)
         .then((value) =>
-            {setState(() => controller.updateInterventionsData(value!))});
+            {
+              setState(() {
+    controller.updateInterventionsData(value!) ;
+    print("controller.interventionsData : ${controller.interventionsData!.length}");
+              })
+
+            });
   }
 
   void nextPage() {
@@ -455,7 +461,32 @@ class _InterventionListViewState extends State<InterventionListView> {
             ),
             Space.height(16),
             dataTable(controller),
-            Space.height(30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: goToFirst,
+                  icon: Icon(Icons.first_page),
+                ),
+                IconButton(
+                  onPressed: prevPage,
+                  icon: Icon(Icons.navigate_before),
+                ),
+                Text(
+                  'Page ${controller.pageNumber}',
+                  style: AppStyle.textStyleInterMed(fontSize: 14),
+                ),
+                IconButton(
+                  onPressed: nextPage,
+                  icon: Icon(Icons.navigate_next),
+                ),
+                IconButton(
+                  onPressed: goToLast,
+                  icon: Icon(Icons.last_page),
+                ),
+              ],
+            ),
+            Space.height(10),
             GestureDetector(
               onTap: () {
                 print("exportTableToExcel(controller)");
@@ -498,6 +529,8 @@ class _InterventionListViewState extends State<InterventionListView> {
                 ),
               ),
             ),
+            Space.height(20),
+
           ],
         ),
       ),
@@ -510,7 +543,7 @@ class _InterventionListViewState extends State<InterventionListView> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: DataTable(
-              dividerThickness: 00,
+              dividerThickness: 1,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: [
@@ -529,7 +562,7 @@ class _InterventionListViewState extends State<InterventionListView> {
                   label: Expanded(
                     child: Container(
                       height: 60,
-                      width: 20,
+                      width: MySize.screenWidth*(50/MySize.screenWidth),
                       decoration: BoxDecoration(
                           color: Color(0xff008CD3),
                           borderRadius: BorderRadius.only(
@@ -646,8 +679,7 @@ class _InterventionListViewState extends State<InterventionListView> {
 
                         padding: EdgeInsets.only(left: 10),
                         child: Row(
-                          // spacebetween
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                           children: [
                             Text(
                               "${index + 1}",
@@ -672,14 +704,19 @@ class _InterventionListViewState extends State<InterventionListView> {
                       Container(
                         width:MySize.screenWidth,
                         child: Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              controller.interventionsData![index]
-                              ['interventionName'] ??
-                                  '',
 
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
+                          children: [
+                           SizedBox(width: 10,),
+                            Container(
+                              width: MySize.screenWidth*0.95,
+                              child: Text(
+                                controller.interventionsData![index]
+                                ['interventionName'] ??
+                                    '',
+                                softWrap: true,
+                                maxLines: 2,
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
                             ),
                             Spacer(),
                             VerticalDivider(
