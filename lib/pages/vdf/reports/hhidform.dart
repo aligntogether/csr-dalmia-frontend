@@ -15,10 +15,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../Constants/constants.dart';
 import '../../../common/size_constant.dart';
+import '../../../helper/sharedpref.dart';
+import '../intervention/Followup.dart';
 import 'Home.dart';
 class HhidForm extends StatefulWidget {
   final String? streetid;
+
   const HhidForm({super.key, this.streetid});
 
   @override
@@ -27,16 +31,18 @@ class HhidForm extends StatefulWidget {
 
 class _HhidFormState extends State<HhidForm> {
   List<Map<String, dynamic>> HhidData = [];
+   String? vdfId;
   Future<void> fetchHhidData() async {
     try {
       print('street id -- ${widget.streetid}');
       final response = await http.get(
         Uri.parse(
-            'https://mobiledevcloud.dalmiabharat.com:443/csr/get-bystreet-cummulative-household-details?vdfId=10001&streetId=${widget.streetid}'),
+            'https://mobiledevcloud.dalmiabharat.com:443/csr/get-bystreet-cummulative-household-details?vdfId=${vdfId}&streetId=${widget.streetid}'),
       );
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(response.body);
+        print("uh${jsonData['resp_body']}");
 
         setState(() {
           HhidData = [
@@ -44,7 +50,8 @@ class _HhidFormState extends State<HhidForm> {
               {
                 // 'Hhid': entry.key,
                 'hhid': entry.value['hhid'],
-                'selected': entry.value['selected'],
+                'id': entry.value['id'],
+                'selected': entry.value['selected']=="true"?"Y":"N",
                 'memberName': entry.value['memberName'],
                 'interventionPlanned': entry.value['interventionPlanned'],
                 'interventionCompleted': entry.value['interventionCompleted'],
@@ -65,7 +72,13 @@ class _HhidFormState extends State<HhidForm> {
 
   void initState() {
     super.initState();
-    fetchHhidData(); // Call the method to fetch API data when the page initializes
+    SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+      vdfId = value;
+      fetchHhidData();
+
+    }));
+     // Call the method to fetch API data when the page initializes
   }
 
   int? selectedRadio;
@@ -370,7 +383,7 @@ class _HhidFormState extends State<HhidForm> {
                                   DataCell(
                                     InkWell(
                                       onTap: () {
-                                        _takeaction(context, hhid['hhid']);
+                                        _takeaction(context, hhid['id']);
                                       },
                                       child: Text(
                                         hhid['hhid'] ?? '',
@@ -390,7 +403,7 @@ class _HhidFormState extends State<HhidForm> {
                                       // Text('${hhid['selected'] ?? ''}'),
                                       Center(
                                     child: Text(
-                                        hhid['selected'] == '1' ? 'Y' : 'N'),
+                                        hhid['selected'] ),
                                   )),
                                   DataCell(
                                     Text('${hhid['memberName'] ?? ''}'),
@@ -561,17 +574,18 @@ class _HhidFormState extends State<HhidForm> {
                 SizedBox(
                   height: MySize.screenHeight*(20/MySize.screenHeight)
                 ),
-                Row(
+                Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             side: const BorderSide(
                                 width: 1, color: CustomColorTheme.primaryColor),
-                            minimumSize:  Size(80, 50),
+                        minimumSize:  Size(MySize.screenWidth*(100/MySize.screenWidth),MySize.screenHeight*(50/MySize.screenHeight)),
                             backgroundColor: CustomColorTheme.backgroundColor),
                         onPressed: () {},
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SvgPicture.asset('images/Excel.svg'),
                             const Text(
@@ -581,14 +595,19 @@ class _HhidFormState extends State<HhidForm> {
                             ),
                           ],
                         )),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(80, 50),
+                            minimumSize:  Size(MySize.screenWidth*(100/MySize.screenWidth),MySize.screenHeight*(50/MySize.screenHeight)),
+
                             side: const BorderSide(
                                 width: 1, color: CustomColorTheme.primaryColor),
                             backgroundColor: CustomColorTheme.backgroundColor),
                         onPressed: () {},
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SvgPicture.asset('images/pdf.svg'),
                             const Text(
@@ -804,11 +823,16 @@ class _HhidFormState extends State<HhidForm> {
                           Addadditional(context,
                               hhid); // Navigate to the corresponding tab
                         } else if (selectedRadio == 4) {
+                          print('hhid--$hhid');
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => const AddHead(),
+                              builder: (context) => AddHead(
+                                vdfid: vdfId,
+                                id: hhid,
+                              ),
                             ),
                           );
+
                           // Navigate to the corresponding tab
                         }
                       },
@@ -842,7 +866,7 @@ class _HhidFormState extends State<HhidForm> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(hhid),
+                      Text("hhid : $hhid"),
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).pop();
@@ -901,9 +925,22 @@ class _HhidFormState extends State<HhidForm> {
                       onPressed: () {
                         // Navigator.of(context).push(
                         //   MaterialPageRoute(
-                        //     builder: (context) => Followup(),
+                        //     builder: (context) => Followup(
+                        //       hid: hhid,
+                        //       interId: updatecompletionData
+                        //           .first.keys.first
+                        //           .toString(),
+                        //       memberId: updatecompletionData
+                        //           .first.values.first
+                        //           .toString(),
+                        //       remark: updatecompletionData
+                        //           .first.values.first
+                        //           .toString(),
+                        //       date: now,
+                        //     ),
                         //   ),
                         // );
+                        print("work pending");
                       },
                       child: const Text(
                         'Continue',

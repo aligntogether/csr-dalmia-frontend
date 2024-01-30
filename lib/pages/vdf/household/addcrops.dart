@@ -6,6 +6,7 @@ import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class AddCrop extends StatefulWidget {
@@ -82,10 +83,13 @@ class _AddCropState extends State<AddCrop> {
   void initState() {
     super.initState();
     fetchCropOptions();
+    print("id ${widget.id}");
     getcropData(widget.id ?? '0').then(
       (crop) {
-        print("test $crop");
+        print("tessst $crop");
+
         setState(() {
+          print("hi");
           selectedDataIds = crop['crops'].toString().split(",").toSet();
           print(selectedDataIds);
         });
@@ -119,13 +123,16 @@ class _AddCropState extends State<AddCrop> {
   }
 
   Future<void> addcropData() async {
+    String a=selectedDataIds.toList().toString().removeAllWhitespace.replaceAll("[","").replaceAll("]","");
     final apiUrl = '$base/add-household';
-
+    print("hii2${widget.id}");
+    print("hii3${selectedDataIds.toList().toString().removeAllWhitespace.replaceAll("[","\"").replaceAll("]","\"")}");
     // Replace these values with the actual data you want to send
     final Map<String, dynamic> requestData = {
       "id": widget.id,
-      "crops": selectedDataIds.join(",")
+      "crops": a
     };
+
 
     try {
       final response = await http.post(
@@ -376,6 +383,7 @@ class _AddCropState extends State<AddCrop> {
           value: selectedDataIds.contains(option.dataId),
           onChanged: (value) {
             setState(() {
+              print("dd$selectedDataIds");
               selectedDataIds.add(option.dataId);
             });
           },

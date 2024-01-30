@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
+import '../../app/modules/reports/views/gpl_amount_utilized_view.dart';
 import '../../common/size_constant.dart';
 class CEOHome extends StatefulWidget {
   const CEOHome({Key? key}) : super(key: key);
@@ -148,7 +149,13 @@ class _CEOHomeState extends State<CEOHome> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.toNamed(Routes.AMOUNT_UTILIZED);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => GplAmountUtilizedView(
+
+                        ),
+                      ),
+                    );
                   },
                   child: cards(
                     title: 'Amount utilized by Location',

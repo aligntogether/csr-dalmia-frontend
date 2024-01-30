@@ -6,6 +6,7 @@ import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/RH/RhHomeController.dart';
 import 'package:dalmia/pages/RH/rh_lever_wise_report/rh_lever_wise_report_view.dart';
+import 'package:dalmia/pages/RH/rh_report/rh_report.dart';
 
 import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
@@ -107,7 +108,13 @@ class _RHHomeState extends State<RHHome> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.toNamed(Routes.OVERVIEW_PAN);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => RhReportView(
+                            refId: refId
+                        ),
+                      ),
+                    );
                   },
                   child: cards(
                     title: 'View Report - South',

@@ -162,14 +162,16 @@ class _RhLeverWiseViewState extends State<RhLeverWiseView> {
               CustomDropdownFormField(
                 title: controller.selectedRegion.toString(),
                 options:
-                controller.regionByRhIdList != null ? (controller.regionByRhIdList!
+                controller.regionByRhIdList != null ? (
+                    controller.regionByRhIdList!
                     .map((region) =>
                     region['region'].toString())
                     .toList()) : [],
                 selectedValue: controller.selectedRegion,
                 onChanged: (String? newValue) async {
                   controller.selectedRegion=newValue;
-                  Map<String,dynamic> rhLeverWiseReportByRegionId = await rhLeverWiseReportServices.getRhLeverWiseReportByRegionId(controller.regionByRhIdList![controller.regionByRhIdList!.indexWhere((element) => element['region']==newValue)]['regionId']);
+                  Map<String,dynamic> rhLeverWiseReportByRegionId = await rhLeverWiseReportServices.getRhLeverWiseReportByRegionId(
+                      controller.regionByRhIdList![controller.regionByRhIdList!.indexWhere((element) => element['region']==newValue)]['regionId']);
                   setState(() {
                     controller.updateRhLeverWiseReportByRegionId(rhLeverWiseReportByRegionId);
                   });

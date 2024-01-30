@@ -131,7 +131,7 @@ class _ApprovalState extends State<Approval> {
                 height: 20,
               ),
               const Padding(
-                padding: EdgeInsets.only(left: 20),
+                padding: EdgeInsets.all(20),
                 child: Text(
                   'Why do you want to drop this family from intervention?',
                   style: TextStyle(
@@ -174,7 +174,7 @@ class _ApprovalState extends State<Approval> {
                       addreason();
                     },
                     child: const Text(
-                      'submit for approval',
+                      'Submit for Approval',
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: CustomFontTheme.textSize,

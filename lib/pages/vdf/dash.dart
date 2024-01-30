@@ -100,7 +100,7 @@ class _DashTabState extends State<DashTab> {
                       children: [
                         CustomCard(
                           imageUrl: 'images/t_house.svg',
-                          subtitle: 'Total Household',
+                          subtitle: 'Total Households',
                           title: apiData['totalHouseholds'].toString(),
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
@@ -113,7 +113,7 @@ class _DashTabState extends State<DashTab> {
                           imageUrl: 'images/m_house.svg',
                           title: apiData['mappedHouseholds'].toString()==null
                                   ?'0':apiData['mappedHouseholds'].toString()   ,
-                          subtitle: 'Mapped Household',
+                          subtitle: 'Mapped Households',
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
                           bg: Color(0xFFF2D4C9),
@@ -156,7 +156,7 @@ class _DashTabState extends State<DashTab> {
                       children: [
                         CustomCard(
                           imageUrl: 'images/i_house.svg',
-                          subtitle: 'Household covered',
+                          subtitle: 'Households covered',
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
                           title: apiData['householdsCovered'].toString()
@@ -245,7 +245,7 @@ class _DashTabState extends State<DashTab> {
                       style: TextStyle(fontSize: 16, color: Colors.black),
                       children: [
                         TextSpan(
-                          text: 'Household with additional\n income',
+                          text: 'Households with additional\n income',
                           style: TextStyle(
                             fontSize: CustomFontTheme.headingSize,
                             fontWeight: CustomFontTheme.headingwt,

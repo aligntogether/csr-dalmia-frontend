@@ -44,17 +44,14 @@ class _GplAmountUtilizedViewState extends State<GplAmountUtilizedView> {
     setRegions();
   }
   String formatNumber(int number) {
-    NumberFormat format = NumberFormat('#,##,###', 'en_IN');
-
-    return format.format(number);
+    if(number>100){
+      double lakhs = number / 100000.0;
+      final format = NumberFormat('0.0000');
+      return format.format(lakhs);
+    }
+    return number.toString();
   }
 
-  void main() {
-    // Example usage:
-    int yourNumber = 1234567;
-    String formattedResult = formatNumber(yourNumber);
-    print(formattedResult);
-  }
 
 
   void setRegions() async {
@@ -352,6 +349,7 @@ class _GplAmountUtilizedViewState extends State<GplAmountUtilizedView> {
               DataCell(
                 Container(
                   height: 60,
+                  width: MySize.screenWidth*(100/MySize.screenWidth),
                   decoration: BoxDecoration(
                     color: isEven ? Colors.white : Colors.blue.shade50,
 
@@ -393,7 +391,7 @@ class _GplAmountUtilizedViewState extends State<GplAmountUtilizedView> {
                   padding: EdgeInsets.only(left: 10),
                   child: Center(
                     child: Text(
-                      sum.toString(),
+                      formatNumber(sum.toInt()),
                       style: TextStyle(
 
                         fontSize: CustomFontTheme.textSize,

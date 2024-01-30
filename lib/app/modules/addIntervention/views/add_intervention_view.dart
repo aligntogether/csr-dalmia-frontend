@@ -550,7 +550,7 @@ class _InterventionListViewState extends State<InterventionListView> {
                 DataColumn(
                   label: Container(
                     height: 60,
-                    width: 333,
+                    width:MySize.screenWidth,
                     color: Color(0xff008CD3),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
@@ -642,9 +642,12 @@ class _InterventionListViewState extends State<InterventionListView> {
                   cells: [
                     DataCell(
                       Container(
-                        width: 50,
+
+
                         padding: EdgeInsets.only(left: 10),
                         child: Row(
+                          // spacebetween
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               "${index + 1}",
@@ -666,23 +669,27 @@ class _InterventionListViewState extends State<InterventionListView> {
                     ),
 
                     DataCell(
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            controller.interventionsData![index]
-                                    ['interventionName'] ??
-                                '',
-                            style: AppStyle.textStyleInterMed(fontSize: 14),
-                          ),
-                          Spacer(),
-                          VerticalDivider(
-                            width: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                            thickness: 1,
-                          )
-                        ],
-                      ),
+                      Container(
+                        width:MySize.screenWidth,
+                        child: Row(
+                          children: [
+                            Spacer(),
+                            Text(
+                              controller.interventionsData![index]
+                              ['interventionName'] ??
+                                  '',
+
+                              style: AppStyle.textStyleInterMed(fontSize: 14),
+                            ),
+                            Spacer(),
+                            VerticalDivider(
+                              width: 1,
+                              color: Color(0xff181818).withOpacity(0.3),
+                              thickness: 1,
+                            )
+                          ],
+                        ),
+                      )
                     ),
                     //alr
                     DataCell(

@@ -2,13 +2,16 @@ import 'package:get/get.dart';
 
 class LeverWiseController extends GetxController {
   RxBool openMenu = false.obs;
-
+  Map<String,List<String>>?regionLocation;
   void onTapOpenMenu() {
     openMenu.value = !openMenu.value;
     update();
   }
   List<Map<String, Map<String, dynamic>>>? leverWiseApiReportList;
-
+  void updateRegionLocation(Map<String,List<String>> regionLocation){
+    this.regionLocation=regionLocation;
+    update(["add"]);
+  }
   void updateLeverWiseApiReportList(List<Map<String, Map<String, dynamic>>> leverWiseApiReportList) {
     this.leverWiseApiReportList = leverWiseApiReportList;
     update(["add"]);
@@ -35,85 +38,5 @@ class LeverWiseController extends GetxController {
   //   "Nigohi", "Ramgarh", "Jawaharpur", "Ninaidevi", "Kholapur",];
 
 
-
-  List<int> DPM = [
-    128036,
-    37765,
-    387004,
-    1687825,
-    128036,
-    37765,
-    387004,
-    1687825,
-    128036,
-    37765,
-    387004,
-
-  ];
-  List<int> ALR = [
-    128036,
-    37765,
-    387004,
-    1687825,
-    128036,
-    37765,
-    387004,
-    1687825,
-    128036,
-    37765,
-    387004,
-  ];
-  List<int> BGM = [
-    128036,
-    37765,
-    387004,
-    1687825,
-    128036,
-    37765,
-    387004,
-    1687825,
-    128036,
-    37765,
-    387004,
-  ];
-  List<int> KDP = [
-    128036,
-    37765,
-    387004,
-    1687825,
-    128036,
-    37765,
-    387004,
-    1687825,
-    128036,
-    37765,
-    387004,
-  ];
-  List<int> CHA = [
-    128036,
-    37765,
-    387004,
-    1687825,
-    128036,
-    37765,
-    387004,
-    1687825,
-    128036,
-    37765,
-    387004,
-  ];
-  List<int> SOUTH = [
-    128036,
-    37765,
-    387004,
-    1687825,
-    128036,
-    37765,
-    387004,
-    1687825,
-    128036,
-    37765,
-    387004,
-  ];
 
 }

@@ -8,8 +8,12 @@ class ExpectedActualController extends GetxController {
   List<String>? clusterIdList;
 
   Map<String, dynamic>? clusterList;
-
+  Map<String,List<String>>?regionLocation;
   List<String>? clusterPropertyKeys;
+  void updateRegionLocation(Map<String,List<String>> regionLocation){
+    this.regionLocation=regionLocation;
+    update(["add"]);
+  }
 
   void updateExpectedActualReport(
       Map<String, dynamic>

@@ -7,6 +7,8 @@ class OverviewPanController extends GetxController {
 
   int? selectLocationId;
   String? selectRegion;
+  String? selectedRegion;
+
   int? selectRegionId;
   String? selectCluster;
   int? selectClusterId;
@@ -19,6 +21,12 @@ class OverviewPanController extends GetxController {
   Map<String,List<String>>?regionLocation;
   List<String>? particularWiseList;
   List<String>? vdfNames;
+  List<dynamic>? regionByRhIdList;
+  void updateRegionByRhId(List<dynamic> regionByRhIdList){
+    this.regionByRhIdList=regionByRhIdList;
+    selectedRegion = regionByRhIdList[0]['region'];
+    update(["add"]);
+  }
 
   void updateRegionLocation(Map<String,List<String>> regionLocation){
     this.regionLocation=regionLocation;

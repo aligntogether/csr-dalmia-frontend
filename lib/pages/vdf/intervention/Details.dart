@@ -214,7 +214,9 @@ class _DetailsState extends State<Details> {
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => Addinter(),
+                              builder: (context) => Addinter(
+                                id: widget.hid,
+                              ),
                             ),
                           );
                         },

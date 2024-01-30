@@ -1,3 +1,4 @@
+import 'package:dalmia/app/modules/leverWise/controllers/lever_wise_controller.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/pages/LL/llappbar.dart';
@@ -5,6 +6,7 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:intl/intl.dart';
 import '../controllers/expected_actual_controller.dart';
 import '../services/expected_actual_service.dart';
 class ExpectedActualView extends StatefulWidget {
@@ -16,17 +18,25 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
   ExpectedActualController controller = Get.put(ExpectedActualController());
   ExpectedActualServices services = ExpectedActualServices();
   bool isLoading = false;
+  LeverWiseController leverWiseController = Get.put(LeverWiseController());
   @override
   void initState() {
     super.initState();
    getExpectActualAdditionalIncome();
     isLoading = true;
   }
+
+  String formatNumber(int number) {
+    NumberFormat format = NumberFormat('#,##,###', 'en_IN');
+    return format.format(number);
+  }
   void getExpectActualAdditionalIncome() async{
     Map<String, dynamic> expectedActualReport=await services.getExpectedActualIncomeReport();
     List<String> clusterIdList = [];
     Map<String, dynamic> clusterList = {};
     List<String> clusterPropertyKeys = [];
+    Map<int,String> regions= await services.getAllRegions();
+    Map<String,List<String>> regionLocation=await services.getRegionLocation(regions);
     expectedActualReport.forEach((key, value) {
       value.keys.forEach((element) {
         clusterIdList.add(element);
@@ -43,9 +53,12 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
     });
     setState(() {
       controller.updateExpectedActualReport(expectedActualReport);
+      print("expectedActualReport $expectedActualReport");
       controller.updateClusterIdList(clusterIdList);
       controller.updateClusterList(clusterList);
+      print("clusterList $clusterList");
       controller.updateClusterPropertyKeys(clusterPropertyKeys);
+      controller.updateRegionLocation(regionLocation);
       isLoading = false;
     });
   }
@@ -111,6 +124,227 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
       ),
     );}
   Widget eaaireport(int i, ExpectedActualController cc) {
+    List<DataColumn> buildColumns() {
+      List<DataColumn> columns = [];
+      columns.add(
+        DataColumn(
+          label: Expanded(
+            child: Container(
+              height: 60,
+              width: MySize.screenWidth*(80/MySize.screenWidth),
+              decoration: BoxDecoration(
+                color: Color(0xff008CD3),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                ),
+              ),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  'Locations',
+                  style: TextStyle(
+                    fontWeight: CustomFontTheme.headingwt,
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      for (var region in controller.regionLocation!.keys) {
+        for (var location in controller.regionLocation![region]!) {
+          // Add the Location column
+          columns.add(
+            DataColumn(
+              label: Expanded(
+                child: Container(
+                  height: 60,
+                  width:MySize.screenWidth*(80/MySize.screenWidth),
+                  decoration: BoxDecoration(
+                    color: Color(0xff008CD3),
+
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      location,
+                      style: TextStyle(
+                        fontWeight: CustomFontTheme.headingwt,
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+        // Add the Region column if there are locations in the region
+        if (controller.regionLocation![region]!.isNotEmpty) {
+          columns.add(
+            DataColumn(
+              label: Expanded(
+                child: Container(
+                  height: 60,
+                  width: MySize.safeWidth!*0.3,
+                  decoration: BoxDecoration(
+                    //#096C9F
+
+                    color: Color(0xFF096C9F),
+
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      region,
+
+                      style: TextStyle(
+
+
+                        fontWeight: CustomFontTheme.headingwt,
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.white,
+                      ),
+                      maxLines: 2, // Adjust as needed
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+      }
+      return columns;
+    }
+    List<DataRow> buildRows() {
+
+      List<DataRow> rows = [];
+      bool isEven = false;
+      for (var firstColumn in controller.clusterPropertyKeys!) {
+        isEven = !isEven;
+        List<DataCell> cells = [];
+        cells.add(
+          DataCell(
+
+            Container(
+              height: MySize.safeHeight!*(70/MySize.screenHeight),
+              decoration: BoxDecoration(
+                color:isEven
+                    ? Colors.blue.shade50
+                    : Colors.white,
+
+              ),
+
+              padding: EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    capitalizeFirstLetter(firstColumn),
+                    style: TextStyle(
+                      fontWeight: CustomFontTheme.headingwt,
+                      fontSize: CustomFontTheme.textSize,
+                      color: Colors.black,
+                    ),
+                  ),
+
+                ],
+              ),
+            ),
+          ),
+
+        );
+
+
+
+        for (var region in controller.regionLocation!.keys) {
+          num sum=0;
+          for (var location in controller.regionLocation![region]!) {
+            controller.expectedActualReport![location] !=
+                null && firstColumn!='clusterId'
+                ?sum+=(controller.expectedActualReport![location]![cc.clusterIdList![i]]![firstColumn]??0)
+                : sum+=0;
+            cells.add(
+              DataCell(
+                Container(
+                  height: 60,
+                  width: MySize.screenWidth*(80/MySize.screenWidth),
+                  decoration: BoxDecoration(
+                    color:
+                    isEven
+                        ? Colors.blue.shade50
+                        : Colors.white,
+
+                  ),
+
+                  child:Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      VerticalDivider(
+                        width: 1,
+                        color: Color(0xff181818).withOpacity(0.3),
+                        thickness: 1,
+                      ),
+                      Text(
+                        // "hi",
+                        controller.expectedActualReport![location] !=
+                            null
+                            ? formatNumber(controller.expectedActualReport![location]![cc.clusterIdList![i]]![firstColumn]??0)
+                            : '0',
+                          // controller.clusterList![cc.clusterIdList![i]]![firstColumn] !=
+                          //     null
+                          //     ? (controller.clusterList![cc.clusterIdList![i]]![firstColumn]).toString()
+                          //     : '0',
+
+                        style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.black,
+                        ),
+                      ),
+
+
+
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+          // Add an empty cell for the Region column if there are locations in the region
+          if (controller.regionLocation![region]!.isNotEmpty) {
+            cells.add(
+              DataCell(
+                Container(
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF096C9F),
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      firstColumn!='clusterId'?formatNumber(sum.toInt()):"",
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          };
+        }
+        rows.add(DataRow(cells: cells));
+        // j++;
+      }
+      return rows;
+    }
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(
@@ -134,117 +368,15 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
 
           columnSpacing: 0,
           horizontalMargin: 0,
-          columns: <DataColumn>[
-            DataColumn(
-              label: Container(
-                height: 60,
-                width: 220,
-                color: Color(0xff008CD3),
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Center(
-                  child: Text(
-                    "Details",
-                    style: TextStyle(
-                      fontWeight: CustomFontTheme.headingwt,
-                      fontSize: CustomFontTheme.textSize,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            for(String location in cc.allLocations)
-              DataColumn(
-                label: Container(
-                  height: 60,
-                  width: 80,
-                  color: location=="SOUTH"? Color(0xff096C9F):Color(0xff008CD3),
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Center(
-                    child: Text(
-                      "$location",
-                      style: TextStyle(
-                        fontWeight: CustomFontTheme.headingwt,
-                        fontSize: CustomFontTheme.textSize,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-          ],
-          rows: List<DataRow>.generate(
-            cc.clusterPropertyKeys!.length,
-                (index) => DataRow(
-              color: MaterialStateColor.resolveWith(
-                    (states) {
-                  i = 0;
-                  return Colors.white;
-                },
-              ),
-              cells: [
-                DataCell(
-                  Container(
-                    width: 220,
-                    height: 60,
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                      capitalizeFirstLetter(cc.clusterPropertyKeys![index]),
+          columns: buildColumns(),
+          rows: buildRows(),
 
-                      style: AppStyle.textStyleInterMed(fontSize: 14),
-                    ),
-                    color: cc.clusterPropertyKeys![index] == "clusterId"
-                        ?Color(0x806699CC)
-                        : null,
-                  ),
-
-                ),
-                for(String location in cc.allLocations)
-                     DataCell(
-                    Container(
-                      width: 80,
-                      height: 60,
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child:
-                      location == "SOUTH"
-                          ? Text("",style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white))
-                          : location == 'NE'
-                          ? Text("",style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white))
-                          : location == 'EAST'
-                          ? Text("",style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white))
-                          : location == 'CEMENT'
-                          ? Text("",style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white))
-                          : location == 'SUGAR'
-                          ? Text("",style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white))
-                          : location == 'PANIND'
-                          ? Text("",style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.white),)
-                          : Text(
-                              cc.expectedActualReport!.containsKey(location)
-                            ? "${cc.clusterList![cc.clusterIdList![i]]![cc.clusterPropertyKeys![index]]}" == "null"
-                            ? "0"
-                            : "${cc.clusterList![cc.clusterIdList![i]]![cc.clusterPropertyKeys![index]]}"
-                            : "0",
-                        style: AppStyle.textStyleInterMed(fontSize: 14,color: Colors.black),
-                        ),
-
-
-
-
-          color:location==('SOUTH')||location=='NE' || location=='EAST' || location=='CEMENT' || location=='SUGAR' || location=='PANIND'
-          ?Color(0xff096C9F): cc.clusterPropertyKeys![index] == "clusterId"
-                          ?Color(0x806699CC)
-                          : null,
-
-                    ),
-                  ),
-              ],
-            ),
-          ),
         ),
       ),
 
     );
   }
+
   String capitalizeFirstLetter(String input) {
     if (input.isEmpty) {
       return input; // Return the original string if it's empty

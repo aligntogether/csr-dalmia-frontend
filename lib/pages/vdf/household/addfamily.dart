@@ -150,6 +150,75 @@ class _MyFormState extends State<AddFamily> {
     }
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        print(picked);
+        _dobControllers[formCount - 1].text =
+            DateFormat('dd/MM/yyyy').format(picked);
+        print(_dobControllers.toString());
+      });
+    }
+  }
+  DateTime? selectedDate;
+
+  int calculateAge(String? selectedDate) {
+    if (selectedDate == null || selectedDate.isEmpty) {
+      // Handle the case where selectedDate is null or empty
+      return 0;
+    }
+
+    try {
+      // Convert the selected date string to DateTime
+      DateTime birthDate = DateFormat("dd/MM/yyyy").parse(selectedDate);
+
+      DateTime currentDate = DateTime.now();
+      int age = currentDate.year - birthDate.year;
+
+      if (currentDate.month < birthDate.month ||
+          (currentDate.month == birthDate.month &&
+              currentDate.day < birthDate.day)) {
+        age--;
+      }
+
+      return age;
+    } catch (e) {
+      // Handle the case where parsing fails
+      print("Error parsing date: $e");
+      return 0;
+    }
+
+  }
+
+
+  Future<void> sendFamilyData(List<Map<String, dynamic>> familyData) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$base/add-member?houseHoldId=${widget.id}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(familyData),
+      );
+
+      if (response.statusCode == 200) {
+
+        // Handle the response from the API if needed
+        print('Data sent successfully');
+      } else {
+        throw Exception('Failed to send data: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
   Future<List<Map<String, dynamic>>> getFamilyMembers(
       String householdId) async {
     final String apiUrl = '$base/get-familymembers?householdId=$householdId';
@@ -200,59 +269,6 @@ class _MyFormState extends State<AddFamily> {
     fetchRelationOptions();
     fetchExistingData();
   }
-
-  DateTime? selectedDate;
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    );
-    if (picked != null) {
-      setState(() {
-        selectedDate = picked;
-        _dobControllers[formCount - 1].text =
-            DateFormat('dd/MM/yyyy').format(picked);
-      });
-    }
-  }
-
-  int calculateAge(DateTime? selectedDate) {
-    if (selectedDate == null) return 0;
-    DateTime currentDate = DateTime.now();
-    int age = currentDate.year - selectedDate.year;
-    if (currentDate.month < selectedDate.month ||
-        (currentDate.month == selectedDate.month &&
-            currentDate.day < selectedDate.day)) {
-      age--;
-    }
-    return age;
-  }
-
-  Future<void> sendFamilyData(List<Map<String, dynamic>> familyData) async {
-    try {
-      final response = await http.put(
-        Uri.parse('$base/add-member?houseHoldId=${widget.id}'),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(familyData),
-      );
-
-      if (response.statusCode == 200) {
-      
-        // Handle the response from the API if needed
-        print('Data sent successfully');
-      } else {
-        throw Exception('Failed to send data: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -287,19 +303,21 @@ class _MyFormState extends State<AddFamily> {
                           });
                         },
                         title: Text(
-                          'Member ${i + 1}',
+                          'Member ${i + 1} ',
                           style: TextStyle(color: Color(0xFF181818)),
                         ),
                         children: [
+                          const SizedBox(height: 16),
+
                           Form(
-                            key: _formKey,
+                            key:GlobalKey<FormState>(debugLabel: 'form$i'),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 TextFormField(
                                   controller: _nameControllers[i],
                                   decoration: const InputDecoration(
-                                    labelText: 'Member Name ',
+                                    labelText: 'Member Name *',
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
@@ -336,7 +354,7 @@ class _MyFormState extends State<AddFamily> {
                                           readOnly:
                                               true, // Set the field to be read-only
                                           decoration: InputDecoration(
-                                            labelText: 'Date of Birth ',
+                                            labelText: 'Date of Birth *',
                                             contentPadding:
                                                 const EdgeInsets.symmetric(
                                                     horizontal: 16,
@@ -367,8 +385,8 @@ class _MyFormState extends State<AddFamily> {
                                       child: TextFormField(
                                         enabled: false,
                                         decoration: InputDecoration(
-                                          labelText: selectedDate != null
-                                              ? '${calculateAge(selectedDate)} yrs'
+                                          labelText: _dobControllers[i].text != null
+                                              ? '${calculateAge(_dobControllers[i].text)} yrs'
                                               : 'Age(yrs)',
                                           contentPadding:
                                               const EdgeInsets.symmetric(
@@ -397,7 +415,7 @@ class _MyFormState extends State<AddFamily> {
                                     });
                                   },
                                   decoration: const InputDecoration(
-                                    labelText: 'Gender',
+                                    labelText: 'Gender *',
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
@@ -424,7 +442,7 @@ class _MyFormState extends State<AddFamily> {
                                     });
                                   },
                                   decoration: const InputDecoration(
-                                    labelText: 'Education',
+                                    labelText: 'Education *',
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
@@ -451,7 +469,7 @@ class _MyFormState extends State<AddFamily> {
                                     });
                                   },
                                   decoration: const InputDecoration(
-                                    labelText: 'Add Relationship',
+                                    labelText: 'Add Relationship *',
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
@@ -468,8 +486,14 @@ class _MyFormState extends State<AddFamily> {
                                           (dynamic primaryemployment) {
                                     return DropdownMenuItem<int>(
                                       value: primaryemployment['dataId'],
-                                      child: Text(primaryemployment['titleData']
-                                          .toString()),
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.6,
+                                        child: Text(primaryemployment[
+                                                'titleData']
+                                            .toString()),
+                                      ),
                                     );
                                   }).toList(),
                                   onChanged: (newValue) {
@@ -495,9 +519,14 @@ class _MyFormState extends State<AddFamily> {
                                           (dynamic secondaryemployment) {
                                     return DropdownMenuItem<int>(
                                       value: secondaryemployment['dataId'],
-                                      child: Text(
-                                          secondaryemployment['titleData']
-                                              .toString()),
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.6,
+                                        child: Text(secondaryemployment[
+                                                'titleData']
+                                            .toString()),
+                                      )
                                     );
                                   }).toList(),
                                   onChanged: (newValue) {
@@ -532,6 +561,7 @@ class _MyFormState extends State<AddFamily> {
                       onPressed: () {
                         {
                           setState(() {
+                            selectedDate = null;
                             membersId.add(null);
                             formCount++;
                             formExpandStateList.add(false);
@@ -574,8 +604,10 @@ class _MyFormState extends State<AddFamily> {
 
                             'gender': _selectedGenders[i],
                             'mobile': _mobileControllers[i].text,
-                            'dob': outputFormat.format(inputFormat.parse(
-                                _dobControllers[i].text ?? "28/12/2000")),
+                            'dob': _dobControllers[i].text != ''
+                                ? outputFormat.format(inputFormat.parse(
+                                    _dobControllers[i].text ))
+                                : null,
                             'education': _selectedEducations[
                                 i], // You may replace this with the actual value
                             // You may replace this with the actual value
@@ -590,7 +622,7 @@ class _MyFormState extends State<AddFamily> {
                             // Add other fields as needed
                           });
                         }
-                        print(familyData);
+
 
                         sendFamilyData(familyData)
                             .then((value) => Navigator.of(context).push(
@@ -632,8 +664,10 @@ class _MyFormState extends State<AddFamily> {
 
                             'gender': _selectedGenders[i],
                             'mobile': _mobileControllers[i].text,
-                            'dob': outputFormat.format(inputFormat.parse(
-                                _dobControllers[i].text ?? "28/12/2000")),
+                            'dob': _dobControllers[i].text != ''
+                                ? outputFormat.format(inputFormat.parse(
+                                    _dobControllers[i].text ))
+                                : null,
                             'education': _selectedEducations[
                                 i], // You may replace this with the actual value
                             // You may replace this with the actual value
@@ -801,8 +835,10 @@ class _MyFormState extends State<AddFamily> {
               TextEditingController(text: familyMembers[ind]['memberName']);
           _mobileControllers[i] = TextEditingController(
               text: familyMembers[ind]['mobile'].toString());
-          selectedDate = DateTime.fromMillisecondsSinceEpoch(
-              familyMembers[ind]['dob'] ?? 0);
+          selectedDate = familyMembers[ind]['dob'] != null
+              ?DateTime.fromMillisecondsSinceEpoch(
+              familyMembers[ind]['dob']  )
+              : null;
           if (selectedDate != null)
             _dobControllers[i].text =
                 DateFormat('dd/MM/yyyy').format(selectedDate!);

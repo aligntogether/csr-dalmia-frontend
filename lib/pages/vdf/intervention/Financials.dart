@@ -83,7 +83,7 @@ class _FinancialState extends State<Financial> {
             _beneficiaryController.text.toString(),
         "interventionLoan": _loanController.text.toString(),
         "interventionSubsidy": _subsidyController.text.toString(),
-        "remarks": widget.remark
+        "remarks": widget.remark==null?"":widget.remark,
       };
       print(requestData);
       final response = await http.put(

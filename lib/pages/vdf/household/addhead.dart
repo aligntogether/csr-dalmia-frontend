@@ -135,6 +135,11 @@ class _MyFormState extends State<AddHead> {
     getFamilyMembers(widget.id ?? '0').then(
       (familyMembers) {
         var headIndex = getHeadIndex(familyMembers);
+        setState(() {
+          if(familyMembers.length>0){
+            memberId = familyMembers[headIndex]['memberId'].toString();
+          }
+        });
         print('head index is ${widget.id}');
         if (familyMembers.length > headIndex) {
           _nameController = TextEditingController(
@@ -153,23 +158,25 @@ class _MyFormState extends State<AddHead> {
                 familyMembers[headIndex]['secondaryEmployment'];
           if (familyMembers[headIndex]['caste'] != null)
             _selectedCaste = familyMembers[headIndex]['caste'];
+          if (familyMembers[headIndex]['dob'] != null)
+            _dobController.text = DateFormat('dd/MM/yyyy').format(
+                DateTime.fromMillisecondsSinceEpoch(
+                    familyMembers[headIndex]['dob']));
+          if (familyMembers[headIndex]['dob'] != null)
+            setState(() {
+              selectedDate = DateTime.fromMillisecondsSinceEpoch(
+                  familyMembers[headIndex]['dob']);
+            });
+
 
           setState(() {
-            selectedDate = DateTime.fromMillisecondsSinceEpoch(
-                familyMembers[headIndex]['dob']);
-            if (selectedDate != null)
-              _dobController.text =
-                  DateFormat('dd/MM/yyyy').format(selectedDate!);
-            memberId = familyMembers[headIndex]['memberId'].toString();
+
             print('member id $memberId');
           });
         }
         // _selectedCaste = familyMembers[0]['education'];
 
-        // _selectedPrimaryEmployment =
-        //     familyMembers[0]['primaryEmployment'].toString();
-        // _selectedSecondaryEmployment =
-        //     familyMembers[0]['secondaryEmployment'].toString();
+
       },
     );
   }
@@ -207,7 +214,7 @@ class _MyFormState extends State<AddHead> {
     print("i am here");
     try {
 
-      print('dsb ${widget.id}');
+      print('dsb ${widget.id}, memberid $memberId');
       final response = await http.put(
         Uri.parse('$base/add-member?houseHoldId=${widget.id}'),
         headers: {

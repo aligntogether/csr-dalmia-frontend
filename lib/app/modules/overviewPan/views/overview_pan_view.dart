@@ -994,6 +994,38 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
         if(name=="null"){
           continue;
         }
+        else if(name=="TOTAL"){
+          columns.add(
+            DataColumn(
+              label: Expanded(
+                child: Container(
+                  height: 60,
+                  width:MySize.screenWidth*(80/MySize.screenWidth),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF096C9F),
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(10.0),
+                    ),
+
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      name,
+                      textAlign: TextAlign.center,
+                      softWrap: true,
+                      style: TextStyle(
+                        fontWeight: CustomFontTheme.headingwt,
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
         else {
           columns.add(
             DataColumn(
@@ -1025,38 +1057,38 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
         }
       }
 
-      columns.add(
-        DataColumn(
-          label: Expanded(
-            child: Container(
-              height: 60,
-              width: MySize.safeWidth!*0.3,
-              decoration: BoxDecoration(
-                //#096C9F
-
-                color: Color(0xFF096C9F),
-
-              ),
-              padding: EdgeInsets.only(left: 10),
-              child: Center(
-                child: Text(
-                  "Total",
-
-                  style: TextStyle(
-
-
-                    fontWeight: CustomFontTheme.headingwt,
-                    fontSize: CustomFontTheme.textSize,
-                    color: Colors.white,
-                  ),
-                  maxLines: 2, // Adjust as needed
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
+      // columns.add(
+      //   DataColumn(
+      //     label: Expanded(
+      //       child: Container(
+      //         height: 60,
+      //         width: MySize.safeWidth!*0.3,
+      //         decoration: BoxDecoration(
+      //           //#096C9F
+      //
+      //           color: Color(0xFF096C9F),
+      //
+      //         ),
+      //         padding: EdgeInsets.only(left: 10),
+      //         child: Center(
+      //           child: Text(
+      //             "Total",
+      //
+      //             style: TextStyle(
+      //
+      //
+      //               fontWeight: CustomFontTheme.headingwt,
+      //               fontSize: CustomFontTheme.textSize,
+      //               color: Colors.white,
+      //             ),
+      //             maxLines: 2, // Adjust as needed
+      //             overflow: TextOverflow.ellipsis,
+      //           ),
+      //         ),
+      //       ),
+      //     ),
+      //   ),
+      // );
 
 
       return columns;
@@ -1100,7 +1132,7 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
           ),
 
         );
-        print("j$j");
+
 
 
         num sum=0;
@@ -1113,6 +1145,49 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
               ?sum+=0:sum+=controller.locationWiseMappedList![0][controller.objectKeys[j]]![name];
          if(name=="null"){
            continue;
+         }
+         else if(name=="TOTAL"){
+           cells.add(
+             DataCell(
+               Container(
+                 height: 60,
+                 width: MySize.screenWidth*(80/MySize.screenWidth),
+                 decoration: BoxDecoration(
+
+                   color: Color(0xFF096C9F)
+
+
+                 ),
+
+                 child:Row(
+                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                   children: [
+                     VerticalDivider(
+                       width: 1,
+                       color: Color(0xff181818).withOpacity(0.3),
+                       thickness: 1,
+                     ),
+                     Text(
+                       firstColumn == "Households" ||
+                           firstColumn == "Interventions" ||
+                           firstColumn == "HH with Annual Addl. Income"
+                           ?""
+                           :controller.locationWiseMappedList![0][controller.objectKeys[j]]![name]==null
+                           ?"0":formatNumber(controller.locationWiseMappedList![0][controller.objectKeys[j]]![name])+"  ",
+
+                       style: TextStyle(
+                         fontSize: CustomFontTheme.textSize,
+                         color: Colors.white,
+                       ),
+                     ),
+
+
+
+                   ],
+                 ),
+               ),
+             ),
+           );
          }
          else{
            cells.add(
@@ -1165,31 +1240,31 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
         }
         // Add an empty cell for the Region column if there are locations in the region
 
-          cells.add(
-            DataCell(
-              Container(
-                height: 60,
-                decoration: BoxDecoration(
-                  color: Color(0xFF096C9F),
-                ),
-                padding: EdgeInsets.only(left: 10),
-                child: Center(
-                  child: Text(
-                    firstColumn == "Households" ||
-                        firstColumn == "Interventions" ||
-                        firstColumn == "HH with Annual Addl. Income"
-                        ?"":sum.toString(),
-                    textAlign: TextAlign.right,
-
-                    style: TextStyle(
-                      fontSize: CustomFontTheme.textSize,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          );
+          // cells.add(
+          //   DataCell(
+          //     Container(
+          //       height: 60,
+          //       decoration: BoxDecoration(
+          //         color: Color(0xFF096C9F),
+          //       ),
+          //       padding: EdgeInsets.only(left: 10),
+          //       child: Center(
+          //         child: Text(
+          //           firstColumn == "Households" ||
+          //               firstColumn == "Interventions" ||
+          //               firstColumn == "HH with Annual Addl. Income"
+          //               ?"":sum.toString(),
+          //           textAlign: TextAlign.right,
+          //
+          //           style: TextStyle(
+          //             fontSize: CustomFontTheme.textSize,
+          //             color: Colors.white,
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // );
 
 
         rows.add(DataRow(cells: cells));

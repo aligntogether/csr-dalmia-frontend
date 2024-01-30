@@ -10,6 +10,7 @@ import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
@@ -75,7 +76,7 @@ class _HomeReportState extends State<HomeReport> {
     // final formattedStartDate = DateFormat('dd-MM-yyyy').format(startDate);
     // final formattedEndDate = DateFormat('dd-MM-yyyy').format(endDate);
     print("$_startDate $_endDate");
-    var startDate = "23-09-2023";
+    var startDate = "D";
     var endDate = "24-12-2023";
     var format = DateFormat('dd-MM-yyyy');
     if (_startDate != null) {
@@ -100,13 +101,18 @@ class _HomeReportState extends State<HomeReport> {
     }
   }
 
-
+String? vdfId;
   @override
   void initState() {
-    fetchReportData(
-        // _startDate!, _endDate!
-        );
     super.initState();
+    SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+      vdfId = value;
+      print("vdfId $vdfId");
+      fetchReportData();
+
+    }));
+
   }
 
   DateTime? _startDate;
@@ -157,6 +163,7 @@ class _HomeReportState extends State<HomeReport> {
             children: [
               AppBar(
                 titleSpacing: 20,
+                elevation: 0,
                 scrolledUnderElevation: 0,
                 backgroundColor: Colors.white,
                 title: const Image(image: AssetImage('images/icon.jpg')),
@@ -193,8 +200,8 @@ class _HomeReportState extends State<HomeReport> {
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 0,
-                          blurRadius: 4,
-                          offset: Offset(0, 4), // changes position of shadow
+                          blurRadius: 1,
+                          offset: Offset(0, 1), // changes position of shadow
                         ),
                       ],
                     ),
@@ -220,7 +227,7 @@ class _HomeReportState extends State<HomeReport> {
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(2),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -283,112 +290,124 @@ class _HomeReportState extends State<HomeReport> {
                             thickness:
                                 1, // Add the desired thickness for the line
                           ),
-                          DataTable(
-                            // horizontalMargin: 50.0,
-                            dividerThickness: 0.0,
-                            columns: const <DataColumn>[
-                              DataColumn(
-                                label: Text(
-                                  '',
-                                  // style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  '',
-                                  // style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ],
-                            rows: <DataRow>[
-                              celldata(
-                                  'Total Households in working area',
-                                  reportData == null
-                                      ? '000'
-                                      : reportData![
-                                          'totalHouseholdsInWorkArea'],
-                                  Colors.white),
-                              celldata(
-                                  'Total Households mapped',
-                                  reportData == null
-                                      ? '000'
-                                      : reportData!['totalHouseholdsMapped'],
-                                  Colors.white),
-                              celldata(
-                                  'Total Households selected for Intervention',
-                                  reportData == null
-                                      ? '000'
-                                      : reportData![
-                                          'totalHouseholdsSelectedForIntervention'],
-                                  Colors.white),
-                              celldata(
-                                  'Total Interventions planned',
-                                  reportData == null
-                                      ? '000'
-                                      : reportData![
-                                          'totalInterventionsPlanned'],
-                                  Colors.white),
-                              celldata(
-                                  'Total Interventions completed',
-                                  reportData == null
-                                      ? '000'
-                                      : reportData![
-                                          'totalInterventionsCompleted'],
-                                  Colors.white),
-                              celldata(
-                                  'Households earning additional income',
-                                  reportData == null
-                                      ? '000'
-                                      : reportData![
-                                          'householdsEarningAdditionalIncome'],
-                                  Colors.white),
-                              celldata(
-                                  'Zero addl. income',
-                                  reportData == null
-                                      ? '000'
-                                      : reportData!['zeroAdditionalIncome'],
-                                  Color(0xFF008CD3).withOpacity(0.1)),
-                              celldata(
-                                  'Less than Rs.25K addl. income',
-                                  reportData == null
-                                      ? '000'
-                                      : reportData!['zeroAdditionalIncome'],
-                                  Color(0xFF008CD3).withOpacity(0.1)),
-                              celldata(
-                                  'Rs.25K - Rs.50K addl. income',
-                                  reportData == null
-                                      ? '000'
-                                      : reportData!['between25KTO50KIncome'],
-                                  Color(0xFF008CD3).withOpacity(0.1)),
-                              celldata(
-                                  'Rs.50K - Rs.75K addl. income',
-                                  reportData == null
-                                      ? '000'
-                                      : reportData!['between50KTO75KIncome'],
-                                  Color(0xFF008CD3).withOpacity(0.1)),
-                              celldata(
-                                  'Rs.75K - Rs.1L addl. income',
-                                  reportData == null
-                                      ? '000'
-                                      : reportData!['between75KTO1LIncome'],
-                                  Color(0xFF008CD3).withOpacity(0.1)),
-                              celldata(
-                                  'More than Rs.1L addl. income',
-                                  reportData == null
-                                      ? '000'
-                                      : reportData!['moreThan1LIncome'],
-                                  Color(0xFF008CD3).withOpacity(0.1)),
-                              celldata(
-                                  'Aggregated additional income',
-                                  reportData == null
-                                      ? '000'
-                                      : reportData![
-                                              'aggregatedAdditionalIncome']
-                                          .toString(),
-                                  Colors.white),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              width: screenWidth*0.9,
+                              child: DataTable(
 
-                              // Add more rows as needed
-                            ],
+                                // horizontalMargin: 50.0,
+                                dividerThickness: 0.0,
+                                columns:  <DataColumn>[
+                                  DataColumn(
+                                    label: Text(
+                                      'Reports',
+
+                                      style: const TextStyle(
+                                          fontSize: CustomFontTheme.textSize,
+                                          fontWeight: CustomFontTheme.headingwt),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: Text(
+                                      'Value',
+                                      style: const TextStyle(
+                                          fontSize: CustomFontTheme.textSize,
+                                          fontWeight: CustomFontTheme.headingwt),
+                                    ),
+                                  ),
+                                ],
+                                rows: <DataRow>[
+                                  celldata(
+                                      'Total Households in working area',
+                                      reportData == null
+                                          ? '000'
+                                          : reportData![
+                                              'totalHouseholdsInWorkArea'],
+                                      Colors.white),
+                                  celldata(
+                                      'Total Households mapped',
+                                      reportData == null
+                                          ? '000'
+                                          : reportData!['totalHouseholdsMapped'],
+                                      Colors.white),
+                                  celldata(
+                                      'Total Households selected for Intervention',
+                                      reportData == null
+                                          ? '000'
+                                          : reportData![
+                                              'totalHouseholdsSelectedForIntervention'],
+                                      Colors.white),
+                                  celldata(
+                                      'Total Interventions planned',
+                                      reportData == null
+                                          ? '000'
+                                          : reportData![
+                                              'totalInterventionsPlanned'],
+                                      Colors.white),
+                                  celldata(
+                                      'Total Interventions completed',
+                                      reportData == null
+                                          ? '000'
+                                          : reportData![
+                                              'totalInterventionsCompleted'],
+                                      Colors.white),
+                                  celldata(
+                                      'Households earning additional income',
+                                      reportData == null
+                                          ? '000'
+                                          : reportData![
+                                              'householdsEarningAdditionalIncome'],
+                                      Colors.white),
+                                  celldata(
+                                      'Zero addl. income',
+                                      reportData == null
+                                          ? '000'
+                                          : reportData!['zeroAdditionalIncome'],
+                                      Color(0xFF008CD3).withOpacity(0.1)),
+                                  celldata(
+                                      'Less than Rs.25K addl. income',
+                                      reportData == null
+                                          ? '000'
+                                          : reportData!['zeroAdditionalIncome'],
+                                      Color(0xFF008CD3).withOpacity(0.1)),
+                                  celldata(
+                                      'Rs.25K - Rs.50K addl. income',
+                                      reportData == null
+                                          ? '000'
+                                          : reportData!['between25KTO50KIncome'],
+                                      Color(0xFF008CD3).withOpacity(0.1)),
+                                  celldata(
+                                      'Rs.50K - Rs.75K addl. income',
+                                      reportData == null
+                                          ? '000'
+                                          : reportData!['between50KTO75KIncome'],
+                                      Color(0xFF008CD3).withOpacity(0.1)),
+                                  celldata(
+                                      'Rs.75K - Rs.1L addl. income',
+                                      reportData == null
+                                          ? '000'
+                                          : reportData!['between75KTO1LIncome'],
+                                      Color(0xFF008CD3).withOpacity(0.1)),
+                                  celldata(
+                                      'More than Rs.1L addl. income',
+                                      reportData == null
+                                          ? '000'
+                                          : reportData!['moreThan1LIncome'],
+                                      Color(0xFF008CD3).withOpacity(0.1)),
+                                  celldata(
+                                      'Aggregated additional income',
+                                      reportData == null
+                                          ? '000'
+                                          : reportData![
+                                                  'aggregatedAdditionalIncome']
+                                              .toString(),
+                                      Colors.white),
+
+                                  // Add more rows as needed
+                                ],
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -462,10 +481,13 @@ DataRow celldata(String left, Object? right, Color color) {
       DataCell(
         Text(
           left,
+          textAlign: TextAlign.start,
           style: const TextStyle(
+
               fontSize: CustomFontTheme.textSize,
               fontWeight: CustomFontTheme.textwt),
         ),
+
       ),
       DataCell(
         Text(

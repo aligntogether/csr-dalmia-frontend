@@ -80,8 +80,12 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
     }
   }
   String formatNumber(int number) {
-    NumberFormat format = NumberFormat('#,##,###', 'en_IN');
-    return format.format(number);
+    if(number<100){
+      return number.toString();
+    }
+    double lakhs = number / 100000.0;
+    final format = NumberFormat('0.0000');
+    return format.format(lakhs);
   }
 
   @override

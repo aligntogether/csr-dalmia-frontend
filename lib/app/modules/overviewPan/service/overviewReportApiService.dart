@@ -47,7 +47,7 @@ class OverviewReportApiService {
       throw Exception('Error making API request: $e');
     }
   }
-  Future<Map<String, List<String>>> getRegionLocation(Map<int, String> regions) async {
+  Future<Map<String, List<String>>>getRegionLocation(Map<int, String> regions) async {
     try {
       Map<String, List<String>> locations = {};
 

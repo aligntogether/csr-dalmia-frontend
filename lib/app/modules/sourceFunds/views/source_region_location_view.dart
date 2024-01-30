@@ -10,6 +10,7 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../Constants/constants.dart';
 import '../../../../helper/sharedpref.dart';
@@ -38,6 +39,15 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
     }));
     ;
     regionsFuture = sourceOfFundsApiService.getListOfRegions(controller);
+  }
+
+  String formatNumber(int number) {
+    if(number<100){
+      return number.toString();
+    }
+    double lakhs = number / 100000.0;
+    final format = NumberFormat('0.0000');
+    return format.format(lakhs);
   }
 
   @override
@@ -630,11 +640,11 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                 ? ""
                                 : controller.regionWiseSourceOfFundsData!
                                         .containsKey(controller.regions[index])
-                                    ? (controller.regionWiseSourceOfFundsData![
+                                    ? (formatNumber(controller.regionWiseSourceOfFundsData![
                                                     controller.regions[index]]![
                                                 'noOfHouseholds'] ??
-                                            0)
-                                        .toString()
+                                            0))
+
                                     : "0",
                             style: AppStyle.textStyleInterMed(fontSize: 14),
                           ),
@@ -659,7 +669,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                 ? ""
                                 : controller.regionWiseSourceOfFundsData!
                                         .containsKey(controller.regions[index])
-                                    ? (controller.regionWiseSourceOfFundsData![
+                                    ? formatNumber(controller.regionWiseSourceOfFundsData![
                                                     controller.regions[index]]![
                                                 'beneficiary'] ??
                                             0)
@@ -688,7 +698,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                 ? ""
                                 : controller.regionWiseSourceOfFundsData!
                                         .containsKey(controller.regions[index])
-                                    ? (controller.regionWiseSourceOfFundsData![
+                                    ? formatNumber(controller.regionWiseSourceOfFundsData![
                                                     controller.regions[index]]![
                                                 'subsidy'] ??
                                             0)
@@ -717,7 +727,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                 ? ""
                                 : controller.regionWiseSourceOfFundsData!
                                         .containsKey(controller.regions[index])
-                                    ? (controller.regionWiseSourceOfFundsData![
+                                    ? formatNumber(controller.regionWiseSourceOfFundsData![
                                                     controller.regions[index]]![
                                                 'credits'] ??
                                             0)
@@ -746,7 +756,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                 ? ""
                                 : controller.regionWiseSourceOfFundsData!
                                         .containsKey(controller.regions[index])
-                                    ? (controller.regionWiseSourceOfFundsData![
+                                    ? formatNumber(controller.regionWiseSourceOfFundsData![
                                                 controller
                                                     .regions[index]]!['dbf'] ??
                                             0)
@@ -778,10 +788,10 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                 ? ""
                                 : controller.regionWiseSourceOfFundsData!
                                         .containsKey(controller.regions[index])
-                                    ? _calculateSumForLocation(
-                                            controller.regions[index],
-                                            controller
-                                                .regionWiseSourceOfFundsData!)
+                                    ? formatNumber(_calculateSumForLocation(
+                                controller.regions[index],
+                                controller
+                                    .regionWiseSourceOfFundsData!).toInt())
                                         .toString()
                                     : "0",
                             style: AppStyle.textStyleInterMed(
@@ -1372,31 +1382,37 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                   cells: [
                     DataCell(
                       Container(
-                        width: 150,
+
                         padding: EdgeInsets.only(left: 10),
                         child: Row(
                           children: [
-                            Text(
-                              controller.clustersList![index],
-                              style: controller.regions[index] == "Cement"
-                                  ? TextStyle(
+
+                              Container(
+                                width: MySize.screenWidth * (150 / MySize.screenWidth),
+                                child:  Text(
+                                  controller.clustersList![index],
+
+                                  style: controller.regions[index] == "Cement"
+                                      ? TextStyle(
                                       color: CustomColorTheme.textColor,
                                       fontWeight: CustomFontTheme.headingwt,
                                       fontSize: CustomFontTheme.textSize)
-                                  : AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
+                                      : AppStyle.textStyleInterMed(fontSize: 14),
+                                ),
+                              ),
                             Spacer(),
                             controller.regions[index] == "Cement"
                                 ? SizedBox()
                                 : VerticalDivider(
-                                    width: 1,
-                                    color: Color(0xff181818).withOpacity(0.3),
-                                    thickness: 1,
-                                  )
+                              width: 1,
+                              color: Color(0xff181818).withOpacity(0.3),
+                              thickness: 1,
+                            )
                           ],
                         ),
                       ),
-                    ),
+                      )
+                    ,
                     DataCell(
                       Row(
                         children: [
@@ -1435,7 +1451,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                 ? ""
                                 : controller.locationWiseSourceOfFundsData!
                                         .containsKey(controller.clustersList![index])
-                                    ? (controller.locationWiseSourceOfFundsData![
+                                    ? formatNumber(controller.locationWiseSourceOfFundsData![
                                                     controller.clustersList![index]]![
                                                 'beneficiary'] ??
                                             0)
@@ -1464,7 +1480,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                 ? ""
                                 : controller.locationWiseSourceOfFundsData!
                                         .containsKey(controller.clustersList![index])
-                                    ? (controller.locationWiseSourceOfFundsData![
+                                    ? formatNumber(controller.locationWiseSourceOfFundsData![
                                                     controller.clustersList![index]]![
                                                 'subsidy'] ??
                                             0)
@@ -1493,7 +1509,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                 ? ""
                                 : controller.locationWiseSourceOfFundsData!
                                         .containsKey(controller.clustersList![index])
-                                    ? (controller.locationWiseSourceOfFundsData![
+                                    ? formatNumber(controller.locationWiseSourceOfFundsData![
                                                     controller.clustersList![index]]![
                                                 'credits'] ??
                                             0)
@@ -1522,7 +1538,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                 ? ""
                                 : controller.locationWiseSourceOfFundsData!
                                         .containsKey(controller.clustersList![index])
-                                    ? (controller.locationWiseSourceOfFundsData![
+                                    ? formatNumber(controller.locationWiseSourceOfFundsData![
                                                 controller
                                                     .clustersList![index]]!['dbf'] ??
                                             0)
@@ -1554,11 +1570,11 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                 ? ""
                                 : controller.locationWiseSourceOfFundsData!
                                         .containsKey(controller.clustersList![index])
-                                    ? _calculateSumForLocation(
-                                            controller.clustersList![index],
-                                            controller
-                                                .locationWiseSourceOfFundsData!)
-                                        .toString()
+                                    ? formatNumber(_calculateSumForLocation(
+                                controller.clustersList![index],
+                                controller
+                                    .locationWiseSourceOfFundsData!)
+                                .toInt())
                                     : "0",
                             style: AppStyle.textStyleInterMed(
                                 fontSize: 14, color: Colors.white),

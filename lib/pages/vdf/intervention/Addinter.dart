@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/pages/vdf/intervention/Details.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
@@ -29,33 +30,25 @@ class _AddinterState extends State<Addinter> {
   List<Intervention> interventions = [];
   List<Intervention> filteredInterventions = [];
   TextEditingController interventionController = TextEditingController();
-  bool showListView = true;
   String selectedInterventionId = '';
-  // RegExp reg = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
-  // String Function(Match) mathFunc = (Match match) => '${match[1]},';
+
   void filterInterventions(String query) async {
     intervention = query;
     if (query.isNotEmpty) {
-      var url = Uri.parse(
-          '$base/get-matching-interventions?interventionPatternName=$query');
+      var url = Uri.parse('$base/get-matching-interventions?interventionPatternName=$query');
       var response = await http.get(url);
-      // setState(() {
-      //   isButtonEnabled =
-      //       true; // Enable the button when an intervention is selected
-      // });
+
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         if (data != null && data['resp_body'] != null) {
           List<dynamic> fetchedInterventions = data['resp_body'];
           List<Intervention> interventionsList = fetchedInterventions
               .map((intervention) => Intervention(
-                  intervention['id'].toString(),
-                  intervention['interventionName']))
+              intervention['id'].toString(),
+              intervention['interventionName']))
               .toList();
           setState(() {
             filteredInterventions = interventionsList;
-
-            showListView = true;
           });
         } else {
           print("API response is null or empty.");
@@ -71,10 +64,13 @@ class _AddinterState extends State<Addinter> {
     }
   }
 
+  void initState() {
+    super.initState();
+    filterInterventions(intervention);
+  }
+
   @override
   Widget build(BuildContext context) {
-    
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -86,7 +82,6 @@ class _AddinterState extends State<Addinter> {
             'Assign Intervention',
             style: TextStyle(color: Colors.black),
           ),
-          // backgroundColor: Colors.grey[50],
           actions: <Widget>[
             IconButton(
               iconSize: 30,
@@ -100,127 +95,135 @@ class _AddinterState extends State<Addinter> {
             ),
           ],
         ),
-        body: SingleChildScrollView(
+        body:  SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: Container(
-                padding: const EdgeInsets.only(top: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 20),
-                    Column(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.only(right: 100.0),
-                          child: Text(
-                            'What intervention has been chosen for this family? ',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: Container(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 20),
+                      Column(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(right: 100.0),
+                            child: Text(
+                              'What intervention has been chosen for this family? ',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 20),
-                        TextField(
-                          controller: interventionController,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                          decoration: InputDecoration(
+                          const SizedBox(height: 20),
+                          TextField(
+                            controller: interventionController,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                            decoration: InputDecoration(
                               border: const OutlineInputBorder(),
                               labelText: 'Search Intervention name/ID',
                               suffixIcon: IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+
+                                },
                                 icon: const Icon(
                                   Icons.search,
-                                  color: Colors
-                                      .orange, // Customize the search icon color here
+                                  color: Colors.orange,
                                 ),
-                              )),
-                          onChanged: (value) {
-                            filterInterventions(value);
-                          },
-                        ),
-                        if (showListView)
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10),
                               ),
-                              border: Border.all(color: Colors.grey),
                             ),
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: filteredInterventions.length,
-                              itemBuilder: (context, index) {
-                                return ListTile(
-                                  title:
-                                      Text(filteredInterventions[index].name),
-                                  onTap: () {
-                                    setState(() {
-                                      interventionController.text =
-                                          filteredInterventions[index].name;
-                                      selectedInterventionId =
-                                          filteredInterventions[index].id;
-                                      showListView = false;
-                                      isButtonEnabled = true;
-                                    });
-                                  },
-                                );
-                              },
-                            ),
+                            onChanged: (value) {
+                              filterInterventions(value);
+                            },
                           ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: isButtonEnabled
-                                ? CustomColorTheme.primaryColor
-                                : Colors
-                                    .lightBlue, // Set the color based on enabled/disabled state
-                            minimumSize: const Size(350, 50),
-                          ),
-                          onPressed: isButtonEnabled
-                              ? () {
-                                  print(selectedInterventionId);
-                                  print(widget.id);
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => Details(
-                                        interventionname:
-                                            interventionController.text,
-                                          hid: widget.id,
-                                          interId: selectedInterventionId
+
+                          Container(
+                            height: MySize.screenHeight*(300/MySize.screenHeight),
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                  bottomLeft: Radius.circular(10),
+                                  bottomRight: Radius.circular(10),
+                                ),
+                                border: Border.all(color: Colors.grey),
+                              ),
+                              //scrollable list of interventions
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: filteredInterventions.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    title: Text(
+                                      filteredInterventions[index].name,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
                                       ),
                                     ),
+                                    onTap: () {
+                                      setState(() {
+                                        interventionController.text =
+                                            filteredInterventions[index].name;
+                                        selectedInterventionId =
+                                            filteredInterventions[index].id;
+                                        isButtonEnabled = true;
+                                      });
+                                    },
                                   );
-                                }
-                              : null,
+                                },
+                              )
+                            ),
 
-                          child: const Text(
-                            'Confirm',
-                            style: TextStyle(color: Colors.white),
+                          const SizedBox(
+                            height: 20,
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: isButtonEnabled
+                                  ? CustomColorTheme.primaryColor
+                                  : Colors.lightBlue,
+                              minimumSize: const Size(350, 50),
+                            ),
+                            onPressed: isButtonEnabled
+                                ? () {
+                              print(selectedInterventionId);
+                              print(widget.id);
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => Details(
+                                    interventionname: interventionController.text,
+                                    hid: widget.id,
+                                    interId: selectedInterventionId,
+                                  ),
+                                ),
+                              );
+                            }
+                                : null,
+                            child: const Text(
+                              'Confirm',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
         ),
-      ),
+        ),
+
     );
   }
 }
+
 void _confirmitem(BuildContext context) {
   showDialog(
     barrierDismissible: false,
@@ -236,7 +239,6 @@ void _confirmitem(BuildContext context) {
         content: SizedBox(
           height: 200,
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -259,14 +261,14 @@ void _confirmitem(BuildContext context) {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    fixedSize: Size(250, 60),
-
-                    backgroundColor: CustomColorTheme.primaryColor),
+                  fixedSize: Size(250, 60),
+                  backgroundColor: CustomColorTheme.primaryColor,
+                ),
                 onPressed: () {
                   Navigator.pop(context);
                 },
