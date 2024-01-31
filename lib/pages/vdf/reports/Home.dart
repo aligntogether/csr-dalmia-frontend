@@ -401,7 +401,8 @@ String? vdfId;
                                           ? '000'
                                           : reportData![
                                                   'aggregatedAdditionalIncome']
-                                              .toString(),
+                                              .toString()=="null"?"000":reportData![
+                                                  'aggregatedAdditionalIncome'],
                                       Colors.white),
 
                                   // Add more rows as needed

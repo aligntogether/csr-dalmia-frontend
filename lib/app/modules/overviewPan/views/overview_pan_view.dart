@@ -1,12 +1,8 @@
 import 'package:dalmia/app/modules/downloadExcelFromTable/ExportTableToExcel.dart';
-import 'package:dalmia/app/routes/app_pages.dart';
-import 'package:dalmia/common/app_bar.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/color_constant.dart';
 import 'package:dalmia/common/dropdown_filed.dart';
-import 'package:dalmia/common/image_constant.dart';
 import 'package:dalmia/common/size_constant.dart';
-import 'package:dalmia/pages/gpl/gpl_home_screen.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -119,10 +115,7 @@ class _OverviewPanViewState extends State<OverviewPanView> {
 
   @override
   Widget build(BuildContext context) {
-    OverviewPanController overviewPanController =
-    Get.put(OverviewPanController());
-    final int rowCount = 20;
-    final int columnCount = 5;
+
     return SafeArea(
       child: Scaffold(
           appBar: appBarCommon(controller, context,name,
@@ -569,8 +562,9 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
               ),
 
               padding: EdgeInsets.only(left: 10),
-              child: Center(
-                child: Text(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+               children:[Text(
                   firstColumn,
                   style: TextStyle(
                     fontWeight: CustomFontTheme.headingwt,
@@ -578,6 +572,7 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
                     color: Colors.black,
                   ),
                 ),
+              ]
               ),
             ),
           ),
@@ -825,8 +820,9 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
               ),
 
               padding: EdgeInsets.only(left: 10),
-              child: Center(
-                child: Text(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children:[ Text(
                   firstColumn,
                   style: TextStyle(
                     fontWeight: CustomFontTheme.headingwt,
@@ -834,6 +830,7 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
                     color: Colors.black,
                   ),
                 ),
+              ]
               ),
             ),
           ),
@@ -1118,15 +1115,19 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
               ),
 
               padding: EdgeInsets.only(left: 10),
-              child: Center(
-                child: Text(
-                  firstColumn,
-                  style: TextStyle(
-                    fontWeight: CustomFontTheme.headingwt,
-                    fontSize: CustomFontTheme.textSize,
-                    color: Colors.black,
+              child:  Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                      firstColumn,
+                      style: TextStyle(
+                        fontWeight: CustomFontTheme.headingwt,
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.black,
+                      ),
+
                   ),
-                ),
+                ],
               ),
             ),
           ),

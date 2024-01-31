@@ -393,6 +393,7 @@ class _AddFarmState extends State<AddFarm> {
                   ),
                 ],
               ),
+              const SizedBox(height: 30),
             ],
           ),
         ),

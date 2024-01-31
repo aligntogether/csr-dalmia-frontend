@@ -72,14 +72,17 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
     try {
       final response = await http.get(
         Uri.parse(
-            '$base/get-income-followup-dates?hhid=${widget.hhid}&interventionId=${widget.interventionid}'),
+              '$base/get-income-followup-dates?hhid=${widget.hhid}&interventionId=${widget.interventionid}'),
       );
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(response.body);
+        print("jsonData: $jsonData");
 
         setState(() {
           updateData = List<Map<String, dynamic>>.from(jsonData['resp_body']);
+          print("updateData: $updateData");
+
         });
       } else {
         throw Exception('Failed to load data: ${response.statusCode}');
@@ -89,6 +92,38 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
     }
   }
 
+  Future<void> saveUpdatedData(List<Map<String, dynamic>> updatedData) async {
+    try {
+      print("updatedData: $updatedData");
+      updatedData.forEach((element) {element['amount']=element['followUpAmount'];});
+      print("updatedData: ${jsonEncode(updatedData)}");
+      print("updatedData: ${widget.hhid}");
+      print("sdf${json.encode(
+          updatedData.map((e) => {"id": e['id'], "amount": e['amount']})
+              .toList())}");
+      var headers = {
+        'accept': '*/*',
+        'Content-Type': 'application/json'
+      };
+      final response = await http.put(
+        Uri.parse(
+              '$base/update-income-followup-amount?hhid=${widget.hhid}'),
+        headers: headers,
+        body: json.encode(updatedData.map((e) => {"id":e['id'],"amount":e['amount']}).toList())
+      );
+
+      if (response.statusCode == 200) {
+
+        print("jsonData: ${response.body}");
+
+
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     // final List<int> householdList =
@@ -238,9 +273,37 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
                               return DataRow(
                                 cells: <DataCell>[
                                   DataCell(Text('Follow up ${data['id']}')),
-                                  DataCell(Text('${data['followUpDate']}')),
-                                  DataCell(Text(
-                                      '${data['followUpAmount'] ?? 'N/A'}')),
+                                  DataCell(Text('${new DateTime.fromMicrosecondsSinceEpoch(data['followUpDate']*1000).day}-${new DateTime.fromMicrosecondsSinceEpoch(data['followUpDate']*1000).month}-${new DateTime.fromMicrosecondsSinceEpoch(data['followUpDate']*1000).year}')),
+                                  DataCell(
+                              data['followUpDate']>DateTime.now().millisecondsSinceEpoch?
+                                      Text(
+                                      '${data['followUpAmount'] ?? 'N/A'}'):
+                              TextFormField(
+                    initialValue:'${data['followUpAmount'] ?? ''}',
+                                          decoration: InputDecoration(
+                                            enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.black),
+                                            ),
+                                            focusedBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: CustomColorTheme
+                                                      .primaryColor),
+                                            ),
+                                          ),
+                                          keyboardType: TextInputType.number,
+                                          style: TextStyle(
+                                              fontSize: CustomFontTheme.textSize,
+                                              fontWeight: CustomFontTheme.textwt,
+                                              color: CustomColorTheme.textColor),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              data['followUpAmount'] = value;
+                                            });
+                                          },
+                                                                      ),
+                                      )
+
                                 ],
                               );
                             }).toList(),
@@ -259,11 +322,8 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
                         minimumSize: const Size(350, 50),
                         backgroundColor: CustomColorTheme.primaryColor),
                     onPressed: () {
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder: (context) => const AddHead(),
-                      //   ),
-                      // );
+
+                      saveUpdatedData(updateData);
                     },
                     child: const Text(
                       'Save Update',

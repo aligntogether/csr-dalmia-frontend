@@ -29,7 +29,7 @@ class _ReportPopupWidgetState extends State<ReportPopupWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
              Text(
                   'View other Reports',

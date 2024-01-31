@@ -18,6 +18,7 @@ import 'package:http/http.dart' as http;
 import '../../../Constants/constants.dart';
 import '../../../common/size_constant.dart';
 import '../../../helper/sharedpref.dart';
+import '../intervention/Enterdetail.dart';
 import '../intervention/Followup.dart';
 import 'Home.dart';
 class HhidForm extends StatefulWidget {
@@ -173,13 +174,13 @@ class _HhidFormState extends State<HhidForm> {
         if (jsonData['resp_code'] == 200) {
           final List<dynamic> respBody = jsonData['resp_body'];
 
-          List<Map<String, String>> extractedData = [];
+          List<Map<String, dynamic>> extractedData = [];
 
           for (var data in respBody) {
             // Extracting each entry in resp_body
             Map<String, String> entry = {};
             entry[data.keys.first.toString()] = data.values.first.toString();
-            extractedData.add(entry);
+            extractedData.add(data);
           }
 
           return extractedData;
@@ -890,18 +891,19 @@ class _HhidFormState extends State<HhidForm> {
                   SingleChildScrollView(
                     child: Column(
                       children: updatecompletionData.map<Widget>((data) {
+                        print("fd$data");
                         return RadioListTile<int>(
                           activeColor: CustomColorTheme.iconColor,
                           selectedTileColor: CustomColorTheme.iconColor,
                           title: Text(
-                            'int.${data.keys.first}    ${data.values.first}',
+                            'int.${data['interventionId']}    ${data['name']}',
                             style: TextStyle(
                               fontSize: CustomFontTheme.textSize,
                               fontWeight: CustomFontTheme.headingwt,
                               color: CustomColorTheme.textColor,
                             ),
                           ),
-                          value: int.parse(data.keys.first),
+                          value: int.parse(data['interventionId']),
                           groupValue: selectedRadio,
                           onChanged: (value) {
                             setState(() {
@@ -923,23 +925,14 @@ class _HhidFormState extends State<HhidForm> {
                           minimumSize: const Size(250, 50),
                           backgroundColor: CustomColorTheme.primaryColor),
                       onPressed: () {
-                        // Navigator.of(context).push(
-                        //   MaterialPageRoute(
-                        //     builder: (context) => Followup(
-                        //       hid: hhid,
-                        //       interId: updatecompletionData
-                        //           .first.keys.first
-                        //           .toString(),
-                        //       memberId: updatecompletionData
-                        //           .first.values.first
-                        //           .toString(),
-                        //       remark: updatecompletionData
-                        //           .first.values.first
-                        //           .toString(),
-                        //       date: now,
-                        //     ),
-                        //   ),
-                        // );
+
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => EnterDetail(
+                                hid:updatecompletionData.firstWhere((element) => true )['householdId'] , interId: selectedRadio.toString(),
+                            ),
+                          ),
+                        );
                         print("work pending");
                       },
                       child: const Text(
@@ -1031,6 +1024,7 @@ class _HhidFormState extends State<HhidForm> {
                           minimumSize: const Size(250, 50),
                           backgroundColor: CustomColorTheme.primaryColor),
                       onPressed: () {
+                        print("hhid--$hhid,interventionid--$interventionid,interventiontype--$interventiontype");
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => UpdateIntervention(

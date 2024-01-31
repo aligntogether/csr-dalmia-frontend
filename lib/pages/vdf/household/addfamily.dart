@@ -310,7 +310,7 @@ class _MyFormState extends State<AddFamily> {
                           const SizedBox(height: 16),
 
                           Form(
-                            key:GlobalKey<FormState>(debugLabel: 'form$i'),
+                            key: _formKey,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [

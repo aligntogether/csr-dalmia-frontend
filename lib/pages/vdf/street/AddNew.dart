@@ -185,8 +185,7 @@ class _AddnewState extends State<Addnew> {
                           });
                         },
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                              RegExp(r'[a-zA-Z]')),
+
                           LengthLimitingTextInputFormatter(30),
                         ],
                         decoration: InputDecoration(
@@ -209,7 +208,7 @@ class _AddnewState extends State<Addnew> {
                         },
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[A-Z]')),
-                          LengthLimitingTextInputFormatter(2),
+                          LengthLimitingTextInputFormatter(3),
                         ],
                         textCapitalization: TextCapitalization.characters,
                         decoration: InputDecoration(
