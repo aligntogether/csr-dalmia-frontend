@@ -156,7 +156,7 @@ class _DashTabState extends State<DashTab> {
                       children: [
                         CustomCard(
                           imageUrl: 'images/i_house.svg',
-                          subtitle: 'Households covered',
+                          subtitle: 'Households Covered',
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
                           title: apiData['householdsCovered'].toString()
@@ -170,7 +170,7 @@ class _DashTabState extends State<DashTab> {
                                   ==null?'0':apiData['interventionPlanned'].toString(),
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
-                          subtitle: 'Intervention planned',
+                          subtitle: 'Intervention Planned',
                           bg: Color(0xFFC2D7CD),
                           textcolor: const Color(0xFF0C7243),
                         ),
@@ -181,7 +181,7 @@ class _DashTabState extends State<DashTab> {
                           bordercolor:
                               Colors.black.withOpacity(0.10000000149011612),
                           bg: Color(0xFFC2D7CD),
-                          subtitle: 'Interventions completed',
+                          subtitle: 'Interventions Completed',
                           textcolor: const Color(0xFF0C7243),
                         ),
                       ],
@@ -245,7 +245,7 @@ class _DashTabState extends State<DashTab> {
                       style: TextStyle(fontSize: 16, color: Colors.black),
                       children: [
                         TextSpan(
-                          text: 'Households with additional\n income',
+                          text: 'Households with Additional\nIncome',
                           style: TextStyle(
                             fontSize: CustomFontTheme.headingSize,
                             fontWeight: CustomFontTheme.headingwt,

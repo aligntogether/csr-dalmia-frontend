@@ -47,7 +47,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
     client = StompClient(
         config: StompConfig(
             onWebSocketError: (dynamic error) => print(error.toString()),
-            url: 'wss://mobiledevcloud.dalmiabharat.com/csr/ws',
+            url: 'wss://mobileqacloud.dalmiabharat.com/csr/ws',
             onConnect: onConnect)); // StompConfig // StompClient
 
     print("client : $client");
@@ -126,7 +126,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
     // int feedid = feedbackid as int;
     final response = await http.get(
       Uri.parse(
-        'https://mobiledevcloud.dalmiabharat.com:443/csr/get-feedback?userId=${widget.userid}&feedbackId=${widget.feedbackid}',
+        'https://mobileqacloud.dalmiabharat.com:443/csr/get-feedback?userId=${widget.userid}&feedbackId=${widget.feedbackid}',
       ),
     );
 

@@ -12,7 +12,9 @@ import 'package:get/get_state_manager/src/simple/list_notifier.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
+import '../../../Constants/constants.dart';
 import '../../../common/size_constant.dart';
+import '../../../helper/sharedpref.dart';
 class Addnew extends StatefulWidget {
   final String? village;
   final String? panchayat;
@@ -128,45 +130,48 @@ class _AddnewState extends State<Addnew> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: const Color(0xFF006838).withOpacity(0.1)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              style: const TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  color: Color(0xFF006838)),
-                              children: [
-                                const TextSpan(
-                                  text: 'Panchayat :',
-                                  style: TextStyle(
-                                    fontWeight: CustomFontTheme.labelwt,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                style: const TextStyle(
+                                    fontSize: CustomFontTheme.textSize,
+                                    color: Color(0xFF006838)),
+                                children: [
+                                  const TextSpan(
+                                    text: 'Panchayat :',
+                                    style: TextStyle(
+                                      fontWeight: CustomFontTheme.labelwt,
+                                    ),
                                   ),
-                                ),
-                                TextSpan(text: '  ${widget.panchayat} '),
-                              ],
+                                  TextSpan(text: '  ${widget.panchayat} '),
+                                ],
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              style: const TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  color: Color(0xFF006838)),
-                              children: [
-                                const TextSpan(
-                                  text: 'Village:',
-                                  style: TextStyle(
-                                    fontWeight: CustomFontTheme.labelwt,
+                            SizedBox(
+                              height: 10,
+                            ),
+                            RichText(
+                              text: TextSpan(
+                                style: const TextStyle(
+                                    fontSize: CustomFontTheme.textSize,
+                                    color: Color(0xFF006838)),
+                                children: [
+                                  const TextSpan(
+                                    text: 'Village:',
+                                    style: TextStyle(
+                                      fontWeight: CustomFontTheme.labelwt,
+                                    ),
                                   ),
-                                ),
-                                TextSpan(text: '  ${widget.village}'),
-                              ],
+                                  TextSpan(text: '  ${widget.village}'),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -252,13 +257,20 @@ class _AddnewState extends State<Addnew> {
                               : CustomColorTheme.primaryColor.withOpacity(0.7)),
                       onPressed: () async {
                         print('rdg');
+                        String vdfId='';
+        await SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
+        .then((value) {
+    setState(() {
+    vdfId = value == '' ? '20120' : value;
+    });
+    });
                         final result = await checkStreetCodeExists(
-                          vdfId: '20120',
+                          vdfId: vdfId,
                           villageId: widget.villagId,
                           streetName: streetName!,
                           streetCode: streetCode!,
                         );
-                        print(result);
+
                         if (result == false) {
                           if (streetName != null && streetCode != null) {
                             _addStreetAPI(

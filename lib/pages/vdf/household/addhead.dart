@@ -7,6 +7,7 @@ import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
@@ -120,8 +121,6 @@ class _MyFormState extends State<AddHead> {
     }
   }
 
-
-
   List<Map<String, dynamic>> familyMembers = [];
   @override
   void initState() {
@@ -131,12 +130,11 @@ class _MyFormState extends State<AddHead> {
     fetchEducationOptions();
     fetchPrimaryOptions();
 
-
     getFamilyMembers(widget.id ?? '0').then(
       (familyMembers) {
         var headIndex = getHeadIndex(familyMembers);
         setState(() {
-          if(familyMembers.length>0){
+          if (familyMembers.length > 0) {
             memberId = familyMembers[headIndex]['memberId'].toString();
           }
         });
@@ -168,15 +166,11 @@ class _MyFormState extends State<AddHead> {
                   familyMembers[headIndex]['dob']);
             });
 
-
           setState(() {
-
             print('member id $memberId');
           });
         }
         // _selectedCaste = familyMembers[0]['education'];
-
-
       },
     );
   }
@@ -213,7 +207,6 @@ class _MyFormState extends State<AddHead> {
   Future<void> addMember() async {
     print("i am here");
     try {
-
       print('dsb ${widget.id}, memberid $memberId');
       final response = await http.put(
         Uri.parse('$base/add-member?houseHoldId=${widget.id}'),
@@ -224,8 +217,9 @@ class _MyFormState extends State<AddHead> {
         body: jsonEncode([
           {
             'memberName': _nameController.text,
-            'mobile': int.parse(_mobileController.text==''?'0':_mobileController.text)  ,
-           'dob': selectedDate?.toIso8601String(),
+            'mobile': int.parse(
+                _mobileController.text == '' ? '0' : _mobileController.text),
+            'dob': selectedDate?.toIso8601String(),
             'gender': _selectedGender,
             'education':
                 _selectedEducation, // You may replace this with the actual value
@@ -249,7 +243,10 @@ class _MyFormState extends State<AddHead> {
       );
       if (response.statusCode == 200) {
         // Handle the success response
+        print("fs${response.body}");
         print('Member added successfully!');
+        memberId = jsonDecode(response.body)['resp_body'][0].toString();
+        print(memberId);
       } else {
         throw Exception('Failed to add member: ${response.statusCode}');
       }
@@ -292,7 +289,8 @@ class _MyFormState extends State<AddHead> {
         appBar: houseappbar(context),
         body: SingleChildScrollView(
           child: Padding(
-            padding:  EdgeInsets.symmetric(horizontal: MySize.screenWidth*(16/MySize.screenWidth)),
+            padding: EdgeInsets.symmetric(
+                horizontal: MySize.screenWidth * (16 / MySize.screenWidth)),
             child: Form(
               key: _formKey,
               child: Column(
@@ -313,13 +311,19 @@ class _MyFormState extends State<AddHead> {
                     decoration: InputDecoration(
                       labelText: 'Head Name *',
                       contentPadding: EdgeInsets.symmetric(
-                          horizontal:  MySize.screenWidth*(16/MySize.screenWidth), vertical: MySize.screenHeight*(20/MySize.screenHeight)),
+                          horizontal:
+                              MySize.screenWidth * (16 / MySize.screenWidth),
+                          vertical:
+                              MySize.screenHeight * (20 / MySize.screenHeight)),
                     ),
+                    validator: (value) {
+                      if (value!.length < 2) {
+                        return 'Member name should filled';
+                      }
+                      return null;
+                    },
                     onChanged: (value) {
-
-                      setState(() {
-
-                      });
+                      setState(() {});
                     },
                   ),
                   SizedBox(height: height * 0.02),
@@ -332,8 +336,11 @@ class _MyFormState extends State<AddHead> {
                     controller: _mobileController,
                     decoration: InputDecoration(
                       labelText: 'Mobile Number *',
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: MySize.screenWidth*(16/MySize.screenWidth), vertical: MySize.screenHeight*(20/MySize.screenHeight)),
+                      contentPadding: EdgeInsets.symmetric(
+                          horizontal:
+                              MySize.screenWidth * (16 / MySize.screenWidth),
+                          vertical:
+                              MySize.screenHeight * (20 / MySize.screenHeight)),
                     ),
                     validator: (value) {
                       if (value!.length != 10) {
@@ -350,11 +357,15 @@ class _MyFormState extends State<AddHead> {
                           width: double.infinity,
                           child: TextFormField(
                             controller: _dobController,
-                            readOnly: true, // Set the field to be read-only
+                            readOnly: true,
+                            // Set the field to be read-only
                             decoration: InputDecoration(
                               labelText: 'Date of Birth *',
-                              contentPadding:  EdgeInsets.symmetric(
-                                  horizontal: MySize.screenWidth*(16/MySize.screenWidth), vertical: MySize.screenHeight*(20/MySize.screenHeight)),
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: MySize.screenWidth *
+                                      (16 / MySize.screenWidth),
+                                  vertical: MySize.screenHeight *
+                                      (20 / MySize.screenHeight)),
                               suffixIcon: IconButton(
                                 onPressed: () {
                                   _selectDate(context);
@@ -365,12 +376,21 @@ class _MyFormState extends State<AddHead> {
                                 ),
                               ),
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Birthdate should filled';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                       ),
-                       SizedBox(width: MySize.screenWidth*(10/MySize.screenWidth)), // Adjust the width here
+                      SizedBox(
+                          width: MySize.screenWidth *
+                              (10 /
+                                  MySize.screenWidth)), // Adjust the width here
                       Container(
-                        width: MySize.screenWidth*(100/MySize.screenWidth),
+                        width: MySize.screenWidth * (100 / MySize.screenWidth),
                         decoration: BoxDecoration(
                           color: Colors.grey[200],
                           borderRadius: BorderRadius.circular(5.0),
@@ -390,6 +410,7 @@ class _MyFormState extends State<AddHead> {
                             contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 20.0),
                           ),
+
                         ),
                       ),
                     ],
@@ -406,14 +427,25 @@ class _MyFormState extends State<AddHead> {
                     }).toList(),
                     onChanged: (newValue) {
                       setState(() {
+                        print("gender $newValue");
                         _selectedGender = newValue;
                       });
                     },
                     decoration: InputDecoration(
                       labelText: 'Gender *',
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: MySize.screenWidth*(16/MySize.screenWidth), vertical: MySize.screenHeight*(20/MySize.screenHeight)),
+                      contentPadding: EdgeInsets.symmetric(
+                          horizontal:
+                              MySize.screenWidth * (16 / MySize.screenWidth),
+                          vertical:
+                              MySize.screenHeight * (20 / MySize.screenHeight)),
                     ),
+                    validator: (value) {
+                      print(value);
+                      if (value==null) {
+                        return 'Gender is required';
+                      }
+                      return null;
+                    },
                     icon: const Icon(
                       Icons.keyboard_arrow_down_sharp,
                       color: CustomColorTheme.iconColor,
@@ -439,10 +471,19 @@ class _MyFormState extends State<AddHead> {
                       color: CustomColorTheme.iconColor,
                     ),
                     decoration: InputDecoration(
-                      labelText: 'Caste *',
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: MySize.screenWidth*(16/MySize.screenWidth), vertical: MySize.screenHeight*(20/MySize.screenHeight)),
+                      labelText: 'Caste Category*',
+                      contentPadding: EdgeInsets.symmetric(
+                          horizontal:
+                              MySize.screenWidth * (16 / MySize.screenWidth),
+                          vertical:
+                              MySize.screenHeight * (20 / MySize.screenHeight)),
                     ),
+                    validator: (value) {
+                      if (value==null) {
+                        return 'Caste is required';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(
                     height: 16,
@@ -465,17 +506,28 @@ class _MyFormState extends State<AddHead> {
                       Icons.keyboard_arrow_down_sharp,
                       color: CustomColorTheme.iconColor,
                     ),
+                    validator: (value) {
+                      print(value);
+                      if (value==null) {
+                        return 'Education is required';
+                      }
+                      return null;
+                    },
                     decoration: InputDecoration(
                       labelText: 'Education *',
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: MySize.screenWidth*(16/MySize.screenWidth), vertical: MySize.screenHeight*(20/MySize.screenHeight)),
+                      contentPadding: EdgeInsets.symmetric(
+                          horizontal:
+                              MySize.screenWidth * (16 / MySize.screenWidth),
+                          vertical:
+                              MySize.screenHeight * (20 / MySize.screenHeight)),
                     ),
                   ),
                   SizedBox(height: height * 0.02),
                   DropdownButtonFormField<int>(
                     value: _selectedPrimaryEmployment,
+
                     items: primaryEmploymentOptions.map<DropdownMenuItem<int>>(
-                          (dynamic primaryemployment) {
+                      (dynamic primaryemployment) {
                         return DropdownMenuItem<int>(
                           value: primaryemployment['dataId'],
                           child: Container(
@@ -498,9 +550,17 @@ class _MyFormState extends State<AddHead> {
 
                         secondaryEmploymentOptions.clear();
                         secondaryEmploymentOptions.addAll(
-                          primaryEmploymentOptions.where((e) => e["dataId"] != newValue),
+                          primaryEmploymentOptions
+                              .where((e) => e["dataId"] != newValue),
                         );
                       });
+                    },
+                    validator: (value) {
+                      print(value);
+                      if (value==null) {
+                        return 'primary employement is required';
+                      }
+                      return null;
                     },
                     icon: const Icon(
                       Icons.keyboard_arrow_down_sharp,
@@ -509,8 +569,10 @@ class _MyFormState extends State<AddHead> {
                     decoration: InputDecoration(
                       labelText: 'Primary Employment *',
                       contentPadding: EdgeInsets.symmetric(
-                        horizontal: MySize.screenWidth * (16 / MySize.screenWidth),
-                        vertical: MySize.screenHeight * (20 / MySize.screenHeight),
+                        horizontal:
+                            MySize.screenWidth * (16 / MySize.screenWidth),
+                        vertical:
+                            MySize.screenHeight * (20 / MySize.screenHeight),
                       ),
                     ),
                   ),
@@ -520,7 +582,7 @@ class _MyFormState extends State<AddHead> {
                     items: secondaryEmploymentOptions
                         .where((e) => e["dataId"] != _selectedPrimaryEmployment)
                         .map<DropdownMenuItem<int>>(
-                          (dynamic secondaryemployment) {
+                      (dynamic secondaryemployment) {
                         return DropdownMenuItem<int>(
                           value: secondaryemployment['dataId'],
                           child: Container(
@@ -544,13 +606,13 @@ class _MyFormState extends State<AddHead> {
                     decoration: InputDecoration(
                       labelText: 'Secondary Employment',
                       contentPadding: EdgeInsets.symmetric(
-                        horizontal: MySize.screenWidth * (16 / MySize.screenWidth),
-                        vertical: MySize.screenHeight * (20 / MySize.screenHeight),
+                        horizontal:
+                            MySize.screenWidth * (16 / MySize.screenWidth),
+                        vertical:
+                            MySize.screenHeight * (20 / MySize.screenHeight),
                       ),
                     ),
                   ),
-
-
                   SizedBox(height: height * 0.02),
                   if (_validateFields &&
                       !(_formKey.currentState?.validate() ?? false))
@@ -561,10 +623,8 @@ class _MyFormState extends State<AddHead> {
                           'Please fill all the mandatory fields',
                           style: TextStyle(
                             color: Color(0xFFEC2828),
-
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w500,
-
                           ),
                         ),
                       ),
@@ -575,13 +635,16 @@ class _MyFormState extends State<AddHead> {
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
-                          minimumSize:  Size(MySize.screenWidth*(130/MySize.screenWidth), MySize.screenHeight*(50/MySize.screenHeight)),
+                          minimumSize: Size(
+                              MySize.screenWidth * (130 / MySize.screenWidth),
+                              MySize.screenHeight * (50 / MySize.screenHeight)),
                           backgroundColor: CustomColorTheme.primaryColor,
                         ),
                         onPressed: () {
                           setState(() {
                             _validateFields = true;
                           });
+
                           if (_formKey.currentState?.validate() ?? false) {
                             addMember().then((value) =>
                                 Navigator.of(context).push(MaterialPageRoute(
@@ -604,7 +667,9 @@ class _MyFormState extends State<AddHead> {
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
-    minimumSize:  Size(MySize.screenWidth*(130/MySize.screenWidth), MySize.screenHeight*(50/MySize.screenHeight)),
+                          minimumSize: Size(
+                              MySize.screenWidth * (130 / MySize.screenWidth),
+                              MySize.screenHeight * (50 / MySize.screenHeight)),
                           side: BorderSide(
                               color: CustomColorTheme.primaryColor, width: 1),
                           backgroundColor: Colors.white,
@@ -647,23 +712,25 @@ class _MyFormState extends State<AddHead> {
                 Icon(
                   Icons.check_circle,
                   color: Colors.green,
-                  size: MySize.screenHeight*(40/MySize.screenHeight),
+                  size: MySize.screenHeight * (40 / MySize.screenHeight),
                 ),
                 SizedBox(
-                  height:  MySize.screenHeight*(20/MySize.screenHeight),
+                  height: MySize.screenHeight * (20 / MySize.screenHeight),
                 ),
                 Text('Saved Data to Draft'),
               ],
             ),
           ),
           content: SizedBox(
-            height: MySize.screenHeight*(80/MySize.screenHeight),
+            height: MySize.screenHeight * (80 / MySize.screenHeight),
             child: Column(
               // mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize:  Size(MySize.screenWidth*(100/MySize.screenWidth), MySize.screenHeight*(40/MySize.screenHeight)),
+                    minimumSize: Size(
+                        MySize.screenWidth * (100 / MySize.screenWidth),
+                        MySize.screenHeight * (40 / MySize.screenHeight)),
                     elevation: 0,
                     backgroundColor: CustomColorTheme.primaryColor,
                     side: const BorderSide(
@@ -736,7 +803,7 @@ AppBar houseappbar(BuildContext context) {
     // backgroundColor: Colors.grey[50],
     actions: <Widget>[
       IconButton(
-        iconSize: MySize.screenHeight*(30/MySize.screenHeight),
+        iconSize: MySize.screenHeight * (30 / MySize.screenHeight),
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(

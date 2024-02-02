@@ -49,12 +49,15 @@ class OverviewReportApiService {
   }
   Future<Map<String, List<String>>>getRegionLocation(Map<int, String> regions) async {
     try {
+      print("regions : $regions");
       Map<String, List<String>> locations = {};
 
       for (int regionId in regions.keys) {
+        print("regionId : $regionId");
         String url = '$base/locations/search/findByRegionId?regionId=$regionId';
 
-        final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+        final response = await http.get(Uri.parse(url), headers: {'accept': '*/*'},).timeout(Duration(seconds: 30));
+        print("response : $response");
 
         if (response.statusCode == 200) {
           final Map<String, dynamic> respBody = json.decode(response.body);
@@ -67,7 +70,8 @@ class OverviewReportApiService {
             for (var entry in locationsData) {
               locationList.add(entry['locationCode']);
             }
-            print("HI");
+            print("HIs");
+            print("locationList : $locationList");
             locations[regions[regionId]!] = locationList;
           } else {
             throw Exception('Response format does not contain expected data');

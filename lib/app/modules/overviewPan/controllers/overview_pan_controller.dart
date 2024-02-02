@@ -116,7 +116,7 @@ class OverviewPanController extends GetxController {
     'between50KTO75KIncome',
     'between75KTO1LIncome',
     'moreThan1LIncome',
-    'mapped',
+
   ];
 
   List<String> locationsList = [

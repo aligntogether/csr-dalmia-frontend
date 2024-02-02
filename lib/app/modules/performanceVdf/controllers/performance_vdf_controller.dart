@@ -15,7 +15,12 @@ class PerformanceVdfController extends GetxController {
   List<Map<String, dynamic>>? clusters;
   Map<String, dynamic>? performanceReport;
   List<String>? details;
+  List<String>? cummulatives;
 
+  void updateCummulative(List<String> cummulative) {
+    this.cummulatives = cummulative;
+    update(["add"]);
+  }
   void updateLocations(List<Map<String, dynamic>> locations) {
     this.locations = locations;
     update(["add"]);

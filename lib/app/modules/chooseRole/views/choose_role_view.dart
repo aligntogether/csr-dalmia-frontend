@@ -322,7 +322,7 @@ class ChooseRoleView extends GetView<ChooseRoleController> {
                       fontFamily: 'Inter-Bold',
                       fontWeight: FontWeight.w500,
                       decorationThickness: 1.5,
-                      decoration: TextDecoration.underline,
+
                       decorationColor: Color(0xff0054A6),
                     ),
                   ),

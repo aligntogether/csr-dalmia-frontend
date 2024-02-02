@@ -27,7 +27,7 @@ class _ActionAgainstHHState extends State<ActionAgainstHH> {
   Future<void> fetchData() async {
     final response = await http.get(
       Uri.parse(
-        'https://mobiledevcloud.dalmiabharat.com:443/csr/action-dropped-household-details?locationId=10001',
+        'https://mobileqacloud.dalmiabharat.com:443/csr/action-dropped-household-details?locationId=10001',
       ),
     );
 

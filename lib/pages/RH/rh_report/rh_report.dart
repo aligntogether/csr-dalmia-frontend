@@ -542,15 +542,19 @@ class _RhReportViewState extends State<RhReportView> {
               ),
 
               padding: EdgeInsets.only(left: 10),
-              child: Center(
-                child: Text(
-                  firstColumn,
-                  style: TextStyle(
-                    fontWeight: CustomFontTheme.headingwt,
-                    fontSize: CustomFontTheme.textSize,
-                    color: Colors.black,
+              child:  Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                      firstColumn,
+                      style: TextStyle(
+                        fontWeight: CustomFontTheme.headingwt,
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.black,
+
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ),

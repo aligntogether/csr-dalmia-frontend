@@ -1,3 +1,4 @@
+import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -22,8 +23,8 @@ class CustomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 110,
-      height: 150,
+      width: MySize.screenWidth*(110/MySize.screenWidth),
+      height: MySize.screenHeight*(150/MySize.screenHeight),
       decoration: ShapeDecoration(
         shape: RoundedRectangleBorder(),
         shadows: [
@@ -46,30 +47,26 @@ class CustomCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(10.0),
         ),
         child: Container(
-          padding: const EdgeInsets.only(left: 10),
+      padding: EdgeInsets.all(10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               SvgPicture.asset(
                 imageUrl,
-                width: 35,
-                height: 28,
+                width: MySize.screenWidth*(28/MySize.screenWidth),
+                height: MySize.screenHeight*(28/MySize.screenHeight),
               ),
-              Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: Text(
+               Text(
                   subtitle,
                   style: TextStyle(
-                    fontSize: 14.5,
+                    fontSize: MySize.screenHeight*(14/MySize.screenHeight),
                     fontWeight: FontWeight.w500,
                     color: textcolor,
                   ),
-                ),
+
               ),
-              Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: Text(
+             Text(
                   title,
                   style: TextStyle(
                     color: textcolor,
@@ -77,7 +74,7 @@ class CustomCard extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
+
             ],
           ),
         ),

@@ -162,7 +162,7 @@ class _GplAmountUtilizedViewState extends State<GplAmountUtilizedView> {
                         style: AppStyle.textStyleBoldMed(fontSize: 14),
                       ),
                       Text(
-                        "(in Lakhs)",
+                        "(Repees /in Lakhs)",
                         style: AppStyle.textStyleInterMed(fontSize: 14),
                       ),
                     ],

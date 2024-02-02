@@ -42,7 +42,7 @@ class _ExpectedincomeState extends State<Expectedincome> {
   Future<void> fetchData() async {
     final response = await http.get(
       Uri.parse(
-        'https://mobiledevcloud.dalmiabharat.com:443/csr/expected-actual-additional-income?locationId=10001',
+        'https://mobileqacloud.dalmiabharat.com:443/csr/expected-actual-additional-income?locationId=10001',
       ),
     );
 

@@ -408,18 +408,15 @@ class _AddStockState extends State<AddStock> {
       ),
     );
   }
-
-  Rowstock(String text, void Function(dynamic text, dynamic value) addData,
+  Widget Rowstock(String text, void Function(dynamic text, dynamic value) addData,
       Map<String, int>? value) {
     TextEditingController controller = TextEditingController();
 
-    if (value != null) {
-      controller.text = value[text] == null ? "" : value[text].toString()=='0'?"" : value[text].toString();
-    }
+
 
     // Use a listener to update the text field when the underlying value changes
     controller.addListener(() {
-      addData(text, controller.text==null?"":controller.text);
+      addData(text, controller.text ?? "");
     });
 
     return Padding(
@@ -428,24 +425,23 @@ class _AddStockState extends State<AddStock> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
-            width: MySize.screenWidth*(90/MySize.screenWidth),
+            width: MySize.screenWidth * (90 / MySize.screenWidth),
             child: Text(
               text,
               style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF181818).withOpacity(0.80)),
+                fontSize: MySize.screenHeight * (14 / MySize.screenHeight),
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF181818).withOpacity(0.80),
+              ),
             ),
           ),
           SizedBox(
-            width: 50,
-            height: 30,
+            width: MySize.screenWidth * (50 / MySize.screenWidth),
+            height: MySize.screenHeight * (40 / MySize.screenHeight),
             child: TextFormField(
               controller: controller,
               keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-              ],
+              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
               decoration: const InputDecoration(
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
                 border: OutlineInputBorder(
@@ -463,4 +459,5 @@ class _AddStockState extends State<AddStock> {
       ),
     );
   }
+
 }

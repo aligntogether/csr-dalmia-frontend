@@ -38,7 +38,7 @@ class _HhidFormState extends State<HhidForm> {
       print('street id -- ${widget.streetid}');
       final response = await http.get(
         Uri.parse(
-            'https://mobiledevcloud.dalmiabharat.com:443/csr/get-bystreet-cummulative-household-details?vdfId=${vdfId}&streetId=${widget.streetid}'),
+            'https://mobileqacloud.dalmiabharat.com:443/csr/get-bystreet-cummulative-household-details?vdfId=${vdfId}&streetId=${widget.streetid}'),
       );
 
       if (response.statusCode == 200) {

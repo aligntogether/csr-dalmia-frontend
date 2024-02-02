@@ -1,18 +1,21 @@
+import 'dart:convert';
+
 import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/CDO/action.dart';
 import 'package:dalmia/pages/CDO/expected.dart';
 import 'package:dalmia/pages/CDO/sourceoffunds.dart';
+import 'package:dalmia/pages/CDO/vdf_report_controller.dart';
 import 'package:dalmia/pages/CDO/vdffund.dart';
 import 'package:dalmia/pages/CDO/vdfreports.dart';
-import 'package:dalmia/pages/CDO/weeklyprogress.dart';
+import 'package:dalmia/pages/CDO/WeeklyPerformance/weeklyprogress.dart';
 import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-
+import 'package:http/http.dart' as http;
 import '../../common/app_style.dart';
 import '../../common/size_constant.dart';
 import 'CdoController.dart';
@@ -29,6 +32,8 @@ class CDOHome extends StatefulWidget {
   
 class _CDOHomeState extends State<CDOHome> {
   String name = "";
+  String cdoId = "";
+  VDFReportController controller1 = VDFReportController();
   @override
   void initState() {
     super.initState();
@@ -38,7 +43,26 @@ class _CDOHomeState extends State<CDOHome> {
               value == '' ? name = 'user' : name = value;
             }));
     ;
+    SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+      value == '' ? cdoId = '10001' : cdoId = value;
+
+        var url = Uri.parse(
+            'https://mobileqacloud.dalmiabharat.com:443/csr/locations/search/findLocationIdByCdoId?cdoId=$cdoId');
+        http.get(url).then((response) {
+          var data = json.decode(response.body);
+
+          controller1.selectLocationId = data;
+          return controller1.selectLocationId;
+        });
+
+
+
+    }));
+    ;
   }
+
+
   CdoController controller = Get.put(CdoController());
   @override
   Widget build(BuildContext context) {
@@ -78,9 +102,12 @@ class _CDOHomeState extends State<CDOHome> {
               ),
               GestureDetector(
                 onTap: () {
+
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const WeeklyProgress(),
+                      builder: (context) =>  WeeklyProgress(
+                        locationId: controller1.selectLocationId,
+                      ),
                     ),
                   );
                 },

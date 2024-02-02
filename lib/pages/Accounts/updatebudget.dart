@@ -89,7 +89,7 @@ class _UpdateBudgetState extends State<UpdateBudget> {
       print("\n Idddddddddddddd : $updateMap");
       final response = await http.put(
           Uri.parse(
-              'https://mobiledevcloud.dalmiabharat.com:443/csr/update-cluster-budget'),
+              'https://mobileqacloud.dalmiabharat.com:443/csr/update-cluster-budget'),
           body: json.encode([updateMap]),
           headers: <String, String>{'Content-Type': 'application/json'});
       print("asasdf");

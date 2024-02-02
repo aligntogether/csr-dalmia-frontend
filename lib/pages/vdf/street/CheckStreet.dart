@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/pages/vdf/street/AddNew.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
@@ -87,6 +88,7 @@ class _CheckStreetState extends State<CheckStreet> {
 
   @override
   Widget build(BuildContext context) {
+    int i =1;
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
@@ -148,54 +150,57 @@ class _CheckStreetState extends State<CheckStreet> {
                     height: 10,
                   ),
                   Container(
-                    width: 300,
-                    height: 100,
+                    width: MySize.screenWidth*(300/MySize.screenWidth),
+                    height: MySize.screenHeight*(100/MySize.screenHeight),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: const Color(0xFF006838).withOpacity(0.1)),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                            style: const TextStyle(
-                                fontSize: CustomFontTheme.textSize,
-                                color: Color(0xFF006838)),
-                            children: [
-                              const TextSpan(
-                                text: 'Panchayat :',
-                                style: TextStyle(
-                                  fontWeight: CustomFontTheme.labelwt,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              style: const TextStyle(
+                                  fontSize: CustomFontTheme.textSize,
+                                  color: Color(0xFF006838)),
+                              children: [
+                                const TextSpan(
+                                  text: 'Panchayat :',
+                                  style: TextStyle(
+                                    fontWeight: CustomFontTheme.labelwt,
+                                  ),
                                 ),
-                              ),
-                              TextSpan(text: '  ${widget.selectedPanchayat} '),
-                            ],
+                                TextSpan(text: '  ${widget.selectedPanchayat} '),
+                              ],
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        RichText(
-                          text: TextSpan(
-                            style: const TextStyle(
-                                fontSize: CustomFontTheme.textSize,
-                                color: Color(0xFF006838)),
-                            children: [
-                              const TextSpan(
-                                text: 'Village:',
-                                style: TextStyle(
-                                  fontWeight: CustomFontTheme.labelwt,
+                          SizedBox(
+                            height: 10,
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              style: const TextStyle(
+                                  fontSize: CustomFontTheme.textSize,
+                                  color: Color(0xFF006838)),
+                              children: [
+                                const TextSpan(
+                                  text: 'Village:',
+                                  style: TextStyle(
+                                    fontWeight: CustomFontTheme.labelwt,
+                                  ),
                                 ),
-                              ),
-                              TextSpan(text: '  ${widget.selectedVillage}'),
-                            ],
+                                TextSpan(text: '  ${widget.selectedVillage}'),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
+                   SizedBox(
+                    height: MySize.screenHeight*(20/MySize.screenHeight),
                   ),
                   const Text(
                     'Check whether the street is already added?',
@@ -213,6 +218,7 @@ class _CheckStreetState extends State<CheckStreet> {
                       decoration: const BoxDecoration(
                         color: Color(0x19008CD3),
                       ),
+
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: DataTable(
@@ -233,12 +239,14 @@ class _CheckStreetState extends State<CheckStreet> {
                               ),
                             ),
                           ],
+
                           rows: streetData
                               .map(
                                 (data) => DataRow(
+
                                   cells: <DataCell>[
                                     DataCell(Text(
-                                        '${data.streetName}(${data.streetCode})')),
+                                        '${i++}.  ${data.streetName}(${data.streetCode})')),
                                     DataCell(Text(
                                         '${data.familyCount}/${data.householdCount}')),
                                   ],

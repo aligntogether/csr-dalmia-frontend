@@ -17,7 +17,7 @@ void _callAcceptHouseholdAPI(String hhid) async {
   try {
     final response = await http.put(
       Uri.parse(
-        'https://mobiledevcloud.dalmiabharat.com:443/csr/cdo-accept-household?hhid=$hhid',
+        'https://mobileqacloud.dalmiabharat.com:443/csr/cdo-accept-household?hhid=$hhid',
       ),
     );
 
@@ -38,7 +38,7 @@ void _calldropHouseholdAPI(String hhid) async {
   try {
     final response = await http.put(
       Uri.parse(
-        'https://mobiledevcloud.dalmiabharat.com:443/csr/cdo-drop-household?hhid=$hhid',
+        'https://mobileqacloud.dalmiabharat.com:443/csr/cdo-drop-household?hhid=$hhid',
       ),
     );
 

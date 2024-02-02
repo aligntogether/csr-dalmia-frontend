@@ -18,6 +18,7 @@ import 'package:http/http.dart' as http;
 
 import '../../../Constants/constants.dart';
 import '../../../helper/sharedpref.dart';
+import '../notifications.dart';
 
 class Draft extends StatefulWidget {
   const Draft({Key? key});
@@ -110,7 +111,13 @@ class _DraftState extends State<Draft> {
                   CircleAvatar(
                     backgroundColor: CustomColorTheme.primaryColor,
                     child: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const Notifications(),
+                          ),
+                        );
+                      },
                       icon: const Icon(
                         Icons.notifications_none_outlined,
                         color: Colors.white,
@@ -172,7 +179,7 @@ class _DraftState extends State<Draft> {
               ),
               const Center(
                   child: Text(
-                'Select a row to  delete draft HH',
+                'Select a row to delete draft HH',
                 style: TextStyle(
                     fontSize: CustomFontTheme.textSize,
                     fontWeight: CustomFontTheme.headingwt),
@@ -206,7 +213,7 @@ class _DraftState extends State<Draft> {
                               style: TextStyle(color: Colors.white)),
                         ),
                         DataColumn(
-                          label: Text('Family\n Head Name',
+                          label: Text('Family\nHead Name',
                               style: TextStyle(color: Colors.white)),
                         ),
                         DataColumn(

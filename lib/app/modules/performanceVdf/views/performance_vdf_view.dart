@@ -9,6 +9,7 @@ import 'package:dalmia/common/size_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 
 import '../../../../Constants/constants.dart';
 import '../../../../helper/sharedpref.dart';
@@ -105,10 +106,25 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
       });
 
     });
+    List<String> headerList1= [];
+    num cummulative=0;
+    performanceReport.forEach((key, value) {
+      num sum=0;
+      value.forEach((key, value) {
+        if(value!=null){
+          sum=sum+value;
+        }
+      });
+      cummulative=cummulative+sum;
+
+    });
+    headerList.length>8?headerList1=headerList.sublist(0,8):headerList1=headerList;
 
     setState(() {
+
       controller.updatePerformanceReport(performanceReport);
-      controller.updateHeaderList(headerList);
+      controller.updateHeaderList(headerList1);
+      // controller.updateCummulative(cummulative);
       controller.updateDetails(details);
     });
 
@@ -267,7 +283,12 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                                   controller.selectLocationId ?? 0);
 
                               if (clustersData != null) {
-                                List<Map<String, dynamic>> clusters = clustersData?['clusters'];
+                                List<Map<String, dynamic>> clusters = [];
+                                for (int i = 0; i < clustersData['clusters'].length; i++) {
+                                  if (clustersData['clusters'][i]['vdfId'] != null) {
+                                    clusters.add(clustersData['clusters'][i]);
+                                  }
+                                }
 
                                 controller.updateClusters(clusters);
 
@@ -408,6 +429,7 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
     );
   }
   Widget allRegionsTables(int i) {
+    int sum = 0;
     return Visibility(
       visible: controller.performanceReport != null && controller.performanceReport!.isNotEmpty,
       child: !isLoading?Center(child: CircularProgressIndicator()):
@@ -454,7 +476,7 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                     ),
                   ),
 
-                    for (String date in controller.headerList!)
+                    for (String date in controller.headerList==null?[]:controller.headerList!)
                       DataColumn(
                         label: Container(
                           height: 60,
@@ -473,6 +495,22 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                           ),
                         ),
                       ),
+                  DataColumn(label: Container(
+                    height: 60,
+                    width: MySize.screenWidth*(120/MySize.screenWidth),
+                    color: Color(0xff008CD3),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        "Cumulative",
+                        style: TextStyle(
+                          fontWeight: CustomFontTheme.headingwt,
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),)
                 ],
                 rows: List<DataRow>.generate(
                   controller.details!.length,
@@ -484,6 +522,7 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                             Colors.white;
                       },
                     ),
+
                     cells: [
                       DataCell(
                         Container(
@@ -526,10 +565,30 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                           ],
                         ),
                       ),
+                      DataCell(
+
+                        Row(
+                          children: [
+                            Spacer(),
+                            Text(
+                              ( "0"
+                                  ),
+                              style: AppStyle.textStyleInterMed(fontSize: 14),
+                            ),
+                            Spacer(),
+                            VerticalDivider(
+                              width: 1,
+                              color: Color(0xff181818).withOpacity(0.3),
+                              thickness: 1,
+                            )
+                          ],
+                        ),
+                      ),
 
 
 
-                      // Additional row for total
+
+
                     ],
                   ),
                 )),

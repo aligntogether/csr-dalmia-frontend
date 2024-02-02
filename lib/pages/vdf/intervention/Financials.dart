@@ -57,7 +57,7 @@ class _FinancialState extends State<Financial> {
       // String benificiaryId
       ) async {
     final apiUrl =
-        'https://mobiledevcloud.dalmiabharat.com:443/csr/update-interventions?householdId=${widget.hid}&interventionId=${widget.interId}';
+        'https://mobileqacloud.dalmiabharat.com:443/csr/update-interventions?householdId=${widget.hid}&interventionId=${widget.interId}';
     try {
       var inputFormat = DateFormat('dd/MM/yyyy');
 
@@ -259,7 +259,7 @@ class _FinancialState extends State<Financial> {
 void _successmsg(BuildContext context, String? hid) {
   Future<void> addreason(String? hid, BuildContext context) async {
     final apiUrl =
-        'https://mobiledevcloud.dalmiabharat.com:443/csr/add-household';
+        'https://mobileqacloud.dalmiabharat.com:443/csr/add-household';
 
     // Replace these values with the actual data you want to send
     final Map<String, dynamic> requestData = {"id": hid, "is_draft": 0};

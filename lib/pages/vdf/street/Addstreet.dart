@@ -171,10 +171,9 @@ class _AddStreetState extends State<AddStreet> {
                   children: [
                     const SizedBox(height: 20),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.only(right: 100.0),
-                          child: Text(
+                        Text(
                             'Select Panchayat & Village',
                             textAlign: TextAlign.start,
                             style: TextStyle(
@@ -182,7 +181,7 @@ class _AddStreetState extends State<AddStreet> {
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                        ),
+
                         const SizedBox(height: 20),
                         DropdownButtonFormField<String>(
                           value: _selectedPanchayat,

@@ -1,13 +1,18 @@
 import 'dart:convert';
 
+import 'package:dalmia/Constants/constant_export.dart';
+import 'package:dalmia/app/modules/overviewPan/service/overviewReportApiService.dart';
 import 'package:dalmia/pages/CDO/cdoappbar.dart';
 import 'package:dalmia/pages/CDO/cdohome.dart';
+import 'package:dalmia/pages/CDO/vdf_report_controller.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 import '../../common/size_constant.dart';
+import '../../helper/sharedpref.dart';
 
 class VdfReport extends StatefulWidget {
   const VdfReport({Key? key}) : super(key: key);
@@ -18,36 +23,101 @@ class VdfReport extends StatefulWidget {
 
 class _VdfReportState extends State<VdfReport> {
   List<Map<String, dynamic>> VdfReportData = [];
+  VDFReportController controller = VDFReportController();
+  String cdoId = '';
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+
+    SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
+        .then((value) => setState(() {
+      value == '' ? cdoId = '10001' : cdoId = value;
+      fetchlocationId(cdoId);
+    }));
+    ;
+
   }
+  void fetchlocationId(String cdoId) {
+    var url = Uri.parse(
+        'https://mobileqacloud.dalmiabharat.com:443/csr/locations/search/findLocationIdByCdoId?cdoId=$cdoId');
+    http.get(url).then((response) {
+      var data = json.decode(response.body);
+
+      controller.selectLocationId = data;
+      fetchData();
+      return controller.selectLocationId;
+    });
+
+  }
+  bool isLoadingLocation = true;
 
   Future<void> fetchData() async {
-    final response = await http.get(
-      Uri.parse(
-        '$base/vdf-wise-report?locationId=10001',
-      ),
-    );
+    OverviewReportApiService overviewReportApiService = OverviewReportApiService();
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = json.decode(response.body);
+          controller.selectCluster = null;
 
-      final Map<String, dynamic> respBody = responseData['resp_body'];
+          Map<String, dynamic>? clustersData = await overviewReportApiService.getListOfClusters(controller.selectLocationId ?? 0);
 
-      // Handle the case where 'resp_body' is a Map
-      VdfReportData = [respBody];
-      print(VdfReportData);
-      vdfDetails =
-          List.generate(VdfReportData.length, (index) => 'VDF ${index + 1}');
-    } else {
-      // Handle error
-      print('Error fetching data: ${response.statusCode}');
-    }
 
-    setState(() {});
+          if (clustersData != null) {
+            List<Map<String, dynamic>> clusters =
+            clustersData['clusters'];
+
+            print("clusters.length : ${clusters.length}");
+            print("clusters : $clusters");
+
+
+            setState(() {
+              controller.updateClusters(clusters);
+            });
+            controller.update(["add"]);
+
+
+            var clustersVdfNameList = clusters.map((
+                cluster) => cluster['vdfName'].toString())
+                .toList();
+            clustersVdfNameList.add("TOTAL");
+
+            List<Map<String,
+                Map<String,
+                    dynamic>>> locationWiseMappedList = await overviewReportApiService
+                .getLocationWiseReport(
+                clustersVdfNameList, controller.objectKeys,
+                controller.selectLocationId!);
+
+            if (locationWiseMappedList.isNotEmpty) {
+              setState(() {
+                controller.updateLocationWiseMappedList(
+                    locationWiseMappedList);
+                controller.updateLocationVdfNames(
+                    clustersVdfNameList);
+                isLoadingLocation = false;
+              });
+            }
+
+            if (locationWiseMappedList.isEmpty) {
+              setState(() {
+                controller.updateLocationWiseMappedList([]);
+              });
+            }
+
+
+          }
+
+
+          print("controller.vdfNames : ${controller.vdfNames}");
+
+          // setState(() {
+          //   controller.selectClusterId =
+          //   0;
+          //   controller.selectCluster = null;
+          // });
+
+        }
+  String formatNumber(int number) {
+    NumberFormat format = NumberFormat('#,##,###', 'en_IN');
+    return format.format(number);
   }
 
   List<String> vdfDetails = [];
@@ -55,7 +125,10 @@ class _VdfReportState extends State<VdfReport> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
+
         appBar: PreferredSize(
+
           preferredSize: Size.fromHeight(100),
           child: CdoAppBar(
             heading: 'VDF Reports',
@@ -92,762 +165,7 @@ class _VdfReportState extends State<VdfReport> {
                 SizedBox(
                   height: 20,
                 ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    elevation: 10,
-                    child: DataTable(
-                      // border:
-                      //     TableBorder(borderRadius: BorderRadius.circular(10)),
-                      dividerThickness: 0,
-                      columns: <DataColumn>[
-                        DataColumn(
-                          label: Text(
-                            'Details',
-                            style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        for (var vdf in vdfDetails)
-                          DataColumn(
-                            label: Text(
-                              vdf,
-                              style: TextStyle(
-                                fontWeight: CustomFontTheme.headingwt,
-                                fontSize: CustomFontTheme.textSize,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        DataColumn(
-                          label: Text(
-                            'Total',
-                            style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-
-                      headingRowColor: MaterialStateColor.resolveWith(
-                        (states) => Color(0xFF008CD3),
-                      ),
-                      rows: [
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.blue.shade100;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                'Household',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails) DataCell(Text("")),
-                            DataCell(
-                              Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.white;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                'Alloted',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails)
-                              DataCell(
-                                Text(
-                                  (VdfReportData[0]['20120']['allotted'] ?? '')
-                                      .toString(),
-                                  style: TextStyle(
-                                    color: CustomColorTheme.textColor,
-                                    fontWeight: CustomFontTheme.headingwt,
-                                    fontSize: CustomFontTheme.textSize,
-                                  ),
-                                ),
-                              ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.blue.shade50;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                'Mapped',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails)
-                              DataCell(
-                                Text(
-                                  (VdfReportData[0]['20120']['mapped'] ?? '')
-                                      .toString(),
-                                  style: TextStyle(
-                                    color: CustomColorTheme.textColor,
-                                    fontWeight: CustomFontTheme.headingwt,
-                                    fontSize: CustomFontTheme.textSize,
-                                  ),
-                                ),
-                              ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.white;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                'Selected',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails)
-                              DataCell(
-                                Text(
-                                  (VdfReportData[0]['20120']['selected'] ?? '')
-                                      .toString(),
-                                  style: TextStyle(
-                                    color: CustomColorTheme.textColor,
-                                    fontWeight: CustomFontTheme.headingwt,
-                                    fontSize: CustomFontTheme.textSize,
-                                  ),
-                                ),
-                              ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.blue.shade50;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                'Selection %',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails)
-                              DataCell(
-                                Text(
-                                  _generateRandomNumber().toString(),
-                                  style: TextStyle(
-                                    color: CustomColorTheme.textColor,
-                                    fontWeight: CustomFontTheme.headingwt,
-                                    fontSize: CustomFontTheme.textSize,
-                                  ),
-                                ),
-                              ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.blue.shade100;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                'Intervention',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails)
-                              DataCell(
-                                Text(
-                                  ' ',
-                                ),
-                              ),
-                            DataCell(
-                              Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.white;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                'HH covered',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails)
-                              DataCell(
-                                Text(
-                                  (VdfReportData[0]['20120']['hhCovered'] ?? '')
-                                      .toString(),
-                                  style: TextStyle(
-                                    color: CustomColorTheme.textColor,
-                                    fontWeight: CustomFontTheme.headingwt,
-                                    fontSize: CustomFontTheme.textSize,
-                                  ),
-                                ),
-                              ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.blue.shade50;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                'Planned',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails)
-                              DataCell(
-                                Text(
-                                  (VdfReportData[0]['20120']['planned'] ?? '')
-                                      .toString(),
-                                  style: TextStyle(
-                                    color: CustomColorTheme.textColor,
-                                    fontWeight: CustomFontTheme.headingwt,
-                                    fontSize: CustomFontTheme.textSize,
-                                  ),
-                                ),
-                              ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.white;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                'Completed',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails)
-                              DataCell(
-                                Text(
-                                  (VdfReportData[0]['20120']['completed'] ?? '')
-                                      .toString(),
-                                  style: TextStyle(
-                                    color: CustomColorTheme.textColor,
-                                    fontWeight: CustomFontTheme.headingwt,
-                                    fontSize: CustomFontTheme.textSize,
-                                  ),
-                                ),
-                              ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.blue.shade50;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                'F/u overdue',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails)
-                              DataCell(
-                                Text(
-                                  _generateRandomNumber().toString(),
-                                  style: TextStyle(
-                                    color: CustomColorTheme.textColor,
-                                    fontWeight: CustomFontTheme.headingwt,
-                                    fontSize: CustomFontTheme.textSize,
-                                  ),
-                                ),
-                              ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.blue.shade100;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                'HH with Annual Addl. Income',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails)
-                              DataCell(
-                                Text(
-                                  ' ',
-                                ),
-                              ),
-                            DataCell(
-                              Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.white;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                'No. of HH',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails)
-                              DataCell(
-                                Text(
-                                  _generateRandomNumber().toString(),
-                                  style: TextStyle(
-                                    color: CustomColorTheme.textColor,
-                                    fontWeight: CustomFontTheme.headingwt,
-                                    fontSize: CustomFontTheme.textSize,
-                                  ),
-                                ),
-                              ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.blue.shade50;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                '0',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails)
-                              DataCell(
-                                Text(
-                                  (VdfReportData[0]['20120']
-                                              ['zeroAdditionalIncome'] ??
-                                          '')
-                                      .toString(),
-                                  style: TextStyle(
-                                    color: CustomColorTheme.textColor,
-                                    fontWeight: CustomFontTheme.headingwt,
-                                    fontSize: CustomFontTheme.textSize,
-                                  ),
-                                ),
-                              ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.white;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                '>25k',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails)
-                              DataCell(
-                                Text(
-                                  (VdfReportData[0]['20120']
-                                              ['lessThan25KIncome'] ??
-                                          '')
-                                      .toString(),
-                                  style: TextStyle(
-                                    color: CustomColorTheme.textColor,
-                                    fontWeight: CustomFontTheme.headingwt,
-                                    fontSize: CustomFontTheme.textSize,
-                                  ),
-                                ),
-                              ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.blue.shade50;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                '25k-50k',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails)
-                              DataCell(
-                                Text(
-                                  (VdfReportData[0]['20120']
-                                              ['between25KTO50KIncome'] ??
-                                          '')
-                                      .toString(),
-                                  style: TextStyle(
-                                    color: CustomColorTheme.textColor,
-                                    fontWeight: CustomFontTheme.headingwt,
-                                    fontSize: CustomFontTheme.textSize,
-                                  ),
-                                ),
-                              ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.white;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                '50k-75L',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails)
-                              DataCell(
-                                Text(
-                                  (VdfReportData[0]['20120']
-                                              ['between50KTO75KIncome'] ??
-                                          '')
-                                      .toString(),
-                                  style: TextStyle(
-                                    color: CustomColorTheme.textColor,
-                                    fontWeight: CustomFontTheme.headingwt,
-                                    fontSize: CustomFontTheme.textSize,
-                                  ),
-                                ),
-                              ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.blue.shade50;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                '75L-1L',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails)
-                              DataCell(
-                                Text(
-                                  (VdfReportData[0]['20120']
-                                              ['between75KTO1LIncome'] ??
-                                          '')
-                                      .toString(),
-                                  style: TextStyle(
-                                    color: CustomColorTheme.textColor,
-                                    fontWeight: CustomFontTheme.headingwt,
-                                    fontSize: CustomFontTheme.textSize,
-                                  ),
-                                ),
-                              ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return Colors.white;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                '>1L',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            for (var vdf in vdfDetails)
-                              DataCell(
-                                Text(
-                                  (VdfReportData[0]['20120']
-                                              ['moreThan1LIncome'] ??
-                                          '')
-                                      .toString(),
-                                  style: TextStyle(
-                                    color: CustomColorTheme.textColor,
-                                    fontWeight: CustomFontTheme.headingwt,
-                                    fontSize: CustomFontTheme.textSize,
-                                  ),
-                                ),
-                              ),
-                            DataCell(
-                              Text(
-                                _generateRandomNumber().toString(),
-                                style: TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                tableDataLocationView(0),
                 SizedBox(
                   height: MySize.screenHeight*(40/MySize.screenHeight),
                 ),
@@ -862,5 +180,320 @@ class _VdfReportState extends State<VdfReport> {
   // Function to generate a random number
   int _generateRandomNumber() {
     return 50 + (DateTime.now().millisecondsSinceEpoch % 50);
+  }
+  Widget tableDataLocationView(int i) {
+    int j =0;
+    List<DataColumn> buildColumns() {
+      List<DataColumn> columns = [];
+      columns.add(
+        DataColumn(
+          label: Expanded(
+            child: Container(
+              height: 60,
+              width: MySize.screenWidth*(80/MySize.screenWidth),
+              decoration: BoxDecoration(
+                color: Color(0xff008CD3),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                ),
+              ),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  'Details',
+                  style: TextStyle(
+                    fontWeight: CustomFontTheme.headingwt,
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+
+      for (var name in controller.vdfNames!) {
+        // Add the Location column
+        if(name=="null"){
+          continue;
+        }
+        else if(name=="TOTAL"){
+          columns.add(
+            DataColumn(
+              label: Expanded(
+                child: Container(
+                  height: 60,
+                  width:MySize.screenWidth*(80/MySize.screenWidth),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF096C9F),
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(10.0),
+                    ),
+
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      name,
+                      textAlign: TextAlign.center,
+                      softWrap: true,
+                      style: TextStyle(
+                        fontWeight: CustomFontTheme.headingwt,
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+        else {
+          columns.add(
+            DataColumn(
+              label: Expanded(
+                child: Container(
+                  height: 60,
+                  width:MySize.screenWidth*(80/MySize.screenWidth),
+                  decoration: BoxDecoration(
+                    color: Color(0xff008CD3),
+
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      name,
+                      textAlign: TextAlign.center,
+                      softWrap: true,
+                      style: TextStyle(
+                        fontWeight: CustomFontTheme.headingwt,
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+      }
+
+
+
+      return columns;
+    }
+
+    List<DataRow> buildRows() {
+
+      List<DataRow> rows = [];
+      bool isEven = false;
+      for (var firstColumn in controller.locationsList) {
+        isEven = !isEven;
+        List<DataCell> cells = [];
+        cells.add(
+          DataCell(
+            Container(
+              height: MySize.safeHeight!*(70/MySize.screenHeight),
+              decoration: BoxDecoration(
+                color:firstColumn == "Households" ||
+                    firstColumn == "Interventions" ||
+                    firstColumn ==
+                        "HH with Annual Addl. Income"
+                    ? Color(0xff008CD3).withOpacity(0.3)
+                    :isEven
+                    ? Colors.blue.shade50
+                    : Colors.white,
+
+              ),
+
+              padding: EdgeInsets.only(left: 10),
+              child:  Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    firstColumn,
+                    style: TextStyle(
+                      fontWeight: CustomFontTheme.headingwt,
+                      fontSize: CustomFontTheme.textSize,
+                      color: Colors.black,
+                    ),
+
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+        );
+
+
+
+        num sum=0;
+        for (var name in controller.vdfNames!) {
+          controller.objectKeys[j] == "Households" ||
+              controller.objectKeys[j] == "Interventions" ||
+              controller.objectKeys[j] == "HH with Annual Addl. Income"
+              ?sum+=0
+              :controller.locationWiseMappedList![0][controller.objectKeys[j]]![name]==null
+              ?sum+=0:sum+=controller.locationWiseMappedList![0][controller.objectKeys[j]]![name];
+          if(name=="null"){
+            continue;
+          }
+          else if(name=="TOTAL"){
+            cells.add(
+              DataCell(
+                Container(
+                  height: 60,
+                  width: MySize.screenWidth*(80/MySize.screenWidth),
+                  decoration: BoxDecoration(
+
+                      color: Color(0xFF096C9F)
+
+
+                  ),
+
+                  child:Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      VerticalDivider(
+                        width: 1,
+                        color: Color(0xff181818).withOpacity(0.3),
+                        thickness: 1,
+                      ),
+                      Text(
+                        firstColumn == "Households" ||
+                            firstColumn == "Interventions" ||
+                            firstColumn == "HH with Annual Addl. Income"
+                            ?""
+                            :controller.locationWiseMappedList![0][controller.objectKeys[j]]![name]==null
+                            ?"0":formatNumber(controller.locationWiseMappedList![0][controller.objectKeys[j]]![name])+"  ",
+
+                        style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.white,
+                        ),
+                      ),
+
+
+
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+          else{
+            cells.add(
+              DataCell(
+                Container(
+                  height: 60,
+                  width: MySize.screenWidth*(80/MySize.screenWidth),
+                  decoration: BoxDecoration(
+                    color:
+                    firstColumn == "Households" ||
+                        firstColumn == "Interventions" ||
+                        firstColumn == "HH with Annual Addl. Income"
+                        ? Color(0xff008CD3).withOpacity(0.3)
+                        :isEven
+                        ? Colors.blue.shade50
+                        : Colors.white,
+
+                  ),
+
+                  child:Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      VerticalDivider(
+                        width: 1,
+                        color: Color(0xff181818).withOpacity(0.3),
+                        thickness: 1,
+                      ),
+                      Text(
+                        firstColumn == "Households" ||
+                            firstColumn == "Interventions" ||
+                            firstColumn == "HH with Annual Addl. Income"
+                            ?""
+                            :controller.locationWiseMappedList![0][controller.objectKeys[j]]![name]==null
+                            ?"0":formatNumber(controller.locationWiseMappedList![0][controller.objectKeys[j]]![name])+"  ",
+
+                        style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.black,
+                        ),
+                      ),
+
+
+
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+        }
+        // Add an empty cell for the Region column if there are locations in the region
+
+        // cells.add(
+        //   DataCell(
+        //     Container(
+        //       height: 60,
+        //       decoration: BoxDecoration(
+        //         color: Color(0xFF096C9F),
+        //       ),
+        //       padding: EdgeInsets.only(left: 10),
+        //       child: Center(
+        //         child: Text(
+        //           firstColumn == "Households" ||
+        //               firstColumn == "Interventions" ||
+        //               firstColumn == "HH with Annual Addl. Income"
+        //               ?"":sum.toString(),
+        //           textAlign: TextAlign.right,
+        //
+        //           style: TextStyle(
+        //             fontSize: CustomFontTheme.textSize,
+        //             color: Colors.white,
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // );
+
+
+        rows.add(DataRow(cells: cells));
+        j++;
+      }
+      return rows;
+    }
+    return isLoadingLocation == true
+        ? Center(child: CircularProgressIndicator())
+        : SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: DataTable(
+          dividerThickness: 0,
+          columnSpacing: 0,
+          horizontalMargin: 0,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 0,
+                blurRadius: 4,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          columns: buildColumns(),
+          rows: buildRows(),
+        ),
+      ),
+    );
   }
 }

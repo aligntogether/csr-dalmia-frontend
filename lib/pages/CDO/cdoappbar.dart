@@ -12,13 +12,19 @@ class CdoAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Stack(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Stack(
         children: [
           AppBar(
             titleSpacing: 20,
-            backgroundColor: Colors.white,
-            title: Image(image: AssetImage('images/icon.jpg')),
+
+            title: Image.asset(
+              'images/icon.jpg',
+              height: 30,
+
+
+            ),
             centerTitle: false,
             automaticallyImplyLeading: false,
             bottom: PreferredSize(
@@ -26,7 +32,7 @@ class CdoAppBar extends StatelessWidget {
               child: Container(
                 
                 padding: const EdgeInsets.only(bottom: 10),
-                color: Colors.white,
+
                 child: Text(
                   heading,
                   style: TextStyle(
@@ -66,7 +72,7 @@ class CdoAppBar extends StatelessWidget {
             ),
           )
         ],
-      ),
+      )
     );
   }
 }

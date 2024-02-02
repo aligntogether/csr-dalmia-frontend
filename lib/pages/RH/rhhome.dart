@@ -55,7 +55,7 @@ class _RHHomeState extends State<RHHome> {
 
     final response = await http.get(
       Uri.parse(
-          'https://mobiledevcloud.dalmiabharat.com:443/csr/list-feedback?userId=${userIdSharedPref}'),
+          'https://mobileqacloud.dalmiabharat.com:443/csr/list-feedback?userId=${userIdSharedPref}'),
       // SharedPrefHelper.storeSharedPref(
       // USER_ID_SHAREDPREF_KEY, authResponse.referenceId)
     );
@@ -117,20 +117,11 @@ class _RHHomeState extends State<RHHome> {
                     );
                   },
                   child: cards(
-                    title: 'View Report - South',
+                    title: 'View Reports',
                     imageUrl: 'images/vdfreports.svg',
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                GestureDetector(
-                  onTap: () {},
-                  child: cards(
-                    title: 'View Report - Sugar',
-                    imageUrl: 'images/vdfreports.svg',
-                  ),
-                ),
+
                 SizedBox(
                   height: 20,
                 ),

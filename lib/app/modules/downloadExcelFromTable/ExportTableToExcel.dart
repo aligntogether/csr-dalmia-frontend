@@ -525,6 +525,129 @@ Future<void> exportVdfPerformance(LeverWiseController controller) async {
     await OpenFile.open(file.path);
   }
 
+  Future<void> exportRegionSOF(SourceFundsController controller) async {
+    print("resg${controller.regionWiseSourceOfFundsData}");
+    print("reg${controller.regions}");
+    print("reg${controller.header}");
+    print("reg${controller.regionWiseSourceOfFundsData!.containsKey(controller.regions[0])}");
+
+    final Excel excel = Excel.createExcel();
+    final Sheet sheetObject = excel['Sheet1'];
+
+    // add Details in (0,0)
+    sheetObject
+        .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: 0))
+        .value = "Details";
+
+    //add controller.header in (..,0)
+    for (int col = 1; col <= controller.header.length; col++) {
+      sheetObject
+          .cell(CellIndex.indexByColumnRow(columnIndex: col, rowIndex: 0))
+          .value = controller.header[col - 1];
+    }
+
+    // add controller.regions in (0,..)
+    for (int i = 0; i < controller.regions.length; i++) {
+      sheetObject
+          .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: i + 1))
+          .value = controller.regions[i];
+    }
+
+    // add data in (..,..) // controller.regionWiseSourceOfFundsData!
+    //                                         .containsKey(controller.regions[index])
+    //                                     ? ((controller.regionWiseSourceOfFundsData![
+    //                                                     controller.regions[index]]![
+    //                                                 'noOfHouseholds'] ??
+    //                                             0))
+
+    for (int row = 1; row <= controller.regions.length; row++) {
+      for (int col = 1; col <= controller.header.length; col++) {
+        sheetObject
+            .cell(CellIndex.indexByColumnRow(columnIndex: col, rowIndex: row))
+            .value = (controller.regionWiseSourceOfFundsData != null &&
+            controller.regionWiseSourceOfFundsData!.containsKey(controller.regions[row - 1]))
+            ? ((controller.regionWiseSourceOfFundsData![
+        controller.regions[row - 1]]![controller.header[col - 1]] ??
+            0))
+            : 0;
+      }
+    }
+
+
+
+
+
+    // Create folder if not exists
+    final downloadFolderPath = await createDownloadFolder("dalmia_report");
+
+    // Save Excel file
+    final bytes = excel.save();
+    final file = File(controller.selectRegion=='All Region'?'$downloadFolderPath/sourceFundRegion.xlsx':'$downloadFolderPath/sourceFundRegion${controller.selectRegion}.xlsx');
+    await file.writeAsBytes(bytes!);
+    await OpenFile.open(file.path);
+  }
+  Future<void> exportLocationSOF(SourceFundsController controller) async{
+print("resg${controller.locationWiseSourceOfFundsData}");
+    print("reg${controller.locations}");
+    print("reg${controller.header}");
+    print("reg${controller.locationWiseSourceOfFundsData!.containsKey(controller.locations[0])}");
+
+    final Excel excel = Excel.createExcel();
+    final Sheet sheetObject = excel['Sheet1'];
+
+    // add Details in (0,0)
+    sheetObject
+        .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: 0))
+        .value = "Details";
+
+    for (int col = 1; col <= controller.header.length; col++) {
+      sheetObject
+          .cell(CellIndex.indexByColumnRow(columnIndex: col, rowIndex: 0))
+          .value = controller.header[col - 1];
+    }
+
+    // add controller.clustersList in (0,..)
+    for (int i = 0; i < controller.clustersList!.length; i++) {
+      sheetObject
+          .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: i + 1))
+          .value = controller.clustersList![i];
+    }
+
+    // add data in (..,..) // controller.regionWiseSourceOfFundsData!
+    //                                         .containsKey(controller.regions[index])
+    //                                     ? ((controller.regionWiseSourceOfFundsData![
+    //                                                     controller.regions[index]]![
+    //                                                 'noOfHouseholds'] ??
+    //                                             0))
+
+    for (int row = 1; row <= controller.locations.length; row++) {
+      for (int col = 1; col <= controller.header.length; col++) {
+        sheetObject
+            .cell(CellIndex.indexByColumnRow(columnIndex: col, rowIndex: row))
+            .value = (controller.locationWiseSourceOfFundsData != null &&
+            controller.locationWiseSourceOfFundsData!.containsKey(controller.locations[row - 1]))
+            ? ((controller.locationWiseSourceOfFundsData![
+        controller.locations[row - 1]]![controller.header[col - 1]] ??
+            0))
+            : 0;
+      }
+    }
+
+    // Create folder if not exists
+    final downloadFolderPath = await createDownloadFolder("dalmia_report");
+
+    // Save Excel file
+    final bytes = excel.save();
+    final file = File(controller.selectLocation=='All Location'?'$downloadFolderPath/sourceFundLocation.xlsx':'$downloadFolderPath/sourceFundLocation${controller.selectLocation}.xlsx');
+    await file.writeAsBytes(bytes!);
+    await OpenFile.open(file.path);
+
+
+
+
+  }
+
+
   Future<String> createDownloadFolder(String folderName) async {
     final downloadDirectory = await getDownloadPath();
     final folderPath = '${downloadDirectory?.path}/$folderName';
@@ -536,4 +659,7 @@ Future<void> exportVdfPerformance(LeverWiseController controller) async {
 
     return folderPath;
   }
+
+
+
 }

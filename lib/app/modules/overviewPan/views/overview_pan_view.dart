@@ -107,6 +107,7 @@ class _OverviewPanViewState extends State<OverviewPanView> {
     setState(() {
       isLoading = false;
       controller.updateOverviewMappedList(panIndiaMappedData);
+      print("dff : ${controller.overviewMappedList![0].length}");
       controller.updateRegionLocation(regionLocation);
     });
 
@@ -382,9 +383,11 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                 Space.height(30),
                 GetBuilder<OverviewPanController>(
                   builder: (controller) {
-                    return commonTitle(controller.selectLocation == null
-                        ? "Overview Pan-India Locations"
-                        : "Overview ${controller.selectLocation}");
+                    return commonTitle(controller.selectRegion != null
+                        ? controller.selectRegion == "All Regions"?"Overview Pan-India Locations"
+                        : controller.selectLocation != null ? "Overview ${controller.selectLocation}":
+                        "Overview ${controller.selectRegion}"
+                        : "Overview Pan-India Locations");
                   },
                 ),
                 Space.height(16),
@@ -470,6 +473,7 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
         ),
       );
 
+
       for (var region in controller.regionLocation!.keys) {
         for (var location in controller.regionLocation![region]!) {
           // Add the Location column
@@ -535,6 +539,36 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
           );
         }
       }
+      columns.add(
+        DataColumn(
+          label: Expanded(
+            child: Container(
+              height: 60,
+              width: MySize.safeWidth!*0.3,
+              decoration: BoxDecoration(
+                //#096C9F
+
+                color: Color(0xFF096C9F),
+
+              ),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  "Pan India",
+
+                  style: TextStyle(
+                    fontWeight: CustomFontTheme.headingwt,
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
       return columns;
     }
 
@@ -578,11 +612,24 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
           ),
 
         );
-        print("j$j");
+
+        num total=0;
+        int n=controller.overviewMappedList![0].length;
+        // for(int a=12;a<n;a++){
+        //   total+=controller.overviewMappedList![0][controller.!locationsListMapping[a]!['DPM']];
+        // }
+        int totalsum=0;
 
         for (var region in controller.regionLocation!.keys) {
           num sum=0;
           for (var location in controller.regionLocation![region]!) {
+            for(int a=12;a<n;a++){
+              controller.objectKeys[a] == "Households" ||
+                  controller.objectKeys[a] == "Interventions" ||
+                  controller.objectKeys[a] == "HH with Annual Addl. Income"
+                  ?total+=0
+                  :controller.overviewMappedList![0][controller.objectKeys[a]]![location]==null?total+=0:total+=controller.overviewMappedList![0][controller.objectKeys[a]]![location];
+            }
             controller.objectKeys[j] == "Households" ||
                 controller.objectKeys[j] == "Interventions" ||
                 controller.objectKeys[j] == "HH with Annual Addl. Income"
@@ -591,6 +638,7 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
             cells.add(
               DataCell(
                 Container(
+                  padding: EdgeInsets.only(left: 10),
                   height: 60,
                   width: MySize.screenWidth*(80/MySize.screenWidth),
                   decoration: BoxDecoration(
@@ -613,6 +661,13 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
                         color: Color(0xff181818).withOpacity(0.3),
                         thickness: 1,
                       ),
+                      firstColumn=="Total no. of HH"?Text(
+                        "${total.toString()}  ",
+                        style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.black,
+                        ),
+                      ):
                       Text(
                         firstColumn == "Households" ||
                             firstColumn == "Interventions" ||
@@ -633,9 +688,12 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
                 ),
               ),
             );
+            total=0;
           }
+
           // Add an empty cell for the Region column if there are locations in the region
           if (controller.regionLocation![region]!.isNotEmpty) {
+            totalsum+=sum.toInt();
             cells.add(
               DataCell(
                 Container(
@@ -649,7 +707,7 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
                       firstColumn == "Households" ||
                           firstColumn == "Interventions" ||
                           firstColumn == "HH with Annual Addl. Income"
-                          ?"":sum.toString(),
+                          ?"":"${sum.toString() }",
                       textAlign: TextAlign.right,
 
                       style: TextStyle(
@@ -663,6 +721,32 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
             );
           };
         }
+
+        cells.add(
+          DataCell(
+            Container(
+              height: 60,
+              decoration: BoxDecoration(
+                color: Color(0xFF096C9F),
+              ),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  firstColumn == "Households" ||
+                      firstColumn == "Interventions" ||
+                      firstColumn == "HH with Annual Addl. Income"
+                      ?"":totalsum.toString(),
+                  textAlign: TextAlign.right,
+
+                  style: TextStyle(
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
         rows.add(DataRow(cells: cells));
         j++;
       }
@@ -1096,6 +1180,7 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
       List<DataRow> rows = [];
       bool isEven = false;
       for (var firstColumn in controller.locationsList) {
+        print("hi $firstColumn");
         isEven = !isEven;
         List<DataCell> cells = [];
         cells.add(

@@ -72,20 +72,42 @@ class _CumulativeState extends State<Cumulative> {
 
   String? panchayatid;
   String? refId;
+  String? locationName;
 
   @override
   void initState() {
     super.initState();
+
     SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
         .then((value) {
       setState(() {
 
         refId = value;
       });
-
+      fetchLocationName();
       // Now that refId is assigned, you can call fetchPanchayatData()
       fetchPanchayatData();
     });
+  }
+  Future<void> fetchLocationName() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$base/locations/search/findLocationByVdfId?vdfId=$refId'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+        print("fsdjf$jsonData");
+
+        setState(() {
+          locationName = jsonData['location'];
+        });
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   List<Map<String, dynamic>> panchayatData = [];
@@ -98,6 +120,7 @@ class _CumulativeState extends State<Cumulative> {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(response.body);
+        print("fsdjf$panchayatData");
 
         setState(() {
           panchayatData = [
@@ -308,8 +331,8 @@ class _CumulativeState extends State<Cumulative> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text(
-            '<Location name>',
+           Text(
+            locationName ?? '',
             style: TextStyle(
                 fontSize: CustomFontTheme.textSize,
                 fontWeight: CustomFontTheme.labelwt),
@@ -344,6 +367,7 @@ class _CumulativeState extends State<Cumulative> {
                 columns: const <DataColumn>[
                   DataColumn(
                     label: Text(
+                      textAlign: TextAlign.center,
                       'Panchayat Name',
                       style: TextStyle(color: Colors.white),
                     ),
@@ -356,18 +380,21 @@ class _CumulativeState extends State<Cumulative> {
                   ),
                   DataColumn(
                     label: Text(
-                      'Number of selected \n HHs without intervention',
+                      textAlign: TextAlign.center,
+                      'Number of selected \nHHs without intervention',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
                   DataColumn(
                     label: Text(
-                      'No. of Interventions \n started but not completed',
+                      textAlign: TextAlign.center,
+                      'No. of Interventions \nstarted but not completed',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
                 rows: panchayatData.map<DataRow>((panchayat) {
+                  print('panchayat: $panchayatData');
                   return DataRow(
                     color: MaterialStateColor.resolveWith((states) {
                       // Alternating row colors

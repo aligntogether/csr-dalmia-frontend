@@ -103,6 +103,7 @@ class _DetailsState extends State<Details> {
               IconButton(
                 iconSize: 30,
                 onPressed: () {
+
                   _confirmitem(context);
                 },
                 icon: const Icon(
@@ -114,9 +115,10 @@ class _DetailsState extends State<Details> {
           ),
           body: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding:  EdgeInsets.only(left:MySize.screenHeight*(30/MySize.screenHeight),right:MySize.screenHeight*(30/MySize.screenHeight),top:MySize.screenHeight*(20/MySize.screenHeight)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
                     'Details of Intervention',
@@ -131,51 +133,70 @@ class _DetailsState extends State<Details> {
                   SizedBox(
                     height: 10,
                   ),
-                  FractionallySizedBox(
-                    widthFactor: 0.8,
-                    child: Text(
+                   Text(
                       interventionData!['interventionName'].toString(),
                       style: TextStyle(
                         fontSize: CustomFontTheme.textSize,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ),
+
                   SizedBox(
                     height: 20,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('Lever',
                           style: TextStyle(
                               fontSize: CustomFontTheme.textSize,
                               fontWeight: FontWeight.w600)),
-                      Text(interventionData!['lever'].toString()),
+                      Container(
+                          width: MySize.screenWidth * (110 / MySize.screenWidth),
+                          child: Text(interventionData!['lever'].toString())),
                     ],
                   ),
+                  SizedBox(
+                    height: MySize.screenHeight*(10/MySize.screenHeight),
+                  ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Expected additional income p/a',
-                          style: TextStyle(
-                              fontSize: CustomFontTheme.textSize,
-                              fontWeight: FontWeight.w600)),
-                      Text(
-                        'Rs. ${interventionData!['expectedIncomeGeneration']}',
+                      Container(
+                        width: MySize.screenWidth * (150 / MySize.screenWidth),
+                        child: Text('Expected Additional Income P/A',
+                            style: TextStyle(
+                                fontSize: CustomFontTheme.textSize,
+                                fontWeight: FontWeight.w600)),
+                      ),
+                      Container(
+                        width: MySize.screenWidth * (110 / MySize.screenWidth),
+                        child: Text(
+                          'Rs. ${interventionData!['expectedIncomeGeneration']}',
+                        ),
                       ),
                     ],
                   ),
+                  SizedBox(
+                    height: MySize.screenHeight*(10/MySize.screenHeight),
+                  ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                          'No. of days required \n to complete the intervention',
-                          style: TextStyle(
-                              fontSize: CustomFontTheme.textSize,
-                              fontWeight: FontWeight.w600)),
-                      Text(
-                        '${interventionData!['requiredDaysCompletion']} Days',
+                      Container(
+                        width: MySize.screenWidth * (150 / MySize.screenWidth),
+                        child: Text(
+                            'No. Of Days Required \nTo Complete The Intervention',
+                            style: TextStyle(
+                                fontSize: CustomFontTheme.textSize,
+                                fontWeight: FontWeight.w600)),
+                      ),
+                      Container(
+                        width: MySize.screenWidth * (110 / MySize.screenWidth),
+                        child: Text(
+
+                          '${interventionData!['requiredDaysCompletion']} Days',
+                        ),
                       ),
                     ],
                   ),
@@ -247,22 +268,24 @@ void _confirmitem(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text('What do you wish to do next?'),
-          ],
+        title: const Center(
+         child:
+            Text('Are you Sure ?'),
+
         ),
         content: SizedBox(
-          height: 200,
+          height: MySize.screenHeight * (100 / MySize.screenHeight),
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
+              SizedBox(
+                height: 20,
+              ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(10),
                   fixedSize: Size(250, 60),
-                  backgroundColor: Colors.white,
+                  backgroundColor: CustomColorTheme.primaryColor,
                 ),
                 onPressed: () {
                   Navigator.of(context).push(
@@ -272,28 +295,17 @@ void _confirmitem(BuildContext context) {
                   );
                 },
                 child: Text(
-                  'Save HH as draft and add intervention later ',
+                  'Go to Home Screen',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: CustomColorTheme.primaryColor,
+                    color: Colors.white,
                   ),
                 ),
               ),
               SizedBox(
                 height: 20,
               ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    fixedSize: Size(250, 60),
-                    backgroundColor: CustomColorTheme.primaryColor),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  'Continue adding Intervention',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
+
             ],
           ),
         ),

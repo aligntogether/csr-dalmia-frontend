@@ -1,3 +1,4 @@
+import 'package:dalmia/app/modules/downloadExcelFromTable/ExportTableToExcel.dart';
 import 'package:dalmia/app/modules/overviewPan/views/overview_pan_view.dart';
 import 'package:dalmia/app/modules/sourceFunds/controllers/source_funds_controller.dart';
 import 'package:dalmia/app/modules/sourceFunds/service/sourceOfFundsApiService.dart';
@@ -48,6 +49,55 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
     double lakhs = number / 100000.0;
     final format = NumberFormat('0.0000');
     return format.format(lakhs);
+  }
+  ExportTableToExcel exportTableToExcel = new ExportTableToExcel();
+  void downloadExcel(SourceFundsController controller,int a) {
+    try {
+     if(a==1){
+       exportTableToExcel.exportRegionSOF(controller);
+      }else{
+        exportTableToExcel.exportLocationSOF(controller);
+
+     }
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Download Successful'),
+            content: Text(
+                'The Excel file has been downloaded successfully in your download folder.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      // Show error dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Download Error'),
+            content:
+            Text('An error occurred while downloading the Excel file.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -400,7 +450,14 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
               controller.selectRegionId == null
                   ? Container()
                   : GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                       if(controller.selectLocation==null){
+                         downloadExcel(controller,1);
+                      }else{
+                         downloadExcel(controller,2);
+                       }
+                      },
+
                       child: Container(
                         height: MySize.screenHeight*(40/MySize.screenHeight),
                         width: MySize.screenWidth*(150/MySize.screenWidth),

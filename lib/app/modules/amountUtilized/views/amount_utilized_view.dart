@@ -152,7 +152,7 @@ class _AmountUtilizedViewState extends State<AmountUtilizedView> {
                         style: AppStyle.textStyleBoldMed(fontSize: 14),
                       ),
                       Text(
-                        "(in Lakhs)",
+                        "(Rupees /in Lakhs)",
                         style: AppStyle.textStyleInterMed(fontSize: 14),
                       ),
                     ],

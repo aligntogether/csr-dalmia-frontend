@@ -197,7 +197,7 @@ PreferredSize appBarCommon(controller, BuildContext context,String name,
                       ),
                     ],
                   ),
-                  Space.height(14),
+                  Space.height(10),
                   centerAlignText == true
                       ? Center(
                           child: Text(
@@ -209,9 +209,11 @@ PreferredSize appBarCommon(controller, BuildContext context,String name,
                           title ?? "Welcome ${name} !",
                           style: TextStyle(
                               fontFamily: "Inter-Medium",
-                              fontSize: 12,
+                              fontSize: MySize.screenHeight * (12 / MySize.screenHeight),
                               color: Color(0xff181818)),
-                        )
+                        ),
+
+
                 ],
               ),
             )));

@@ -312,7 +312,7 @@ class _StreetReportState extends State<StreetReport> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-              'village Name'
+              ' ${widget.selectedvillage}'
               // selectedVillage!
               ,
               style: TextStyle(
