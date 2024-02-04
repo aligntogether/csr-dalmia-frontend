@@ -111,6 +111,7 @@ class _OtpState extends State<Otp> {
                     if (isContainerVisible)
                       const Image(
                         image: AssetImage('images/icon.jpg'),
+                        height: 80,
                       ),
                     if (isContainerVisible)
                       Container(

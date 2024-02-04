@@ -1,93 +1,94 @@
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
+import 'package:dalmia/app/modules/leverWise/controllers/lever_wise_controller.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/size_constant.dart';
-import 'package:dalmia/pages/CDO/cdoappbar.dart';
-import 'package:dalmia/pages/CDO/cdohome.dart';
+import 'package:dalmia/pages/LL/llappbar.dart';
 import 'package:dalmia/theme.dart';
-import 'package:data_table_2/data_table_2.dart';
-import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
-import 'package:flutter_svg/svg.dart';
-
-List locationcdo = [
-  "Target",
-  "No. of HHs with EAAI",
-  "50k to 1L",
-  " No. of HHs with EAAI\n1L and above",
-  "No. of HHs with AAAI\nwith 50K to 1L",
-  "No. of HHs with AAAI\nwith 1L and above",
-  "Aggregate income (EAAI)",
-  "Aggregate income (AAAI)",
-];
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:intl/intl.dart';
+import '../../app/modules/expectedActual/controllers/expected_actual_controller.dart';
+import '../../app/modules/expectedActual/services/expected_actual_service.dart';
 
 class Expectedincome extends StatefulWidget {
-  const Expectedincome({Key? key}) : super(key: key);
-
+  int? locationId;
+   Expectedincome({Key? key,required this.locationId}) : super(key: key);
   @override
   State<Expectedincome> createState() => _ExpectedincomeState();
 }
-
 class _ExpectedincomeState extends State<Expectedincome> {
-  List<Map<String, dynamic>> ExpectedData = [];
-
+  ExpectedActualController controller = Get.put(ExpectedActualController());
+  ExpectedActualServices services = ExpectedActualServices();
+  bool isLoading = false;
+  String location='';
+  LeverWiseController leverWiseController = Get.put(LeverWiseController());
   @override
   void initState() {
     super.initState();
-    fetchData();
+    getExpectActualAdditionalIncome();
+    isLoading = true;
   }
 
-  Future<void> fetchData() async {
-    final response = await http.get(
-      Uri.parse(
-        'https://mobileqacloud.dalmiabharat.com:443/csr/expected-actual-additional-income?locationId=10001',
-      ),
-    );
+  String formatNumber(int number) {
+    NumberFormat format = NumberFormat('#,##,###', 'en_IN');
+    return format.format(number);
+  }
+  void getExpectActualAdditionalIncome() async{
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = json.decode(response.body);
+    try{
+      var url = Uri.parse(
+          'https://mobileqacloud.dalmiabharat.com:443/csr/locations/${widget.locationId}');
+      http.get(url).then((response) {
+        var data = json.decode(response.body);
 
-      final Map<String, dynamic> respBody = responseData['resp_body'];
+        location = data['locationCode'];
+        return location;
+      });
 
-      // Handle the case where 'resp_body' is a Map
-      // final String clusterKey = responseData['resp_body'].keys.first;
-
-      ExpectedData = [respBody];
-      // print(ExpectedData);
-    } else {
-      // Handle error
-      print('Error fetching data: ${response.statusCode}');
+    }catch(e){
+      print(e);
     }
+    Map<String, dynamic> expectedActualReport=await services.getExpectedActualIncomeReport();
+    List<String> clusterIdList = [];
+    Map<String, dynamic> clusterList = {};
+    List<String> clusterPropertyKeys = [];
+    Map<int,String> regions= await services.getAllRegions();
+    Map<String,List<String>> regionLocation=await services.getRegionLocation(regions);
+    expectedActualReport.forEach((key, value) {
+      value.keys.forEach((element) {
+        clusterIdList.add(element);
+      });
+      value.forEach((key, value) {
+        clusterList[key] = value;
+      });
 
-    setState(() {});
+    });
+    clusterList.forEach((key, value) {
+      value.keys.forEach((element) {
+        clusterPropertyKeys.add(element);
+      });
+    });
+    setState(() {
+      controller.updateExpectedActualReport(expectedActualReport);
+      print("expectedActualReport $expectedActualReport");
+      controller.updateClusterIdList(clusterIdList);
+      controller.updateClusterList(clusterList);
+      print("clusterList $clusterList");
+      controller.updateClusterPropertyKeys(clusterPropertyKeys);
+      controller.updateRegionLocation(regionLocation);
+      isLoading = false;
+    });
   }
-
-  List<int> CDO = [
-    2434,
-    37765,
-    387004,
-    1687825,
-    128036,
-    37765,
-    387004,
-    1687825,
-    128036,
-    37765,
-    387004,
-    1687825,
-    128036,
-  ];
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(100),
-          child: CdoAppBar(
-            heading: 'Reports',
-          ),
+          child:appBarCommon(controller, context,"",
+              centerAlignText: true, title: "Reports"),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -97,11 +98,7 @@ class _ExpectedincomeState extends State<Expectedincome> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const CDOHome(),
-                      ),
-                    );
+                    Navigator.of(context).pop();
                   },
                   child: Row(
                     children: [
@@ -131,131 +128,213 @@ class _ExpectedincomeState extends State<Expectedincome> {
                 SizedBox(
                   height: 20,
                 ),
-                SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: DataTable(
-                          dividerThickness: 00,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 0,
-                                blurRadius: 4,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          columnSpacing: 0,
-                          horizontalMargin: 0,
-                          columns: <DataColumn>[
-                            DataColumn(
-                              label: Expanded(
-                                child: Container(
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                      color: Color(0xff008CD3),
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(10.0))),
-                                  padding: EdgeInsets.only(left: 10),
-                                  child: Center(
-                                    child: Text(
-                                      'Locations',
-                                      style: TextStyle(
-                                          fontWeight: CustomFontTheme.headingwt,
-                                          fontSize: CustomFontTheme.textSize,
-                                          color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Container(
-                                height: 60,
-                                width: 80,
-                                color: Color(0xff008CD3),
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: Center(
-                                  child: Text(
-                                    'DPM',
-                                    style: TextStyle(
-                                        fontWeight: CustomFontTheme.headingwt,
-                                        fontSize: CustomFontTheme.textSize,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            //PANIND
-                          ],
-                          rows: List<DataRow>.generate(
-                            locationcdo.length,
-                            (index) => DataRow(
-                              color: MaterialStateColor.resolveWith(
-                                (states) {
-                                  return index.isEven
-                                      ? Colors.blue.shade50
-                                      : Colors.white;
-                                },
-                              ),
-                              cells: [
-                                DataCell(
-                                  Container(
-                                    width: 200,
-                                    padding: EdgeInsets.only(left: 10),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          locationcdo[index],
-                                          style: AppStyle.textStyleInterMed(
-                                              fontSize: 14),
-                                        ),
-                                        Spacer(),
-                                        VerticalDivider(
-                                          width: 1,
-                                          color: Color(0xff181818)
-                                              .withOpacity(0.3),
-                                          thickness: 1,
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                DataCell(
-                                  Row(
-                                    children: [
-                                      Spacer(),
-                                      Text(
-                                        (CDO[index].toString()),
-                                        style: AppStyle.textStyleInterMed(
-                                            fontSize: 14),
-                                      ),
-                                      Spacer(),
-                                      VerticalDivider(
-                                        width: 1,
-                                        color:
-                                            Color(0xff181818).withOpacity(0.3),
-                                        thickness: 1,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                // Additional row for total
-                              ],
-                            ),
-                          )),
-                    )),
-                Space.height(30),
+                GetBuilder<ExpectedActualController>(
+                  builder: (cc) {
+                    return isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : eaaireport(0, cc);
+                  },
+                ),
                 Space.height(30),
               ],
             ),
           ),
         ),
       ),
+    );}
+  Widget eaaireport(int i, ExpectedActualController cc) {
+    List<DataColumn> buildColumns() {
+      List<DataColumn> columns = [];
+      columns.add(
+        DataColumn(
+          label: Expanded(
+            child: Container(
+              height: 60,
+              width: MySize.screenWidth*(80/MySize.screenWidth),
+              decoration: BoxDecoration(
+                color: Color(0xff008CD3),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                ),
+              ),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  'Locations',
+                  style: TextStyle(
+                    fontWeight: CustomFontTheme.headingwt,
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+          columns.add(
+            DataColumn(
+              label: Expanded(
+                child: Container(
+                  height: 60,
+                  width:MySize.screenWidth*(80/MySize.screenWidth),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(10.0),
+                    ),
+                    color: Color(0xff008CD3),
+
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      location,
+                      style: TextStyle(
+                        fontWeight: CustomFontTheme.headingwt,
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+
+
+
+      return columns;
+    }
+    List<DataRow> buildRows() {
+
+      List<DataRow> rows = [];
+      bool isEven = false;
+      for (var firstColumn in controller.clusterPropertyKeys!) {
+        isEven = !isEven;
+        List<DataCell> cells = [];
+        cells.add(
+          DataCell(
+
+            Container(
+              height: MySize.safeHeight!*(70/MySize.screenHeight),
+              decoration: BoxDecoration(
+                color:isEven
+                    ? Colors.blue.shade50
+                    : Colors.white,
+
+              ),
+
+              padding: EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    capitalizeFirstLetter(firstColumn),
+                    style: TextStyle(
+                      fontWeight: CustomFontTheme.headingwt,
+                      fontSize: CustomFontTheme.textSize,
+                      color: Colors.black,
+                    ),
+                  ),
+
+                ],
+              ),
+            ),
+          ),
+
+        );
+
+
+
+
+            cells.add(
+              DataCell(
+                Container(
+                  height: 60,
+                  width: MySize.screenWidth*(80/MySize.screenWidth),
+                  decoration: BoxDecoration(
+
+                    color:
+                    isEven
+                        ? Colors.blue.shade50
+                        : Colors.white,
+
+                  ),
+
+                  child:Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      VerticalDivider(
+                        width: 1,
+                        color: Color(0xff181818).withOpacity(0.3),
+                        thickness: 1,
+                      ),
+                      Text(
+                        // "hi",
+                        controller.expectedActualReport![location] !=
+                            null
+                            ? formatNumber(controller.expectedActualReport![location]![cc.clusterIdList![i]]![firstColumn]??0)+'  '
+                            : '0   ',
+
+
+                        style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.black,
+                        ),
+                      ),
+
+
+
+
+                    ],
+                  ),
+                ),
+              ),
+            );
+
+
+        rows.add(DataRow(cells: cells));
+        // j++;
+      }
+      return rows;
+    }
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: DataTable(
+
+          dividerThickness: 0,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 0,
+                blurRadius: 4,
+                offset: Offset(0, 4),
+
+              ),
+            ],
+          ),
+
+          columnSpacing: 0,
+          horizontalMargin: 0,
+          columns: buildColumns(),
+          rows: buildRows(),
+
+        ),
+      ),
+
     );
+  }
+
+  String capitalizeFirstLetter(String input) {
+    if (input.isEmpty) {
+      return input; // Return the original string if it's empty
+    }
+    return input[0].toUpperCase() + input.substring(1);
   }
 }

@@ -429,7 +429,8 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
     );
   }
   Widget allRegionsTables(int i) {
-    int sum = 0;
+
+
     return Visibility(
       visible: controller.performanceReport != null && controller.performanceReport!.isNotEmpty,
       child: !isLoading?Center(child: CircularProgressIndicator()):
@@ -570,9 +571,10 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                         Row(
                           children: [
                             Spacer(),
-                            Text(
-                              ( "0"
-                                  ),
+                            Text("0",
+                              // ( controller.performanceReport!["Cummulative"]![controller.details![index]])==null?"":
+                              // controller.performanceReport!["Cummulative"]![controller.details![index]].toString(
+
                               style: AppStyle.textStyleInterMed(fontSize: 14),
                             ),
                             Spacer(),

@@ -141,7 +141,9 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
                 titleSpacing: 20,
                 scrolledUnderElevation: 0,
                 backgroundColor: Colors.white,
-                title: const Image(image: AssetImage('images/icon.jpg')),
+                title:  Image.asset(('images/icon.jpg'),
+                    height: 40,
+                ),
                 automaticallyImplyLeading: false,
                 actions: <Widget>[
                   CircleAvatar(
@@ -323,7 +325,8 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
                         backgroundColor: CustomColorTheme.primaryColor),
                     onPressed: () {
 
-                      saveUpdatedData(updateData);
+                      saveUpdatedData(updateData).then((value) => alertDialog(
+                          context, "Data Updated Successfully", VdfHome()));
                     },
                     child: const Text(
                       'Save Update',
@@ -410,6 +413,65 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
           ),
         ),
       ),
+    );
+  }
+  void alertDialog(BuildContext context, String message, Widget route) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // backgroundColor: Colors.white,
+          backgroundColor: Colors.white,
+          title: SizedBox(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 40,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text('Saved Data to Draft'),
+              ],
+            ),
+          ),
+          content: SizedBox(
+            height: 80,
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(100, 50),
+                    elevation: 0,
+                    backgroundColor: CustomColorTheme.primaryColor,
+                    side: const BorderSide(
+                      width: 1,
+                      color: CustomColorTheme.primaryColor,
+                    ),
+                  ),
+                  onPressed: () {
+                    //pop all screen until VDFHome
+Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => route),
+                            (Route<dynamic> route) => false);
+                  },
+                  child: const Text(
+                    'Ok',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: CustomFontTheme.textSize,
+                        fontWeight: CustomFontTheme.headingwt),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

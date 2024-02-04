@@ -47,6 +47,7 @@ class _CDOHomeState extends State<CDOHome> {
         .then((value) => setState(() {
       value == '' ? cdoId = '10001' : cdoId = value;
 
+      try {
         var url = Uri.parse(
             'https://mobileqacloud.dalmiabharat.com:443/csr/locations/search/findLocationIdByCdoId?cdoId=$cdoId');
         http.get(url).then((response) {
@@ -55,6 +56,11 @@ class _CDOHomeState extends State<CDOHome> {
           controller1.selectLocationId = data;
           return controller1.selectLocationId;
         });
+      } catch (e) {
+        controller1.selectLocationId = 10001;
+        print(e);
+
+      }
 
 
 
@@ -123,7 +129,9 @@ class _CDOHomeState extends State<CDOHome> {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const Expectedincome(),
+                      builder: (context) =>  Expectedincome(
+                        locationId: controller1.selectLocationId,
+                      ),
                     ),
                   );
                 },
@@ -139,7 +147,10 @@ class _CDOHomeState extends State<CDOHome> {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const SourceOfFunds(),
+                      builder: (context) =>  SourceOfFunds(
+                        locationId: controller1.selectLocationId,
+
+                      ),
                     ),
                   );
                 },
@@ -279,8 +290,6 @@ class cards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // width: 284,
-      // height: 55,
       padding: const EdgeInsets.all(12),
       decoration: ShapeDecoration(
         color: Color(0x33F15A22),
@@ -304,8 +313,8 @@ class cards extends StatelessWidget {
       child: Row(children: [
         SvgPicture.asset(
           imageUrl,
-          width: MySize.screenWidth*(34/MySize.screenWidth),
-          height: MySize.screenHeight*(31/MySize.screenHeight),
+          width: MySize.screenWidth*(30/MySize.screenWidth),
+
         ),
         SizedBox(
           width: 20,

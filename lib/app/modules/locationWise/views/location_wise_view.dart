@@ -84,7 +84,7 @@ class _LocationWiseViewState extends State<LocationWiseView> {
 
 
                         Text(
-                          "Number of interventions complete\n(as on $formattedDate)",
+                          "Number of interventions completed\n(as on $formattedDate)",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontWeight: CustomFontTheme.headingwt,
@@ -102,7 +102,10 @@ class _LocationWiseViewState extends State<LocationWiseView> {
 
   Widget allRegionsTables() {
     
-    return isLoading?Center(child: CircularProgressIndicator()):SingleChildScrollView(
+    if (isLoading) {
+      return Center(child: CircularProgressIndicator());
+    } else {
+      return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -185,7 +188,7 @@ class _LocationWiseViewState extends State<LocationWiseView> {
                         child: Row(
                           children: [
                             Text(
-                              controller.details[index],
+                              controller.details[index].capitalizeFirst!,
                               style: AppStyle.textStyleInterMed(fontSize: 14),
                             ),
                             Space.width(5),
@@ -200,13 +203,14 @@ class _LocationWiseViewState extends State<LocationWiseView> {
                             index == 3 || index == 4
                                 ? Column(
                                     children: [
+
                                       Text(
-                                        "> Rs. 50k",
+                                        "> Rs. 1L",
                                         style: AppStyle.textStyleInterMed(
                                             fontSize: 14),
                                       ),
                                       Text(
-                                        "> Rs. 1L",
+                                        "> Rs. 50k",
                                         style: AppStyle.textStyleInterMed(
                                             fontSize: 14),
                                       ),
@@ -233,7 +237,7 @@ class _LocationWiseViewState extends State<LocationWiseView> {
                             children: [
                               Text(
                               controller.allReport![location][controller.details2[index]].toString().startsWith('{')
-                                  ? "${controller.allReport![location][controller.details2[index]].toString().split('{')[1].split('}')[0]}"==""?"0":"${controller.allReport![location][controller.details2[index]].toString().split('{')[1].split('}')[0]}"
+                                  ? "${controller.allReport![location][controller.details2[index]].toString().split('{')[1].split('}')[0]}"==""?"0":"${controller.allReport![location][controller.details2[index]].toString().split('{')[1].split('}')[0].replaceAll(">1L:","").replaceAll("50k-1L:", "\n").replaceAll(",","")} "
                              : controller.allReport![location][controller.details2[index]].toString()=="null"?"0":"${controller.allReport![location][controller.details2[index]]}",
                                 textAlign: TextAlign.start,
                                 style: AppStyle.textStyleInterMed(fontSize: 14),
@@ -251,6 +255,7 @@ class _LocationWiseViewState extends State<LocationWiseView> {
                 ),
               )),
         ));
+    }
   }
 
 }

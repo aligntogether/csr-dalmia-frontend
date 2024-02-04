@@ -618,7 +618,9 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
         // for(int a=12;a<n;a++){
         //   total+=controller.overviewMappedList![0][controller.!locationsListMapping[a]!['DPM']];
         // }
+
         int totalsum=0;
+        int totalsum2=0;
 
         for (var region in controller.regionLocation!.keys) {
           num sum=0;
@@ -688,12 +690,28 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
                 ),
               ),
             );
+            totalsum2+=total.toInt();
             total=0;
           }
-
+          num total2=0;
           // Add an empty cell for the Region column if there are locations in the region
           if (controller.regionLocation![region]!.isNotEmpty) {
             totalsum+=sum.toInt();
+
+            if(firstColumn=='0' || firstColumn=='< 25K' || firstColumn=='25K - 50K' || firstColumn=='50K - 75K' || firstColumn=='75K - 1L' || firstColumn=='>1L' || firstColumn=='Total no. of HH'){
+
+
+              for (var location in controller.regionLocation![region]!) {
+                for(int a=12;a<n;a++){
+                  controller.objectKeys[a] == "Households" ||
+                      controller.objectKeys[a] == "Interventions" ||
+                      controller.objectKeys[a] == "HH with Annual Addl. Income"
+                      ?total2+=0
+                      :controller.overviewMappedList![0][controller.objectKeys[a]]![location]==null?total2+=0:total2+=controller.overviewMappedList![0][controller.objectKeys[a]]![location];
+                }
+              }
+            }
+
             cells.add(
               DataCell(
                 Container(
@@ -703,7 +721,17 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
                   ),
                   padding: EdgeInsets.only(left: 10),
                   child: Center(
-                    child: Text(
+                    child:
+                        firstColumn=='Total no. of HH'?
+                            Text(
+                          "${total2.toString()}  ",
+                              style: TextStyle(
+                                fontSize: CustomFontTheme.textSize,
+                                color: Colors.white,
+                              ),
+                            ):
+
+                    Text(
                       firstColumn == "Households" ||
                           firstColumn == "Interventions" ||
                           firstColumn == "HH with Annual Addl. Income"
@@ -719,8 +747,13 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
                 ),
               ),
             );
+
           };
+
         }
+
+
+
 
         cells.add(
           DataCell(
@@ -731,7 +764,16 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
               ),
               padding: EdgeInsets.only(left: 10),
               child: Center(
-                child: Text(
+                child:
+                firstColumn=='Total no. of HH'?
+                Text(
+                  "${totalsum2.toString()}  ",
+                  style: TextStyle(
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+                ):
+                Text(
                   firstColumn == "Households" ||
                       firstColumn == "Interventions" ||
                       firstColumn == "HH with Annual Addl. Income"
@@ -747,8 +789,11 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
             ),
           ),
         );
+
+
         rows.add(DataRow(cells: cells));
         j++;
+
       }
       return rows;
     }
@@ -924,7 +969,16 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
 
 
           num sum=0;
+          num total=0;
+          num totalSum=0;
           for (var location in controller.regionLocation![controller.selectRegion]!) {
+            for(int a=12;a<controller.overviewMappedList![0].length;a++){
+              controller.objectKeys[a] == "Households" ||
+                  controller.objectKeys[a] == "Interventions" ||
+                  controller.objectKeys[a] == "HH with Annual Addl. Income"
+                  ?total+=0
+                  :controller.overviewMappedList![0][controller.objectKeys[a]]![location]==null?total+=0:total+=controller.overviewMappedList![0][controller.objectKeys[a]]![location];
+            }
             controller.objectKeys[j] == "Households" ||
                 controller.objectKeys[j] == "Interventions" ||
                 controller.objectKeys[j] == "HH with Annual Addl. Income"
@@ -955,6 +1009,13 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
                         color: Color(0xff181818).withOpacity(0.3),
                         thickness: 1,
                       ),
+                      firstColumn=="Total no. of HH"?Text(
+                        "${total.toString()}  ",
+                        style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.black,
+                        ),
+                      ):
                       Text(
                         firstColumn == "Households" ||
                             firstColumn == "Interventions" ||
@@ -975,6 +1036,8 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
                 ),
               ),
             );
+            totalSum+=total.toInt();
+            total=0;
           }
           // Add an empty cell for the Region column if there are locations in the region
           if (controller.regionLocation![controller.selectRegion]!.isNotEmpty) {
@@ -988,6 +1051,8 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
                   padding: EdgeInsets.only(left: 10),
                   child: Center(
                     child: Text(
+                      firstColumn=='Total no. of HH'?
+                      "${totalSum.toString()}  ":
                       firstColumn == "Households" ||
                           firstColumn == "Interventions" ||
                           firstColumn == "HH with Annual Addl. Income"
@@ -1222,7 +1287,16 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
 
 
         num sum=0;
+        num total=0;
+        num totalSum=0;
         for (var name in controller.vdfNames!) {
+          for(int a=12;a<controller.overviewMappedList![0].length;a++){
+            controller.objectKeys[a] == "Households" ||
+                controller.objectKeys[a] == "Interventions" ||
+                controller.objectKeys[a] == "HH with Annual Addl. Income"
+                ?total+=0
+                :controller.locationWiseMappedList![0][controller.objectKeys[a]]![name]==null?total+=0:total+=controller.locationWiseMappedList![0][controller.objectKeys[a]]![name];
+          }
           controller.objectKeys[j] == "Households" ||
               controller.objectKeys[j] == "Interventions" ||
               controller.objectKeys[j] == "HH with Annual Addl. Income"
@@ -1253,6 +1327,13 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
                        color: Color(0xff181818).withOpacity(0.3),
                        thickness: 1,
                      ),
+                      firstColumn=="Total no. of HH"?Text(
+                        "${totalSum.toString()}  ",
+                        style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.white,
+                        ),
+                      ):
                      Text(
                        firstColumn == "Households" ||
                            firstColumn == "Interventions" ||
@@ -1301,6 +1382,13 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
                        color: Color(0xff181818).withOpacity(0.3),
                        thickness: 1,
                      ),
+                     firstColumn=="Total no. of HH"?Text(
+                       "${total.toString()}  ",
+                       style: TextStyle(
+                         fontSize: CustomFontTheme.textSize,
+                         color: Colors.black,
+                       ),
+                     ):
                      Text(
                        firstColumn == "Households" ||
                            firstColumn == "Interventions" ||
@@ -1322,35 +1410,14 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
                ),
              ),
            );
-         }
-        }
-        // Add an empty cell for the Region column if there are locations in the region
+           totalSum+=total.toInt();
+           total=0;
 
-          // cells.add(
-          //   DataCell(
-          //     Container(
-          //       height: 60,
-          //       decoration: BoxDecoration(
-          //         color: Color(0xFF096C9F),
-          //       ),
-          //       padding: EdgeInsets.only(left: 10),
-          //       child: Center(
-          //         child: Text(
-          //           firstColumn == "Households" ||
-          //               firstColumn == "Interventions" ||
-          //               firstColumn == "HH with Annual Addl. Income"
-          //               ?"":sum.toString(),
-          //           textAlign: TextAlign.right,
-          //
-          //           style: TextStyle(
-          //             fontSize: CustomFontTheme.textSize,
-          //             color: Colors.white,
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // );
+         }
+
+
+        }
+
 
 
         rows.add(DataRow(cells: cells));

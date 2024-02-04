@@ -100,6 +100,7 @@ class _LoginState extends State<Login> {
                     if (isContainerVisible)
                       const Image(
                         image: AssetImage('images/icon.jpg'),
+                        height: 80,
                       ),
                     if (isContainerVisible)
                       Container(

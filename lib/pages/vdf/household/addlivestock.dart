@@ -402,6 +402,7 @@ class _AddStockState extends State<AddStock> {
                   ),
                 ],
               ),
+              const SizedBox(height: 30),
             ],
           ),
         ),

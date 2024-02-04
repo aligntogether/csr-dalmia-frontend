@@ -17,7 +17,11 @@ class LLAppBar extends StatelessWidget {
           AppBar(
             titleSpacing: 20,
             backgroundColor: Colors.white,
-            title: Image(image: AssetImage('images/icon.jpg')),
+            title: Image.asset(
+              'images/icon.jpg',
+              height: 30,
+
+            ),
             centerTitle: false,
             automaticallyImplyLeading: false,
             bottom: PreferredSize(

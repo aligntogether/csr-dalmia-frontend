@@ -156,6 +156,7 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
 
       for (var region in controller.regionLocation!.keys) {
         for (var location in controller.regionLocation![region]!) {
+
           // Add the Location column
           columns.add(
             DataColumn(

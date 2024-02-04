@@ -1,13 +1,17 @@
+import 'dart:convert';
+
 import 'package:dalmia/Constants/constants.dart';
 import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/helper/sharedpref.dart';
+import 'package:dalmia/pages/CDO/vdfreports.dart';
 import 'package:dalmia/pages/LL/action.dart';
 import 'package:dalmia/pages/LL/expectedActualReport/expected_actual_additional_income.dart';
 
 import 'package:dalmia/pages/LL/sourceoffunds.dart';
 import 'package:dalmia/pages/LL/vdffund.dart';
 import 'package:dalmia/pages/LL/vdfreports.dart';
-
+//import as http
+import 'package:http/http.dart' as http;
 import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +21,9 @@ import 'package:get/get_core/src/get_main.dart';
 
 import '../../common/app_style.dart';
 import '../../common/size_constant.dart';
+import '../CDO/expected.dart';
+import '../CDO/sourceoffunds.dart';
+import '../CDO/vdffund.dart';
 import 'll_controller.dart';
 class LLHome extends StatefulWidget {
   const LLHome({Key? key}) : super(key: key);
@@ -28,6 +35,7 @@ class LLHome extends StatefulWidget {
 class _LLHomeState extends State<LLHome> {
   String name = "";
   String? refId;
+  String? locationId;
   LLController controller = Get.put(LLController());
   @override
   void initState() {
@@ -41,7 +49,23 @@ class _LLHomeState extends State<LLHome> {
     SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
         .then((value) => setState(() {
               value == '' ? refId = 'user' : refId = value;
-            }));
+              try {
+                var url = Uri.parse(
+                    'https://mobileqacloud.dalmiabharat.com:443/csr/locations/search/findLocationIdByLocationLead?locationLead=$refId');
+                http.get(url).then((response) {
+                  var data = json.decode(response.body);
+                  print("ds$data");
+
+                  locationId= data;
+                  return locationId;
+                });
+              } catch (e) {
+                locationId = '10001';
+                print(e);
+
+              }
+
+    }));
     ;
   }
   @override
@@ -68,7 +92,7 @@ class _LLHomeState extends State<LLHome> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const LLVdfReport(),
+                        builder: (context) => const VdfReport(),
                       ),
                     );
                   },
@@ -84,7 +108,7 @@ class _LLHomeState extends State<LLHome> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const LLVDFFunds(),
+                        builder: (context) => VDFFunds(),
                       ),
                     );
                   },
@@ -100,7 +124,9 @@ class _LLHomeState extends State<LLHome> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) =>  ExpectedincomeLL(refId: refId,),
+                        builder: (context) =>  Expectedincome(
+                          locationId: int.tryParse(locationId!),
+                        ),
                       ),
                     );
                   },
@@ -116,7 +142,10 @@ class _LLHomeState extends State<LLHome> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const SourceOfFundsOfLL(),
+                        builder: (context) => SourceOfFunds(
+                          locationId: int.tryParse(locationId!),
+
+                        ),
                       ),
                     );
                   },

@@ -1,4 +1,5 @@
 import 'package:dalmia/pages/CDO/action.dart';
+import 'package:dalmia/pages/CDO/cdohome.dart';
 import 'package:dalmia/theme.dart';
 
 import 'package:flutter/material.dart';
@@ -41,6 +42,7 @@ void _calldropHouseholdAPI(String hhid) async {
         'https://mobileqacloud.dalmiabharat.com:443/csr/cdo-drop-household?hhid=$hhid',
       ),
     );
+    print("hi$response");
 
     if (response.statusCode == 200) {
       // Handle success
@@ -306,7 +308,9 @@ void _drophhDialog(BuildContext context, String hhid) {
             children: [
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const CDOHome()),
+                          (Route<dynamic> route) => false);
                 },
                 child: const Icon(Icons.close),
               ),
@@ -369,7 +373,9 @@ void _selecthhDialog(BuildContext context, String hhid) {
             children: [
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const CDOHome()),
+                          (Route<dynamic> route) => false);
                 },
                 child: const Icon(Icons.close),
               ),
@@ -442,7 +448,7 @@ void _confirmbox(BuildContext context, String hhid) {
                   height: 20,
                 ),
                 Text(
-                  '$hhid  data is sent successfully to Location Lead for approval.',
+                  '$hhid   is  successfully approved.',
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -458,12 +464,12 @@ void _confirmbox(BuildContext context, String hhid) {
                   backgroundColor: CustomColorTheme.primaryColor,
                 ),
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ActionAgainstHH(),
-                    ),
-                  );
-                },
+                  //pop all screens and go to action against hh
+                  Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const CDOHome()),
+      (Route<dynamic> route) => false);
+      },
+
                 child: const Text(
                   'Ok',
                   style: TextStyle(

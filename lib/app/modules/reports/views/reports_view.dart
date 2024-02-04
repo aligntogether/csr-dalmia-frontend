@@ -47,7 +47,7 @@ class ReportsView extends GetView<ReportsController> {
                     Get.toNamed(Routes.OVERVIEW_PAN);
                   }),
                   listData(
-                      "Number of interventions complete\n(as on $formattedDate)",
+                      "Number of interventions completed\n(as on $formattedDate)",
                           () {
                         Get.toNamed(Routes.INTERVENTION_COMPLETE);
 

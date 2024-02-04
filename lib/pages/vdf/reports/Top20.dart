@@ -113,7 +113,12 @@ class _Top20State extends State<Top20> {
                 titleSpacing: 20,
                 scrolledUnderElevation: 0,
                 backgroundColor: Colors.white,
-                title: const Image(image: AssetImage('images/icon.jpg')),
+                title: Image.asset(
+                  'images/icon.jpg',
+                  height: 30,
+
+
+                ),
                 automaticallyImplyLeading: false,
                 actions: <Widget>[
                   CircleAvatar(

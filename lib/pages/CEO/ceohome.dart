@@ -305,8 +305,8 @@ class cards extends StatelessWidget {
       child: Row(children: [
         SvgPicture.asset(
           imageUrl,
-          width: 34,
-          height: 31,
+          width: MySize.screenWidth*(34/MySize.screenWidth),
+
         ),
         SizedBox(
           width: 20,

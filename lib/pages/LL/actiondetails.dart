@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 
+import '../CDO/cdohome.dart';
+
 class LLActionDetail extends StatefulWidget {
   final String hhid;
   const LLActionDetail({super.key, required this.hhid});
@@ -14,12 +16,14 @@ class LLActionDetail extends StatefulWidget {
 }
 
 void _callAcceptHouseholdAPILL(String hhid) async {
+  print("HHID: $hhid");
   try {
     final response = await http.put(
       Uri.parse(
-        '$base/csr/ll-accept-household?hhid=$hhid',
+        '$base/ll-accept-household?hhid=$hhid',
       ),
     );
+    print(response.statusCode);
 
     if (response.statusCode == 200) {
       // Handle success
@@ -41,6 +45,7 @@ void _calldropHouseholdAPILL(String hhid) async {
         '$base/ll-drop-household?hhid=$hhid',
       ),
     );
+    print(response.statusCode);
 
     if (response.statusCode == 200) {
       // Handle success
@@ -350,6 +355,7 @@ void _drophhDialog(BuildContext context, String hhid) {
 }
 
 void _selecthhDialog(BuildContext context, String hhid) {
+  print("HHID: $hhid");
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -454,11 +460,9 @@ void _selectedconfirmbox(BuildContext context, String hhid) {
                   backgroundColor: CustomColorTheme.primaryColor,
                 ),
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ActionAgainstHHLL(),
-                    ),
-                  );
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const CDOHome()),
+                          (Route<dynamic> route) => false);
                 },
                 child: const Text(
                   'Ok',
@@ -522,11 +526,10 @@ void _dropedconfirmbox(BuildContext context, String hhid) {
                   backgroundColor: CustomColorTheme.primaryColor,
                 ),
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ActionAgainstHHLL(),
-                    ),
-                  );
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (context) => const CDOHome()),
+                      (Route<dynamic> route) => false);
                 },
                 child: const Text(
                   'Ok',

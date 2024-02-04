@@ -11,15 +11,15 @@ class LocationWiseController extends GetxController {
 
 
   List<String> details = [
-    "Target",
+    "target",
     'HH Alloted',
     'HH Selected',
-    'No. of HHs with planned int.\nabove 50K and 1L EAAI',
-    'No. of HHs with AAAI above\n 50K and 1L',
+    'No. of HHs with planned int.',
+    'No. of HHs with AAAI',
 
   ];
   List<String> details2 = [
-    "Target",
+    "target",
     'hhAlloted',
     'hhSelected',
     'plannedEaai',

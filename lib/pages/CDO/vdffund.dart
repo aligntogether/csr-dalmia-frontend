@@ -35,6 +35,7 @@ class _VDFFundsState extends State<VDFFunds> {
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
       final List<dynamic> respBody = responseData['resp_body'];
+      print("ds$respBody");
 
       setState(() {
         fundData = List<Map<String, dynamic>>.from(respBody);
@@ -59,167 +60,169 @@ class _VDFFundsState extends State<VDFFunds> {
         (prev, curr) =>
             prev + ((curr['utilized'] != null ? curr['utilized'] : 0) as int));
 
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100),
-        child: CdoAppBar(
-          heading: 'Funds utilized by VDFs (Rs)',
+    return SafeArea(
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(100),
+          child: CdoAppBar(
+            heading: 'Funds utilized by VDFs (Rs)',
+          ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 20, top: 20, bottom: 20),
-          child: Column(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const CDOHome(),
-                    ),
-                  );
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.keyboard_arrow_left_sharp,
-                    ),
-                    Text(
-                      'Main Menu',
-                      style: TextStyle(
-                        fontSize: CustomFontTheme.textSize,
-                        fontWeight: CustomFontTheme.headingwt,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all( 20),
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const CDOHome(),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-               SizedBox(
-                height: MySize.screenHeight*(40/MySize.screenHeight),
-              ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  dividerThickness: 0,
-                  columns: const <DataColumn>[
-                    DataColumn(
-                      label: Text(
-                        'Details',
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.keyboard_arrow_left_sharp,
+                      ),
+                      Text(
+                        'Main Menu',
                         style: TextStyle(
-                          fontWeight: CustomFontTheme.headingwt,
                           fontSize: CustomFontTheme.textSize,
-                          color: Colors.white,
+                          fontWeight: CustomFontTheme.headingwt,
                         ),
                       ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Budget',
-                        style: TextStyle(
-                          fontWeight: CustomFontTheme.headingwt,
-                          fontSize: CustomFontTheme.textSize,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Utilized',
-                        style: TextStyle(
-                          fontWeight: CustomFontTheme.headingwt,
-                          fontSize: CustomFontTheme.textSize,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
-                  headingRowColor: MaterialStateColor.resolveWith(
-                    (states) => const Color(0xFF008CD3),
+                    ],
                   ),
-                  rows: List<DataRow>.generate(
-                        fundData.length,
-                        (index) => DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) {
-                              return index.isOdd
-                                  ? Colors.blue.shade50
-                                  : Colors.white;
-                            },
-                          ),
-                          cells: [
-                            DataCell(
-                              Text(
-                                fundData[index]['details'] as String,
-                                style: const TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                (fundData[index]['budget'] as int).toString(),
-                                style: const TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                (fundData[index]['utilized'] as int).toString(),
-                                style: const TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ) +
-                      [
-                        DataRow(
-                          color: MaterialStateColor.resolveWith(
-                            (states) => Colors.white,
-                          ),
-                          cells: [
-                            DataCell(
-                              const Text(
-                                'Total',
-                                style: TextStyle(
-                                  fontSize: CustomFontTheme.textSize,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                totalBudget.toString(),
-                                style: const TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                totalUtilized.toString(),
-                                style: const TextStyle(
-                                  color: CustomColorTheme.textColor,
-                                  fontWeight: CustomFontTheme.headingwt,
-                                  fontSize: CustomFontTheme.textSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
                 ),
-              ),
-            ],
+                 SizedBox(
+                  height: MySize.screenHeight*(40/MySize.screenHeight),
+                ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    dividerThickness: 0,
+                    columns: const <DataColumn>[
+                      DataColumn(
+                        label: Text(
+                          'Details',
+                          style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Budget',
+                          style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Utilized',
+                          style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                    headingRowColor: MaterialStateColor.resolveWith(
+                      (states) => const Color(0xFF008CD3),
+                    ),
+                    rows: List<DataRow>.generate(
+                          fundData.length,
+                          (index) => DataRow(
+                            color: MaterialStateColor.resolveWith(
+                              (states) {
+                                return index.isOdd
+                                    ? Colors.blue.shade50
+                                    : Colors.white;
+                              },
+                            ),
+                            cells: [
+                              DataCell(
+                                Text(
+                                  fundData[index]['details']==""?"VDF(test)":fundData[index]['details'] as String,
+                                  style: const TextStyle(
+                                    fontSize: CustomFontTheme.textSize,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                Text(
+                                  (fundData[index]['budget']==null?"0":fundData[index]['budget'] as int).toString(),
+                                  style: const TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                Text(
+                                  (fundData[index]['utilized']==null?"0":fundData[index]['utilized'] as int).toString(),
+                                  style: const TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ) +
+                        [
+                          DataRow(
+                            color: MaterialStateColor.resolveWith(
+                              (states) => Colors.white,
+                            ),
+                            cells: [
+                              DataCell(
+                                const Text(
+                                  'Total',
+                                  style: TextStyle(
+                                    fontSize: CustomFontTheme.textSize,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                Text(
+                                  totalBudget.toString(),
+                                  style: const TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                Text(
+                                  totalUtilized.toString(),
+                                  style: const TextStyle(
+                                    color: CustomColorTheme.textColor,
+                                    fontWeight: CustomFontTheme.headingwt,
+                                    fontSize: CustomFontTheme.textSize,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

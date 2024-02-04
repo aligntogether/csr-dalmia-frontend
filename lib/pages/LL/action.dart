@@ -29,13 +29,14 @@ class _ActionAgainstHHLLState extends State<ActionAgainstHHLL> {
   Future<void> fetchData() async {
     final response = await http.get(
       Uri.parse(
-        'https://mobileqacloud.dalmiabharat.com:443/csr/action-dropped-household-details?locationId=10001',
+        'https://mobileqacloud.dalmiabharat.com:443/csr/action-dropped-household-details-ll?locationId=10001',
       ),
     );
-
+    print("ds$response");
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
       final List<dynamic> respBody = responseData['resp_body'];
+      print("ds$respBody");
 
       setState(() {
         householdData = List<Map<String, String>>.from(
