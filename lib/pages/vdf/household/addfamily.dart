@@ -22,9 +22,7 @@ class AddFamily extends StatefulWidget {
 }
 
 class _MyFormState extends State<AddFamily> {
-  final _formKey = GlobalKey<FormState>();
-  List<Widget> forms = [];
-  int formCount = 1;
+
 
   Map<String, dynamic> jsonData = {};
   final List<TextEditingController> _nameControllers = [];
@@ -48,207 +46,16 @@ class _MyFormState extends State<AddFamily> {
   List<bool> formExpandStateList = [];
   List<bool> formFilledStateList = [];
   final List<String?> membersId = [];
-  Future<void> fetchGenderOptions() async {
-    try {
-      final response = await http.get(
-        Uri.parse('$base/dropdown?titleId=101'),
-      );
-      if (response.statusCode == 200) {
-        CommonObject commonObject =
-            CommonObject.fromJson(json.decode(response.body));
-        List<dynamic> options = commonObject.respBody['options'];
 
-        setState(() {
-          genderOptions = options;
-        });
-      } else {
-        throw Exception(
-            'Failed to load gender options: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error: $e');
-    }
-  }
-
-  Future<void> fetchRelationOptions() async {
-    String url = '$base/dropdown?titleId=111';
-    try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        CommonObject commonObject =
-            CommonObject.fromJson(json.decode(response.body));
-        List<dynamic> options = commonObject.respBody['options'];
-        setState(() {
-          relationOptions = options;
-        });
-      } else {
-        throw Exception(
-            'Failed to load relation options: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error: $e');
-    }
-  }
-
-  Future<void> fetchEducationOptions() async {
-    String url = '$base/dropdown?titleId=102';
-    try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        CommonObject commonObject =
-            CommonObject.fromJson(json.decode(response.body));
-        List<dynamic> options = commonObject.respBody['options'];
-        setState(() {
-          educationOptions = options;
-        });
-      } else {
-        throw Exception(
-            'Failed to load Education options: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error: $e');
-    }
-  }
-
-  Future<void> fetchPrimaryOptions() async {
-    String url = '$base/dropdown?titleId=103';
-    try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        CommonObject commonObject =
-            CommonObject.fromJson(json.decode(response.body));
-        List<dynamic> options = commonObject.respBody['options'];
-        setState(() {
-          primaryEmploymentOptions = options;
-        });
-      } else {
-        throw Exception(
-            'Failed to load Primary Education options: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error: $e');
-    }
-  }
-
-  Future<void> fetchSecondaryOptions() async {
-    String url = '$base/dropdown?titleId=103';
-    try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        CommonObject commonObject =
-            CommonObject.fromJson(json.decode(response.body));
-        List<dynamic> options = commonObject.respBody['options'];
-        setState(() {
-          secondaryEmploymentOptions = options;
-        });
-      } else {
-        throw Exception(
-            'Failed to load Secondary Education options: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error: $e');
-    }
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    );
-    if (picked != null) {
-      setState(() {
-        print(picked);
-        _dobControllers[formCount - 1].text =
-            DateFormat('dd/MM/yyyy').format(picked);
-        print(_dobControllers.toString());
-      });
-    }
-  }
-  DateTime? selectedDate;
-
-  int calculateAge(String? selectedDate) {
-    if (selectedDate == null || selectedDate.isEmpty) {
-      // Handle the case where selectedDate is null or empty
-      return 0;
-    }
-
-    try {
-      // Convert the selected date string to DateTime
-      DateTime birthDate = DateFormat("dd/MM/yyyy").parse(selectedDate);
-
-      DateTime currentDate = DateTime.now();
-      int age = currentDate.year - birthDate.year;
-
-      if (currentDate.month < birthDate.month ||
-          (currentDate.month == birthDate.month &&
-              currentDate.day < birthDate.day)) {
-        age--;
-      }
-
-      return age;
-    } catch (e) {
-      // Handle the case where parsing fails
-      print("Error parsing date: $e");
-      return 0;
-    }
-
-  }
-
-
-  Future<void> sendFamilyData(List<Map<String, dynamic>> familyData) async {
-    try {
-      final response = await http.put(
-        Uri.parse('$base/add-member?houseHoldId=${widget.id}'),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(familyData),
-      );
-
-      if (response.statusCode == 200) {
-
-        // Handle the response from the API if needed
-        print('Data sent successfully');
-      } else {
-        throw Exception('Failed to send data: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error: $e');
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> getFamilyMembers(
-      String householdId) async {
-    final String apiUrl = '$base/get-familymembers?householdId=$householdId';
-
-    try {
-      final response = await http.get(Uri.parse(apiUrl));
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonResponse = json.decode(response.body);
-
-        if (jsonResponse['resp_code'] == 200 &&
-            jsonResponse['resp_msg'] == 'Family Found') {
-          final List<dynamic> respBody = jsonResponse['resp_body'];
-          return List<Map<String, dynamic>>.from(respBody);
-        } else {
-          throw Exception('API Error: ${jsonResponse['resp_msg']}');
-        }
-      } else {
-        throw Exception('HTTP Error: ${response.statusCode}');
-      }
-    } catch (error) {
-      throw Exception('Error: $error');
-    }
-  }
-
+  List<GlobalKey<FormState>> _formKeys = [];
+  List<Widget> forms = [];
+  int formCount = 1;
   @override
   void initState() {
     super.initState();
     formExpandStateList = List<bool>.generate(formCount, (index) => false);
     formFilledStateList = List<bool>.generate(formCount, (index) => false);
+    _formKeys.add(GlobalKey<FormState>());
     for (int i = 0; i < formCount; i++) {
       _nameControllers.add(TextEditingController());
       _mobileControllers.add(TextEditingController());
@@ -308,9 +115,8 @@ class _MyFormState extends State<AddFamily> {
                         ),
                         children: [
                           const SizedBox(height: 16),
-
                           Form(
-                            key: _formKey,
+                            key: _formKeys[i],
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -321,6 +127,13 @@ class _MyFormState extends State<AddFamily> {
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
+                                  validator: (value) {
+                                    if (value!.length < 2 || value.isEmpty) {
+                                      return 'Member name should filled';
+                                    }
+                                    return null;
+                                  },
+
                                 ),
                                 const SizedBox(height: 20),
                                 TextFormField(
@@ -332,7 +145,7 @@ class _MyFormState extends State<AddFamily> {
                                   ],
                                   controller: _mobileControllers[i],
                                   decoration: const InputDecoration(
-                                    labelText: 'Mobile Number ',
+                                    labelText: 'Mobile Number *',
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
@@ -370,6 +183,12 @@ class _MyFormState extends State<AddFamily> {
                                               ),
                                             ),
                                           ),
+                                          validator: (value) {
+                                            if (value==null || value.isEmpty) {
+                                              return 'Date of Birth should be filled';
+                                            }
+                                            return null;
+                                          },
                                         ),
                                       ),
                                     ),
@@ -385,7 +204,8 @@ class _MyFormState extends State<AddFamily> {
                                       child: TextFormField(
                                         enabled: false,
                                         decoration: InputDecoration(
-                                          labelText: _dobControllers[i].text != null
+                                          labelText: _dobControllers[i].text !=
+                                                  null
                                               ? '${calculateAge(_dobControllers[i].text)} yrs'
                                               : 'Age(yrs)',
                                           contentPadding:
@@ -413,6 +233,11 @@ class _MyFormState extends State<AddFamily> {
                                     setState(() {
                                       _selectedGenders[i] = newValue;
                                     });
+                                  },
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return "gender should be seleted";
+                                    }
                                   },
                                   decoration: const InputDecoration(
                                     labelText: 'Gender *',
@@ -450,6 +275,11 @@ class _MyFormState extends State<AddFamily> {
                                     Icons.keyboard_arrow_down_sharp,
                                     color: CustomColorTheme.iconColor,
                                   ),
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return "Education should be seleted";
+                                    }
+                                  },
                                 ),
                                 const SizedBox(height: 16),
                                 DropdownButtonFormField(
@@ -477,6 +307,11 @@ class _MyFormState extends State<AddFamily> {
                                     Icons.keyboard_arrow_down_sharp,
                                     color: CustomColorTheme.iconColor,
                                   ),
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return "Relationship should be seleted";
+                                    }
+                                  },
                                 ),
                                 const SizedBox(height: 16),
                                 DropdownButtonFormField<int>(
@@ -490,9 +325,9 @@ class _MyFormState extends State<AddFamily> {
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 0.6,
-                                        child: Text(primaryemployment[
-                                                'titleData']
-                                            .toString()),
+                                        child: Text(
+                                            primaryemployment['titleData']
+                                                .toString()),
                                       ),
                                     );
                                   }).toList(),
@@ -506,10 +341,15 @@ class _MyFormState extends State<AddFamily> {
                                     color: CustomColorTheme.iconColor,
                                   ),
                                   decoration: const InputDecoration(
-                                    labelText: 'Primary Employment',
+                                    labelText: 'Primary Employment *',
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 20.0),
                                   ),
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return "Primary Employment should be seleted";
+                                    }
+                                  },
                                 ),
                                 const SizedBox(height: 16),
                                 DropdownButtonFormField<int>(
@@ -518,16 +358,16 @@ class _MyFormState extends State<AddFamily> {
                                       .map<DropdownMenuItem<int>>(
                                           (dynamic secondaryemployment) {
                                     return DropdownMenuItem<int>(
-                                      value: secondaryemployment['dataId'],
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.6,
-                                        child: Text(secondaryemployment[
-                                                'titleData']
-                                            .toString()),
-                                      )
-                                    );
+                                        value: secondaryemployment['dataId'],
+                                        child: Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.6,
+                                          child: Text(
+                                              secondaryemployment['titleData']
+                                                  .toString()),
+                                        ));
                                   }).toList(),
                                   onChanged: (newValue) {
                                     setState(() {
@@ -560,24 +400,49 @@ class _MyFormState extends State<AddFamily> {
                       icon: const Icon(Icons.add),
                       onPressed: () {
                         {
-                          setState(() {
-                            selectedDate = null;
-                            membersId.add(null);
-                            formCount++;
-                            formExpandStateList.add(false);
-                            formFilledStateList.add(false);
-                            _nameControllers.add(TextEditingController());
-                            _mobileControllers.add(TextEditingController());
-                            _dobControllers.add(TextEditingController());
-                            _selectedGenders.add(null);
-                            _selectedEducations.add(null);
-                            _selectedRelation.add(null);
-                            _selectedCastes.add(null);
-                            _selectedPrimaryEmployments.add(null);
-                            _selectedSecondaryEmployments.add(null);
-                          });
+                          if(formCount==0){
+                            setState(() {
+                              formCount++;
+                              membersId.add(null);
+                              _formKeys.add(GlobalKey<FormState>());
+                              formExpandStateList.add(false);
+                              formFilledStateList.add(false);
+                              _nameControllers.add(TextEditingController());
+                              _mobileControllers.add(TextEditingController());
+                              _dobControllers.add(TextEditingController());
+                              _selectedGenders.add(null);
+                              _selectedEducations.add(null);
+                              _selectedRelation.add(null);
+                              _selectedCastes.add(null);
+                              _selectedPrimaryEmployments.add(null);
+                              _selectedSecondaryEmployments.add(null);
+                            });
+
+                          }
+                         for(int i=0;i<formCount;i++){
+                           if(_formKeys[i].currentState!.validate()?? false) {
+                             setState(() {
+                               selectedDate = null;
+                               membersId.add(null);
+                               formCount++;
+                               _formKeys.add(GlobalKey<FormState>());
+                               formExpandStateList.add(false);
+                               formFilledStateList.add(false);
+                               _nameControllers.add(TextEditingController());
+                               _mobileControllers.add(TextEditingController());
+                               _dobControllers.add(TextEditingController());
+                               _selectedGenders.add(null);
+                               _selectedEducations.add(null);
+                               _selectedRelation.add(null);
+                               _selectedCastes.add(null);
+                               _selectedPrimaryEmployments.add(null);
+                               _selectedSecondaryEmployments.add(null);
+                             });
+                           }
+                         }
                         }
                       },
+
                     ),
                     const Text('Add another member'),
                   ],
@@ -592,47 +457,51 @@ class _MyFormState extends State<AddFamily> {
                         backgroundColor: CustomColorTheme.primaryColor,
                       ),
                       onPressed: () {
-                        List<Map<String, dynamic>> familyData = [];
-                        var inputFormat = DateFormat('dd/MM/yyyy');
+                        for(int i=0;i<formCount;i++){
+                          if(_formKeys[i].currentState!.validate()?? false){
+                            List<Map<String, dynamic>> familyData = [];
+                            var inputFormat = DateFormat('dd/MM/yyyy');
 
-                        var outputFormat = DateFormat('yyyy-MM-dd');
-                        // Collect data for each family member
-                        for (int i = 0; i < formCount; i++) {
-                          familyData.add({
-                            'memberId': membersId[i],
-                            'memberName': _nameControllers[i].text,
+                            var outputFormat = DateFormat('yyyy-MM-dd');
+                            // Collect data for each family member
+                            for (int i = 0; i < formCount; i++) {
+                              familyData.add({
+                                'memberId': membersId[i],
+                                'memberName': _nameControllers[i].text,
+                                'gender': _selectedGenders[i],
+                                'mobile': _mobileControllers[i].text,
+                                'dob': _dobControllers[i].text != ''
+                                    ? outputFormat.format(
+                                    inputFormat.parse(_dobControllers[i].text))
+                                    : null,
+                                'education': _selectedEducations[
+                                i], // You may replace this with the actual value
+                                // You may replace this with the actual value
+                                'relationship': _selectedRelation[
+                                i], // You may replace this with the actual value
+                                'primaryEmployment': _selectedPrimaryEmployments[
+                                i], // You may replace this with the actual value
+                                'secondaryEmployment': _selectedSecondaryEmployments[
+                                i], // You may replace this with the actual value
+                                'caste': _selectedCastes[i],
+                                'isFamilyHead': 0,
+                                // Add other fields as needed
+                              });
+                            }
 
-                            'gender': _selectedGenders[i],
-                            'mobile': _mobileControllers[i].text,
-                            'dob': _dobControllers[i].text != ''
-                                ? outputFormat.format(inputFormat.parse(
-                                    _dobControllers[i].text ))
-                                : null,
-                            'education': _selectedEducations[
-                                i], // You may replace this with the actual value
-                            // You may replace this with the actual value
-                            'relationship': _selectedRelation[
-                                i], // You may replace this with the actual value
-                            'primaryEmployment': _selectedPrimaryEmployments[
-                                i], // You may replace this with the actual value
-                            'secondaryEmployment': _selectedSecondaryEmployments[
-                                i], // You may replace this with the actual value
-                            'caste': _selectedCastes[i],
-                            'isFamilyHead': 0,
-                            // Add other fields as needed
-                          });
+                            sendFamilyData(familyData)
+                                .then((value) => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => AddLand(
+                                  id: widget.id,
+                                ),
+                              ),
+                            ));
+
+                          }
+
+
                         }
-
-
-                        sendFamilyData(familyData)
-                            .then((value) => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => AddLand(
-                                      id: widget.id,
-                                    ),
-                                  ),
-                                ));
-
                         // Navigate to the next screen or perform other actions
                       },
                       child: const Text(
@@ -652,6 +521,9 @@ class _MyFormState extends State<AddFamily> {
                           side: BorderSide(
                               color: CustomColorTheme.primaryColor, width: 1)),
                       onPressed: () {
+                        print('form count $formCount');
+                        print('members id $membersId');
+                        print("fdf $_selectedGenders");
                         List<Map<String, dynamic>> familyData = [];
                         var inputFormat = DateFormat('dd/MM/yyyy');
 
@@ -665,8 +537,8 @@ class _MyFormState extends State<AddFamily> {
                             'gender': _selectedGenders[i],
                             'mobile': _mobileControllers[i].text,
                             'dob': _dobControllers[i].text != ''
-                                ? outputFormat.format(inputFormat.parse(
-                                    _dobControllers[i].text ))
+                                ? outputFormat.format(
+                                    inputFormat.parse(_dobControllers[i].text))
                                 : null,
                             'education': _selectedEducations[
                                 i], // You may replace this with the actual value
@@ -682,8 +554,6 @@ class _MyFormState extends State<AddFamily> {
                             // Add other fields as needed
                           });
                         }
-                        print(familyData);
-
                         sendFamilyData(familyData)
                             .then((value) => _savedata(context));
                       },
@@ -701,10 +571,12 @@ class _MyFormState extends State<AddFamily> {
               ],
             ),
           ),
+          ),
         ),
-      ),
+
     );
   }
+
 
   void _savedata(BuildContext context) {
     showDialog(
@@ -836,8 +708,7 @@ class _MyFormState extends State<AddFamily> {
           _mobileControllers[i] = TextEditingController(
               text: familyMembers[ind]['mobile'].toString());
           selectedDate = familyMembers[ind]['dob'] != null
-              ?DateTime.fromMillisecondsSinceEpoch(
-              familyMembers[ind]['dob']  )
+              ? DateTime.fromMillisecondsSinceEpoch(familyMembers[ind]['dob'])
               : null;
           if (selectedDate != null)
             _dobControllers[i].text =
@@ -861,5 +732,199 @@ class _MyFormState extends State<AddFamily> {
         //     familyMembers[0]['secondaryEmployment'].toString();
       },
     );
+  }
+
+  Future<void> fetchGenderOptions() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$base/dropdown?titleId=101'),
+      );
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+        List<dynamic> options = commonObject.respBody['options'];
+
+        setState(() {
+          genderOptions = options;
+        });
+      } else {
+        throw Exception(
+            'Failed to load gender options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> fetchRelationOptions() async {
+    String url = '$base/dropdown?titleId=111';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+        List<dynamic> options = commonObject.respBody['options'];
+        setState(() {
+          relationOptions = options;
+        });
+      } else {
+        throw Exception(
+            'Failed to load relation options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> fetchEducationOptions() async {
+    String url = '$base/dropdown?titleId=102';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+        List<dynamic> options = commonObject.respBody['options'];
+        setState(() {
+          educationOptions = options;
+        });
+      } else {
+        throw Exception(
+            'Failed to load Education options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> fetchPrimaryOptions() async {
+    String url = '$base/dropdown?titleId=103';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+        List<dynamic> options = commonObject.respBody['options'];
+        setState(() {
+          primaryEmploymentOptions = options;
+        });
+      } else {
+        throw Exception(
+            'Failed to load Primary Education options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> fetchSecondaryOptions() async {
+    String url = '$base/dropdown?titleId=103';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        CommonObject commonObject =
+            CommonObject.fromJson(json.decode(response.body));
+        List<dynamic> options = commonObject.respBody['options'];
+        setState(() {
+          secondaryEmploymentOptions = options;
+        });
+      } else {
+        throw Exception(
+            'Failed to load Secondary Education options: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        print(picked);
+        _dobControllers[formCount - 1].text =
+            DateFormat('dd/MM/yyyy').format(picked);
+        print(_dobControllers.toString());
+      });
+    }
+  }
+
+  DateTime? selectedDate;
+
+  int calculateAge(String? selectedDate) {
+    if (selectedDate == null || selectedDate.isEmpty) {
+      // Handle the case where selectedDate is null or empty
+      return 0;
+    }
+
+    try {
+      // Convert the selected date string to DateTime
+      DateTime birthDate = DateFormat("dd/MM/yyyy").parse(selectedDate);
+
+      DateTime currentDate = DateTime.now();
+      int age = currentDate.year - birthDate.year;
+
+      if (currentDate.month < birthDate.month ||
+          (currentDate.month == birthDate.month &&
+              currentDate.day < birthDate.day)) {
+        age--;
+      }
+
+      return age;
+    } catch (e) {
+      // Handle the case where parsing fails
+      print("Error parsing date: $e");
+      return 0;
+    }
+  }
+
+  Future<void> sendFamilyData(List<Map<String, dynamic>> familyData) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$base/add-member?houseHoldId=${widget.id}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(familyData),
+      );
+
+      if (response.statusCode == 200) {
+        // Handle the response from the API if needed
+        print('Data sent successfully');
+      } else {
+        throw Exception('Failed to send data: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getFamilyMembers(
+      String householdId) async {
+    final String apiUrl = '$base/get-familymembers?householdId=$householdId';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+        if (jsonResponse['resp_code'] == 200 &&
+            jsonResponse['resp_msg'] == 'Family Found') {
+          final List<dynamic> respBody = jsonResponse['resp_body'];
+          return List<Map<String, dynamic>>.from(respBody);
+        } else {
+          throw Exception('API Error: ${jsonResponse['resp_msg']}');
+        }
+      } else {
+        throw Exception('HTTP Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw Exception('Error: $error');
+    }
   }
 }

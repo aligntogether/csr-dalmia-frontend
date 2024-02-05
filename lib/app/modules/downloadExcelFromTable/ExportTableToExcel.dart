@@ -117,16 +117,31 @@ class ExportTableToExcel {
         ;
       }
     }
-    for (int row = 13; row <= 19; row++) {
+    for (int row = 13; row <= 18; row++) {
       for (int col = 1; col <= controller.allLocations.length; col++) {
-        sheetObject
-            .cell(CellIndex.indexByColumnRow(columnIndex: col, rowIndex: row))
-            .value = panIndiaMappedData![
-                0]
-            [controller.objectKeys[row - 4]]![controller.allLocations[col - 1]];
-        ;
+
+          sheetObject
+              .cell(CellIndex.indexByColumnRow(columnIndex: col, rowIndex: row))
+              .value = panIndiaMappedData![
+          0]
+          [controller.objectKeys[row - 4]]![controller.allLocations[col - 1]];
+          ;
+
       }
     }
+
+    for(int i=1;i<=controller.allLocations.length;i++){
+      num sum=0;
+      for(int j=13;j<=18;j++){
+         panIndiaMappedData![
+        0]
+        [controller.objectKeys[j-4]]![controller.allLocations[j - 1]];
+
+
+      }
+
+    }
+
 
     // Create folder if not exists
     final downloadFolderPath =
@@ -134,7 +149,7 @@ class ExportTableToExcel {
 
     // Save Excel file
     final bytes = excel.save();
-    final file = File('$downloadFolderPath/getPanIndiaReport.xlsx');
+    final file = File('$downloadFolderPath/OverViewPanReport.xlsx');
     await file.writeAsBytes(bytes!);
 
     // Open the file

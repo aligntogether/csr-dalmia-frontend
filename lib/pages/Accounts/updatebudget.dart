@@ -469,6 +469,7 @@ class _UpdateBudgetState extends State<UpdateBudget> {
                                         ),
                                       ),
                                     ),
+                                    Text("Rs.")
                                     // IconButton(
                                     //   onPressed: ()
                                     //       //  async

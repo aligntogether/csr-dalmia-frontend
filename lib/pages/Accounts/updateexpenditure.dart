@@ -464,6 +464,7 @@ class _UpdateExpenditureState extends State<UpdateExpenditure> {
                                         ),
                                       ),
                                     ),
+                                    Text("Rs.")
                                     // IconButton(
                                     //   onPressed: ()
                                     //       //  async

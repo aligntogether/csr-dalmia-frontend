@@ -79,8 +79,8 @@ class _AccountsHomeState extends State<AccountsHome> {
                     child: Row(children: [
                       SvgPicture.asset(
                         'images/sourceoffunds.svg',
-                        width: 34,
-                        height: 31,
+                        width: MySize.screenWidth*(40/MySize.screenWidth),
+
                         colorFilter: ColorFilter.mode(Color(0xFF006838),
                             BlendMode.srcIn), // Change color to blue
                       ),
@@ -165,8 +165,8 @@ class cards extends StatelessWidget {
       child: Row(children: [
         SvgPicture.asset(
           imageUrl,
-          width: 34,
-          height: 31,
+          width: MySize.screenWidth*(40/MySize.screenWidth),
+
         ),
         SizedBox(
           width: 20,
