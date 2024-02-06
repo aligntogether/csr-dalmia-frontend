@@ -406,7 +406,10 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                 Space.height(34),
                 GestureDetector(
                   onTap: () {
-                    downloadExcel();
+
+                   if(isLoading !=true && controller.selectedRegion!=null && controller.selectedRegion=="All Regions" ){
+                     downloadExcel();
+                   }
                   },
                   child: Container(
                         height: MySize.screenHeight*(40/MySize.screenHeight),
@@ -615,9 +618,7 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
 
         num total=0;
         int n=controller.overviewMappedList![0].length;
-        // for(int a=12;a<n;a++){
-        //   total+=controller.overviewMappedList![0][controller.!locationsListMapping[a]!['DPM']];
-        // }
+
 
         int totalsum=0;
         int totalsum2=0;

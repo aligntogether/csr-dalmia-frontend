@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:dalmia/apis/commonobject.dart';
@@ -45,10 +46,12 @@ class _MyFormState extends State<AddFamily> {
 
   List<bool> formExpandStateList = [];
   List<bool> formFilledStateList = [];
-  final List<String?> membersId = [];
+  List<String?> membersId = [];
 
   List<GlobalKey<FormState>> _formKeys = [];
   List<Widget> forms = [];
+  List<bool> formValidationState = [];
+  bool isExpanded=false;
   int formCount = 1;
   @override
   void initState() {
@@ -75,7 +78,9 @@ class _MyFormState extends State<AddFamily> {
     fetchSecondaryOptions();
     fetchRelationOptions();
     fetchExistingData();
+
   }
+  ExpansionTileController _controller=ExpansionTileController();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -101,11 +106,15 @@ class _MyFormState extends State<AddFamily> {
                     children: [
                       const SizedBox(height: 16),
                       ExpansionTile(
+                        controller:_controller,
+
                         iconColor: CustomColorTheme.labelColor,
+
                         initiallyExpanded:
-                            i == 0 ? true : formExpandStateList[i],
+                            _formKeys[i].currentState?.validate() ?? false,
                         onExpansionChanged: (newState) {
                           setState(() {
+                            isExpanded = newState;
                             formExpandStateList[i] = newState;
                           });
                         },
@@ -116,7 +125,10 @@ class _MyFormState extends State<AddFamily> {
                         children: [
                           const SizedBox(height: 16),
                           Form(
+
                             key: _formKeys[i],
+                            autovalidateMode: AutovalidateMode.always,
+
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -163,6 +175,7 @@ class _MyFormState extends State<AddFamily> {
                                       child: SizedBox(
                                         width: double.infinity,
                                         child: TextFormField(
+
                                           controller: _dobControllers[i],
                                           readOnly:
                                               true, // Set the field to be read-only
@@ -389,64 +402,129 @@ class _MyFormState extends State<AddFamily> {
                               ],
                             ),
                           ),
+
                         ],
                       ),
                     ],
                   ),
                 const SizedBox(height: 16),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.add),
-                      onPressed: () {
-                        {
-                          if(formCount==0){
-                            setState(() {
-                              formCount++;
-                              membersId.add(null);
-                              _formKeys.add(GlobalKey<FormState>());
-                              formExpandStateList.add(false);
-                              formFilledStateList.add(false);
-                              _nameControllers.add(TextEditingController());
-                              _mobileControllers.add(TextEditingController());
-                              _dobControllers.add(TextEditingController());
-                              _selectedGenders.add(null);
-                              _selectedEducations.add(null);
-                              _selectedRelation.add(null);
-                              _selectedCastes.add(null);
-                              _selectedPrimaryEmployments.add(null);
-                              _selectedSecondaryEmployments.add(null);
-                            });
+                GestureDetector(
+                  onTap: ()  {
+                    {
+                      setState(() {
+                        isExpanded = !isExpanded;
+                      });
 
-                          }
-                         for(int i=0;i<formCount;i++){
-                           if(_formKeys[i].currentState!.validate()?? false) {
-                             setState(() {
-                               selectedDate = null;
-                               membersId.add(null);
-                               formCount++;
-                               _formKeys.add(GlobalKey<FormState>());
-                               formExpandStateList.add(false);
-                               formFilledStateList.add(false);
-                               _nameControllers.add(TextEditingController());
-                               _mobileControllers.add(TextEditingController());
-                               _dobControllers.add(TextEditingController());
-                               _selectedGenders.add(null);
-                               _selectedEducations.add(null);
-                               _selectedRelation.add(null);
-                               _selectedCastes.add(null);
-                               _selectedPrimaryEmployments.add(null);
-                               _selectedSecondaryEmployments.add(null);
-                             });
-                           }
-                         }
+                      if(formCount==0){
+                        setState(() {
+                          formCount++;
+                          membersId.add(null);
+                          _formKeys.add(GlobalKey<FormState>());
+                          formExpandStateList.add(true);
+                          formFilledStateList.add(false);
+                          _nameControllers.add(TextEditingController());
+                          _mobileControllers.add(TextEditingController());
+                          _dobControllers.add(TextEditingController());
+                          _selectedGenders.add(null);
+                          _selectedEducations.add(null);
+                          _selectedRelation.add(null);
+                          _selectedCastes.add(null);
+                          _selectedPrimaryEmployments.add(null);
+                          _selectedSecondaryEmployments.add(null);
+                        });
+                      }
+                      for(int i=0;i<formCount;i++) {
+
+
+                        if (_formKeys[i].currentState!.validate() ?? false) {
+                          setState(() {
+                            membersId.add(null);
+                            formCount++;
+                            _formKeys.add( GlobalKey<FormState>());
+                            formExpandStateList.add(true);
+                            formFilledStateList.add(false);
+                            _nameControllers.add(TextEditingController());
+                            _mobileControllers.add(TextEditingController());
+                            _dobControllers.add(TextEditingController());
+                            _selectedGenders.add(null);
+                            _selectedEducations.add(null);
+                            _selectedRelation.add(null);
+                            _selectedCastes.add(null);
+                            _selectedPrimaryEmployments.add(null);
+                            _selectedSecondaryEmployments.add(null);
+                          });
                         }
-                      },
+                      }
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.add_circle,color: CustomColorTheme.primaryColor,size: 30,),
+                        onPressed: ()  {
 
-                    ),
-                    const Text('Add another member'),
-                  ],
+                            if(formCount==0){
+                              setState(() {
+                                formCount++;
+                                membersId.add(null);
+                                _formKeys.add(GlobalKey<FormState>());
+                                formExpandStateList.add(true);
+                                formFilledStateList.add(false);
+                                _nameControllers.add(TextEditingController());
+                                _mobileControllers.add(TextEditingController());
+                                _dobControllers.add(TextEditingController());
+                                _selectedGenders.add(null);
+                                _selectedEducations.add(null);
+                                _selectedRelation.add(null);
+                                _selectedCastes.add(null);
+                                _selectedPrimaryEmployments.add(null);
+                                _selectedSecondaryEmployments.add(null);
+                              });
+                            }
+                            bool isValidate = false;
+                            for(int i=0;i<formCount;i++) {
+                              print("form couddnt $formCount ${_formKeys[i]}");
+                              setState(() {
+                                print("form count $formCount ${_formKeys[i]}" );
+                                formExpandStateList[i]=true;
+                              });
+                              if (_formKeys[i].currentState!.validate() ?? false) {
+
+                                isValidate = true;
+                              }else{
+                                isValidate = false;
+                              }
+                            }
+                            for(int i=0;i<formCount;i++) {
+
+                             if (_formKeys[i].currentState!.validate() ?? false) {
+                               setState(() {
+                                 membersId.add(null);
+                                 formCount++;
+                                 _formKeys.add( GlobalKey<FormState>());
+                                 formExpandStateList.add(true);
+                                 formFilledStateList.add(false);
+                                 _nameControllers.add(TextEditingController());
+                                 _mobileControllers.add(TextEditingController());
+                                 _dobControllers.add(TextEditingController());
+                                 _selectedGenders.add(null);
+                                 _selectedEducations.add(null);
+                                 _selectedRelation.add(null);
+                                 _selectedCastes.add(null);
+                                 _selectedPrimaryEmployments.add(null);
+                                 _selectedSecondaryEmployments.add(null);
+                               });
+                             }
+                           }
+
+                        },
+
+                      ),
+                      const Text('Add another member'),
+                    ],
+                  ),
                 ),
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -666,6 +744,7 @@ class _MyFormState extends State<AddFamily> {
           return;
         }
         formCount = 0;
+        _formKeys.clear();
         formExpandStateList.clear();
         formFilledStateList.clear();
         _nameControllers.clear();
@@ -715,8 +794,9 @@ class _MyFormState extends State<AddFamily> {
                 DateFormat('dd/MM/yyyy').format(selectedDate!);
           setState(() {
             formCount++;
+            _formKeys.add(GlobalKey<FormState>());
           });
-          print("shreyanshu $formCount");
+          print("shreyanshu $formCount ${_formKeys.length}");
           // _dobController =
           // _dobController = TextEditingController(
           //     text: familyMembers[headIndex]['dob'].toString());
@@ -893,6 +973,7 @@ class _MyFormState extends State<AddFamily> {
       );
 
       if (response.statusCode == 200) {
+        membersId = ((jsonDecode(response.body)['resp_body']) as List).map((item) => item.toString()).toList();
         // Handle the response from the API if needed
         print('Data sent successfully');
       } else {

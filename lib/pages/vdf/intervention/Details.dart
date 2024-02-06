@@ -3,6 +3,7 @@ import 'package:dalmia/pages/vdf/intervention/Enterdetail.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:http/http.dart' as http;
@@ -268,13 +269,22 @@ void _confirmitem(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Center(
+        title:  Center(
          child:
-            Text('Are you Sure ?'),
+            Container(
+
+              child: Text(
+                'Are you sure you want to cancel assigning intervention?',
+                style: TextStyle(
+                  fontSize: MySize.screenWidth * (16 /MySize.screenWidth),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            )
 
         ),
         content: SizedBox(
-          height: MySize.screenHeight * (100 / MySize.screenHeight),
+          height: MySize.screenHeight * (180 / MySize.screenHeight),
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -284,7 +294,7 @@ void _confirmitem(BuildContext context) {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(10),
-                  fixedSize: Size(250, 60),
+                  fixedSize: Size(MySize.screenWidth*(250/MySize.screenWidth), 60),
                   backgroundColor: CustomColorTheme.primaryColor,
                 ),
                 onPressed: () {
@@ -295,10 +305,33 @@ void _confirmitem(BuildContext context) {
                   );
                 },
                 child: Text(
-                  'Go to Home Screen',
+                  'Yes',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
+                  ),
+                ),
+              ), SizedBox(
+                height: 20,
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(10),
+                  fixedSize: Size(MySize.screenWidth*(250/MySize.screenWidth), 60),
+                  backgroundColor:Colors.white,
+                  shadowColor: Colors.black,
+
+
+                ),
+
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'No',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: CustomColorTheme.textColor,
                   ),
                 ),
               ),

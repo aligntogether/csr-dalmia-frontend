@@ -39,7 +39,9 @@ class _FollowupState extends State<Followup> {
   DateTime? selectedDate4;
   DateTime? selectedDate5;
   DateTime? selectedDate6;
-  DateTime selectedDate=DateTime.now();
+
+  // instead of now time i want from 2012
+  DateTime selectedDate = DateTime.tryParse("2013-01-01 00:00:00")!;
 
   Future<void> _selectDate(
       BuildContext context, TextEditingController controller) async {

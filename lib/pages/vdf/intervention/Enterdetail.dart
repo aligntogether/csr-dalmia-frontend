@@ -93,8 +93,8 @@ class _EnterDetailState extends State<EnterDetail> {
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime.now(),
+        initialDate: DateTime.tryParse("2013-01-01 00:00:00")!,
+        firstDate: DateTime.tryParse("2013-01-01 00:00:00")!,
         lastDate: DateTime(2100));
     if (picked != null && picked != _completeController.text) {
       setState(() {

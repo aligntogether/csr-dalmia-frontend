@@ -253,7 +253,7 @@ class _SelectTypeState extends State<SelectType> {
                 if (ownChecked) ...[
                   const SizedBox(height: 20),
                   Text(
-                    'Fill at least one choice',
+                    'Fill at least one choice(',
                     style: TextStyle(
                         color: Color(0xFF181818).withOpacity(0.70),
                         fontSize: 14,

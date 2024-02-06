@@ -224,18 +224,26 @@ class _CheckStreetState extends State<CheckStreet> {
                         child: DataTable(
                           showBottomBorder: false,
                           dividerThickness: 0.0,
-                          columns: const <DataColumn>[
+
+                          columns:  <DataColumn>[
+
+
                             DataColumn(
+
                               label: Text(
                                 'Street Name',
                                 style: TextStyle(),
                               ),
                             ),
                             DataColumn(
-                              label: Text(
-                                'No. of Family/ \n No. of Household',
-                                textAlign: TextAlign.left,
-                                style: TextStyle(),
+                              label: Container(
+                                width: MySize.screenWidth*(140/MySize.screenWidth),
+                                child: Text(
+                                  softWrap: true,
+                                  'No. of HHs mapped/ \n No. of HHs present in street',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(),
+                                ),
                               ),
                             ),
                           ],
