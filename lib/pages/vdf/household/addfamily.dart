@@ -114,6 +114,9 @@ class _MyFormState extends State<AddFamily> {
                             _formKeys[i].currentState?.validate() ?? false,
                         onExpansionChanged: (newState) {
                           setState(() {
+                            if(_formKeys[i].currentState?.validate()??false){
+                              formFilledStateList[i] = true;
+                            }
                             isExpanded = newState;
                             formExpandStateList[i] = newState;
                           });
