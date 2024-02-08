@@ -33,6 +33,7 @@ class CDOHome extends StatefulWidget {
 class _CDOHomeState extends State<CDOHome> {
   String name = "";
   String cdoId = "";
+  String count="";
   VDFReportController controller1 = VDFReportController();
   @override
   void initState() {
@@ -54,6 +55,17 @@ class _CDOHomeState extends State<CDOHome> {
           var data = json.decode(response.body);
 
           controller1.selectLocationId = data;
+          var url = Uri.parse(
+              'https://mobileqacloud.dalmiabharat.com:443/csr/action-dropped-household-details?locationId=${data==null?10001:data}');
+          http.get(url).then((response) {
+            var data = json.decode(response.body);
+            setState(() {
+              count = data['totalCount'].toString();
+            });
+            print(count);
+
+          });
+
           return controller1.selectLocationId;
         });
       } catch (e) {
@@ -61,6 +73,7 @@ class _CDOHomeState extends State<CDOHome> {
         print(e);
 
       }
+
 
 
 
@@ -191,7 +204,9 @@ class _CDOHomeState extends State<CDOHome> {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => ActionAgainstHH(),
+                      builder: (context) => ActionAgainstHH(
+                        locationId: controller1.selectLocationId.toString(),
+                      ),
                     ),
                   );
                 },
@@ -259,7 +274,7 @@ class _CDOHomeState extends State<CDOHome> {
                           ),
                           child: Center(
                               child: Text(
-                            '5',
+                            count,
                             style: TextStyle(
                                 fontSize: CustomFontTheme.textSize,
                                 fontWeight: CustomFontTheme.headingwt,

@@ -8,7 +8,9 @@ import 'package:http/http.dart' as http;
 
 class ActionDetail extends StatefulWidget {
   final String hhid;
-  const ActionDetail({super.key, required this.hhid});
+  final String locationId;
+
+   ActionDetail({super.key, required this.hhid,required this.locationId});
 
   @override
   State<ActionDetail> createState() => _ActionDetailState();
@@ -211,7 +213,7 @@ class _ActionDetailState extends State<ActionDetail> {
                     backgroundColor: CustomColorTheme.primaryColor,
                   ),
                   onPressed: () {
-                    _drophhDialog(context, widget.hhid);
+                    _drophhDialog(context, widget.hhid,widget.locationId);
                   },
                   child: const Text(
                     'Drop HH',
@@ -230,7 +232,7 @@ class _ActionDetailState extends State<ActionDetail> {
                     backgroundColor: Colors.white,
                   ),
                   onPressed: () {
-                    _selecthhDialog(context, widget.hhid);
+                    _selecthhDialog(context, widget.hhid,widget.locationId);
                   },
                   child: Text(
                     'Select HH',
@@ -292,7 +294,7 @@ class HouseDetails extends StatelessWidget {
   }
 }
 
-void _drophhDialog(BuildContext context, String hhid) {
+void _drophhDialog(BuildContext context, String hhid,String locationId) {
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -340,8 +342,12 @@ void _drophhDialog(BuildContext context, String hhid) {
                   _calldropHouseholdAPI(hhid);
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const ActionAgainstHH(),
-                    ),
+                      builder: (context) =>  ActionAgainstHH(
+                        locationId: locationId,
+                      ),
+
+                      ),
+
                   );
                 },
                 child: const Text(
@@ -357,7 +363,7 @@ void _drophhDialog(BuildContext context, String hhid) {
   );
 }
 
-void _selecthhDialog(BuildContext context, String hhid) {
+void _selecthhDialog(BuildContext context, String hhid, String locationId) {
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -404,7 +410,7 @@ void _selecthhDialog(BuildContext context, String hhid) {
                 onPressed: () {
                   _callAcceptHouseholdAPI(hhid);
                   Navigator.pop(context);
-                  _confirmbox(context, hhid);
+                  _confirmbox(context, hhid,locationId);
                 },
                 child: const Text(
                   'Confirm',
@@ -419,7 +425,7 @@ void _selecthhDialog(BuildContext context, String hhid) {
   );
 }
 
-void _confirmbox(BuildContext context, String hhid) {
+void _confirmbox(BuildContext context, String hhid, String locationId) {
   showDialog(
     barrierDismissible: false,
     context: context,
@@ -428,7 +434,9 @@ void _confirmbox(BuildContext context, String hhid) {
         onWillPop: () async {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => ActionAgainstHH(),
+              builder: (context) => ActionAgainstHH(
+                locationId: locationId,
+              ),
             ),
           );
           return false;

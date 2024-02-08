@@ -12,67 +12,69 @@ class CdoAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          AppBar(
-            titleSpacing: 20,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Stack(
+          children: [
+            AppBar(
+              titleSpacing: 20,
 
-            title: Image.asset(
-              'images/icon.jpg',
-              height: 30,
+              title: Image.asset(
+                'images/icon.jpg',
+                height: 30,
 
 
-            ),
-            centerTitle: false,
-            automaticallyImplyLeading: false,
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(50),
-              child: Container(
-                
-                padding: const EdgeInsets.only(bottom: 10),
+              ),
+              centerTitle: false,
+              automaticallyImplyLeading: false,
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(50),
+                child: Container(
 
-                child: Text(
-                  heading,
-                  style: TextStyle(
-                      fontSize: CustomFontTheme.headingSize,
-                      fontWeight: CustomFontTheme.headingwt),
+                  padding: const EdgeInsets.only(bottom: 10),
+
+                  child: Text(
+                    heading,
+                    style: TextStyle(
+                        fontSize: CustomFontTheme.headingSize,
+                        fontWeight: CustomFontTheme.headingwt),
+                  ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            right: 20,
-            top: 10,
-            child: Column(
-              children: [
-                TextButton(
-                  onPressed: () {
-                    _showConfirmationDialog(context);
-                  },
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: CustomColorTheme.primaryColor,
-                        foregroundColor: Colors.white,
-                        child: Icon(Icons.logout),
-                      ),
-                      Text(
-                        'Logout',
-                        style: TextStyle(
-                            color: CustomColorTheme.labelColor,
-                            fontSize: CustomFontTheme.textSize,
-                            fontWeight: CustomFontTheme.labelwt),
-                      ),
-                    ],
+            Positioned(
+              right: 20,
+              top: 10,
+              child: Column(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      _showConfirmationDialog(context);
+                    },
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: CustomColorTheme.primaryColor,
+                          foregroundColor: Colors.white,
+                          child: Icon(Icons.logout),
+                        ),
+                        Text(
+                          'Logout',
+                          style: TextStyle(
+                              color: CustomColorTheme.labelColor,
+                              fontSize: CustomFontTheme.textSize,
+                              fontWeight: CustomFontTheme.labelwt),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          )
-        ],
-      )
+                ],
+              ),
+            )
+          ],
+        )
+      ),
     );
   }
 }

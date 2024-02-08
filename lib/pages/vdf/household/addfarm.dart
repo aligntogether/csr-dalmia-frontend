@@ -414,6 +414,8 @@ class _AddFarmState extends State<AddFarm> {
     controller.addListener(() {
       addData(text, controller.text);
     });
+    controller.selection =
+        TextSelection.collapsed(offset: controller.text.length);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),

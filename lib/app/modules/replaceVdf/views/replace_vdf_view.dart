@@ -289,6 +289,7 @@ class _ReplaceVdfNewViewState extends State<ReplaceVdfNewView> {
   ReplaceVdfController controller = Get.put(ReplaceVdfController());
   String? validationResult;
   String? vdfName;
+  String? vdfContactNumber;
 
   @override
   void initState() {
@@ -317,154 +318,187 @@ class _ReplaceVdfNewViewState extends State<ReplaceVdfNewView> {
           Space.width(20)
         ],
       ),
-      body: Column(
-        children: [
-          Space.height(10),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 20),
-            height:122,
-            width: Get.width,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Color(0xff006838).withOpacity(0.15)),
-            child: Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  //Text("Region: ",style: AppStyle.textStyleBoldMed(color: Color(0xff006838)),)
-                  RichText(
-                    text: TextSpan(
-                      text: 'Region: ',
-                      style: AppStyle.textStyleBoldMed(
-                          fontSize: 14, color: Color(0xff006838)),
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: widget.regions,
-                            style: AppStyle.textStyleInterMed(
-                                fontSize: 14,
-                                color: Color(0xff006838).withOpacity(0.5))),
-                      ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Space.height(10),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              height:122,
+              width: Get.width,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color(0xff006838).withOpacity(0.15)),
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    //Text("Region: ",style: AppStyle.textStyleBoldMed(color: Color(0xff006838)),)
+                    RichText(
+                      text: TextSpan(
+                        text: 'Region: ',
+                        style: AppStyle.textStyleBoldMed(
+                            fontSize: 14, color: Color(0xff006838)),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: widget.regions,
+                              style: AppStyle.textStyleInterMed(
+                                  fontSize: 14,
+                                  color: Color(0xff006838).withOpacity(0.5))),
+                        ],
+                      ),
                     ),
-                  ),
-                  Space.height(8),
-                  RichText(
-                    text: TextSpan(
-                      text: 'Location: ',
-                      style: AppStyle.textStyleBoldMed(
-                          fontSize: 14, color: Color(0xff006838)),
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: widget.location,
-                            style: AppStyle.textStyleInterMed(
-                                fontSize: 14,
-                                color: Color(0xff006838).withOpacity(0.5))),
-                      ],
+                    Space.height(8),
+                    RichText(
+                      text: TextSpan(
+                        text: 'Location: ',
+                        style: AppStyle.textStyleBoldMed(
+                            fontSize: 14, color: Color(0xff006838)),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: widget.location,
+                              style: AppStyle.textStyleInterMed(
+                                  fontSize: 14,
+                                  color: Color(0xff006838).withOpacity(0.5))),
+                        ],
+                      ),
                     ),
-                  ),
-                  Space.height(8),
-                  RichText(
-                    text: TextSpan(
-                      text: 'Panchayat: ',
-                      style: AppStyle.textStyleBoldMed(
-                          fontSize: 14, color: Color(0xff006838)),
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: widget.cl,
-                            style: AppStyle.textStyleInterMed(
-                                fontSize: 14,
-                                color: Color(0xff006838).withOpacity(0.5))),
-                      ],
+                    Space.height(8),
+                    RichText(
+                      text: TextSpan(
+                        text: 'Panchayat: ',
+                        style: AppStyle.textStyleBoldMed(
+                            fontSize: 14, color: Color(0xff006838)),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: widget.cl,
+                              style: AppStyle.textStyleInterMed(
+                                  fontSize: 14,
+                                  color: Color(0xff006838).withOpacity(0.5))),
+                        ],
+                      ),
                     ),
-                  ),
-                  Space.height(8),
-                  RichText(
-                    text: TextSpan(
-                      text: 'Existing VDF: ',
-                      style: AppStyle.textStyleBoldMed(
-                          fontSize: 14, color: Color(0xff006838)),
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: controller.selectVdfName,
-                            style: AppStyle.textStyleInterMed(
-                                fontSize: 14,
-                                color: Color(0xff006838).withOpacity(0.5))),
-                      ],
+                    Space.height(8),
+                    RichText(
+                      text: TextSpan(
+                        text: 'Existing VDF: ',
+                        style: AppStyle.textStyleBoldMed(
+                            fontSize: 14, color: Color(0xff006838)),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: controller.selectVdfName,
+                              style: AppStyle.textStyleInterMed(
+                                  fontSize: 14,
+                                  color: Color(0xff006838).withOpacity(0.5))),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          Space.height(15),
-          GetBuilder<ReplaceVdfController>(
-            id: "add",
-            builder: (controller) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 34),
-                child: TextFormField(
-                 controller: controller.newVdfNameController.value,
-                  onChanged: (value) {
+            Space.height(15),
+            GetBuilder<ReplaceVdfController>(
+              id: "add",
+              builder: (controller) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 34),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                       controller: controller.newVdfNameController.value,
+                        onChanged: (value) {
 
-                   setState(() {
-                     vdfName = value;
-                   });
-                    controller.update(["add"]);
-                  },
-                  decoration: const InputDecoration(
-                    labelText: "New VDF Name",
-                    contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+                         setState(() {
+                           vdfName = value;
+                         });
+                          controller.update(["add"]);
+                        },
+                        decoration: const InputDecoration(
+                          labelText: "New VDF Name",
+                          contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+                        ),
+                      ),
+                      SizedBox(
+                        height: MySize.screenHeight * (20 / MySize.screenHeight),
+                      ),
+
+                      TextFormField(
+                       controller: controller.newVdfContactController.value,
+                        // limit to 10 digits
+                        maxLength: 10,
+
+
+                        keyboardType: TextInputType.number,
+
+                        onChanged: (value) {
+
+                         setState(() {
+                           vdfContactNumber = value;
+                         });
+                          controller.update(["add"]);
+                        },
+                        decoration: const InputDecoration(
+                          labelText: "VDf Contact Number",
+                          contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              );
-            },
-          ),
-          Space.height(19),
-          GestureDetector(onTap: () async {
+                );
+              },
+            ),
+            Space.height(19),
+            GestureDetector(onTap: () async {
 
 
-            try {
-              String response = await replaceVdfApiService.replaceVdf(
-                  controller.selectClusterId ?? 0,
-                  controller.newVdfNameController.value.text);
+              try {
+                String response = await replaceVdfApiService.replaceVdf(
+                    controller.selectClusterId ?? 0,
+                    controller.newVdfNameController.value.text,
+                    controller.newVdfContactController.value.text
+                );
 
-              if (response == "VDF Updated") {
-                showConfirmationDialog(context);
+                if (response == "VDF Updated") {
+                  showConfirmationDialog(context);
+                }
+                else {
+                  print("inside eldse : ");
+                  setState(() {
+                    validationResult = "Something went wrong!";
+                  });
+                }
               }
-              else {
-                print("inside eldse : ");
+              catch (e) {
                 setState(() {
-                  validationResult = "Something went wrong!";
+                  validationResult = "Something went wrong : $e";
                 });
               }
-            }
-            catch (e) {
-              setState(() {
-                validationResult = "Something went wrong : $e";
-              });
-            }
 
-          },
-            child: commonButton(
-                title: "Add VDF",
-                color:  vdfName != null
-                    ? Color(0xff27528F)
-                    : Color(0xff27528F).withOpacity(0.7)
-            ),
-          ),
-
-          // Display the error message with red color if there's an error
-          if (validationResult != null)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                validationResult!,
-                style: TextStyle(color: Colors.red),
+            },
+              child: commonButton(
+                  title: "Add VDF",
+                  color:  vdfName != null
+                      ? Color(0xff27528F)
+                      : Color(0xff27528F).withOpacity(0.7)
               ),
             ),
 
-        ],
+            // Display the error message with red color if there's an error
+            if (validationResult != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  validationResult!,
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+
+          ],
+        ),
       ),
     ));
   }

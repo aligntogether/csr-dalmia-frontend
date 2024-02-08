@@ -10,7 +10,9 @@ class ReplaceVdfController extends GetxController {
   String? selectCluster;
   int? selectClusterId;
   String? selectVdfName;
+  String? selectVdfContact;
   Rx<TextEditingController> newVdfNameController = TextEditingController().obs;
+  Rx<TextEditingController> newVdfContactController = TextEditingController().obs;
   List<Map<String, dynamic>>? locations;
   List<Map<String, dynamic>>? clusters;
 

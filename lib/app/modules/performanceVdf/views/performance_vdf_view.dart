@@ -532,7 +532,7 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                           child: Row(
                             children: [
                               Text(
-                                controller.details![index],
+                                controller.details![index].capitalizeFirst!,
                                 style:  AppStyle.textStyleInterMed(fontSize: 14),
                               ),
                               Spacer(),

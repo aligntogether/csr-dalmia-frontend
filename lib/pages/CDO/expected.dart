@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:dalmia/app/modules/downloadExcelFromTable/ExportTableToExcel.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:dalmia/app/modules/leverWise/controllers/lever_wise_controller.dart';
 import 'package:dalmia/common/app_style.dart';
@@ -11,6 +13,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 import '../../app/modules/expectedActual/controllers/expected_actual_controller.dart';
 import '../../app/modules/expectedActual/services/expected_actual_service.dart';
+import '../../common/color_constant.dart';
 
 class Expectedincome extends StatefulWidget {
   int? locationId;
@@ -81,6 +84,50 @@ class _ExpectedincomeState extends State<Expectedincome> {
       isLoading = false;
     });
   }
+  ExportTableToExcel exportTableToExcel = ExportTableToExcel();
+  void downloadExcel(String location) {
+    try {
+      exportTableToExcel.exportExpectedActual(controller,location);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Download Successful'),
+            content: Text(
+                'The Excel file has been downloaded successfully in your download folder.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      // Show error dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Download Error'),
+            content:
+            Text('An error occurred while downloading the Excel file.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -133,8 +180,45 @@ class _ExpectedincomeState extends State<Expectedincome> {
                     return isLoading
                         ? Center(child: CircularProgressIndicator())
                         : eaaireport(0, cc);
+
                   },
                 ),
+                SizedBox(
+                  height: 20,
+                ),
+                isLoading
+                    ? Container(): Center(
+                      child: GestureDetector(
+                      onTap: () {
+                        downloadExcel(location);
+                      },
+                      child: Container(
+                        height: MySize.screenHeight*(40/MySize.screenHeight),
+                        width: MySize.screenWidth*(150/MySize.screenWidth),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: darkBlueColor),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              'images/Excel.svg',
+                              height: MySize.screenHeight*(25/MySize.screenHeight),
+                              width: MySize.screenWidth*(25/MySize.screenWidth),
+                            ),
+                            Space.width(3),
+                            Text(
+                              'Download  Excel',
+                              style: TextStyle(
+                                  fontSize: MySize.screenHeight*(14/MySize.screenHeight), color: CustomColorTheme.primaryColor),
+                            ),
+                          ],
+                        ),
+                      )
+                                      ),
+                    ),
+
                 Space.height(30),
               ],
             ),

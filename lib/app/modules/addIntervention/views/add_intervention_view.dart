@@ -28,13 +28,19 @@ class _AddInterventionViewState extends State<AddInterventionView> {
       new AddInterventionApiService();
   String? validationResult;
   final List<String> lever = <String>[
+    'Dalmia',
+    'DIKSHA',
+    'Non DIKSHA Skills',
+    'ITI',
+    'Sugar Cane Supply',
     'Agriculture',
     'Livestock',
     'Horticulture',
     'Water',
     'IGA',
     'Micro Enterprice',
-        'Non DIKSHA Skills',
+
+
   ];
   late String dropdownValue;
 
@@ -61,232 +67,218 @@ class _AddInterventionViewState extends State<AddInterventionView> {
           ],
         ),
         body: SingleChildScrollView(
-          child: Column(
-
-            children: [
-
-              Space.height(50),
-              GetBuilder<AddInterventionController>(
-                id: "add",
-                builder: (controller) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 34),
-                    child: TextFormField(
-                      controller: controller.newInterventionTitle.value,
-                      onChanged: (value) {
-                        controller.update(["add"]);
-                      },
-                      decoration: const InputDecoration(
-                        labelText: "Add Intervention Title",
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 20.0),
-                      ),
-                    ),
-                  );
-                },
-              ),
-              Space.height(15),
-              GetBuilder<AddInterventionController>(
-                id: "add",
-                builder: (controller) {
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 34),
-
-                    child: DropdownMenu<String>(
-                      width: MySize.safeWidth! * 0.8,
-                      inputDecorationTheme: InputDecorationTheme(
-
-                        border: OutlineInputBorder(
-
-                          borderRadius: BorderRadius.circular(5),
+          child: Container(
+            child: Column(
+                children: [
+                  Space.height(50),
+                  GetBuilder<AddInterventionController>(
+                    id: "add",
+                    builder: (controller) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 34),
+                        child: TextFormField(
+                          controller: controller.newInterventionTitle.value,
+                          onChanged:  (value) {
+                            controller.update(["add"]);
+                          },
+                          decoration: const InputDecoration(
+                            labelText: "Add Intervention Title",
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 20.0),
+                          ),
                         ),
-
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 20.0),
-                      ),
-                      initialSelection: lever.first,
-                      controller: controller.lever.value,
-                      onSelected: (String? value) {
-                        setState(() {
-                          dropdownValue = value!;
-                        });
-                      },
-                      dropdownMenuEntries: lever.map<DropdownMenuEntry<String>>((String value) {
-                        return DropdownMenuEntry<String>(value: value, label: value);
-                      }).toList(),
-                    ),
-
-                    // TextFormField(
-                    //   controller: controller.lever.value,
-                    //   onChanged: (value) {
-                    //     controller.update(["add"]);
-                    //   },
-                    //   decoration: const InputDecoration(
-                    //     labelText: "Lever",
-                    //     contentPadding: EdgeInsets.symmetric(
-                    //         horizontal: 16, vertical: 20.0),
-                    //   ),
-                    // ),
-                  );
-                },
-              ),
-              Space.height(15),
-              GetBuilder<AddInterventionController>(
-                id: "add",
-                builder: (controller) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 34),
-                    child: TextFormField(
-                      controller: controller.exAnnualIncome.value,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly
-                      ], // Restrict to numbers
-                      onChanged: (value) {
-                        controller.update(["add"]);
-                      },
-                      decoration: const InputDecoration(
-                        labelText: "Expected Annual Income",
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 20.0),
-                      ),
-                    ),
-                  );
-                },
-              ),
-
-              Space.height(15),
-              GetBuilder<AddInterventionController>(
-                id: "add",
-                builder: (controller) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 34),
-                    child: TextFormField(
-                      controller: controller.noOfDay.value,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly
-                      ],
-                      onChanged: (value) {
-                        controller.update(["add"]);
-                      },
-                      decoration: const InputDecoration(
-                        labelText: "No. of days required for completion",
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 20.0),
-                      ),
-                    ),
-                  );
-                },
-              ),
-              Space.height(30),
-              GetBuilder<AddInterventionController>(
-                id: "add",
-                builder: (controller) {
-                  return GestureDetector(
-                    onTap: () async {
-
-                      if (controller
-                              .newInterventionTitle.value.text.isNotEmpty &&
-                          dropdownValue.isNotEmpty &&
-                          controller.exAnnualIncome.value.text.isNotEmpty &&
-                          controller.noOfDay.value.text.isNotEmpty) {
-                        String duplicateResponse =
-                            await addInterventionApiService
-                                .validateDuplicateIntervention(
-                                    controller.newInterventionTitle.value.text);
-
-                        if (duplicateResponse == "Data Found") {
-                          setState(() {
-                            validationResult =
-                                "Intervention title already exists";
-                          });
-                        } else {
-                          try {
-                            print(dropdownValue);
-                            String addResponse =
-                                await addInterventionApiService.addIntervention(
-                                    controller.newInterventionTitle.value.text,
-
-                                    dropdownValue,
-                                    int.tryParse(
-                                        controller.exAnnualIncome.value.text)!,
-                                    int.tryParse(
-                                        controller.noOfDay.value.text)!);
-                          print("addResponse : $addResponse");
-                            if (addResponse == "Data Added") {
-                              showConfirmationDialog(context);
-                            } else {
-                              setState(() {
-                                validationResult = "Something went wrong!";
-                              });
-                            }
-                          } catch (e) {
-                            setState(() {
-                              validationResult = "Something went wrong!, $e";
-                            });
-                          }
-                        }
-                      }
+                      );
                     },
-                    child: commonButton(
-                        title: "Add Intervention",
-                        color: controller.newInterventionTitle.value.text
-                                    .isNotEmpty &&
-                                controller.lever.value.text.isNotEmpty &&
-                                controller
-                                    .exAnnualIncome.value.text.isNotEmpty &&
-                                controller.noOfDay.value.text.isNotEmpty
-                            ? Color(0xff27528F)
-                            : Color(0xff27528F).withOpacity(0.7)),
-                  );
-                },
-              ),
-
-              // Display the error message with red color if there's an error
-              if (validationResult != null)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    validationResult!,
-                    style: TextStyle(color: Colors.red),
                   ),
-                ),
+                  Space.height(15),
+                  GetBuilder<AddInterventionController>(
+                    id: "add",
+                    builder: (controller) {
 
-              Space.height(16),
-              Container(
-                decoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5)),
-                  shadows: [
-                    const BoxShadow(
-                      color: Color(0x19000000),
-                      blurRadius: 10,
-                      offset: Offset(0, 5),
-                      spreadRadius: 0,
-                    )
-                  ],
-                ),
-                child: TextButton.icon(
-                    style: TextButton.styleFrom(
-                        backgroundColor: const Color(0xFF27528F),
-                        foregroundColor: Colors.white),
-                    onPressed: () {
-                      Get.to(InterventionListView());
+                      return DropdownMenu<String>(
+                          width: MySize.safeWidth! * 0.8,
+
+                          inputDecorationTheme: InputDecorationTheme(
+
+                            border: OutlineInputBorder(
+
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 20.0),
+                          ),
+                          initialSelection: lever.first,
+                          controller: controller.lever.value,
+                          onSelected: (String? value) {
+                            setState(() {
+                              dropdownValue = value!;
+                            });
+                          },
+                          dropdownMenuEntries: lever.map<DropdownMenuEntry<String>>((String value) {
+                            return DropdownMenuEntry<String>(value: value, label: value);
+                          }).toList(),
+                        );
                     },
-                    icon: const Icon(Icons.folder_outlined),
-                    label: Text(
-                      'Intervention List',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                  ),
+                  Space.height(15),
+                  GetBuilder<AddInterventionController>(
+                    id: "add",
+                    builder: (controller) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 34),
+                        child: TextFormField(
+                          controller: controller.exAnnualIncome.value,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ], // Restrict to numbers
+                          onChanged: (value) {
+                            controller.update(["add"]);
+                          },
+                          decoration: const InputDecoration(
+                            labelText: "Expected Annual Income",
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 20.0),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+
+                  Space.height(15),
+                  GetBuilder<AddInterventionController>(
+                    id: "add",
+                    builder: (controller) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 34),
+                        child: TextFormField(
+                          controller: controller.noOfDay.value,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          onChanged: (value) {
+                            controller.update(["add"]);
+                          },
+                          decoration: const InputDecoration(
+                            labelText: "No. of days required for completion",
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 20.0),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  Space.height(30),
+                  GetBuilder<AddInterventionController>(
+                    id: "add",
+                    builder: (controller) {
+                      return GestureDetector(
+                        onTap: () async {
+
+                          if (controller
+                                  .newInterventionTitle.value.text.isNotEmpty &&
+                              dropdownValue.isNotEmpty &&
+                              controller.exAnnualIncome.value.text.isNotEmpty &&
+                              controller.noOfDay.value.text.isNotEmpty) {
+                            String duplicateResponse =
+                                await addInterventionApiService
+                                    .validateDuplicateIntervention(
+                                        controller.newInterventionTitle.value.text);
+
+                            if (duplicateResponse == "Data Found") {
+                              setState(() {
+                                validationResult =
+                                    "Intervention title already exists";
+                              });
+                            } else {
+                              try {
+                                print(dropdownValue);
+                                String addResponse =
+                                    await addInterventionApiService.addIntervention(
+                                        controller.newInterventionTitle.value.text,
+
+                                        dropdownValue,
+                                        int.tryParse(
+                                            controller.exAnnualIncome.value.text)!,
+                                        int.tryParse(
+                                            controller.noOfDay.value.text)!);
+                              print("addResponse : $addResponse");
+                                if (addResponse == "Data Added") {
+                                  showConfirmationDialog(context);
+                                } else {
+                                  setState(() {
+                                    validationResult = "Something went wrong!";
+                                  });
+                                }
+                              } catch (e) {
+                                setState(() {
+                                  validationResult = "Something went wrong!, $e";
+                                });
+                              }
+                            }
+                          }
+                        },
+                        child: commonButton(
+                            title: "Add Intervention",
+                            color: controller.newInterventionTitle.value.text
+                                        .isNotEmpty &&
+                                    controller.lever.value.text.isNotEmpty &&
+                                    controller
+                                        .exAnnualIncome.value.text.isNotEmpty &&
+                                    controller.noOfDay.value.text.isNotEmpty
+                                ? Color(0xff27528F)
+                                : Color(0xff27528F).withOpacity(0.7)),
+                      );
+                    },
+                  ),
+
+                  // Display the error message with red color if there's an error
+                  if (validationResult != null)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        validationResult!,
+                        style: TextStyle(color: Colors.red),
                       ),
-                    )),
-              )
-            ],
+                    ),
+
+                  Space.height(16),
+                  Container(
+                    decoration: ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                      shadows: [
+                        const BoxShadow(
+                          color: Color(0x19000000),
+                          blurRadius: 10,
+                          offset: Offset(0, 5),
+                          spreadRadius: 0,
+                        )
+                      ],
+                    ),
+                    child: TextButton.icon(
+                        style: TextButton.styleFrom(
+                            backgroundColor: const Color(0xFF27528F),
+                            foregroundColor: Colors.white),
+                        onPressed: () {
+                          Get.to(InterventionListView());
+                        },
+                        icon: const Icon(Icons.folder_outlined),
+                        label: Text(
+                          'Intervention List',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        )),
+                  )
+                ],
+              ),
           ),
-        ));
+        ),
+        );
   }
 
   void showConfirmationDialog(BuildContext context) {

@@ -36,6 +36,7 @@ class _LLHomeState extends State<LLHome> {
   String name = "";
   String? refId;
   String? locationId;
+  String count='0';
   LLController controller = Get.put(LLController());
   @override
   void initState() {
@@ -57,6 +58,17 @@ class _LLHomeState extends State<LLHome> {
                   print("ds$data");
 
                   locationId= data;
+
+                  var url=Uri.parse('https://mobileqacloud.dalmiabharat.com:443/csr/action-dropped-household-details-ll?locationId=$locationId');
+                  http.get(url).then((response) {
+                    var data = json.decode(response.body);
+                    print("ds$data");
+
+                    setState(() {
+                      count = data==null?'0':data['totalCount'].toString();
+                    });
+
+                  });
                   return locationId;
                 });
               } catch (e) {
@@ -170,7 +182,9 @@ class _LLHomeState extends State<LLHome> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => ActionAgainstHHLL(),
+                        builder: (context) => ActionAgainstHHLL(
+
+                        ),
                       ),
                     );
                   },
@@ -238,7 +252,7 @@ class _LLHomeState extends State<LLHome> {
                             ),
                             child: Center(
                                 child: Text(
-                              '5',
+                              count,
                               style: TextStyle(
                                   fontSize: CustomFontTheme.textSize,
                                   fontWeight: CustomFontTheme.headingwt,

@@ -7,6 +7,7 @@ import 'package:dalmia/pages/vdf/household/addland.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -157,7 +158,7 @@ class _AddStockState extends State<AddStock> {
       intVal = int.parse(value);
     } catch (e) {}
     livestockData[text] = intVal;
-    print(livestockData);
+    print("dfjkl$livestockData");
   }
 
   @override
@@ -200,18 +201,19 @@ class _AddStockState extends State<AddStock> {
               Column(
                 children: [
                   const SizedBox(height: 20),
-                  Rowstock('Cows', addData, livestockData),
+                  _stockWidget('Cows', addData, livestockData),
                   const SizedBox(height: 20),
-                  Rowstock('Goats', addData, livestockData),
+                  _stockWidget('Goats', addData, livestockData),
                   const SizedBox(height: 20),
-                  Rowstock('Buffalo', addData, livestockData),
+                  _stockWidget('Buffalo', addData, livestockData),
                   const SizedBox(height: 20),
-                  Rowstock('Poultry', addData, livestockData),
+                  _stockWidget('Poultry', addData, livestockData),
                   const SizedBox(height: 20),
-                  Rowstock('Pigs', addData, livestockData),
+                  _stockWidget('Pigs', addData, livestockData),
                   const SizedBox(height: 20),
-                  Rowstock('Ducks', addData, livestockData),
+                  _stockWidget('Ducks', addData, livestockData),
                   const SizedBox(height: 20),
+
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 20),
@@ -409,56 +411,54 @@ class _AddStockState extends State<AddStock> {
       ),
     );
   }
-  Widget Rowstock(String text, void Function(dynamic text, dynamic value) addData,
-      Map<String, int>? value) {
-    TextEditingController controller = TextEditingController();
+Widget  _stockWidget(String text, Function addData, Map<String, int> livestockData){
+    TextEditingController _controller = TextEditingController();
+    _controller.text = livestockData[text].toString()=="null"?"":livestockData[text].toString();
+    _controller.addListener(() {
+      addData(text, _controller.text);
 
-
-
-    // Use a listener to update the text field when the underlying value changes
-    controller.addListener(() {
-      addData(text, controller.text ?? "");
     });
+    _controller.selection =
+        TextSelection.collapsed(offset: _controller.text.length);
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+    child: Row(
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          SizedBox(
-            width: MySize.screenWidth * (90 / MySize.screenWidth),
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: MySize.screenHeight * (14 / MySize.screenHeight),
+      children: [
+        SizedBox(
+          width: 70,
+          child: Text(
+            text,
+            style: TextStyle(
+                fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF181818).withOpacity(0.80),
-              ),
-            ),
+                color: const Color(0xFF181818).withOpacity(0.80)),
           ),
-          SizedBox(
-            width: MySize.screenWidth * (50 / MySize.screenWidth),
-            height: MySize.screenHeight * (40 / MySize.screenHeight),
-            child: TextFormField(
-              controller: controller,
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    width: 2,
-                  ),
+        ),
+        SizedBox(
+          width: 50,
+          height: 30,
+          child: TextFormField(
+            controller: _controller,
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+            ],
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(horizontal: 10),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  width: 2,
                 ),
               ),
             ),
           ),
-          const SizedBox(
-            width: 50,
-          )
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+
+  );
+}
+
 
 }

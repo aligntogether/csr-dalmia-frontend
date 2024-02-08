@@ -46,7 +46,7 @@ class _GplAmountUtilizedViewState extends State<GplAmountUtilizedView> {
   String formatNumber(int number) {
     if(number>100){
       double lakhs = number / 100000.0;
-      final format = NumberFormat('0.0000');
+      final format = NumberFormat('0.00');
       return format.format(lakhs);
     }
     return number.toString();
@@ -299,8 +299,64 @@ class _GplAmountUtilizedViewState extends State<GplAmountUtilizedView> {
               ),
             ),
           );
+          if(region=="East"){
+            columns.add(
+              DataColumn(
+                label: Expanded(
+                  child: Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF096C9F),
+
+                    ),
+                    padding: EdgeInsets.only(left: 10),
+                    child: Center(
+                      child: Text(
+                        'Cement',
+                        style: TextStyle(
+                          fontWeight: CustomFontTheme.headingwt,
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
         }
       }
+
+      columns.add(
+        DataColumn(
+          label: Expanded(
+            child: Container(
+              height: 60,
+              decoration: BoxDecoration(
+                color: Color(0xFF096C9F),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10.0),
+                ),
+              ),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  'Pan India',
+                  style: TextStyle(
+                    fontWeight: CustomFontTheme.headingwt,
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+
+
+      );
+
       return columns;
     }
 
@@ -335,7 +391,8 @@ class _GplAmountUtilizedViewState extends State<GplAmountUtilizedView> {
           ),
 
         );
-
+        num total=0;
+        num sugar=0;
         for (var region in controller.locations!.keys) {
           num sum=0;
           int j=0;
@@ -380,12 +437,16 @@ class _GplAmountUtilizedViewState extends State<GplAmountUtilizedView> {
           }
           // Add an empty cell for the Region column if there are locations in the region
           if (controller.locations![region]!.isNotEmpty) {
+            total+=sum;
+            if(region=="Sugar"){
+              sugar=sum;
+            }
             cells.add(
               DataCell(
                 Container(
                   height: 60,
                   decoration: BoxDecoration(
-                    color: isEven ? Colors.white : Colors.blue.shade50,
+                    color: Color(0xFF096C9F),
 
                   ),
                   padding: EdgeInsets.only(left: 10),
@@ -395,17 +456,66 @@ class _GplAmountUtilizedViewState extends State<GplAmountUtilizedView> {
                       style: TextStyle(
 
                         fontSize: CustomFontTheme.textSize,
-                        color: Colors.black,
+                        color: Colors.white,
                       ),
                     ),
                   ),
                 ),
               ),
             );
+            if(region=="East"){
+              cells.add(
+                DataCell(
+                  Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF096C9F),
+
+                    ),
+                    padding: EdgeInsets.only(left: 10),
+                    child: Center(
+                      child: Text(
+                        formatNumber(sugar.toInt()),
+                        style: TextStyle(
+
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }
           };
         }
 
+        cells.add(
+          DataCell(
+            Container(
+              height: 60,
+              decoration: BoxDecoration(
+                color: Color(0xFF096C9F),
+
+              ),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  formatNumber(total.toInt()),
+                  style: TextStyle(
+
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+
         rows.add(DataRow(cells: cells));
+        total=0;
+         sugar=0;
         i++;
       }
       return rows;

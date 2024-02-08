@@ -47,7 +47,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
       return number.toString();
     }
     double lakhs = number / 100000.0;
-    final format = NumberFormat('0.0000');
+    final format = NumberFormat('0.00');
     return format.format(lakhs);
   }
   ExportTableToExcel exportTableToExcel = new ExportTableToExcel();
@@ -137,11 +137,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
               ),
               Space.height(34),
 
-              Text(
-                "Source of Funds for Interventions\n(in Lakhs) ",
-                textAlign: TextAlign.center,
-                style: AppStyle.textStyleBoldMed(fontSize: 14),
-              ),
+
 
               Space.height(30),
               GetBuilder<SourceFundsController>(

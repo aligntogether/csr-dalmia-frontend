@@ -4,14 +4,20 @@ class LocationWiseController extends GetxController {
 
   Map<String,dynamic>? allReport;
 
+  Map<String,List<String>>?regionLocation;
+
   void setAllReport(Map<String,dynamic> report){
     allReport = report;
     update();
   }
 
+  void updateRegionLocation(Map<String,List<String>> regionLocation){
+    this.regionLocation=regionLocation;
+    update();
+  }
+
 
   List<String> details = [
-    "target",
     'HH Alloted',
     'HH Selected',
     'No. of HHs with planned int.',

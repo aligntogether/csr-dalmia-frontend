@@ -1,12 +1,15 @@
+import 'package:dalmia/app/modules/downloadExcelFromTable/ExportTableToExcel.dart';
 import 'package:dalmia/app/modules/leverWise/controllers/lever_wise_controller.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/pages/LL/llappbar.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
+import '../../../../common/color_constant.dart';
 import '../controllers/expected_actual_controller.dart';
 import '../services/expected_actual_service.dart';
 class ExpectedActualView extends StatefulWidget {
@@ -19,11 +22,55 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
   ExpectedActualServices services = ExpectedActualServices();
   bool isLoading = false;
   LeverWiseController leverWiseController = Get.put(LeverWiseController());
+  ExportTableToExcel exportTableToExcel = ExportTableToExcel();
   @override
   void initState() {
     super.initState();
    getExpectActualAdditionalIncome();
     isLoading = true;
+  }
+  void downloadExcel() {
+    try {
+      exportTableToExcel.exportExpectedActual(controller,"");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Download Successful'),
+            content: Text(
+                'The Excel file has been downloaded successfully in your download folder.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      // Show error dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Download Error'),
+            content:
+            Text('An error occurred while downloading the Excel file.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   String formatNumber(int number) {
@@ -116,6 +163,40 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
                           : eaaireport(0, cc);
                     },
                   ),
+                Space.height(14),
+                Center(
+                  child: GestureDetector(
+                      onTap: () {
+                        print("download excel");
+                        downloadExcel();
+                      },
+                      child: Container(
+                        height: MySize.screenHeight*(40/MySize.screenHeight),
+                        width: MySize.screenWidth*(150/MySize.screenWidth),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: darkBlueColor),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              'images/Excel.svg',
+                              height: MySize.screenHeight*(25/MySize.screenHeight),
+                              width: MySize.screenWidth*(25/MySize.screenWidth),
+                            ),
+                            Space.width(3),
+                            Text(
+                              'Download  Excel',
+                              style: TextStyle(
+                                  fontSize: MySize.screenHeight*(14/MySize.screenHeight), color: CustomColorTheme.primaryColor),
+                            ),
+                          ],
+                        ),
+                      )
+                  ),
+                ),
+                Space.height(14),
                 Space.height(30),
               ],
             ),
@@ -218,8 +299,65 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
               ),
             ),
           );
+          if(region=="East"){
+            columns.add(
+                DataColumn(
+                  label: Expanded(
+                    child: Container(
+                      height: 60,
+                      width: MySize.safeWidth!*0.3,
+                      decoration: BoxDecoration(
+                        color: Color(0xFF096C9F),
+
+                      ),
+                      padding: EdgeInsets.only(left: 10),
+                      child: Center(
+                        child: Text(
+                          'Cement',
+                          style: TextStyle(
+                            fontWeight: CustomFontTheme.headingwt,
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+
+            );
+          }
         }
       }
+
+      columns.add(
+        DataColumn(
+          label: Expanded(
+            child: Container(
+              height: 60,
+              width: MySize.safeWidth!*0.3,
+              decoration: BoxDecoration(
+                color: Color(0xFF096C9F),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10.0),
+                ),
+              ),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  'Pan India',
+                  style: TextStyle(
+                    fontWeight: CustomFontTheme.headingwt,
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        )
+
+      );
       return columns;
     }
     List<DataRow> buildRows() {
@@ -246,7 +384,7 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    capitalizeFirstLetter(firstColumn),
+                    capitalizeFirstLetter(firstColumn=='clusterId'?'Cluster ${i+1}':firstColumn),
                     style: TextStyle(
                       fontWeight: CustomFontTheme.headingwt,
                       fontSize: CustomFontTheme.textSize,
@@ -262,7 +400,8 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
         );
 
 
-
+      num total=0;
+      num sugar=0;
         for (var region in controller.regionLocation!.keys) {
           num sum=0;
           for (var location in controller.regionLocation![region]!) {
@@ -293,10 +432,10 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
                       ),
                       Text(
                         // "hi",
-                        controller.expectedActualReport![location] !=
+                       firstColumn=='clusterId'?"": controller.expectedActualReport![location] !=
                             null
-                            ? formatNumber(controller.expectedActualReport![location]![cc.clusterIdList![i]]![firstColumn]??0)
-                            : '0',
+                            ? formatNumber(controller.expectedActualReport![location]![cc.clusterIdList![i]]![firstColumn]??0)+"  "
+                            : '0  ',
                           // controller.clusterList![cc.clusterIdList![i]]![firstColumn] !=
                           //     null
                           //     ? (controller.clusterList![cc.clusterIdList![i]]![firstColumn]).toString()
@@ -318,6 +457,11 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
           }
           // Add an empty cell for the Region column if there are locations in the region
           if (controller.regionLocation![region]!.isNotEmpty) {
+            if(firstColumn=="sugar"){
+              sugar=sum;
+            }
+            total+=sum;
+
             cells.add(
               DataCell(
                 Container(
@@ -339,8 +483,55 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
                 ),
               ),
             );
+            if(region=="East"){
+              cells.add(
+                DataCell(
+                  Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF096C9F),
+                    ),
+                    padding: EdgeInsets.only(left: 10),
+                    child: Center(
+                      child: Text(
+                        firstColumn!='clusterId'?
+                        formatNumber((total-sugar).toInt())+"  ":""
+                        ,
+                        style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }
           };
         }
+
+        cells.add(
+          DataCell(
+            Container(
+              height: 60,
+              decoration: BoxDecoration(
+                color: Color(0xFF096C9F),
+               ),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  firstColumn!='clusterId'?
+                  formatNumber(total.toInt())+"  ":""
+                      ,
+                  style: TextStyle(
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
         rows.add(DataRow(cells: cells));
         // j++;
       }

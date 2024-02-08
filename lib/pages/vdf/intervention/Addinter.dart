@@ -223,43 +223,88 @@ void _confirmitem(BuildContext context) {
   showDialog(
     barrierDismissible: false,
     context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+    builder: (BuildContext context)
+  {
+    return AlertDialog(
+      title: Center(
+          child:
+          Container(
+
+            child: Text(
+              'Are you sure you want to cancel assigning intervention?',
+              style: TextStyle(
+                fontSize: MySize.screenWidth * (16 / MySize.screenWidth),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          )
+
+      ),
+      content: SizedBox(
+        height: MySize.screenHeight * (180 / MySize.screenHeight),
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Text('Are you sure?'),
+            SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.all(10),
+                fixedSize: Size(
+                    MySize.screenWidth * (250 / MySize.screenWidth), 60),
+                backgroundColor: CustomColorTheme.primaryColor,
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const VdfHome(),
+                  ),
+                );
+              },
+              child: Text(
+                'Yes',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ), SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.all(10),
+                fixedSize: Size(
+                    MySize.screenWidth * (250 / MySize.screenWidth), 60),
+                backgroundColor: Colors.white,
+                shadowColor: Colors.black,
+
+
+              ),
+
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'No',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: CustomColorTheme.textColor,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+
           ],
         ),
-        content: SizedBox(
-          height: MySize.screenHeight / 7,
-          child: Column(
-            children: [
-
-              const SizedBox(
-                height: 20,
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  fixedSize: Size(250, 60),
-                  backgroundColor: CustomColorTheme.primaryColor,
-                ),
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const VdfHome(),
-                    ),
-                  );
-                },
-                child: const Text(
-                  'Go to Home Screen',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    },
+      ),
+    );
+  },
   );
 }
+
+
+

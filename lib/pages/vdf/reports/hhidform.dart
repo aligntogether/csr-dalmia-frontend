@@ -14,6 +14,7 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 import '../../../Constants/constants.dart';
 import '../../../common/size_constant.dart';
@@ -33,6 +34,7 @@ class HhidForm extends StatefulWidget {
 class _HhidFormState extends State<HhidForm> {
   List<Map<String, dynamic>> HhidData = [];
    String? vdfId;
+   int? n;
   Future<void> fetchHhidData() async {
     try {
       print('street id -- ${widget.streetid}');
@@ -43,7 +45,9 @@ class _HhidFormState extends State<HhidForm> {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(response.body);
-        print("uh${jsonData['resp_body']}");
+
+        n=jsonData['totalCount'];
+
 
         setState(() {
           HhidData = [
@@ -59,6 +63,8 @@ class _HhidFormState extends State<HhidForm> {
                 'expectedAdditionalIncome':
                     entry.value['expectedAdditionalIncome'],
                 'actualAdditionalIncome': entry.value['actualAdditionalIncome'],
+                'followUpsData': entry.value['followUpsData'],
+
               }
           ];
           print(HhidData);
@@ -197,6 +203,10 @@ class _HhidFormState extends State<HhidForm> {
     }
   }
 
+  String formatNumber(int number) {
+    NumberFormat format = NumberFormat('#,##,###', 'en_IN');
+    return format.format(number);
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -316,264 +326,7 @@ class _HhidFormState extends State<HhidForm> {
                       const SizedBox(
                         height: 20,
                       ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          elevation: 5,
-                          child: DataTable(
-                            decoration: const BoxDecoration(
-                              color: Color(0xFF008CD3),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
-                              ),
-                            ),
-                            dividerThickness: 0,
-                            columnSpacing: 15,
-                            columns: const <DataColumn>[
-                              DataColumn(
-                                label: Text(
-                                  'HHID',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  'Selected',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  'Names',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  'Intervention Planned',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  'Intervention completed',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  'Expected additional income p/a',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  'Actual annual income',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ],
-                            rows: HhidData.map<DataRow>((hhid) {
-                              return DataRow(
-                                color: MaterialStateColor.resolveWith((states) {
-                                  // Alternating row colors
-                                  return HhidData.indexOf(hhid) % 2 == 0
-                                      ? Colors.lightBlue[50]!
-                                      : Colors.white;
-                                }),
-                                cells: <DataCell>[
-                                  DataCell(
-                                    InkWell(
-                                      onTap: () {
-                                        _takeaction(context, hhid['id']);
-                                      },
-                                      child: Text(
-                                        hhid['hhid'] ?? '',
-                                        style: const TextStyle(
-                                          color: CustomColorTheme.iconColor,
-                                          decoration: TextDecoration.underline,
-                                          decorationColor:
-                                              CustomColorTheme.iconColor,
-                                            
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                     
-                                  DataCell(
-                                      // Text('${hhid['selected'] ?? ''}'),
-                                      Center(
-                                    child: Text(
-                                        hhid['selected'] ),
-                                  )),
-                                  DataCell(
-                                    Text('${hhid['memberName'] ?? ''}'),
-                                  ),
-                                  DataCell(
-                                    Center(
-                                      child: Text(
-                                          '${hhid['interventionPlanned'] ?? ''}'),
-                                    ),
-                                  ),
-                                  DataCell(
-                                    Center(
-                                      child: Text(
-                                          '${hhid['interventionCompleted'] ?? ''}'),
-                                    ),
-                                  ),
-                                  DataCell(
-                                    Center(
-                                      child: Text(
-                                          '${hhid['expectedAdditionalIncome'] ?? ''}'),
-                                    ),
-                                  ),
-                                  DataCell(
-                                    Center(
-                                      child: Text(
-                                          '${hhid['actualAdditionalIncome'] ?? ''}'),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      )
-                      // SingleChildScrollView(
-                      //   scrollDirection: Axis.horizontal,
-                      //   child: Card(
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(10.0),
-                      //     ),
-                      //     elevation: 5,
-                      //     child: DataTable(
-                      //       dividerThickness: 00,
-                      //       decoration: const BoxDecoration(
-                      //         borderRadius: BorderRadius.only(
-                      //           topLeft: Radius.circular(10),
-                      //           topRight: Radius.circular(10),
-                      //         ),
-                      //       ),
-                      //       columns: const <DataColumn>[
-                      //         DataColumn(
-                      //           label: Text(
-                      //             'HHID',
-                      //             style: TextStyle(
-                      //                 fontWeight: FontWeight.bold,
-                      //                 color: Colors.white),
-                      //           ),
-                      //         ),
-                      //         DataColumn(
-                      //           label: Text(
-                      //             'Selected',
-                      //             style: TextStyle(
-                      //                 fontWeight: FontWeight.bold,
-                      //                 color: Colors.white),
-                      //           ),
-                      //         ),
-                      //         DataColumn(
-                      //           label: Text(
-                      //             'Names',
-                      //             style: TextStyle(
-                      //                 fontWeight: FontWeight.bold,
-                      //                 color: Colors.white),
-                      //           ),
-                      //         ),
-                      //         DataColumn(
-                      //           label: Text(
-                      //             'Intervention planned',
-                      //             style: TextStyle(
-                      //                 fontWeight: FontWeight.bold,
-                      //                 color: Colors.white),
-                      //           ),
-                      //         ),
-                      //         DataColumn(
-                      //           label: Text(
-                      //             'Intervention completed',
-                      //             style: TextStyle(
-                      //                 fontWeight: FontWeight.bold,
-                      //                 color: Colors.white),
-                      //           ),
-                      //         ),
-                      //         DataColumn(
-                      //           label: Text(
-                      //             'Expected additional income p/a',
-                      //             style: TextStyle(
-                      //                 fontWeight: FontWeight.bold,
-                      //                 color: Colors.white),
-                      //           ),
-                      //         ),
-                      //         DataColumn(
-                      //           label: Text(
-                      //             'Actual annual income',
-                      //             style: TextStyle(
-                      //                 fontWeight: FontWeight.bold,
-                      //                 color: Colors.white),
-                      //           ),
-                      //         ),
-                      //       ],
-                      //       headingRowColor: MaterialStateColor.resolveWith(
-                      //           (states) => Color(0xFF008CD3)),
-                      //       rows: <DataRow>[
-                      //         DataRow(
-                      //           cells: <DataCell>[
-                      //             DataCell(
-                      //               InkWell(
-                      //                 onTap: () {
-                      //                   _takeaction(context, 'DPKDMKS003');
-                      //                 },
-                      //                 child: const Text(
-                      //                   'DPKDMKS003',
-                      //                   style: TextStyle(
-                      //                     color: CustomColorTheme.iconColor,
-                      //                     decoration: TextDecoration.underline,
-                      //                     fontWeight: FontWeight.bold,
-                      //                   ),
-                      //                 ),
-                      //               ),
-                      //             ),
-                      //             const DataCell(Text('Yes')),
-                      //             const DataCell(Text('John Doe')),
-                      //             const DataCell(Text('Intervention 1')),
-                      //             const DataCell(Text('Yes')),
-                      //             const DataCell(Text('500')),
-                      //             const DataCell(Text('600')),
-                      //           ],
-                      //         ),
-                      //         DataRow(
-                      //           cells: <DataCell>[
-                      //             DataCell(
-                      //               InkWell(
-                      //                 onTap: () {
-                      //                   _takeaction(context, 'DPKDMKS003');
-                      //                 },
-                      //                 child: const Text(
-                      //                   'DPKDMKS003',
-                      //                   style: TextStyle(
-                      //                     color: CustomColorTheme.iconColor,
-                      //                     decoration: TextDecoration.underline,
-                      //                     fontWeight: FontWeight.bold,
-                      //                   ),
-                      //                 ),
-                      //               ),
-                      //             ),
-                      //             const DataCell(Text('No')),
-                      //             const DataCell(Text('Jane Smith')),
-                      //             const DataCell(Text('Intervention 2')),
-                      //             const DataCell(Text('No')),
-                      //             const DataCell(Text('300')),
-                      //             const DataCell(Text('400')),
-                      //           ],
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // )
+                    report(),
                     ],
                   ),
                 ),
@@ -679,6 +432,305 @@ class _HhidFormState extends State<HhidForm> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+  Widget report(){
+    print(n);
+    List<DataColumn> buildColumns() {
+      List<DataColumn> columns = [];
+      columns.add(
+        DataColumn(
+          label: Text(
+            'HHID',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+      columns.add( DataColumn(
+        label: Text(
+          'Selected',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),);
+      columns.add( DataColumn(
+        label: Text(
+          'Names',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),);
+      columns.add(DataColumn(
+        label: Text(
+          'Intervention Planned',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),);
+      columns.add(
+        DataColumn(
+          label: Text(
+            'Intervention completed',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+      columns.add(
+        DataColumn(
+          label: Container(
+            width: 100,
+            child: Text(
+              softWrap: true,
+              'Expected additional income p/a',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      );
+      columns.add(
+        DataColumn(
+          label: Container(
+            width: 100,
+            child: Text(
+              'Actual annual income',
+              softWrap: true,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      );
+      print("test$n");
+      for(int i=0;i<n!;i++){
+        print("pp$i");
+
+        columns.add(
+          DataColumn(
+            label: Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    'F/up',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  Text(
+                    'int. ${i + 1}',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+        columns.add(
+          DataColumn(
+
+            label: Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    'F/up overdue',
+                    style: TextStyle(color: Colors.white),
+                  ),Text(
+                    'int. ${i + 1}',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+
+      }
+      return columns;
+    }
+    bool isEven = false;
+    List<DataRow> buildRows() {
+      List<DataRow> rows = [];
+      // return rows;
+
+      List<DataCell> cells = [];
+
+      for (var hhid in HhidData) {
+        isEven = !isEven;cells.add(
+            DataCell(
+          InkWell(
+
+            onTap: () {
+              _takeaction(context, hhid['id']);
+            },
+            child: Text(
+              hhid['hhid'] ?? '',
+              style: const TextStyle(
+                color: CustomColorTheme.iconColor,
+                decoration: TextDecoration.underline,
+                decorationColor:
+                CustomColorTheme.iconColor,
+
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ));
+        cells.add(DataCell(
+          // Text('${hhid['selected'] ?? ''}'),
+            Center(
+              child: Text(
+                  hhid['selected'] ),
+            )),
+        );
+        cells.add(DataCell(
+          Text('${hhid['memberName'] ?? ''}'),
+        ));
+        cells.add(DataCell(
+          Center(
+            child: Text(
+                '${formatNumber(hhid['interventionPlanned']) ?? ''}'),
+          ),
+        ));
+
+        cells.add(DataCell(
+          Center(
+            child: Text(
+                '${formatNumber(hhid['interventionCompleted']) ?? ''}'),
+          ),
+        ));
+        cells.add(DataCell(
+          Center(
+            child: Text(
+                '${formatNumber(hhid['expectedAdditionalIncome']) ?? ''}'),
+          ),
+        ));
+        cells.add(DataCell(
+          Center(
+            child: Text(
+                '${formatNumber(hhid['actualAdditionalIncome']) ?? ''}'),
+          ),
+        ));
+print("test$n");
+print((hhid['followUpsData'].toString()=="{}"?true:(hhid['followUpsData'] as Map<String,dynamic>).keys.elementAt(0)));
+
+        for(int i=0;i<n!;i++){
+          String key=hhid['followUpsData'].toString()=="{}"?"":(hhid['followUpsData'] as Map<String,dynamic>).keys.elementAtOrNull(i)??"";
+          cells.add(DataCell(
+            Center(
+              child: Text(
+                  hhid['followUpsData'].toString()=="{}"?"":key==""?"":(hhid['followUpsData'] as Map<String,dynamic>)[key]["follow_up"].toString()=="null"?"":(hhid['followUpsData'] as Map<String,dynamic>)[key]["follow_up"].toString()??""),
+            ),
+          ));cells.add(DataCell(
+            Center(
+              child: Text(
+                  hhid['followUpsData'].toString()=="{}"?"":key==""?"":(hhid['followUpsData'] as Map<String,dynamic>)[key]["follow_up"].toString()=="null"?"":(hhid['followUpsData'] as Map<String,dynamic>)[key]["follow_up"].toString()??""
+                  ,style: TextStyle(
+                  color:Colors.red,
+                fontWeight: FontWeight.bold
+
+              ),
+            ),
+            ),
+          ));
+
+        }
+
+
+        rows.add(
+            DataRow(
+          color: MaterialStateColor.resolveWith((states) {
+            isEven=!isEven;
+            // Alternating row colors
+            return isEven
+                ? Colors.lightBlue[50]!
+                : Colors.white;
+          }),
+
+            cells: cells));
+        cells = [];
+      }
+      return rows;
+    }
+    return   SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        elevation: 5,
+        child: DataTable(
+          decoration: const BoxDecoration(
+            color: Color(0xFF008CD3),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
+            ),
+          ),
+          dividerThickness: 0,
+          columnSpacing: 15,
+          columns: buildColumns(),
+          rows: buildRows(),
+
+          // HhidData.map<DataRow>((hhid) {
+          //   return DataRow(
+          //     color: MaterialStateColor.resolveWith((states) {
+          //       // Alternating row colors
+          //       return HhidData.indexOf(hhid) % 2 == 0
+          //           ? Colors.lightBlue[50]!
+          //           : Colors.white;
+          //     }),
+          //     cells: <DataCell>[
+          //       DataCell(
+          //         InkWell(
+          //           onTap: () {
+          //             _takeaction(context, hhid['id']);
+          //           },
+          //           child: Text(
+          //             hhid['hhid'] ?? '',
+          //             style: const TextStyle(
+          //               color: CustomColorTheme.iconColor,
+          //               decoration: TextDecoration.underline,
+          //               decorationColor:
+          //               CustomColorTheme.iconColor,
+          //
+          //               fontWeight: FontWeight.bold,
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //
+          //       DataCell(
+          //         // Text('${hhid['selected'] ?? ''}'),
+          //           Center(
+          //             child: Text(
+          //                 hhid['selected'] ),
+          //           )),
+          //       DataCell(
+          //         Text('${hhid['memberName'] ?? ''}'),
+          //       ),
+          //       DataCell(
+          //         Center(
+          //           child: Text(
+          //               '${formatNumber(hhid['interventionPlanned']) ?? ''}'),
+          //         ),
+          //       ),
+          //       DataCell(
+          //         Center(
+          //           child: Text(
+          //               '${formatNumber(hhid['interventionCompleted']) ?? ''}'),
+          //         ),
+          //       ),
+          //       DataCell(
+          //         Center(
+          //           child: Text(
+          //               '${formatNumber(hhid['expectedAdditionalIncome']) ?? ''}'),
+          //         ),
+          //       ),
+          //       DataCell(
+          //         Center(
+          //           child: Text(
+          //               '${formatNumber(hhid['actualAdditionalIncome']) ?? ''}'),
+          //         ),
+          //       ),
+          //
+          //     ],
+          //   );
+          // }).toList(),
         ),
       ),
     );

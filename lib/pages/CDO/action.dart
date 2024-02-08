@@ -9,7 +9,8 @@ import 'package:http/http.dart' as http;
 
 import '../../common/size_constant.dart';
 class ActionAgainstHH extends StatefulWidget {
-  const ActionAgainstHH({Key? key}) : super(key: key);
+  String locationId;
+   ActionAgainstHH({Key? key,required this.locationId}) : super(key: key);
 
   @override
   State<ActionAgainstHH> createState() => _ActionAgainstHHState();
@@ -27,7 +28,7 @@ class _ActionAgainstHHState extends State<ActionAgainstHH> {
   Future<void> fetchData() async {
     final response = await http.get(
       Uri.parse(
-        'https://mobileqacloud.dalmiabharat.com:443/csr/action-dropped-household-details?locationId=10001',
+        'https://mobileqacloud.dalmiabharat.com:443/csr/action-dropped-household-details?locationId=${widget.locationId}',
       ),
     );
 
@@ -162,6 +163,7 @@ class _ActionAgainstHHState extends State<ActionAgainstHH> {
                                 MaterialPageRoute(
                                   builder: (context) => ActionDetail(
                                     hhid: householdData[index]['hhid']!,
+                                    locationId: widget.locationId,
                                   ),
                                 ),
                               );

@@ -299,9 +299,67 @@ bool isLoading = true  ;
                 ),
               ),
             ),
+
           );
+          if(region =="East"){
+            columns.add(
+              DataColumn(
+                label: Expanded(
+                  child: Container(
+                    height: 60,
+                    width: MySize.safeWidth!*0.3,
+                    decoration: BoxDecoration(
+                      //#096C9F
+
+                      color: Color(0xFF096C9F),
+
+                    ),
+                    padding: EdgeInsets.only(left: 10),
+                    child: Center(
+                      child: Text(
+                        'Cement',
+                        style: TextStyle(
+                          fontWeight: CustomFontTheme.headingwt,
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
         }
       }
+
+      columns.add(
+        DataColumn(
+          label: Expanded(
+            child: Container(
+              height: 60,
+              width: MySize.safeWidth!*0.3,
+              decoration: BoxDecoration(
+                //#096C9F
+
+                color: Color(0xFF096C9F),
+
+              ),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  'Pan India',
+                  style: TextStyle(
+                    fontWeight: CustomFontTheme.headingwt,
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
       return columns;
     }
 
@@ -344,8 +402,10 @@ bool isLoading = true  ;
         );
 
 
-
+        num total=0;
+        num sugar=0;
         for (var region in controller.regionLocation!.keys) {
+
           num sum=0;
           for (var location in controller.regionLocation![region]!) {
             controller.leverWiseApiReportList![0][controller.levers[j]]![location] !=
@@ -377,8 +437,8 @@ bool isLoading = true  ;
                         // "hi",
                         controller.leverWiseApiReportList![0][controller.levers[j]]![location] !=
                             null
-                            ? formatNumber(controller.leverWiseApiReportList![0][controller.levers[j]]![location])
-                            : '0',
+                            ? formatNumber(controller.leverWiseApiReportList![0][controller.levers[j]]![location])+'  '
+                            : '0  ',
                         style: TextStyle(
                           fontSize: CustomFontTheme.textSize,
                           color: Colors.black,
@@ -417,7 +477,62 @@ bool isLoading = true  ;
               ),
             );
           };
+          total+=sum;
+          if(region=='Sugar'){
+            sugar=sum;
+          }
+          if(region=="East"){
+            cells.add(
+              DataCell(
+                Container(
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF096C9F),
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      (total-sugar).toString(),
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+
+          }
         }
+
+
+        cells.add(
+          DataCell(
+            Container(
+              height: 60,
+              decoration: BoxDecoration(
+                color: Color(0xFF096C9F),
+              ),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  total.toString(),
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+
+
+
+
         rows.add(DataRow(cells: cells));
         j++;
       }

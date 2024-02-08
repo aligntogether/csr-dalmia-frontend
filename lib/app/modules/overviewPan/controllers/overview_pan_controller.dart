@@ -16,8 +16,8 @@ class OverviewPanController extends GetxController {
   List<Map<String, dynamic>>? locations;
   List<Map<String, dynamic>>? clusters;
   List<Map<String, Map<String, dynamic>>>? overviewMappedList;
-  List<Map<String, Map<String, dynamic>>>? regionWiseMappedList;
   List<Map<String, Map<String, dynamic>>>? locationWiseMappedList;
+  List<Map<String, Map<String, dynamic>>>? regionWiseMappedList;
   Map<String,List<String>>?regionLocation;
   List<String>? particularWiseList;
   List<String>? vdfNames;

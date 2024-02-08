@@ -34,12 +34,20 @@ class _LocationWiseViewState extends State<LocationWiseView> {
     ;
     getReport();
   }
+  String formatNumber(int number) {
+    NumberFormat format = NumberFormat('#,##,###', 'en_IN');
+    return format.format(number);
+  }
 
   void getReport() async {
     Map<String, dynamic> allReport = await locationWiseServices.getAllReport();
-    controller.setAllReport(allReport);
+    Map<int,String> regions=await locationWiseServices.getAllRegions();
+    Map<String,List<String>> regionLocation=await locationWiseServices.getRegionLocation(regions);
+
     setState(() {
       isLoading = false;
+      controller.setAllReport(allReport);
+      controller.updateRegionLocation(regionLocation);
     });
   }
 
@@ -81,8 +89,6 @@ class _LocationWiseViewState extends State<LocationWiseView> {
                   ),
                 ),
                 Space.height(34),
-
-
                         Text(
                           "Number of interventions completed\n(as on $formattedDate)",
                           textAlign: TextAlign.center,
@@ -92,7 +98,7 @@ class _LocationWiseViewState extends State<LocationWiseView> {
                               color: Colors.black),
                           ),
                 Space.height(14),
-                allRegionsTables()
+                allRegionsTables(0)
                     ,
               ],
             ),
@@ -100,11 +106,451 @@ class _LocationWiseViewState extends State<LocationWiseView> {
     );
   }
 
-  Widget allRegionsTables() {
-    
+  Widget allRegionsTables(int i) {
+
+    int j=1;
+    List<DataColumn> buildColumns() {
+      List<DataColumn> columns = [];
+      columns.add(
+        DataColumn(
+          label: Expanded(
+            child: Container(
+              height: 60,
+              width: MySize.screenWidth*(80/MySize.screenWidth),
+              decoration: BoxDecoration(
+                color: Color(0xff008CD3),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                ),
+              ),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  'Locations',
+                  style: TextStyle(
+                    fontWeight: CustomFontTheme.headingwt,
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+
+      for (var region in controller.regionLocation!.keys) {
+        for (var location in controller.regionLocation![region]!) {
+          // Add the Location column
+          columns.add(
+            DataColumn(
+              label: Expanded(
+                child: Container(
+                  height: 60,
+                  width:MySize.screenWidth*(80/MySize.screenWidth),
+                  decoration: BoxDecoration(
+                    color: Color(0xff008CD3),
+
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      location,
+                      style: TextStyle(
+                        fontWeight: CustomFontTheme.headingwt,
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+        // Add the Region column if there are locations in the region
+        if (controller.regionLocation![region]!.isNotEmpty) {
+          columns.add(
+            DataColumn(
+              label: Expanded(
+                child: Container(
+                  height: 60,
+                  width: MySize.safeWidth!*0.3,
+                  decoration: BoxDecoration(
+                    //#096C9F
+                    color: Color(0xFF096C9F),
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      region,
+                      style: TextStyle(
+                        fontWeight: CustomFontTheme.headingwt,
+                        fontSize: CustomFontTheme.textSize,
+                        color: Colors.white,
+                      ),
+                      maxLines: 2, // Adjust as needed
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+          if(region=="East"){
+            columns.add(
+              DataColumn(
+                label: Expanded(
+                  child: Container(
+                    height: 60,
+                    width: MySize.safeWidth!*0.3,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF096C9F),
+
+                    ),
+                    padding: EdgeInsets.only(left: 10),
+                    child: Center(
+                      child: Text(
+                        'Cement',
+                        style: TextStyle(
+                          fontWeight: CustomFontTheme.headingwt,
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+        }
+      }
+
+      columns.add(
+        DataColumn(
+          label: Expanded(
+            child: Container(
+              height: 60,
+              width: MySize.safeWidth!*0.3,
+              decoration: BoxDecoration(
+              color: Color(0xFF096C9F),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10.0),
+                ),
+              ),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text(
+                  'Pan India',
+                  style: TextStyle(
+                    fontWeight: CustomFontTheme.headingwt,
+                    fontSize: CustomFontTheme.textSize,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      return columns;
+    }
+
+    List<DataRow> buildRows() {
+      List<DataRow> rows = [];
+      bool isEven = false;
+      for (var firstColumn in controller.details) {
+        isEven = !isEven;
+        List<DataCell> cells = [];
+        if(firstColumn =='No. of HHs with planned int.' || firstColumn== 'No. of HHs with AAAI'){
+          cells.add(
+            DataCell(
+              Container(
+                height: MySize.safeHeight!*(70/MySize.screenHeight),
+                decoration: BoxDecoration(
+                  color:isEven
+                      ? Colors.blue.shade50
+                      : Colors.white,
+                ),
+                padding: EdgeInsets.only(left: 10),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children:[
+                      Text(
+                        firstColumn,
+                        style: TextStyle(
+                          fontWeight: CustomFontTheme.headingwt,
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.black,
+                        ),
+
+                      ),
+                      VerticalDivider(
+                        width: 1,
+                        color: Color(0xff181818).withOpacity(0.3),
+                        thickness: 1,
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            "> Rs. 1L",
+                            style: TextStyle(
+                              fontSize: CustomFontTheme.textSize,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Text(
+                            "> Rs. 50k",
+                            style: TextStyle(
+                              fontSize: CustomFontTheme.textSize,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      )
+                    ]
+                ),
+              ),
+            ),
+          );
+        }
+        else{
+          cells.add(
+            DataCell(
+              Container(
+                height: MySize.safeHeight!*(70/MySize.screenHeight),
+                decoration: BoxDecoration(
+                  color:isEven
+                      ? Colors.blue.shade50
+                      : Colors.white,
+                ),
+                padding: EdgeInsets.only(left: 10),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children:[
+                      Text(
+                        firstColumn,
+                        style: TextStyle(
+                          fontWeight: CustomFontTheme.headingwt,
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ]
+                ),
+              ),
+            ),
+          );
+        }
+        num total=0;
+
+        for (var region in controller.regionLocation!.keys) {
+          num sum =0;
+          num sumPlanned=0;
+          num sumActual=0;
+          for (var location in controller.regionLocation![region]!) {
+            print("location : $location region : $region j : $j  ${controller.details2[j]}");
+            if(controller.allReport![location]!=null){
+              if(controller.allReport![location][controller.details2[j]]!=null){
+                if(controller.details2[j]=='plannedEaai'){
+                  // sumPlanned+=controller.allReport![location][controller.details2[j]].toString()=="{}"?0:controller.allReport![location][controller.details2[j]]["50k-1L"];
+                  // sumActual+=controller.allReport![location][controller.details2[j]].toString()=="{}"?0:controller.allReport![location][controller.details2[j]][">1L"];
+                }
+                else if(controller.details2[j]=='actualAaai'){
+                  // sumPlanned+=controller.allReport![location][controller.details2[j]].toString()=="{}"?0:controller.allReport![location][controller.details2[j]]["50k-1L"];
+                  // sumActual+=controller.allReport![location][controller.details2[j]].toString()=="{}"?0:controller.allReport![location][controller.details2[j]][">1L"];
+                }
+                else{
+                  sum+=controller.allReport![location][controller.details2[j]];
+                }
+
+              }
+            }
+
+            cells.add(
+              DataCell(
+                Container(
+                  padding: EdgeInsets.only(left: 10),
+                  height: 60,
+                  width: MySize.screenWidth * (80 / MySize.screenWidth),
+                  decoration: BoxDecoration(
+                    color: isEven
+                        ? Colors.blue.shade50
+                        : Colors.white,
+
+                  ),
+
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      VerticalDivider(
+                        width: 1,
+                        color: Color(0xff181818).withOpacity(0.3),
+                        thickness: 1,
+                      ),
+                      controller.allReport![location]==null?
+                      Text(
+                        "0",
+                        style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.black,
+                        ),
+                      ):
+                      controller.allReport![location][controller.details2[j]]==null?
+                      Text("0"):(controller.details2[j]=='plannedEaai'||controller.details2[j]=='actualAaai')
+                          ?
+                      Column(
+                        children: [
+                          Text(
+                            "${controller.allReport![location][controller.details2[j]].toString()=="{}"?"0  ":controller.allReport![location][controller.details2[j]][">1L"]}  ",
+                            style: TextStyle(
+                              fontSize: CustomFontTheme.textSize,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Text(
+                            "${controller.allReport![location][controller.details2[j]].toString()=="{}"?"0  ":controller.allReport![location][controller.details2[j]]["50k-1L"]}  ",
+                            style: TextStyle(
+                              fontSize: CustomFontTheme.textSize,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      )
+                          :
+                      Text(
+                        controller.allReport![location]==null?
+                        "0":
+                        "${controller.allReport![location][controller.details2[j]]==null?
+                        "0":
+                        formatNumber(controller.allReport![location][controller.details2[j]])}  "
+                        ,style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.black,
+                        ),
+                      ),
+
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+          if (controller.regionLocation![region]!.isNotEmpty) {
+            total+=sum;
+            cells.add(
+              DataCell(
+                Container(
+                  padding: EdgeInsets.only(left: 10),
+                  height: 60,
+                  width: MySize.safeWidth! * 0.3,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF096C9F),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      VerticalDivider(
+                        width: 1,
+                        color: Color(0xff181818).withOpacity(0.3),
+                        thickness: 1,
+                      ),
+                      Text(
+                        formatNumber(sum.toInt())+"  ",
+                        // controller.overviewMappedList![0][controller.objectKeys[j]]![region]==null?"0":formatNumber(controller.overviewMappedList![0][controller.objectKeys[j]]![region])+"  ",
+
+                        style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.white,
+                        ),
+                      ),
+
+                    ],
+                  ),
+                ),
+              ),
+            );
+            if(region=='East'){
+              cells.add(
+                DataCell(
+                  Container(
+                    padding: EdgeInsets.only(left: 10),
+                    height: 60,
+                    width: MySize.safeWidth! * 0.3,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF096C9F),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        VerticalDivider(
+                          width: 1,
+                          color: Color(0xff181818).withOpacity(0.3),
+                          thickness: 1,
+                        ),
+                        Text(
+                          "00",
+                          // controller.overviewMappedList![0][controller.objectKeys[j]]!["Cement"]==null?"0":formatNumber(controller.overviewMappedList![0][controller.objectKeys[j]]!["Cement"])+"  ",
+
+                          style: TextStyle(
+                            fontSize: CustomFontTheme.textSize,
+                            color: Colors.white,
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ),
+                ),
+              );
+
+            }
+          }
+        }
+
+        cells.add(
+          DataCell(
+            Container(
+              padding: EdgeInsets.only(left: 10),
+              height: 60,
+              width: MySize.safeWidth! * 0.3,
+              decoration: BoxDecoration(
+                color: Color(0xFF096C9F),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  VerticalDivider(
+                    width: 1,
+                    color: Color(0xff181818).withOpacity(0.3),
+                    thickness: 1,
+                  ),
+                  Text(
+                    formatNumber(total.toInt())+"  ",
+                    // controller.overviewMappedList![0][controller.objectKeys[j]]!["Pan India"]==null?"0":formatNumber(controller.overviewMappedList![0][controller.objectKeys[j]]!["Pan India"])+"  ",
+
+                    style: TextStyle(
+                      fontSize: CustomFontTheme.textSize,
+                      color: Colors.white,
+                    ),
+                  ),
+
+                ],
+              ),
+            ),
+          ),
+        );
+        rows.add(DataRow(cells: cells));
+        j++;
+      }
+      return rows;
+    }
     if (isLoading) {
       return Center(child: CircularProgressIndicator());
     } else {
+
       return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
@@ -124,136 +570,8 @@ class _LocationWiseViewState extends State<LocationWiseView> {
                   ),
                 ],
               ),
-              columns: <DataColumn>[
-                DataColumn(
-                  label: Expanded(
-                    child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                          color: Color(0xff008CD3),
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10.0))),
-                      padding: EdgeInsets.only(left: 10),
-                      child: Center(
-                        child: Text(
-                          'Details',
-                          style: TextStyle(
-                              fontWeight: CustomFontTheme.headingwt,
-                              fontSize: CustomFontTheme.textSize,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                for(var location in controller.allReport!.keys)
-                  DataColumn(
-                    label: Expanded(
-                      child: Container(
-                        height: 60,
-                        decoration: BoxDecoration(
-                            color: Color(0xff008CD3),),
-
-                        padding: EdgeInsets.only(left: 10),
-                        child: Center(
-                          child: Text(
-                            location,
-                            style: TextStyle(
-                                fontWeight: CustomFontTheme.headingwt,
-                                fontSize: CustomFontTheme.textSize,
-                                color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-
-
-              ],
-              rows: List<DataRow>.generate(
-                controller.details.length,
-                (index) => DataRow(
-                  color: MaterialStateColor.resolveWith(
-                    (states) {
-                      return index.isEven
-                              ? Colors.blue.shade50
-                              : Colors.white;
-                    },
-                  ),
-                  cells: [
-                    DataCell(
-                      Container(
-                        width: 300,
-                        padding: EdgeInsets.only(left: 10),
-                        child: Row(
-                          children: [
-                            Text(
-                              controller.details[index].capitalizeFirst!,
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Space.width(5),
-                            index == 3 || index == 4
-                                ? VerticalDivider(
-                                    width: 1,
-                                    color: Color(0xff181818).withOpacity(0.3),
-                                    thickness: 1,
-                                  )
-                                : SizedBox(),
-                            Space.width(5),
-                            index == 3 || index == 4
-                                ? Column(
-                                    children: [
-
-                                      Text(
-                                        "> Rs. 1L",
-                                        style: AppStyle.textStyleInterMed(
-                                            fontSize: 14),
-                                      ),
-                                      Text(
-                                        "> Rs. 50k",
-                                        style: AppStyle.textStyleInterMed(
-                                            fontSize: 14),
-                                      ),
-                                    ],
-                                  )
-                                : SizedBox(),
-                            Spacer(),
-                            Space.width(5),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    for(var location in controller.allReport!.keys.toList())
-                      DataCell(
-                        Container(
-                          width: 100,
-                          padding: EdgeInsets.only(left: 10),
-                          child: Column(
-                            children: [
-                              Text(
-                              controller.allReport![location][controller.details2[index]].toString().startsWith('{')
-                                  ? "${controller.allReport![location][controller.details2[index]].toString().split('{')[1].split('}')[0]}"==""?"0":"${controller.allReport![location][controller.details2[index]].toString().split('{')[1].split('}')[0].replaceAll(">1L:","").replaceAll("50k-1L:", "\n").replaceAll(",","")} "
-                             : controller.allReport![location][controller.details2[index]].toString()=="null"?"0":"${controller.allReport![location][controller.details2[index]]}",
-                                textAlign: TextAlign.start,
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
-                              ),
-
-
-                            ],
-                          ),
-                        ),
-                      ),
-
-
-                    // Additional row for total
-                  ],
-                ),
-              )),
+              columns: buildColumns(),
+              rows: buildRows()),
         ));
     }
   }

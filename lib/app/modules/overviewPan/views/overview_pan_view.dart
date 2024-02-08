@@ -34,10 +34,11 @@ class _OverviewPanViewState extends State<OverviewPanView> {
   bool isLoadingLocation=true;
   ExportTableToExcel exportsTableToExcel = new ExportTableToExcel();
 
-  void downloadExcel() {
+  void downloadExcel(String location) {
     try {
+
       exportsTableToExcel.exportPanIndiaReportAllRegion(
-        controller,
+        controller,location
       );
       showDialog(
         context: context,
@@ -107,7 +108,7 @@ class _OverviewPanViewState extends State<OverviewPanView> {
     setState(() {
       isLoading = false;
       controller.updateOverviewMappedList(panIndiaMappedData);
-      print("dff : ${controller.overviewMappedList![0].length}");
+
       controller.updateRegionLocation(regionLocation);
     });
 
@@ -404,38 +405,48 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                   },
                 ),
                 Space.height(34),
-                GestureDetector(
-                  onTap: () {
+               isLoading==false? GestureDetector(
+                   onTap: () {
 
-                   if(isLoading !=true && controller.selectedRegion!=null && controller.selectedRegion=="All Regions" ){
-                     downloadExcel();
-                   }
-                  },
-                  child: Container(
-                        height: MySize.screenHeight*(40/MySize.screenHeight),
-                        width: MySize.screenWidth*(150/MySize.screenWidth),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: darkBlueColor),
-                            borderRadius: BorderRadius.circular(5)),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              'images/Excel.svg',
-                              height: MySize.screenHeight*(25/MySize.screenHeight),
-                              width: MySize.screenWidth*(25/MySize.screenWidth),
-                            ),
-                            Space.width(3),
-                            Text(
-                              'Download  Excel',
-                              style: TextStyle(
-                                  fontSize: MySize.screenHeight*(14/MySize.screenHeight), color: CustomColorTheme.primaryColor),
-                            ),
-                          ],
-                        ),
-                      )
-                ),
+                     if(isLoading !=true && controller.selectRegion=="All Regions" ){
+                       downloadExcel(controller.selectRegion!);
+                     }
+                     else if (isLoading !=true && controller.selectRegion!="All Regions" && controller.selectLocation==null){
+                       downloadExcel(controller.selectRegion!);
+                     }
+                     else if (isLoading !=true && controller.selectRegion!="All Regions" && controller.selectLocation!=null){
+                       downloadExcel(controller.selectLocation!);
+                     }
+                     else{
+                       print("Loading");
+                      }
+
+                   },
+                   child: Container(
+                     height: MySize.screenHeight*(40/MySize.screenHeight),
+                     width: MySize.screenWidth*(150/MySize.screenWidth),
+                     decoration: BoxDecoration(
+                         border: Border.all(color: darkBlueColor),
+                         borderRadius: BorderRadius.circular(5)),
+                     child: Row(
+                       crossAxisAlignment: CrossAxisAlignment.center,
+                       mainAxisAlignment: MainAxisAlignment.center,
+                       children: [
+                         SvgPicture.asset(
+                           'images/Excel.svg',
+                           height: MySize.screenHeight*(25/MySize.screenHeight),
+                           width: MySize.screenWidth*(25/MySize.screenWidth),
+                         ),
+                         Space.width(3),
+                         Text(
+                           'Download  Excel',
+                           style: TextStyle(
+                               fontSize: MySize.screenHeight*(14/MySize.screenHeight), color: CustomColorTheme.primaryColor),
+                         ),
+                       ],
+                     ),
+                   )
+               ):Container(),
                 Space.height(10)
               ],
             ),
@@ -539,9 +550,45 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
                 ),
               ),
             ),
+
           );
+          if(region =='East'){
+            columns.add(
+              DataColumn(
+                label: Expanded(
+                  child: Container(
+                    height: 60,
+                    width: MySize.safeWidth!*0.3,
+                    decoration: BoxDecoration(
+                      //#096C9F
+
+                      color: Color(0xFF096C9F),
+
+                    ),
+                    padding: EdgeInsets.only(left: 10),
+                    child: Center(
+                      child: Text(
+                        "Cement",
+
+                        style: TextStyle(
+                          fontWeight: CustomFontTheme.headingwt,
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.white,
+                        ),
+
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+
+          }
+
+
         }
       }
+
       columns.add(
         DataColumn(
           label: Expanded(
@@ -571,6 +618,7 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
           ),
         ),
       );
+
 
       return columns;
     }
@@ -621,10 +669,13 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
 
 
         int totalsum=0;
-        int totalsum2=0;
+        int totalsum2=0; num sugar=0;
+        num total3=0;
+
 
         for (var region in controller.regionLocation!.keys) {
           num sum=0;
+
           for (var location in controller.regionLocation![region]!) {
             for(int a=12;a<n;a++){
               controller.objectKeys[a] == "Households" ||
@@ -695,8 +746,10 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
             total=0;
           }
           num total2=0;
+
           // Add an empty cell for the Region column if there are locations in the region
           if (controller.regionLocation![region]!.isNotEmpty) {
+
             totalsum+=sum.toInt();
 
             if(firstColumn=='0' || firstColumn=='< 25K' || firstColumn=='25K - 50K' || firstColumn=='50K - 75K' || firstColumn=='75K - 1L' || firstColumn=='>1L' || firstColumn=='Total no. of HH'){
@@ -707,12 +760,14 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
                   controller.objectKeys[a] == "Households" ||
                       controller.objectKeys[a] == "Interventions" ||
                       controller.objectKeys[a] == "HH with Annual Addl. Income"
-                      ?total2+=0
+                      ? {total2 += 0}
                       :controller.overviewMappedList![0][controller.objectKeys[a]]![location]==null?total2+=0:total2+=controller.overviewMappedList![0][controller.objectKeys[a]]![location];
                 }
               }
             }
-
+            if(region == 'Sugar'){
+              firstColumn=='Total no. of HH'?total3+=total2.toInt():sugar+=sum.toInt();
+            }
             cells.add(
               DataCell(
                 Container(
@@ -748,6 +803,44 @@ width: MySize.screenWidth*(80/MySize.screenWidth),
                 ),
               ),
             );
+            if(region =="East"){
+              cells.add(
+                DataCell(
+                  Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF096C9F),
+                    ),
+                    padding: EdgeInsets.only(left: 10),
+                    child: Center(
+                      child:
+                      firstColumn=='Total no. of HH'?
+                      Text(
+                        "${(totalsum2-total3).toString()}  ",
+                        style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.white,
+                        ),
+                      ):
+                      Text(
+                        firstColumn == "Households" ||
+                            firstColumn == "Interventions" ||
+                            firstColumn == "HH with Annual Addl. Income"
+                            ?"": (totalsum-sugar).toString(),
+                        textAlign: TextAlign.right,
+
+                        style: TextStyle(
+                          fontSize: CustomFontTheme.textSize,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+
+            }
+
 
           };
 

@@ -149,7 +149,7 @@ class _SourceOfFundsState extends State<SourceOfFunds> {
       return number.toString();
     }
     double lakhs = number / 100000.0;
-    final format = NumberFormat('0.0000');
+    final format = NumberFormat('0.00');
     return format.format(lakhs);
   }
 

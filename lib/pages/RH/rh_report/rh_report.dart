@@ -42,10 +42,10 @@ class _RhReportViewState extends State<RhReportView> {
   ExportTableToExcel exportsTableToExcel = new ExportTableToExcel();
   RhLeverWiseReportServices rhLeverWiseReportServices=new RhLeverWiseReportServices();
 
-  void downloadExcel() {
+  void downloadExcel(String location) {
     try {
       exportsTableToExcel.exportPanIndiaReportAllRegion(
-        controller,
+        controller, location
       );
       showDialog(
         context: context,
@@ -381,7 +381,7 @@ class _RhReportViewState extends State<RhReportView> {
                 Space.height(34),
                 GestureDetector(
                     onTap: () {
-                      downloadExcel();
+                      downloadExcel(controller.selectRegion!);
                     },
                     child: Container(
                       height: MySize.screenHeight*(40/MySize.screenHeight),

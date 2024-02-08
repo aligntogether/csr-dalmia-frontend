@@ -485,7 +485,8 @@ class _SelectTypeState extends State<SelectType> {
 }
 
 Widget Rowst(String text, void Function(String?) callback, String? value) {
-  if (value.toString() == "null") value = "";
+  if (value == 'null') value = "";
+
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceAround,
     children: [
@@ -512,6 +513,7 @@ Widget Rowst(String text, void Function(String?) callback, String? value) {
               ),
             ),
           ),
+          onChanged: callback,
         ),
       )
     ],

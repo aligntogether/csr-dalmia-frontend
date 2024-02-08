@@ -196,10 +196,10 @@ class ReplaceVdfApiService {
   }
 
 
-  Future<String> replaceVdf(int clusterId, String vdfName) async {
+  Future<String> replaceVdf(int clusterId, String vdfName,String vdfContact) async {
 
     try {
-      String url = '$base/replace-vdf-for-cluster?clusterId=$clusterId&vdfName=$vdfName';
+      String url = '$base/replace-vdf-for-cluster?clusterId=$clusterId&vdfName=$vdfName&vdfMobileNumber=$vdfContact';
 
 
 

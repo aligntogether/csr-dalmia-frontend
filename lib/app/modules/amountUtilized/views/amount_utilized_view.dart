@@ -54,7 +54,7 @@ class _AmountUtilizedViewState extends State<AmountUtilizedView> {
     setState(() {
       controller.updateRegions(regions);
       controller.updateLocations(locations);
-      print(data['Dalmiapuram']['utilized']);
+
       controller.updateData(data);
       isLoading = false;
     });
@@ -254,9 +254,11 @@ class _AmountUtilizedViewState extends State<AmountUtilizedView> {
               ),
             ),
           );
+
         }
         // Add the Region column if there are locations in the region
         if (controller.locations![region]!.isNotEmpty) {
+
           columns.add(
             DataColumn(
               label: Expanded(
@@ -289,6 +291,7 @@ class _AmountUtilizedViewState extends State<AmountUtilizedView> {
               ),
             ),
           );
+
         }
       }
       return columns;
