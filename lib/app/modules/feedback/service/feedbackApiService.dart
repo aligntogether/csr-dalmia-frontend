@@ -234,6 +234,8 @@ class FeedbackApiService {
           hmap.putIfAbsent('feedbackId', () => respBody['resp_body']['feedbackId'].toString());
           hmap.putIfAbsent('senderId', () => respBody['resp_body']['senderId'].toString());
           hmap.putIfAbsent('recipientId', () => respBody['resp_body']['recipientId'].toString());
+          hmap.putIfAbsent('accepted', () => respBody['resp_body']['accepted'].toString());
+
 
           return hmap; // Returning a map with 'clusters' key containing the list
         } else {
@@ -250,7 +252,7 @@ class FeedbackApiService {
   }
 
 
-  Future<String?> updateFeedback(String userId, String feedbackId, String accepted) async {
+  Future<String?> updateFeedback(String userId, String feedbackId, int accepted) async {
 
     print("userId : $userId");
     print("feedbackId : $feedbackId");
@@ -293,7 +295,7 @@ class FeedbackApiService {
   Future<bool> sendFeedback(StompClient client, String latestMessage, FeedbackController controller) async {
     try {
 
-      if (client == null && !client.connected) {
+      if (!client.connected) {
         return false;
       }
 
@@ -306,8 +308,12 @@ class FeedbackApiService {
         'recipientId': controller.recipientId
       };
 
+
       // Convert the sample object to JSON and send it as a STOMP message
       final message = jsonEncode(sampleFeedback);
+
+      print("fdsf$message");
+
       client.send(
         destination: '/feedback/send-feedback',
         body: message,
@@ -320,6 +326,64 @@ class FeedbackApiService {
     }
   }
 
+Future<bool> deleteFeedback(int userId, int feedbackId) async{
+  try {
+    String url = '$base/delete-feedback?userId=$userId&feedbackId=$feedbackId';
 
+    final response = await http.delete(Uri.parse(url),).timeout(Duration(seconds:45 ));
+
+    if (response.statusCode == 200) {
+     return true;
+
+    } else {
+      return false;
+    }
+  } catch (e) {
+    return false;
+
+  }
+}
+
+
+
+  Future<Map<String, dynamic>> getFeedbacks(int userId) async {
+    try {
+      String url = '$base/get-feedbacks?userId=$userId';
+
+      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+
+      if (response.statusCode == 200) {
+        print("API Response: ${response.body}");
+
+        // Parse the response and extract regionId and region
+        final Map<String, dynamic> respBody = json.decode(response.body);
+
+        if (respBody.containsKey('resp_body')) {
+          final List<dynamic> feedbacksData = respBody['resp_body'];
+
+          final List<Map<String, dynamic>> feedbacks = feedbacksData.map<Map<String, dynamic>>((feedback) => {
+            'feedbackId': feedback['feedbackId'],
+            'message': feedback['message'],
+            'accepted': feedback['accepted'],
+            'senderId': feedback['senderId'],
+            'recipientId': feedback['recipientId'],
+            'senderName': feedback['senderName'],
+            'recipientName': feedback['recipientName'],
+          }).toList();
+
+          return {'feedbacks': feedbacks}; // Returning a map with 'clusters' key containing the list
+        } else {
+          throw Exception('Response format does not contain expected data');
+        }
+      } else {
+        print("API Error Response: ${response.body}");
+        throw Exception('Failed to load data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print("Error making API request: $e");
+      throw Exception('Error making API request: $e');
+    }
+
+}
 
 }

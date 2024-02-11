@@ -7,16 +7,17 @@ import 'package:dalmia/common/size_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:intl/intl.dart';
 
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
-class FeedBackSendMsgView extends StatefulWidget {
-  String? regions, location, feedbackid, name, userid, recipentid;
+import 'feedback_view.dart';
 
+class FeedBackSendMsgView extends StatefulWidget {
+  String? regions, location, feedbackid, name, userid, recipentid, isAccepted;
   FeedBackSendMsgView({
     Key? key,
     this.regions,
@@ -25,6 +26,7 @@ class FeedBackSendMsgView extends StatefulWidget {
     this.name,
     this.userid,
     this.recipentid,
+    this.isAccepted,
   }) : super(key: key);
 
   @override
@@ -38,12 +40,15 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
   FeedbackApiService feedbackApiService = new FeedbackApiService();
   FeedbackController controller = Get.put(FeedbackController());
   String? latestMessage;
+  TextEditingController messageController = TextEditingController();
 
+  FeedbackController feed = Get.put(FeedbackController());
 
   @override
   void initState() {
     super.initState();
 
+    print("recipentid ${widget.recipentid}");
     client = StompClient(
         config: StompConfig(
             onWebSocketError: (dynamic error) => print(error.toString()),
@@ -53,6 +58,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
     print("client : $client");
     print("client userId : ${widget.userid}");
     client.activate();
+    getMessage();
   }
 
   @override
@@ -67,7 +73,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
         callback: (StompFrame frame) {
           final body = json.decode(frame.body!);
 
-          print("body : ${body}");
+          print("bodyd : ${body}");
           print("body1 : ${body['message']}");
 
           if (frame.body != null) {
@@ -80,13 +86,17 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
               id: 'const Uuid().v4()',
               text: body['message'],
             ); // types. TextMessage
-            _addMessage(body);
-            print('message recived :${frame.body}');
-          }
 
+            _addMessage(body);
+            print("feedbackInitiator : $feedbackInitiator");
+            if (jsonDecode(frame.body!)['recipientId'].toString() == feedbackInitiator) {
+              feed.sendMsg.value = true;
+            }
+
+            print('message received :${frame.body}');
+          }
         });
   }
-
 
   void _addMessage(message) {
     setState(() {
@@ -96,17 +106,22 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
   }
 
   Future<bool> sendMessage(String message) async {
-
     if (client == null && !client.connected) return false;
 
     bool sent =
         await feedbackApiService.sendFeedback(client, message, controller);
 
-    print('sent : nsjcnufy $sent');
+    print('sent : nsjcnufy $message');
+    print("messages : $messages");
 
     if (sent) {
       setState(() {
-        messages.insert(messages.length, 'message sent ......');
+        messages.insert(messages.length, {
+          'message': message,
+          'senderId': widget.userid,
+          'recipientId': widget.recipentid,
+          'createdAt': DateTime.now(),
+        });
       });
       print('\n \n message sent ...... \n \n ');
       return sent;
@@ -114,12 +129,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
       print("\n \n Lag gaye ...... \n \n");
       return sent;
     }
-
   }
-
-
-
-
 
   Future<List<Map<String, dynamic>>> fetchFeedbackMessages() async {
     // int useid = userid as int;
@@ -130,9 +140,12 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
       ),
     );
 
+    print("Dsd${response.body}");
     if (response.statusCode == 200) {
       final List<dynamic> responseData =
           json.decode(response.body)['resp_body'];
+      print("responseData : ${responseData}");
+
       return responseData.map((data) {
         return {
           'id': data['id'],
@@ -148,7 +161,6 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
             data['createdAt'][2],
             data['createdAt'][3],
             data['createdAt'][4],
-            data['createdAt'][5],
           ),
         };
       }).toList();
@@ -159,126 +171,150 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
 
   @override
   Widget build(BuildContext context) {
-    getMessage();
-    FeedbackController feed = Get.put(FeedbackController());
-
+    print("accepted : ${feed.sendMsg.isTrue}");
+    print("name : ${widget.name}");
+    print(
+        "widget.userid : ${widget.userid}  feedbackInitiator : $feedbackInitiator ${widget.userid == feedbackInitiator}");
     return SafeArea(
-        child: Scaffold(
-            backgroundColor: Color(0xffF2F2F2),
-            appBar: PreferredSize(
-                preferredSize:
-                    //  isMenuOpen ? Size.fromHeight(150) :
-                    Size.fromHeight(100),
-                child: Container(
-                  height: 75,
-                  width: Get.width,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                          color: Color(0xff000000).withOpacity(0.1),
-                          offset: Offset(0.0, 4.0), // (x, y)
-                          blurRadius: 4.0,
-                          spreadRadius: 0),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                          onTap: () {
-                            Get.back();
-                          },
-                          child: Icon(Icons.arrow_back)),
-                      Text(
-                        widget.name ?? '',
-                        style: AppStyle.textStyleBoldMed(fontSize: 16),
-                      ),
-                      Space.height(4),
-                      Text(
+      child: Scaffold(
+        backgroundColor: Color(0xffF2F2F2),
+        appBar: PreferredSize(
+            preferredSize:
+                //  isMenuOpen ? Size.fromHeight(150) :
+                Size.fromHeight(100),
+            child: Container(
+              height: 75,
+              width: Get.width,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                      color: Color(0xff000000).withOpacity(0.1),
+                      offset: Offset(0.0, 4.0), // (x, y)
+                      blurRadius: 4.0,
+                      spreadRadius: 0),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+
+                          Get.back();
+                        },
+                        child: Icon(Icons.arrow_back)),
+                    Container(
+                        width: MySize.screenWidth*(50/MySize.screenWidth),
+                      child: Text(
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                          widget.name ?? '',
+                          style: AppStyle.textStyleBoldMed(fontSize: 16),
+                        ),
+                    ),
+
+                    Space.height(4),
+
+                    Container(
+                      width: MySize.screenWidth*(200/MySize.screenWidth),
+                      child: Text(
                         "${widget.regions ?? ''} ${widget.regions != null && widget.location != null ? ',' : ''} ${widget.location ?? ''}",
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
                         style: AppStyle.textStyleInterMed(fontSize: 16),
                       ),
-                    ],
-                  ),
-                )),
-            body: Obx(
-              () => feed.sendMsg.isTrue
-                  ? msgViewScreen(feed)
-                  : ListView(
+                    ),
+                  ],
+                ),
+              ),
+            )),
+        body: Obx(
+          () => (feed.sendMsg.isTrue && feedbackInitiator==widget.userid) || widget.isAccepted == '1'
+              ? SingleChildScrollView(child: msgViewScreen(feed))
+              : ListView(
+                  children: [
+                    msgViewScreen(feed),
+                    Column(
                       children: [
-                        msgViewScreen(feed),
-                        Spacer(),
-                        feed.sendMsg.value == false
-                            ? Container(
-                                height: MySize.size56,
-                                margin: EdgeInsets.symmetric(horizontal: 16),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(color: Colors.grey),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      blurRadius: 4.0,
-                                      offset: Offset(0.0, 2.0),
-                                    ),
-                                  ],
-                                ),
-                                child: TextFormField(
-                                  onChanged: (value) {
-                                    setState(() {
-                                      latestMessage = value;
-                                    });
-                                  },
-                                  decoration: InputDecoration(
-                                    fillColor: Colors.white,
-                                    filled: true,
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : Container(),
+                        Space.height(20),
+                        Container(
+                          height: MySize.size56,
+                          margin: EdgeInsets.symmetric(horizontal: 16),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(color: Colors.grey),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                blurRadius: 4.0,
+                                offset: Offset(0.0, 2.0),
+                              ),
+                            ],
+                          ),
+                          child: TextFormField(
+                            onChanged: (value) {
+                              setState(() {
+                                latestMessage = value;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                        ),
                         Space.height(18),
-                        feed.sendMsg.isTrue == false
-                            ? GestureDetector(
-                                onTap: () async {
+                        GestureDetector(
+                            onTap: () async {
+                              print("istrue: ${feed.sendMsg.isTrue} isFalse: ${feed.sendMsg.isFalse}  value: ${feed.sendMsg.value}");
+                              setState(() {
+                                controller.senderId = widget.userid;
+                                controller.recipientId = widget.recipentid;
+                                controller.feedbackId = widget.feedbackid;
 
-                                  setState(() {
-                                    controller.senderId = widget.userid;
-                                    controller.recipientId = widget.recipentid;
-                                    controller.feedbackId = widget.feedbackid;
-                                  });
+                              });
 
-                                  bool sent = await sendMessage(latestMessage!);
+                              bool sent = await sendMessage(latestMessage!);
 
-                                  print(
-                                      "\n \n bndsauyhcgv yger send kiya \n \n");
-                                  // feed.sendMsg.value = true;
-                                },
-                                child: commonButton(title: "Send", margin: 16))
-                            : Container(),
+                              print("\n \n bndsauyhcgv yger send kiya \n \n");
+
+                              // feed.sendMsg.value = true;
+                            },
+                            child: commonButton(title: "Send", margin: 16)),
                         Space.height(40),
                       ],
-                    ),
-            )));
+                    )
+                  ],
+                ),
+        ),
+      ),
+    );
   }
 
   getMessage() async {
     try {
+      print("pop ");
       List<Map<String, dynamic>> msg = await fetchFeedbackMessages();
+      print(msg);
       setState(() {
         messages = msg;
         if (msg != null && msg.isNotEmpty) {
           feedbackInitiator = msg[0]['feedbackInitiator'].toString() ?? '0';
-          print("feedbackInitiator :  $feedbackInitiator");
+          if(feedbackInitiator==widget.userid && widget.isAccepted=='1')
+          {
+            feed.sendMsg.value = true;
+          }
+          print("feedbackInitiatordd :  $feedbackInitiator");
         }
-
       });
       // print('msg : $msg');
     } catch (e) {
@@ -293,6 +329,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
 
   loadElements(FeedbackController feed) {
     List<Widget> list = [];
+    print("messages11 : $messages");
     messages.forEach((e) {
       list.add(Space.height(20));
       list.add(Container(
@@ -317,22 +354,31 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
               Text(
                 e['message'],
                 style: AppStyle.textStyleInterMed(
-                    fontSize: 14, color: Color(0xff181818).withOpacity(0.8)),
+                    fontSize: Get.height*(14/Get.height), color: Color(0xff181818).withOpacity(0.8)),
               ),
               Space.height(13),
               Row(
                 children: [
-                  Text(
-                    e['senderId'].toString() == widget.userid
-                        ? "You"
-                        : "${widget.name}",
-                    style: AppStyle.textStyleInterMed(
-                        fontSize: 12,
-                        color: Color(0xff181818).withOpacity(0.6)),
+                  Container(
+                    width: MySize.screenWidth * 0.5,
+
+                    child: Text(
+                      overflow: TextOverflow.ellipsis,
+                      e['senderId'].toString() == widget.userid
+                          ? "You"
+                          : "${widget.name}",
+                      style: AppStyle.textStyleInterMed(
+                          fontSize: 12,
+                          color: Color(0xff181818).withOpacity(0.6)),
+                    ),
                   ),
                   Spacer(),
+                  // date formatted as dd MMM | hh:mm a
                   Text(
-                    "18 Oct | 11.00 pm",
+                    e['createdAt'] is String
+                        ? DateFormat('dd MMM | hh:mm a')
+                            .format(DateTime.parse(e['createdAt']))
+                        : DateFormat('dd MMM | hh:mm a').format(e['createdAt']),
                     style: AppStyle.textStyleInterMed(
                         fontSize: 12,
                         color: Color(0xff181818).withOpacity(0.6)),
@@ -342,86 +388,185 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
             ],
           )));
     });
-    list.add(Obx(() => feed.accept.isTrue
-        ? Container(
-            height: 36,
-            width: 207,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Color(0xff129148))),
-            child: Center(
-              child: Text(
-                "You have accepted the reply",
-                style: AppStyle.textStyleBoldMed(color: Color(0xff0EA301)),
-              ),
-            ),
-          )
-            :
-            // (widget.userid! == feedbackInitiator) ?
-            Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
+    SizedBox(
+      height: 20,
+    );
+    list.add(Obx(
+      () =>feed.accept.isTrue || widget.isAccepted == '1'
+          ? feedbackInitiator == widget.userid
+              ? Column(
+                  children: [
+                    Container(
+                      height: 36,
+                      width: 207,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Color(0xff129148))),
+                      child: Center(
+                        child: Text(
+                          "You have accepted the reply",
+                          style: AppStyle.textStyleBoldMed(
+                              color: Color(0xff0EA301)),
+                        ),
+                      ),
+                    ),
+                    Space.height(20),
+                    GestureDetector(
+                      onTap: () async {
+                        bool? deleteResponse =
+                        await feedbackApiService.deleteFeedback(
+                            int.parse(widget.userid!),
+                            int.parse(widget.feedbackid!));
+                        if (deleteResponse == true) {
+                          feed.sendMsg.value = false;
+                          feed.accept.value = false;
+
+                          Get.back();
+                        }
+                      },
+                      child: Container(
+                        height: 50,
+                        width: MySize.screenWidth * 0.7,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 27, vertical: 16),
+                        decoration: BoxDecoration(
+                            color: Color(0xff27528F),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Center(
+                          child: Text(
+                            "Delete",
+                            style: AppStyle.textStyleInterMed(
+                                fontSize: 14, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Space.height(20),
+                  ],
+                )
+              : Column(
+                  children: [
+                    Container(
+                      height: 36,
+                      width: 207,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Color(0xff129148))),
+                      child: Center(
+                        child: Text(
+                          "Your reply has been accepted",
+                          style: AppStyle.textStyleBoldMed(
+                              color: Color(0xff0EA301)),
+                        ),
+                      ),
+                    ),
+                    Space.height(20),
+                    GestureDetector(
+                      onTap: () async {
+                        bool? deleteResponse =
+                        await feedbackApiService.deleteFeedback(
+                            int.parse(widget.userid!),
+                            int.parse(widget.feedbackid!));
+                        if (deleteResponse == true) {
+
+                          Get.back();
+
+                        }
+                      },
+                      child: Container(
+                        height: 50,
+                        width: MySize.screenWidth * 0.7,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 27, vertical: 16),
+                        decoration: BoxDecoration(
+                            color: Color(0xff27528F),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Center(
+                          child: Text(
+                            "Delete",
+                            style: AppStyle.textStyleInterMed(
+                                fontSize: 14, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Space.height(20),
+                  ],
+                )
+          : feed.sendMsg.isTrue && feedbackInitiator==widget.userid
+              ?
+              Column(
                 children: [
-                  feed.sendMsg.isTrue
-                      ? GestureDetector(
-                          onTap: () async {
+                  Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                                onTap: () async {
+                                  String? updateResponse =
+                                      await feedbackApiService.updateFeedback(
+                                          widget.userid!,
+                                          widget.feedbackid ?? '0',
+                                          1);
+                                  setState(() {
+                                    feed.accept.value = true;
+                                  });
 
-                            String? updateResponse =
-                                await feedbackApiService.updateFeedback(
-                                    widget.userid!,
-                                    controller.feedbackId ?? '0',
-                                    '1');
-
-                            if (updateResponse != null) {
-                              setState(() {
-                                feed.accept.value = true;
-                              });
-                            }
-
-                          },
-                          child: Container(
-                            height: 50,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 27, vertical: 16),
-                            decoration: BoxDecoration(
-                                color: Color(0xff27528F),
-                                borderRadius: BorderRadius.circular(5)),
-                            child: Center(
-                              child: Text(
-                                "Accept",
-                                style: AppStyle.textStyleInterMed(
-                                    fontSize: 14, color: Colors.white),
+                                  if (updateResponse != null) {
+                                    setState(() {
+                                      feed.accept.value = true;
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  height: 50,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 27, vertical: 16),
+                                  decoration: BoxDecoration(
+                                      color: Color(0xff27528F),
+                                      borderRadius: BorderRadius.circular(5)),
+                                  child: Center(
+                                    child: Text(
+                                      "Accept",
+                                      style: AppStyle.textStyleInterMed(
+                                          fontSize: 14, color: Colors.white),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        )
-                      : Container(),
-                  Space.width(13),
-                  feed.sendMsg.isTrue
-                      ? GestureDetector(
-                          onTap: () {
-                            feed.sendMsg.value = false;
-                          },
-                          child: Container(
-                            height: 50,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 27, vertical: 14),
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Color(0xff27528F)),
-                                borderRadius: BorderRadius.circular(5)),
-                            child: Center(
-                              child: Text(
-                                "Reply",
-                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                        Space.width(20),
+                        GestureDetector(
+                                onTap: () {
+                                  feed.sendMsg.value = false;
+                                },
+                                child: Container(
+                                  height: 50,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 27, vertical: 14),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Color(0xff27528F)),
+                                      borderRadius: BorderRadius.circular(5)),
+                                  child: Center(
+                                    child: Text(
+                                      "Reply",
+                                      style:
+                                          AppStyle.textStyleInterMed(fontSize: 14),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        )
-                      : Container()
+                      ],
+                    ),
+      SizedBox(
+        height: 20,
+      ),
                 ],
               )
-        // : Row()
-        ));
+              : Container(),
+    ));
+
+
+
     return list;
   }
 }

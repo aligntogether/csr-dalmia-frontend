@@ -235,6 +235,7 @@ class _FeedBackChatViewState extends State<FeedBackChatView> {
                       Map<String, String>? addFeedbackRes = await feedbackApiService.addFeedback(int.tryParse(controller.userId!)! , recipientId ?? 0);
 
                       if (addFeedbackRes != null) {
+                        print("addFeedbackRes : $addFeedbackRes");
 
                         setState(() {
                           recipientId = 0;
@@ -265,6 +266,7 @@ class _FeedBackChatViewState extends State<FeedBackChatView> {
                           name : name,
                           userid : controller.userId,
                           recipentid : controller.recipientId,
+                          isAccepted: addFeedbackRes['accepted'],
                         ));
                       }
                       else {

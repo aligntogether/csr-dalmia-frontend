@@ -1,4 +1,5 @@
 import 'package:dalmia/app/modules/feedback/controllers/feedback_controller.dart';
+import 'package:dalmia/app/modules/feedback/service/feedbackApiService.dart';
 import 'package:dalmia/app/modules/feedback/views/feedback_chat_view.dart';
 import 'package:dalmia/app/modules/feedback/views/feedback_send_msg_view.dart';
 
@@ -11,7 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CEOview extends GetView<FeedbackController> {
-  const CEOview({Key? key}) : super(key: key);
+  String? userId;
+   CEOview({Key? key,required this.userId}) : super(key: key);
+  FeedbackApiService feedbackApiService = FeedbackApiService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,8 +41,25 @@ class CEOview extends GetView<FeedbackController> {
           child: Column(
             children: [
               Space.height(40),
-              listData("Gram Parivartan Lead", () {
-                Get.to(FeedBackSendMsgView());
+              listData("Gram Parivartan Lead", ()async {
+                Map<String, String>? addFeedbackRes = await feedbackApiService.addFeedback(int.tryParse(controller.userId!)! , 10001 ?? 0);
+
+                if (addFeedbackRes != null) {
+                  controller.feedbackId = addFeedbackRes['feedbackId'];
+                  controller.senderId = addFeedbackRes['senderId'];
+                  controller.recipientId = addFeedbackRes['recipientId'];
+
+                }
+                Get.to(FeedBackSendMsgView(
+
+                  feedbackid : controller.feedbackId,
+                  name : "Gram Parivartan Lead",
+                  userid : controller.userId,
+                  recipentid : '10001',
+                  isAccepted: addFeedbackRes!['accepted'],
+
+                ));
+
               }),
               listData("Regional Head / Location Lead", () {
                 Get.to(FeedBackChatView());

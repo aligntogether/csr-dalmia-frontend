@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:dalmia/helper/sharedpref.dart';
+import 'package:intl/intl.dart';
 
 import '../controllers/feedback_controller.dart';
 import '../service/feedbackApiService.dart';
@@ -30,7 +31,9 @@ class _FeedbackViewState extends State<FeedbackView> {
   @override
   void initState() {
     super.initState();
+
     getSharedPreference();
+    fetchData(context);
   }
 
   void getSharedPreference() async {
@@ -66,7 +69,7 @@ class _FeedbackViewState extends State<FeedbackView> {
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
       final Map<String, dynamic> respBody = responseData['resp_body'];
-      print('response body $respBody');
+      print('oooo body $respBody');
       // Convert the response body into a List of maps
 
       return respBody.entries.map((entry) {
@@ -76,6 +79,7 @@ class _FeedbackViewState extends State<FeedbackView> {
           'created_at': entry.value['created_at'],
           'sender_id': entry.value['sender_id'],
           'recipient_id': entry.value['recipient_id'],
+          'is_accepted': entry.value['is_accepted'],
         };
       }).toList();
     } else {
@@ -110,103 +114,153 @@ class _FeedbackViewState extends State<FeedbackView> {
           Space.width(20)
         ],
       ),
-      body: Column(
-        children: [
-          Space.height(20),
-          Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: fetchData(context),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No data available'));
-                } else {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      final feedback = snapshot.data![index];
-                      return Column(
-                        children: [
-                          Divider(
-                            height: 1,
-                            color: Color(0xff181818).withOpacity(0.3),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 11, vertical: 13),
-                            child: GestureDetector(
-                              onTap: () {
-                                Get.to(FeedBackSendMsgView(
-                                  userid: userId,
-                                  recipentid:
-                                      feedback['recipient_id'].toString(),
-                                  feedbackid:
-                                      feedback['feedback_id'].toString(),
-                                  name: feedback['name'],
-                                ));
-                              },
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Image.asset(
-                                    ImageConstant.feed,
-                                    height: 24,
-                                    width: 24,
-                                  ),
-                                  Space.width(10),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        (feedback['name'] ?? "").split("_")[0],
-                                        style: AppStyle.textStyleBoldMed(
-                                            fontSize: 14),
-                                      ),
-                                      Space.height(2),
-                                      Text(feedback['created_at'].toString()),
-                                    ],
-                                  ),
-                                  Spacer(),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: 22, top: 10),
-                                    child: Image.asset(
-                                      ImageConstant.arrowB,
-                                      height: 18,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          setState(() {
+            fetchData(context);
+          });
+        },
+        child: Column(
+          children: [
+            Space.height(20),
+            Expanded(
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: fetchData(context),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(child: Text('No data available'));
+                  } else {
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        final feedback = snapshot.data![index];
+                        return Column(
+                          children: [
+                            Divider(
+                              height: 1,
+                              color: Color(0xff181818).withOpacity(0.3),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 11, vertical: 13),
+                              child: GestureDetector(
+                                onTap: () {
+                                  print("dfd ${userId == feedback['recipient_id'].toString()} ${userId == feedback['recipient_id'].toString()?
+                                  feedback['sender_id'].toString():
+                                  feedback['recipient_id'].toString()} ${feedback['recipient_id']} $userId ${feedback['sender_id']} ");
+                                  Get.to(FeedBackSendMsgView(
+                                    userid: userId,
+                                    recipentid: userId == feedback['recipient_id'].toString()?
+                                        feedback['sender_id'].toString():
+                                        feedback['recipient_id'].toString(),
+                                    feedbackid:
+                                        feedback['feedback_id'].toString(),
+                                    name: feedback['name'],
+                                    isAccepted: feedback['is_accepted'],
+
+                                  ));
+                                },
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Image.asset(
+                                      ImageConstant.feed,
+                                      height: 24,
+                                      width: 24,
                                     ),
-                                  ),
-                                ],
+                                    Space.width(10),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          (feedback['name'] ?? "").split("_")[0],
+                                          style: AppStyle.textStyleBoldMed(
+                                              fontSize: 14),
+                                        ),
+                                        Space.height(2),
+                                        //change the date format to 18 oct or 17 jun etc
+                                        Row(
+                                          children: [
+                                            Text(
+                                              DateFormat('dd MMM').format(DateTime.parse(feedback['created_at']))
+                                            ),
+                                            Space.width(5),
+                                            Text(
+                                              "|"
+                                            ),
+                                            Space.width(5),
+
+                                            Text(
+                                              DateFormat('hh:mm a').format(DateTime.parse(feedback['created_at']))
+                                            ),
+                                            Space.width(5),
+                                            Text(
+                                                "|"
+                                            ),
+                                            Space.width(5),
+
+                                            feedback['is_accepted']=="1"?Text(
+                                              "Accepted",
+                                              style: TextStyle(
+                                                color: Colors.green
+                                              ),
+                                            ):Text(
+                                              "Pending",
+                                              style: TextStyle(
+                                                color: Colors.red
+                                              ),
+                                            ),
+
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    Spacer(),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: 22, top: 10),
+                                      child: Image.asset(
+                                        ImageConstant.arrowB,
+                                        height: 18,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
-              },
+                          ],
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
             ),
-          ),
-          Space.height(20),
-          controller.userType != 'LL'
-              ? GestureDetector(
-                  onTap: () {
-                    controller.userType == 'CEO'
-                        ? Get.to(CEOview())
-                        : Get.to(FeedBackChatView());
-                  },
-                  child: commonButton(
-                    title: "Send New Feedback",
-                  ),
-                )
-              : Container(),
-          Space.height(40),
-        ],
+            Space.height(20),
+            controller.userType != 'LL'
+                ? GestureDetector(
+                    onTap: () {
+
+                      controller.userType == 'CEO'
+                          ? Get.to(CEOview(
+      userId: userId,
+                      ))
+                          : Get.to(FeedBackChatView());
+                    },
+                    child: commonButton(
+                      title: "Send New Feedback",
+                    ),
+                  )
+                : Container(),
+            Space.height(40),
+          ],
+        ),
       ),
     );
   }
