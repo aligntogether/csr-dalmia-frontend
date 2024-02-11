@@ -571,9 +571,9 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                         Row(
                           children: [
                             Spacer(),
-                            Text("0",
-                              // ( controller.performanceReport!["Cummulative"]![controller.details![index]])==null?"":
-                              // controller.performanceReport!["Cummulative"]![controller.details![index]].toString(
+                            Text( (controller.performanceReport!['cumulative']![controller.details![index]])==null
+                                ? "0"
+                                : controller.performanceReport!["cumulative"]![controller.details![index]].toString(),
 
                               style: AppStyle.textStyleInterMed(fontSize: 14),
                             ),
