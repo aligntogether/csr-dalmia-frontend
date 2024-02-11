@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dalmia/pages/LL/action.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
@@ -9,7 +11,8 @@ import '../CDO/cdohome.dart';
 
 class LLActionDetail extends StatefulWidget {
   final String hhid;
-  const LLActionDetail({super.key, required this.hhid});
+  final String locationId;
+   LLActionDetail({super.key, required this.hhid,required this.locationId});
 
   @override
   State<LLActionDetail> createState() => _LLActionDetailState();
@@ -61,6 +64,41 @@ void _calldropHouseholdAPILL(String hhid) async {
 }
 
 class _LLActionDetailState extends State<LLActionDetail> {
+  Map<String, dynamic>? houseHoldDetail;
+  @override
+  void initState() {
+    super.initState();
+    print(widget.hhid);
+    fetchHouseHoldDetails();
+
+  }
+  void fetchHouseHoldDetails() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'https://mobileqacloud.dalmiabharat.com:443/csr/dropped-household-details?locationId=${widget.locationId}&hhid=${widget.hhid}',
+        ),
+      );
+      print(response.statusCode);
+
+      if (response.statusCode == 200) {
+        // Handle success
+        print('Household details fetched');
+        print(response.body);
+        setState(() {
+          houseHoldDetail = jsonDecode(response.body)['resp_body'][0];
+          print(houseHoldDetail);
+        });
+      } else {
+        // Handle error
+        print('Error fetching household details: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle error
+      print('Error fetching household details: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -214,7 +252,7 @@ class _LLActionDetailState extends State<LLActionDetail> {
                     backgroundColor: CustomColorTheme.primaryColor,
                   ),
                   onPressed: () {
-                    _drophhDialog(context, widget.hhid);
+                    _drophhDialog(context, widget.hhid, widget.locationId);
                   },
                   child: const Text(
                     'Drop HH',
@@ -233,7 +271,7 @@ class _LLActionDetailState extends State<LLActionDetail> {
                     backgroundColor: Colors.white,
                   ),
                   onPressed: () {
-                    _selecthhDialog(context, widget.hhid);
+                    _selecthhDialog(context, widget.hhid, widget.locationId);
                   },
                   child: Text(
                     'Select HH',
@@ -294,7 +332,7 @@ class HouseDetails extends StatelessWidget {
   }
 }
 
-void _drophhDialog(BuildContext context, String hhid) {
+void _drophhDialog(BuildContext context, String hhid, String locationId) {
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -339,7 +377,7 @@ void _drophhDialog(BuildContext context, String hhid) {
                 onPressed: () {
                   _calldropHouseholdAPILL(hhid);
                   Navigator.pop(context);
-                  _dropedconfirmbox(context, hhid);
+                  _dropedconfirmbox(context, hhid, locationId);
                 },
                 child: const Text(
                   'Confirm',
@@ -354,7 +392,7 @@ void _drophhDialog(BuildContext context, String hhid) {
   );
 }
 
-void _selecthhDialog(BuildContext context, String hhid) {
+void _selecthhDialog(BuildContext context, String hhid, String locationId) {
   print("HHID: $hhid");
   showDialog(
     context: context,
@@ -400,7 +438,7 @@ void _selecthhDialog(BuildContext context, String hhid) {
                 onPressed: () {
                   _callAcceptHouseholdAPILL(hhid);
                   Navigator.pop(context);
-                  _selectedconfirmbox(context, hhid);
+                  _selectedconfirmbox(context, hhid, locationId);
                 },
                 child: const Text(
                   'Confirm',
@@ -415,7 +453,7 @@ void _selecthhDialog(BuildContext context, String hhid) {
   );
 }
 
-void _selectedconfirmbox(BuildContext context, String hhid) {
+void _selectedconfirmbox(BuildContext context, String hhid, String locationId) {
   showDialog(
     barrierDismissible: false,
     context: context,
@@ -424,7 +462,9 @@ void _selectedconfirmbox(BuildContext context, String hhid) {
         onWillPop: () async {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => ActionAgainstHHLL(),
+              builder: (context) => ActionAgainstHHLL(
+                locationId: locationId,
+              ),
             ),
           );
           return false;
@@ -481,7 +521,7 @@ void _selectedconfirmbox(BuildContext context, String hhid) {
   );
 }
 
-void _dropedconfirmbox(BuildContext context, String hhid) {
+void _dropedconfirmbox(BuildContext context, String hhid, String locationId) {
   showDialog(
     barrierDismissible: false,
     context: context,
@@ -490,7 +530,9 @@ void _dropedconfirmbox(BuildContext context, String hhid) {
         onWillPop: () async {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => ActionAgainstHHLL(),
+              builder: (context) => ActionAgainstHHLL(
+                locationId: locationId,
+              ),
             ),
           );
           return false;

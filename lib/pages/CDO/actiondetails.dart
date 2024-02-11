@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dalmia/pages/CDO/action.dart';
 import 'package:dalmia/pages/CDO/cdohome.dart';
 import 'package:dalmia/theme.dart';
@@ -14,6 +16,7 @@ class ActionDetail extends StatefulWidget {
 
   @override
   State<ActionDetail> createState() => _ActionDetailState();
+
 }
 
 void _callAcceptHouseholdAPI(String hhid) async {
@@ -60,6 +63,43 @@ void _calldropHouseholdAPI(String hhid) async {
 }
 
 class _ActionDetailState extends State<ActionDetail> {
+
+  Map<String, dynamic>? houseHoldDetail;
+
+  @override
+  void initState() {
+    super.initState();
+    print(widget.hhid);
+    fetchHouseHoldDetails();
+
+  }
+  void fetchHouseHoldDetails() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'https://mobileqacloud.dalmiabharat.com:443/csr/dropped-household-details?locationId=${widget.locationId}&hhid=${widget.hhid}',
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        // Handle success
+        print('Household details fetched');
+        print(response.body);
+        setState(() {
+          houseHoldDetail = jsonDecode(response.body)['resp_body'][0];
+          print(houseHoldDetail);
+        });
+      } else {
+        // Handle error
+        print('Error fetching household details: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle error
+      print('Error fetching household details: $error');
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -101,7 +141,7 @@ class _ActionDetailState extends State<ActionDetail> {
               height: 10,
             ),
             Text(
-              'Balamurugan',
+              houseHoldDetail==null?"":houseHoldDetail?['vdfName'],
               style: TextStyle(
                   fontSize: CustomFontTheme.textSize,
                   color: CustomColorTheme.labelColor),
@@ -117,7 +157,7 @@ class _ActionDetailState extends State<ActionDetail> {
               height: 10,
             ),
             Text(
-              'The family is getting consistent income every month. Family children are in private schools. Family owns a higher end two wheeler and has electronic gadgets of high quality.',
+              houseHoldDetail==null?"":houseHoldDetail?['reasonForDropping'],
               textAlign: TextAlign.justify,
               style: TextStyle(
                 fontSize: CustomFontTheme.textSize,
@@ -146,60 +186,54 @@ class _ActionDetailState extends State<ActionDetail> {
             ),
             HouseDetails(
               heading: 'Family Head',
-              text: 'Krishnan',
+              text: houseHoldDetail==null?"":houseHoldDetail?['memberName'],
             ),
             HouseDetails(
               heading: 'Street Name',
-              text: 'Temple Street',
+              text: houseHoldDetail==null?"":houseHoldDetail?['streetName'],
             ),
             HouseDetails(
               heading: 'Village Name',
-              text: 'Salayakurichi',
+              text: houseHoldDetail==null?"":houseHoldDetail?['villageName'],
             ),
             HouseDetails(
               heading: 'Panchayat Name',
-              text: 'Ottakovil',
+              text: houseHoldDetail==null?"":houseHoldDetail?['panchayatName'],
             ),
             HouseDetails(
               heading: 'Primary Occupation',
-              text: 'Dalmia Employed-Skilled labour',
+              text: houseHoldDetail==null?"":houseHoldDetail?['primaryEmployment'],
             ),
             HouseDetails(
               heading: 'Secondary Information',
-              text: 'Farming',
+              text: houseHoldDetail==null?"":houseHoldDetail?['secondaryEmployment'],
             ),
-            HouseDetails(
-              heading: 'Village Name',
-              text: 'Salayakurichi',
-            ),
+
             HouseDetails(
               heading: 'Irrigated Land',
-              text: '2 acres',
+              text: houseHoldDetail==null?"":houseHoldDetail?['irrigatedLand']==null?"0":houseHoldDetail?['irrigatedLand'],
             ),
             HouseDetails(
               heading: 'Rainfed Land',
-              text: '4 acres',
+              text: houseHoldDetail==null?"":houseHoldDetail?['rainfedLand']==null?"0":houseHoldDetail?['rainfedLand'],
             ),
-            HouseDetails(
-              heading: 'Cows',
-              text: '3',
-            ),
-            HouseDetails(
-              heading: 'Goats',
-              text: '11',
-            ),
-            HouseDetails(
-              heading: 'Power Weeder',
-              text: '1',
-            ),
-            HouseDetails(
-              heading: 'Pakka House',
-              text: '1',
-            ),
-            HouseDetails(
-              heading: 'Tiled House',
-              text: '2 ',
-            ),
+          // for(var livestock in houseHoldDetail?['livestockNumbers'])
+          //   HouseDetails(
+          //     heading: livestock.toString(),
+          //     text: livestock['cow'],
+          //   ),
+          //   HouseDetails(
+          //     heading: 'Power Weeder',
+          //     text: '1',
+          //   ),
+          //   HouseDetails(
+          //     heading: 'Pakka House',
+          //     text: '1',
+          //   ),
+          //   HouseDetails(
+          //     heading: 'Tiled House',
+          //     text: '2 ',
+          //   ),
             SizedBox(
               height: 20,
             ),

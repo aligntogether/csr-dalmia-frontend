@@ -11,7 +11,8 @@ import 'package:http/http.dart' as http;
 
 import '../../common/size_constant.dart';
 class ActionAgainstHHLL extends StatefulWidget {
-  const ActionAgainstHHLL({Key? key}) : super(key: key);
+  String locationId;
+   ActionAgainstHHLL({Key? key,required this.locationId}) : super(key: key);
 
   @override
   State<ActionAgainstHHLL> createState() => _ActionAgainstHHLLState();
@@ -29,7 +30,7 @@ class _ActionAgainstHHLLState extends State<ActionAgainstHHLL> {
   Future<void> fetchData() async {
     final response = await http.get(
       Uri.parse(
-        'https://mobileqacloud.dalmiabharat.com:443/csr/action-dropped-household-details-ll?locationId=10001',
+        'https://mobileqacloud.dalmiabharat.com:443/csr/action-dropped-household-details-ll?locationId=${widget.locationId}',
       ),
     );
     print("ds$response");
@@ -161,10 +162,13 @@ class _ActionAgainstHHLLState extends State<ActionAgainstHHLL> {
                         DataCell(
                           InkWell(
                             onTap: () {
+                              print("ds${householdData[index]['hhid']}");
+                              print("ds${widget.locationId}");
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => LLActionDetail(
                                     hhid: householdData[index]['hhid']!,
+                                    locationId: widget.locationId,
                                   ),
                                 ),
                               );

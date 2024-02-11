@@ -538,6 +538,15 @@ class _MyFormState extends State<AddFamily> {
                         backgroundColor: CustomColorTheme.primaryColor,
                       ),
                       onPressed: () {
+                        if(formCount==0){
+                          Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => AddLand(
+                                  id: widget.id,
+                                ),
+                              ),
+                            );
+                        }
                         for(int i=0;i<formCount;i++){
                           if(_formKeys[i].currentState!.validate()?? false){
                             List<Map<String, dynamic>> familyData = [];

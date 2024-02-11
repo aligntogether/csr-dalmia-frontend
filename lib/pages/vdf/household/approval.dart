@@ -16,8 +16,9 @@ class Approval extends StatefulWidget {
 }
 
 class _ApprovalState extends State<Approval> {
-  int? selectedRadio;
+  List<String> selectedCheckboxes = [];
   List<DropdownOption> dropdownOptions = [];
+
   @override
   void initState() {
     super.initState();
@@ -25,24 +26,26 @@ class _ApprovalState extends State<Approval> {
   }
 
   Future<void> addreason() async {
+    print("Selected checkboxes: ${selectedCheckboxes.toString()}");
+    print("Selected checkboxes: ${selectedCheckboxes.runtimeType}");
     final apiUrl = '$base/add-household';
 
-    // Replace these values with the actual data you want to send
     final Map<String, dynamic> requestData = {
       "id": widget.id,
-      "reason_for_dropping": selectedRadio,
+      "reason_for_dropping": selectedCheckboxes.toString().replaceAll("[","").replaceAll("]",""),
       "is_draft": 0
     };
+    print("Request data: $requestData");
 
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {
           "Content-Type": "application/json",
-          // Add any additional headers if needed
         },
         body: jsonEncode(requestData),
       );
+      print("Response: ${response.body}");
 
       if (response.statusCode == 200) {
         Navigator.of(context).push(
@@ -50,17 +53,12 @@ class _ApprovalState extends State<Approval> {
             builder: (context) => VdfHome(),
           ),
         );
-        // Successful response
         print("Reason added");
-        // Handle success as needed
       } else {
-        // Handle error response
         print("Failed to add data: ${response.statusCode}");
         print(response.body);
-        // Handle error as needed
       }
     } catch (e) {
-      // Handle network errors
       print("Error: $e");
     }
   }
@@ -68,9 +66,7 @@ class _ApprovalState extends State<Approval> {
   Future<void> fetchApprovalOptions() async {
     try {
       final response = await http.get(
-        Uri.parse(
-          '$base/dropdown?titleId=115',
-        ),
+        Uri.parse('$base/dropdown?titleId=115'),
       );
 
       if (response.statusCode == 200) {
@@ -81,7 +77,7 @@ class _ApprovalState extends State<Approval> {
           dropdownOptions = options
               .map(
                 (option) => DropdownOption.fromJson(option),
-              )
+          )
               .toList();
         });
       } else {
@@ -146,19 +142,7 @@ class _ApprovalState extends State<Approval> {
               Column(
                 children: [
                   for (DropdownOption option in dropdownOptions)
-                    RadioElement(option.titleData, option.dataId),
-                  // Padding(
-                  //   padding: const EdgeInsets.only(left: 13, right: 13),
-                  //   child: TextField(
-                  //     enabled: selectedRadio == 7 ? true : false,
-                  //     decoration: const InputDecoration(
-                  //       alignLabelWithHint: true,
-                  //       labelStyle: TextStyle(color: Colors.grey),
-                  //       labelText: 'Please specify the reason',
-                  //     ),
-                  //     maxLines: 3,
-                  //   ),
-                  // ),
+                    CheckboxElement(option.titleData, option.titleData),
                 ],
               ),
               const SizedBox(height: 20),
@@ -190,24 +174,24 @@ class _ApprovalState extends State<Approval> {
     );
   }
 
-  RadioListTile<int> RadioElement(String title, String? radio) {
-    return RadioListTile<int>(
+  CheckboxListTile CheckboxElement(String title, String? checkboxValue) {
+    return CheckboxListTile(
       title: Text(
         title,
         style: TextStyle(
-            color: selectedRadio == int.parse(radio!)
-                ? CustomColorTheme.iconColor
-                : CustomColorTheme.textColor,
-            fontSize: CustomFontTheme.textSize,
-            fontWeight: selectedRadio == int.parse(radio)
-                ? CustomFontTheme.labelwt
-                : CustomFontTheme.textwt),
+          color: selectedCheckboxes.contains(checkboxValue) ? CustomColorTheme.iconColor : CustomColorTheme.textColor,
+          fontSize: CustomFontTheme.textSize,
+          fontWeight: selectedCheckboxes.contains(checkboxValue) ? CustomFontTheme.labelwt : CustomFontTheme.textwt,
+        ),
       ),
-      value: int.parse(radio),
-      groupValue: selectedRadio,
-      onChanged: (value) {
+      value: selectedCheckboxes.contains(checkboxValue),
+      onChanged: (isChecked) {
         setState(() {
-          selectedRadio = value;
+          if (isChecked != null && isChecked) {
+            selectedCheckboxes.add(checkboxValue!);
+          } else {
+            selectedCheckboxes.remove(checkboxValue);
+          }
         });
       },
       activeColor: CustomColorTheme.iconColor,
