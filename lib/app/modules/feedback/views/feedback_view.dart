@@ -75,11 +75,13 @@ class _FeedbackViewState extends State<FeedbackView> {
       return respBody.entries.map((entry) {
         return {
           'name': entry.key,
+          'sender_name': entry.value['sender_name'],
           'feedback_id': entry.value['feedback_id'],
           'created_at': entry.value['created_at'],
           'sender_id': entry.value['sender_id'],
           'recipient_id': entry.value['recipient_id'],
           'is_accepted': entry.value['is_accepted'],
+
         };
       }).toList();
     } else {
@@ -138,6 +140,7 @@ class _FeedbackViewState extends State<FeedbackView> {
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
                         final feedback = snapshot.data![index];
+                        print("feedback112 $feedback");
                         return Column(
                           children: [
                             Divider(
@@ -179,7 +182,8 @@ class _FeedbackViewState extends State<FeedbackView> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          (feedback['name'] ?? "").split("_")[0],
+                                          feedback['sender_id']==userId?feedback['recipient_id']==userId?feedback['sender_name']:feedback['name']:(feedback['name'] ?? "").split("_")[0],
+
                                           style: AppStyle.textStyleBoldMed(
                                               fontSize: 14),
                                         ),

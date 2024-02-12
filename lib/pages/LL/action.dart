@@ -62,7 +62,7 @@ class _ActionAgainstHHLLState extends State<ActionAgainstHHLL> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(100),
         child: CdoAppBar(
-          heading: 'Drop or Select HH for Int.',
+          heading: 'Drop HH from intervention',
         ),
       ),
       body: SingleChildScrollView(

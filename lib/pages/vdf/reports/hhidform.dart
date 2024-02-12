@@ -754,14 +754,20 @@ print((hhid['followUpsData'].toString()=="{}"?true:(hhid['followUpsData'] as Map
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Wrap(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'What action do you wish to take for HHID -$hhid',
-                        // textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: CustomFontTheme.textSize,
-                          fontWeight: CustomFontTheme.headingwt,
+                      Container(
+                        width: MySize.screenWidth*(200/MySize.screenWidth),
+                        child: Text(
+                          softWrap: true,
+
+                          'What action do you wish to take for HHID -$hhid',
+                          // textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: CustomFontTheme.textSize,
+                            fontWeight: CustomFontTheme.headingwt,
+                          ),
                         ),
                       ),
                       GestureDetector(
@@ -1047,8 +1053,7 @@ print((hhid['followUpsData'].toString()=="{}"?true:(hhid['followUpsData'] as Map
                   ),
                   Column(
                     children: addincomeData.map<Widget>((data) {
-                      interventionid = data.keys.first;
-                      interventiontype = data.values.first;
+
                       return RadioListTile<int>(
                         activeColor: CustomColorTheme.iconColor,
                         selectedTileColor: CustomColorTheme.iconColor,
@@ -1063,9 +1068,13 @@ print((hhid['followUpsData'].toString()=="{}"?true:(hhid['followUpsData'] as Map
                         value: int.parse(data.keys.first),
                         groupValue: selectedRadio,
                         onChanged: (value) {
+                          print("value--$value");
                           setState(() {
                             selectedRadio = value;
+                            interventionid = data.keys.first;
+                            interventiontype = data.values.first;
                           });
+                          print("interventionid--$interventionid interventiontype--$interventiontype");
                         },
                       );
                     }).toList(),

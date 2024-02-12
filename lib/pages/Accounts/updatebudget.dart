@@ -386,7 +386,7 @@ class _UpdateBudgetState extends State<UpdateBudget> {
                         columns: const <DataColumn>[
                           DataColumn(
                             label: Text(
-                              'Location',
+                              'Cluster',
                               style: TextStyle(
                                 fontWeight: CustomFontTheme.headingwt,
                                 fontSize: CustomFontTheme.textSize,

@@ -244,7 +244,7 @@ class _ExpectedincomeState extends State<Expectedincome> {
               padding: EdgeInsets.only(left: 10),
               child: Center(
                 child: Text(
-                  'Locations',
+                  'Clusters',
                   style: TextStyle(
                     fontWeight: CustomFontTheme.headingwt,
                     fontSize: CustomFontTheme.textSize,

@@ -18,6 +18,7 @@ class CdoAppBar extends StatelessWidget {
         body: Stack(
           children: [
             AppBar(
+
               titleSpacing: 20,
 
               title: Image.asset(

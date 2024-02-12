@@ -398,22 +398,22 @@ class _WeeklyProgressState extends State<WeeklyProgress> {
                         ),
                       ),
                     ),
-                  DataColumn(label: Container(
-                    height: 60,
-                    width: MySize.screenWidth*(120/MySize.screenWidth),
-                    color: Color(0xff008CD3),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Center(
-                      child: Text(
-                        "Cumulative",
-                        style: TextStyle(
-                          fontWeight: CustomFontTheme.headingwt,
-                          fontSize: CustomFontTheme.textSize,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),)
+                  // DataColumn(label: Container(
+                  //   height: 60,
+                  //   width: MySize.screenWidth*(120/MySize.screenWidth),
+                  //   color: Color(0xff008CD3),
+                  //   padding: EdgeInsets.symmetric(horizontal: 10),
+                  //   child: Center(
+                  //     child: Text(
+                  //       "Cumulative",
+                  //       style: TextStyle(
+                  //         fontWeight: CustomFontTheme.headingwt,
+                  //         fontSize: CustomFontTheme.textSize,
+                  //         color: Colors.white,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),)
                 ],
                 rows: List<DataRow>.generate(
                   controller.details!.length,
@@ -468,25 +468,25 @@ class _WeeklyProgressState extends State<WeeklyProgress> {
                             ],
                           ),
                         ),
-                      DataCell(
-
-                        Row(
-                          children: [
-                            Spacer(),
-                            Text(
-                              ( "0"
-                              ),
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
-                            ),
-                            Spacer(),
-                            VerticalDivider(
-                              width: 1,
-                              color: Color(0xff181818).withOpacity(0.3),
-                              thickness: 1,
-                            )
-                          ],
-                        ),
-                      ),
+                      // DataCell(
+                      //
+                      //   Row(
+                      //     children: [
+                      //       Spacer(),
+                      //       Text(
+                      //         ( "0"
+                      //         ),
+                      //         style: AppStyle.textStyleInterMed(fontSize: 14),
+                      //       ),
+                      //       Spacer(),
+                      //       VerticalDivider(
+                      //         width: 1,
+                      //         color: Color(0xff181818).withOpacity(0.3),
+                      //         thickness: 1,
+                      //       )
+                      //     ],
+                      //   ),
+                      // ),
 
 
 

@@ -279,7 +279,7 @@ class _UpdateInterventionState extends State<UpdateIntervention> {
                                   DataCell(
                               data['followUpDate']>DateTime.now().millisecondsSinceEpoch?
                                       Text(
-                                      '${data['followUpAmount'] ?? 'N/A'}'):
+                                      '${data['followUpAmount'] ?? ''}'):
                               TextFormField(
                     initialValue:'${data['followUpAmount'] ?? ''}',
                                           decoration: InputDecoration(

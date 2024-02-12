@@ -345,7 +345,7 @@ class _ReplaceVdfNewViewState extends State<ReplaceVdfNewView> {
                               text: widget.regions,
                               style: AppStyle.textStyleInterMed(
                                   fontSize: 14,
-                                  color: Color(0xff006838).withOpacity(0.5))),
+                                  color: Color(0xff006838))),
                         ],
                       ),
                     ),
@@ -360,7 +360,7 @@ class _ReplaceVdfNewViewState extends State<ReplaceVdfNewView> {
                               text: widget.location,
                               style: AppStyle.textStyleInterMed(
                                   fontSize: 14,
-                                  color: Color(0xff006838).withOpacity(0.5))),
+                                  color: Color(0xff006838))),
                         ],
                       ),
                     ),
@@ -375,7 +375,7 @@ class _ReplaceVdfNewViewState extends State<ReplaceVdfNewView> {
                               text: widget.cl,
                               style: AppStyle.textStyleInterMed(
                                   fontSize: 14,
-                                  color: Color(0xff006838).withOpacity(0.5))),
+                                  color: Color(0xff006838))),
                         ],
                       ),
                     ),
@@ -390,7 +390,7 @@ class _ReplaceVdfNewViewState extends State<ReplaceVdfNewView> {
                               text: controller.selectVdfName,
                               style: AppStyle.textStyleInterMed(
                                   fontSize: 14,
-                                  color: Color(0xff006838).withOpacity(0.5))),
+                                  color: Color(0xff006838))),
                         ],
                       ),
                     ),

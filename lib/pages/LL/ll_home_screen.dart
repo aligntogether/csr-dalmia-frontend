@@ -143,7 +143,7 @@ class _LLHomeState extends State<LLHome> {
                     );
                   },
                   child: cards(
-                    title: 'Annual Income Reports',
+                    title: 'Expected and actual income reports',
                     imageUrl: 'images/expectedreports.svg',
                   ),
                 ),
@@ -230,7 +230,7 @@ class _LLHomeState extends State<LLHome> {
                               ),
                               Flexible(
                                 child: Text(
-                                  'Drop or Select HH for Int.',
+                                  'Drop HH from intervention',
                                   style: TextStyle(
                                       fontSize: CustomFontTheme.textSize,
                                       color: const Color(0xFF0374AD),

@@ -307,10 +307,19 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
       print(msg);
       setState(() {
         messages = msg;
+
         if (msg != null && msg.isNotEmpty) {
+
+          print("fedfsdfsd${msg[msg.length-1]['recipientId']}");
+          print("ffsdf : ${widget.userid}");
           feedbackInitiator = msg[0]['feedbackInitiator'].toString() ?? '0';
+          print("feedbackInitiator : $feedbackInitiator");
+          print("feedbackInitiatfdfor : ${msg[msg.length-1]['recipientId'] == widget.userid}");
           if(feedbackInitiator==widget.userid && widget.isAccepted=='1')
           {
+            feed.sendMsg.value = true;
+          }
+          else if (msg[msg.length-1]['recipientId'].toString() == widget.userid) {
             feed.sendMsg.value = true;
           }
           print("feedbackInitiatordd :  $feedbackInitiator");
@@ -332,24 +341,26 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
     print("messages11 : $messages");
     messages.forEach((e) {
       list.add(Space.height(20));
-      list.add(Container(
+      list.add(
+          Container(
           width: Get.width,
           margin: EdgeInsets.symmetric(horizontal: 16),
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  spreadRadius: 4,
-                  blurRadius: 4,
-                  offset: Offset(4, 4),
+                  color: Colors.grey.withOpacity(0.5),
+                  blurRadius: 4.0,
+                  offset: Offset(0.0, 2.0),
+
                 ),
               ],
               borderRadius: BorderRadius.circular(9),
               color: e['senderId'].toString() == widget.userid
-                  ? Color(0xff008CD3).withOpacity(0.18)
-                  : Color.fromARGB(255, 245, 246, 246).withOpacity(0.18)),
+                  ? Color(0xffc2deec)
+                  : Color.fromARGB(255, 245, 246, 246)),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 e['message'],
@@ -368,7 +379,7 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                           ? "You"
                           : "${widget.name}",
                       style: AppStyle.textStyleInterMed(
-                          fontSize: 12,
+                          fontSize: Get.height*(12/Get.height),
                           color: Color(0xff181818).withOpacity(0.6)),
                     ),
                   ),
@@ -396,6 +407,10 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
           ? feedbackInitiator == widget.userid
               ? Column(
                   children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+
                     Container(
                       height: 36,
                       width: 207,
@@ -446,6 +461,10 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                 )
               : Column(
                   children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+
                     Container(
                       height: 36,
                       width: 207,
@@ -461,35 +480,35 @@ class _FeedBackSendMsgViewState extends State<FeedBackSendMsgView> {
                       ),
                     ),
                     Space.height(20),
-                    GestureDetector(
-                      onTap: () async {
-                        bool? deleteResponse =
-                        await feedbackApiService.deleteFeedback(
-                            int.parse(widget.userid!),
-                            int.parse(widget.feedbackid!));
-                        if (deleteResponse == true) {
-
-                          Get.back();
-
-                        }
-                      },
-                      child: Container(
-                        height: 50,
-                        width: MySize.screenWidth * 0.7,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 27, vertical: 16),
-                        decoration: BoxDecoration(
-                            color: Color(0xff27528F),
-                            borderRadius: BorderRadius.circular(5)),
-                        child: Center(
-                          child: Text(
-                            "Delete",
-                            style: AppStyle.textStyleInterMed(
-                                fontSize: 14, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
+                    // GestureDetector(
+                    //   onTap: () async {
+                    //     bool? deleteResponse =
+                    //     await feedbackApiService.deleteFeedback(
+                    //         int.parse(widget.userid!),
+                    //         int.parse(widget.feedbackid!));
+                    //     if (deleteResponse == true) {
+                    //
+                    //       Get.back();
+                    //
+                    //     }
+                    //   },
+                    //   child: Container(
+                    //     height: 50,
+                    //     width: MySize.screenWidth * 0.7,
+                    //     padding: EdgeInsets.symmetric(
+                    //         horizontal: 27, vertical: 16),
+                    //     decoration: BoxDecoration(
+                    //         color: Color(0xff27528F),
+                    //         borderRadius: BorderRadius.circular(5)),
+                    //     child: Center(
+                    //       child: Text(
+                    //         "Delete",
+                    //         style: AppStyle.textStyleInterMed(
+                    //             fontSize: 14, color: Colors.white),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                     Space.height(20),
                   ],
                 )

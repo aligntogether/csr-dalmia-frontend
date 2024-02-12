@@ -222,7 +222,7 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
               padding: EdgeInsets.only(left: 10),
               child: Center(
                 child: Text(
-                  'Locations',
+                  'Clusters',
                   style: TextStyle(
                     fontWeight: CustomFontTheme.headingwt,
                     fontSize: CustomFontTheme.textSize,
@@ -373,7 +373,8 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
             Container(
               height: MySize.safeHeight!*(70/MySize.screenHeight),
               decoration: BoxDecoration(
-                color:isEven
+                color: firstColumn=='clusterId'?Color(0xff008CD3).withOpacity(0.3):
+                isEven
                     ? Colors.blue.shade50
                     : Colors.white,
 
@@ -415,10 +416,11 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
                   height: 60,
                   width: MySize.screenWidth*(80/MySize.screenWidth),
                   decoration: BoxDecoration(
-                    color:
+                    color:firstColumn=='clusterId'?Color(0xff008CD3).withOpacity(0.3):
                     isEven
                         ? Colors.blue.shade50
                         : Colors.white,
+
 
                   ),
 

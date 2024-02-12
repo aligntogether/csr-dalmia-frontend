@@ -214,7 +214,7 @@ class _AmountUtilizedViewState extends State<AmountUtilizedView> {
               padding: EdgeInsets.only(left: 10),
               child: Center(
                 child: Text(
-                  'Locations',
+                  'Details',
                   style: TextStyle(
                     fontWeight: CustomFontTheme.headingwt,
                     fontSize: CustomFontTheme.textSize,

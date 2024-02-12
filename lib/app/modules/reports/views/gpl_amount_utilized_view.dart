@@ -162,7 +162,7 @@ class _GplAmountUtilizedViewState extends State<GplAmountUtilizedView> {
                         style: AppStyle.textStyleBoldMed(fontSize: 14),
                       ),
                       Text(
-                        "(Repees /in Lakhs)",
+                        "(Rupees /in Lakhs)",
                         style: AppStyle.textStyleInterMed(fontSize: 14),
                       ),
                     ],
@@ -224,7 +224,7 @@ class _GplAmountUtilizedViewState extends State<GplAmountUtilizedView> {
               padding: EdgeInsets.only(left: 10),
               child: Center(
                 child: Text(
-                  'Locations',
+                  'Details',
                   style: TextStyle(
                     fontWeight: CustomFontTheme.headingwt,
                     fontSize: CustomFontTheme.textSize,

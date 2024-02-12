@@ -6,6 +6,7 @@ import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/RH/RhHomeController.dart';
 import 'package:dalmia/pages/RH/rh_lever_wise_report/rh_lever_wise_report_view.dart';
+import 'package:dalmia/pages/RH/rh_report/rh_expected_actual.dart';
 import 'package:dalmia/pages/RH/rh_report/rh_report.dart';
 
 import 'package:dalmia/pages/loginUtility/page/login.dart';
@@ -29,6 +30,7 @@ class _RHHomeState extends State<RHHome> {
   int length = 0;
   String? refId;
   String name = "";
+  List<String> regions=[];
 
   @override
   void initState() {
@@ -41,8 +43,71 @@ class _RHHomeState extends State<RHHome> {
     SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
         .then((value) => setState(() {
               refId = value;
+              fetchRegion(refId!);
             }));
     fetchData(context);
+  }
+  void fetchRegion(String rhId) async{
+    final response = await http.get(
+      Uri.parse(
+          'https://mobileqacloud.dalmiabharat.com:443/csr/regions/search/findAllByRhId?rhId=${rhId}'),
+    );
+    if (response.statusCode == 200) {
+     // response {
+      //   "_embedded": {
+      //     "regions": [
+      //       {
+      //         "region": "South and Chandrapur",
+      //         "rhId": 10001,
+      //         "_links": {
+      //           "self": {
+      //             "href": "https://mobileqacloud.dalmiabharat.com/csr/regions/10001"
+      //           },
+      //           "region": {
+      //             "href": "https://mobileqacloud.dalmiabharat.com/csr/regions/10001"
+      //           }
+      //         }
+      //       },
+      //       {
+      //         "region": "North East",
+      //         "rhId": 10001,
+      //         "_links": {
+      //           "self": {
+      //             "href": "https://mobileqacloud.dalmiabharat.com/csr/regions/10002"
+      //           },
+      //           "region": {
+      //             "href": "https://mobileqacloud.dalmiabharat.com/csr/regions/10002"
+      //           }
+      //         }
+      //       }
+      //     ]
+      //   },
+      //   "_links": {
+      //     "self": {
+      //       "href": "https://mobileqacloud.dalmiabharat.com/csr/regions/search/findAllByRhId?rhId=10001"
+      //     }
+      //   }
+      // }
+      // Response headers
+
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Map<String, dynamic> respBody = responseData['_embedded'];
+      final List<dynamic> regionsList = respBody['regions'];
+      print('response body $respBody');
+      // Convert the response body into a List of String and store it in regions
+      setState(() {
+        for(var i in regionsList){
+          regions.add(i['region']);
+        }
+
+      });
+      print("regions = $regions");
+
+    } else {
+      // Handle error
+      print('Error fetching data: ${response.statusCode}');
+    }
+
   }
 
 
@@ -139,7 +204,13 @@ class _RHHomeState extends State<RHHome> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.toNamed(Routes.EXPECTED_ACTUAL);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => RhExpectedActualView(
+                          regions: regions,
+                        )
+                      ),
+                    );
                   },
                   child: cards(
                     title: 'Expected and Actual Income Report',
