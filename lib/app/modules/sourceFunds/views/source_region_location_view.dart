@@ -135,11 +135,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                   ],
                 ),
               ),
-              Space.height(34),
-
-
-
-              Space.height(30),
+              Space.height(16),
               GetBuilder<SourceFundsController>(
                 id: "add",
                 builder: (controller) {

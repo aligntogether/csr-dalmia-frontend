@@ -119,129 +119,136 @@ class _LLActionDetailState extends State<LLActionDetail> {
                     child: Icon(Icons.close))
               ],
             ),
-            Center(
-              child: Text(
-                widget.hhid,
-                style: TextStyle(
-                    fontSize: CustomFontTheme.headingSize,
-                    fontWeight: CustomFontTheme.headingwt),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              'Name of VDF',
-              style: TextStyle(
-                  fontSize: CustomFontTheme.textSize,
-                  fontWeight: CustomFontTheme.headingwt),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              'Balamurugan',
-              style: TextStyle(
-                  fontSize: CustomFontTheme.textSize,
-                  color: CustomColorTheme.labelColor),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Text('Remarks By VDF',
-                style: TextStyle(
+
+                Center(
+                  child: Text(
+                    widget.hhid,
+                    style: TextStyle(
+                        fontSize: CustomFontTheme.headingSize,
+                        fontWeight: CustomFontTheme.headingwt),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  'Name of VDF',
+                  style: TextStyle(
+                      fontSize: CustomFontTheme.textSize,
+                      fontWeight: CustomFontTheme.headingwt),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  houseHoldDetail==null?"":houseHoldDetail?['vdfName'],
+                  style: TextStyle(
+                      fontSize: CustomFontTheme.textSize,
+                      color: CustomColorTheme.labelColor),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text('Remarks By VDF',
+                    style: TextStyle(
+                        fontSize: CustomFontTheme.textSize,
+                        fontWeight: CustomFontTheme.headingwt)),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  houseHoldDetail==null?"":houseHoldDetail?['reasonForDropping'],
+                  textAlign: TextAlign.justify,
+                  style: TextStyle(
                     fontSize: CustomFontTheme.textSize,
-                    fontWeight: CustomFontTheme.headingwt)),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              'The family is getting consistent income every month. Family children are in private schools. Family owns a higher end two wheeler and has electronic gadgets of high quality.',
-              textAlign: TextAlign.justify,
-              style: TextStyle(
-                fontSize: CustomFontTheme.textSize,
-                fontWeight: CustomFontTheme.labelwt,
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Divider(
-              thickness: 0.5,
-              color: CustomColorTheme.labelColor,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              'Household Details',
-              style: TextStyle(
-                  decoration: TextDecoration.underline,
+                    fontWeight: CustomFontTheme.labelwt,
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Divider(
+                  thickness: 0.5,
                   color: CustomColorTheme.labelColor,
-                  fontWeight: CustomFontTheme.labelwt),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            HouseDetails(
-              heading: 'Family Head',
-              text: 'Krishnan',
-            ),
-            HouseDetails(
-              heading: 'Street Name',
-              text: 'Temple Street',
-            ),
-            HouseDetails(
-              heading: 'Village Name',
-              text: 'Salayakurichi',
-            ),
-            HouseDetails(
-              heading: 'Panchayat Name',
-              text: 'Ottakovil',
-            ),
-            HouseDetails(
-              heading: 'Primary Occupation',
-              text: 'Dalmia Employed-Skilled labour',
-            ),
-            HouseDetails(
-              heading: 'Secondary Information',
-              text: 'Farming',
-            ),
-            HouseDetails(
-              heading: 'Village Name',
-              text: 'Salayakurichi',
-            ),
-            HouseDetails(
-              heading: 'Irrigated Land',
-              text: '2 acres',
-            ),
-            HouseDetails(
-              heading: 'Rainfed Land',
-              text: '4 acres',
-            ),
-            HouseDetails(
-              heading: 'Cows',
-              text: '3',
-            ),
-            HouseDetails(
-              heading: 'Goats',
-              text: '11',
-            ),
-            HouseDetails(
-              heading: 'Power Weeder',
-              text: '1',
-            ),
-            HouseDetails(
-              heading: 'Pakka House',
-              text: '1',
-            ),
-            HouseDetails(
-              heading: 'Tiled House',
-              text: '2 ',
-            ),
-            SizedBox(
-              height: 20,
-            ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  'Household Details',
+                  style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      color: CustomColorTheme.labelColor,
+                      fontWeight: CustomFontTheme.labelwt),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                HouseDetails(
+                  heading: 'Family Head',
+                  text: houseHoldDetail==null?"":houseHoldDetail?['memberName'],
+                ),
+                HouseDetails(
+                  heading: 'Street Name',
+                  text: houseHoldDetail==null?"":houseHoldDetail?['streetName'],
+                ),
+                HouseDetails(
+                  heading: 'Village Name',
+                  text: houseHoldDetail==null?"":houseHoldDetail?['villageName'],
+                ),
+                HouseDetails(
+                  heading: 'Panchayat Name',
+                  text: houseHoldDetail==null?"":houseHoldDetail?['panchayatName'],
+                ),
+                HouseDetails(
+                  heading: 'Primary Occupation',
+                  text: houseHoldDetail==null?"":houseHoldDetail?['primaryEmployment'],
+                ),
+                HouseDetails(
+                  heading: 'Secondary Information',
+                  text: houseHoldDetail==null?"":houseHoldDetail?['secondaryEmployment'],
+                ),
+
+                HouseDetails(
+                  heading: 'Irrigated Land',
+                  text: houseHoldDetail==null?"":houseHoldDetail?['irrigatedLand']==null?"0":houseHoldDetail?['irrigatedLand'],
+                ),
+                HouseDetails(
+                  heading: 'Rainfed Land',
+                  text: houseHoldDetail==null?"":houseHoldDetail?['rainfedLand']==null?"0":houseHoldDetail?['rainfedLand'],
+                ),
+                Divider(
+                  thickness: 0.5,
+                  color: CustomColorTheme.labelColor,
+                ),
+                HouseDetails(
+                  heading: "Live Stock",
+                  text: houseHoldDetail==null?"":houseHoldDetail?['livestockNumbers']==null
+                      ?"0":houseHoldDetail?['livestockNumbers'].replaceAll("{", "").replaceAll("}", "").replaceAll("\"", "").replaceAll(",", "\n").replaceAll(":", " : ").replaceAll("null", "0"),
+                ),
+                Divider(
+                  thickness: 0.5,
+                  color: CustomColorTheme.labelColor,
+                ),
+                HouseDetails(
+                    heading: 'Farm Equipment',
+                    text: houseHoldDetail==null?"":houseHoldDetail?['farmEquipment']==null
+                        ?"0":houseHoldDetail?['farmEquipment'].replaceAll("{", "").replaceAll("}", "").replaceAll("\"", "").replaceAll(",", "\n").replaceAll(":", " : ").replaceAll("null", "0")
+                ),
+                Divider(
+                  thickness: 0.5,
+                  color: CustomColorTheme.labelColor,
+                ),
+                HouseDetails(
+                  heading: 'House type',
+                  text: houseHoldDetail==null
+                      ?"":houseHoldDetail!['houseConstruction']==null
+                      ?"0":houseHoldDetail!['houseConstruction'].replaceAll("{", "")
+                      .replaceAll("}", "").replaceAll("\"", "").replaceAll(",", "\n").replaceAll(":", " : ").replaceAll("null", "0"),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

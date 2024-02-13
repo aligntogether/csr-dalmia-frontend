@@ -13,6 +13,7 @@ import 'package:dalmia/pages/loginUtility/controller/loginController.dart';
 import 'package:dalmia/pages/loginUtility/service/loginApiService.dart';
 import 'package:dalmia/pages/loginUtility/page/otp.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
+import 'package:flutter/cupertino.dart';
 
 
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
 import '../../../common/common.dart';
-
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
 
@@ -30,15 +31,25 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  bool isInternetAvailable = false;
+
+
   final FocusNode textFieldFocusNode = FocusNode();
   bool isContainerVisible = true;
   String? validationResult;
   LoginController loginController = new LoginController();
   LoginApiService loginApiService = new LoginApiService();
 
+
   @override
   void initState() {
     super.initState();
+    InternetConnectionChecker().onStatusChange.listen((status) {
+      final hasInternet = status == InternetConnectionStatus.connected;
+      setState(() {
+        isInternetAvailable = hasInternet;
+      });
+    });
     // get usertype from shared pref
     SharedPrefHelper.getSharedPref(USER_TYPES_SHAREDPREF_KEY, context, false)
         .then((userType) => {
@@ -59,9 +70,23 @@ class _LoginState extends State<Login> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
-    return PopScope(canPop: true, child: login(context));
+    print("yyyy$isInternetAvailable");
+    return isInternetAvailable
+        ?PopScope(canPop: true, child: login(context))
+        :PopScope(canPop: true, child: loading(context));
+  }
+  SafeArea loading(context) {
+    print("yyyyt$isInternetAvailable");
+    return SafeArea(
+      child: Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
+    );
   }
 
   SafeArea login(context) {

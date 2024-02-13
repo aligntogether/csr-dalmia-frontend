@@ -303,9 +303,11 @@ class _ExpectedincomeState extends State<Expectedincome> {
             Container(
               height: MySize.safeHeight!*(70/MySize.screenHeight),
               decoration: BoxDecoration(
-                color:isEven
-                    ? Colors.blue.shade50
-                    : Colors.white,
+
+                  color: firstColumn=='clusterId'?Color(0xff008CD3).withOpacity(0.3):
+              isEven
+              ? Colors.blue.shade50
+                  : Colors.white,
 
               ),
 
@@ -314,7 +316,7 @@ class _ExpectedincomeState extends State<Expectedincome> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    capitalizeFirstLetter(firstColumn),
+                    capitalizeFirstLetter(firstColumn)=='ClusterId'?'Cluster ID $i':capitalizeFirstLetter(firstColumn),
                     style: TextStyle(
                       fontWeight: CustomFontTheme.headingwt,
                       fontSize: CustomFontTheme.textSize,
@@ -338,11 +340,10 @@ class _ExpectedincomeState extends State<Expectedincome> {
                   height: 60,
                   width: MySize.screenWidth*(80/MySize.screenWidth),
                   decoration: BoxDecoration(
-
-                    color:
-                    isEven
-                        ? Colors.blue.shade50
-                        : Colors.white,
+                color: firstColumn=='clusterId'?Color(0xff008CD3).withOpacity(0.3):
+                  isEven
+                  ? Colors.blue.shade50
+                      : Colors.white,
 
                   ),
 
@@ -356,6 +357,7 @@ class _ExpectedincomeState extends State<Expectedincome> {
                       ),
                       Text(
                         // "hi",
+                        firstColumn=='clusterId'?"":
                         controller.expectedActualReport![location] !=
                             null
                             ? formatNumber(controller.expectedActualReport![location]![cc.clusterIdList![i]]![firstColumn]??0)+'  '

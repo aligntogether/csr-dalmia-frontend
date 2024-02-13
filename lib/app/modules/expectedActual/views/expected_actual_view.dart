@@ -373,10 +373,10 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
             Container(
               height: MySize.safeHeight!*(70/MySize.screenHeight),
               decoration: BoxDecoration(
-                color: firstColumn=='clusterId'?Color(0xff008CD3).withOpacity(0.3):
-                isEven
-                    ? Colors.blue.shade50
-                    : Colors.white,
+                  color: firstColumn=='clusterId'?Color(0xff008CD3).withOpacity(0.3):
+                  isEven
+                      ? Colors.blue.shade50
+                      : Colors.white,
 
               ),
 

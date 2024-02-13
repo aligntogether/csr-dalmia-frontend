@@ -8,6 +8,7 @@ import 'package:dalmia/pages/RH/RhHomeController.dart';
 import 'package:dalmia/pages/RH/rh_lever_wise_report/rh_lever_wise_report_view.dart';
 import 'package:dalmia/pages/RH/rh_report/rh_expected_actual.dart';
 import 'package:dalmia/pages/RH/rh_report/rh_report.dart';
+import 'package:dalmia/pages/RH/rh_report/rh_source_of_fund.dart';
 
 import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
@@ -238,7 +239,9 @@ class _RHHomeState extends State<RHHome> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.to(SourceRegionsView());
+                    Get.to(RhSourceRegionsView(
+                      regions: regions,
+                    ));
                   },
                   child: cards(
                     title: 'Source of Funds',

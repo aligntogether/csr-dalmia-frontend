@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:dalmia/common/size_constant.dart';
 import 'package:dalmia/pages/CDO/action.dart';
 import 'package:dalmia/pages/CDO/cdohome.dart';
 import 'package:dalmia/theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class ActionDetail extends StatefulWidget {
@@ -217,23 +219,35 @@ class _ActionDetailState extends State<ActionDetail> {
               heading: 'Rainfed Land',
               text: houseHoldDetail==null?"":houseHoldDetail?['rainfedLand']==null?"0":houseHoldDetail?['rainfedLand'],
             ),
-          // for(var livestock in houseHoldDetail?['livestockNumbers'])
-          //   HouseDetails(
-          //     heading: livestock.toString(),
-          //     text: livestock['cow'],
-          //   ),
-          //   HouseDetails(
-          //     heading: 'Power Weeder',
-          //     text: '1',
-          //   ),
-          //   HouseDetails(
-          //     heading: 'Pakka House',
-          //     text: '1',
-          //   ),
-          //   HouseDetails(
-          //     heading: 'Tiled House',
-          //     text: '2 ',
-          //   ),
+                Divider(
+                  thickness: 0.5,
+                  color: CustomColorTheme.labelColor,
+                ),
+            HouseDetails(
+              heading: "Live Stock",
+              text: houseHoldDetail==null?"":houseHoldDetail?['livestockNumbers']==null
+                  ?"0":houseHoldDetail?['livestockNumbers'].replaceAll("{", "").replaceAll("}", "").replaceAll("\"", "").replaceAll(",", "\n").replaceAll(":", " : ").replaceAll("null", "0"),
+            ),
+                Divider(
+                  thickness: 0.5,
+                  color: CustomColorTheme.labelColor,
+                ),
+            HouseDetails(
+              heading: 'Farm Equipment',
+              text: houseHoldDetail==null?"":houseHoldDetail?['farmEquipment']==null
+                  ?"0":houseHoldDetail?['farmEquipment'].replaceAll("{", "").replaceAll("}", "").replaceAll("\"", "").replaceAll(",", "\n").replaceAll(":", " : ").replaceAll("null", "0")
+            ),
+                Divider(
+                  thickness: 0.5,
+                  color: CustomColorTheme.labelColor,
+                ),
+            HouseDetails(
+              heading: 'House type',
+              text: houseHoldDetail==null
+                  ?"":houseHoldDetail!['houseConstruction']==null
+                  ?"0":houseHoldDetail!['houseConstruction'].replaceAll("{", "")
+                  .replaceAll("}", "").replaceAll("\"", "").replaceAll(",", "\n").replaceAll(":", " : ").replaceAll("null", "0"),
+            ),
             SizedBox(
               height: 20,
             ),
@@ -314,9 +328,10 @@ class HouseDetails extends StatelessWidget {
             width: 30,
           ),
           SizedBox(
-            width: 100,
+            width: MySize.screenWidth*(140/MySize.screenWidth),
             child: Text(
               text,
+              softWrap: true,
               style: TextStyle(
                   color: CustomColorTheme.labelColor,
                   fontSize: CustomFontTheme.textSize),

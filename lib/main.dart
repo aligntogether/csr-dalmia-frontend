@@ -11,15 +11,16 @@ import 'package:get/get_navigation/get_navigation.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: "lib/.env");
-
+  print("1122");
   WidgetsFlutterBinding
       .ensureInitialized(); // Ensure that bindings are initialized
-
+  print("11223");
   // Set preferred orientations if needed
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: CustomColorTheme.primaryColor, // Set the status bar color
     // statusBarIconBrightness: Brightness.light, // Set the status bar icon color
   ));
+  print("11224");
   runApp(const MyWidget());
 }
 
@@ -31,6 +32,7 @@ class MyWidget extends StatelessWidget {
     MySize().init(
       context,
     );
+    print("11225");
     return GetMaterialApp(
         theme: ThemeData(
         
@@ -58,6 +60,7 @@ class MyWidget extends StatelessWidget {
         ),
         debugShowCheckedModeBanner: false,
         getPages: AppPages.routes,
+
         home: const Login());
 
 
