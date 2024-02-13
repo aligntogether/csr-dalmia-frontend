@@ -402,13 +402,11 @@ class _AddFarmState extends State<AddFarm> {
   }
 
   Rowstock(String text, void Function(dynamic text, dynamic value) addData,
-      Map<String, int>? value) {
+      Map<String, int> value) {
     TextEditingController controller = TextEditingController();
 
-    // Set initial value when the widget is created
-    if (value != null && value.containsKey(text)) {
-      controller.text = value[text]?.toString() ?? '';
-    }
+    controller.text = value[text].toString()=="null"?"":value[text].toString()=='0'? "":value[text].toString();
+
 
     // Use a listener to update the text field when the underlying value changes
     controller.addListener(() {

@@ -7,6 +7,7 @@ import 'package:dalmia/app/modules/leverWise/controllers/lever_wise_controller.d
 import 'package:dalmia/app/modules/overviewPan/controllers/overview_pan_controller.dart';
 import 'package:dalmia/app/modules/performanceVdf/controllers/performance_vdf_controller.dart';
 import 'package:dalmia/app/modules/sourceFunds/controllers/source_funds_controller.dart';
+import 'package:dalmia/pages/RH/rh_lever_wise_report/rh_lever_wise_report_controller.dart';
 import 'package:excel/excel.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
@@ -699,6 +700,61 @@ class ExportTableToExcel {
     await OpenFile.open(file.path);
   }
 
+  Future<void> exportRhLeverWiseReport(RhLeverWiseController controller,String region) async{
+    // Create an Excel workbook and worksheet
+    final Excel excel = Excel.createExcel();
+    final Sheet sheetObject = excel['Sheet1'];
+
+
+    sheetObject
+        .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: 0))
+        .value = "Levers";
+    // fill the first row with locations
+    int i=1;
+    for(var location in controller.rhLeverWiseReportByRegionId!.keys.toList()) {
+      for (var lever in controller.rhLeverWiseReportByRegionId![location].keys
+          .toList()) {
+        sheetObject
+            .cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0))
+            .value = location.toString()+"\n"+lever.toString();
+        i++;
+      }
+    }
+    // fill the first column with levers
+    for (int i = 0; i < controller.levers.length; i++) {
+      sheetObject
+          .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: i + 1))
+          .value = controller.levers[i];
+    }
+
+    // fill the data in the excel sheet
+   for(int row=1;row<=controller.levers.length;row++){
+     int col=1;
+     for(var location in controller.rhLeverWiseReportByRegionId!.keys.toList()) {
+       for (var lever in controller.rhLeverWiseReportByRegionId![location].keys
+           .toList()) {
+         sheetObject
+             .cell(CellIndex.indexByColumnRow(columnIndex: col, rowIndex: row))
+             .value =controller.rhLeverWiseReportByRegionId![location][lever][controller.levers[row-1]].toString()=="null"?"0":controller.rhLeverWiseReportByRegionId![location][lever][controller.levers[row-1]].toString();
+         col++;
+       }
+     }
+    }
+
+
+
+    // create download folder if not exists
+    final downloadFolderPath = await createDownloadFolder("dalmia_report");
+    // Save Excel file
+    final bytes = excel.save();
+    final file = File('$downloadFolderPath/$region+leverWiseReport.xlsx');
+    await file.writeAsBytes(bytes!);
+
+    // Open the file
+    await OpenFile.open(file.path);
+
+
+  }
   Future<void> exportVdfPerformance(LeverWiseController controller) async {
     // Get the table data as a list of lists
     List<Map<String, Map<String, dynamic>>> leverWiseApiReportList =

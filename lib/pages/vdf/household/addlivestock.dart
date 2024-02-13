@@ -413,7 +413,7 @@ class _AddStockState extends State<AddStock> {
   }
 Widget  _stockWidget(String text, Function addData, Map<String, int> livestockData){
     TextEditingController _controller = TextEditingController();
-    _controller.text = livestockData[text].toString()=="null"?"":livestockData[text].toString();
+    _controller.text = livestockData[text].toString()=="null"?"":livestockData[text].toString()=='0'? "":livestockData[text].toString();
     _controller.addListener(() {
       addData(text, _controller.text);
 

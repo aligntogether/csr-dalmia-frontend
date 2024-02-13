@@ -24,13 +24,17 @@ class RhLeverWiseController extends GetxController {
 
 
   List<String> levers = [
+    'Dalmia',
+    'DIKSHA',
+    'Non DIKSHA Skills',
+    'ITI',
+    'Sugar Cane Supply',
     'Agriculture',
-    'Horticulture',
     'Livestock',
+    'Horticulture',
     'Water',
     'IGA',
-    'Non DIKSHA Skills',
-    'Micro Enterprise',
+    'Micro Enterprice',
   ];
 
   var allLocations = ["Dalmiapuram", "Ariyalur", "Belagaum", "Kadapa", "Chandrapur", "SOUTH",

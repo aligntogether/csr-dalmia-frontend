@@ -14,11 +14,10 @@ class ActionDetail extends StatefulWidget {
   final String hhid;
   final String locationId;
 
-   ActionDetail({super.key, required this.hhid,required this.locationId});
+  ActionDetail({super.key, required this.hhid, required this.locationId});
 
   @override
   State<ActionDetail> createState() => _ActionDetailState();
-
 }
 
 void _callAcceptHouseholdAPI(String hhid) async {
@@ -65,7 +64,6 @@ void _calldropHouseholdAPI(String hhid) async {
 }
 
 class _ActionDetailState extends State<ActionDetail> {
-
   Map<String, dynamic>? houseHoldDetail;
 
   @override
@@ -73,8 +71,8 @@ class _ActionDetailState extends State<ActionDetail> {
     super.initState();
     print(widget.hhid);
     fetchHouseHoldDetails();
-
   }
+
   void fetchHouseHoldDetails() async {
     try {
       final response = await http.get(
@@ -101,9 +99,51 @@ class _ActionDetailState extends State<ActionDetail> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
+    List<Widget> livestock = [];
+    if (houseHoldDetail != null) {
+      jsonDecode(houseHoldDetail?['livestockNumbers'])
+          .forEach((key, value) {
+            if(value!=0){
+              livestock.add(HouseDetails(
+                heading: key,
+                text: value.toString(),
+              ));
+            }
+      });
+    }
+    List<Widget> farmEquipment = [];
+    if (houseHoldDetail != null) {
+      if(houseHoldDetail?['farmEquipment']!=null){
+        jsonDecode(houseHoldDetail?['farmEquipment'])
+            .forEach((key, value) {
+          if(value!=0){
+            farmEquipment.add(HouseDetails(
+              heading: key,
+              text: value.toString(),
+            ));
+          }
+        });
+      }
+    }
+    List<Widget> houseType = [];
+    if (houseHoldDetail != null) {
+
+      if(houseHoldDetail?['houseType']!=null){
+        jsonDecode(houseHoldDetail?['houseType'])
+            .forEach((key, value) {
+          if(value!=0){
+            houseType.add(HouseDetails(
+              heading: key,
+              text: value.toString(),
+            ));
+          }
+        });
+      }
+    }
+
+
     return SafeArea(
         child: Scaffold(
       body: SingleChildScrollView(
@@ -143,7 +183,7 @@ class _ActionDetailState extends State<ActionDetail> {
               height: 10,
             ),
             Text(
-              houseHoldDetail==null?"":houseHoldDetail?['vdfName'],
+              houseHoldDetail == null ? "" : houseHoldDetail?['vdfName'],
               style: TextStyle(
                   fontSize: CustomFontTheme.textSize,
                   color: CustomColorTheme.labelColor),
@@ -159,7 +199,9 @@ class _ActionDetailState extends State<ActionDetail> {
               height: 10,
             ),
             Text(
-              houseHoldDetail==null?"":houseHoldDetail?['reasonForDropping'],
+              houseHoldDetail == null
+                  ? ""
+                  : houseHoldDetail?['reasonForDropping'],
               textAlign: TextAlign.justify,
               style: TextStyle(
                 fontSize: CustomFontTheme.textSize,
@@ -188,66 +230,59 @@ class _ActionDetailState extends State<ActionDetail> {
             ),
             HouseDetails(
               heading: 'Family Head',
-              text: houseHoldDetail==null?"":houseHoldDetail?['memberName'],
+              text:
+                  houseHoldDetail == null ? "" : houseHoldDetail?['memberName'],
             ),
             HouseDetails(
               heading: 'Street Name',
-              text: houseHoldDetail==null?"":houseHoldDetail?['streetName'],
+              text:
+                  houseHoldDetail == null ? "" : houseHoldDetail?['streetName'],
             ),
             HouseDetails(
               heading: 'Village Name',
-              text: houseHoldDetail==null?"":houseHoldDetail?['villageName'],
+              text: houseHoldDetail == null
+                  ? ""
+                  : houseHoldDetail?['villageName'],
             ),
             HouseDetails(
               heading: 'Panchayat Name',
-              text: houseHoldDetail==null?"":houseHoldDetail?['panchayatName'],
+              text: houseHoldDetail == null
+                  ? ""
+                  : houseHoldDetail?['panchayatName'],
             ),
             HouseDetails(
               heading: 'Primary Occupation',
-              text: houseHoldDetail==null?"":houseHoldDetail?['primaryEmployment'],
+              text: houseHoldDetail == null
+                  ? ""
+                  : houseHoldDetail?['primaryEmployment'],
             ),
             HouseDetails(
               heading: 'Secondary Information',
-              text: houseHoldDetail==null?"":houseHoldDetail?['secondaryEmployment'],
+              text: houseHoldDetail == null
+                  ? ""
+                  : houseHoldDetail?['secondaryEmployment'],
             ),
-
             HouseDetails(
               heading: 'Irrigated Land',
-              text: houseHoldDetail==null?"":houseHoldDetail?['irrigatedLand']==null?"0":houseHoldDetail?['irrigatedLand'],
+              text: houseHoldDetail == null
+                  ? ""
+                  : houseHoldDetail?['irrigatedLand'] == null
+                      ? "0"
+                      : houseHoldDetail?['irrigatedLand'],
             ),
             HouseDetails(
               heading: 'Rainfed Land',
-              text: houseHoldDetail==null?"":houseHoldDetail?['rainfedLand']==null?"0":houseHoldDetail?['rainfedLand'],
+              text: houseHoldDetail == null
+                  ? ""
+                  : houseHoldDetail?['rainfedLand'] == null
+                      ? "0"
+                      : houseHoldDetail?['rainfedLand'],
             ),
-                Divider(
-                  thickness: 0.5,
-                  color: CustomColorTheme.labelColor,
-                ),
-            HouseDetails(
-              heading: "Live Stock",
-              text: houseHoldDetail==null?"":houseHoldDetail?['livestockNumbers']==null
-                  ?"0":houseHoldDetail?['livestockNumbers'].replaceAll("{", "").replaceAll("}", "").replaceAll("\"", "").replaceAll(",", "\n").replaceAll(":", " : ").replaceAll("null", "0"),
-            ),
-                Divider(
-                  thickness: 0.5,
-                  color: CustomColorTheme.labelColor,
-                ),
-            HouseDetails(
-              heading: 'Farm Equipment',
-              text: houseHoldDetail==null?"":houseHoldDetail?['farmEquipment']==null
-                  ?"0":houseHoldDetail?['farmEquipment'].replaceAll("{", "").replaceAll("}", "").replaceAll("\"", "").replaceAll(",", "\n").replaceAll(":", " : ").replaceAll("null", "0")
-            ),
-                Divider(
-                  thickness: 0.5,
-                  color: CustomColorTheme.labelColor,
-                ),
-            HouseDetails(
-              heading: 'House type',
-              text: houseHoldDetail==null
-                  ?"":houseHoldDetail!['houseConstruction']==null
-                  ?"0":houseHoldDetail!['houseConstruction'].replaceAll("{", "")
-                  .replaceAll("}", "").replaceAll("\"", "").replaceAll(",", "\n").replaceAll(":", " : ").replaceAll("null", "0"),
-            ),
+            for( var widget in livestock) widget,
+            for( var widget in farmEquipment) widget,
+            for( var widget in houseType) widget,
+
+
             SizedBox(
               height: 20,
             ),
@@ -261,7 +296,7 @@ class _ActionDetailState extends State<ActionDetail> {
                     backgroundColor: CustomColorTheme.primaryColor,
                   ),
                   onPressed: () {
-                    _drophhDialog(context, widget.hhid,widget.locationId);
+                    _drophhDialog(context, widget.hhid, widget.locationId);
                   },
                   child: const Text(
                     'Drop HH',
@@ -280,12 +315,11 @@ class _ActionDetailState extends State<ActionDetail> {
                     backgroundColor: Colors.white,
                   ),
                   onPressed: () {
-                    _selecthhDialog(context, widget.hhid,widget.locationId);
+                    _selecthhDialog(context, widget.hhid, widget.locationId);
                   },
                   child: Text(
                     'Select HH',
                     style: TextStyle(
-                      
                         color: CustomColorTheme.primaryColor,
                         fontSize: CustomFontTheme.textSize,
                         fontWeight: CustomFontTheme.labelwt),
@@ -328,7 +362,7 @@ class HouseDetails extends StatelessWidget {
             width: 30,
           ),
           SizedBox(
-            width: MySize.screenWidth*(140/MySize.screenWidth),
+            width: MySize.screenWidth * (140 / MySize.screenWidth),
             child: Text(
               text,
               softWrap: true,
@@ -343,7 +377,7 @@ class HouseDetails extends StatelessWidget {
   }
 }
 
-void _drophhDialog(BuildContext context, String hhid,String locationId) {
+void _drophhDialog(BuildContext context, String hhid, String locationId) {
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -361,7 +395,7 @@ void _drophhDialog(BuildContext context, String hhid,String locationId) {
                 onTap: () {
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (context) => const CDOHome()),
-                          (Route<dynamic> route) => false);
+                      (Route<dynamic> route) => false);
                 },
                 child: const Icon(Icons.close),
               ),
@@ -389,15 +423,10 @@ void _drophhDialog(BuildContext context, String hhid,String locationId) {
                 ),
                 onPressed: () {
                   _calldropHouseholdAPI(hhid);
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) =>  ActionAgainstHH(
-                        locationId: locationId,
-                      ),
-
-                      ),
-
-                  );
+                  // pop all screens and go to action against hh
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const CDOHome()),
+                      (Route<dynamic> route) => false);
                 },
                 child: const Text(
                   'Confirm',
@@ -430,7 +459,7 @@ void _selecthhDialog(BuildContext context, String hhid, String locationId) {
                 onTap: () {
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (context) => const CDOHome()),
-                          (Route<dynamic> route) => false);
+                      (Route<dynamic> route) => false);
                 },
                 child: const Icon(Icons.close),
               ),
@@ -459,7 +488,7 @@ void _selecthhDialog(BuildContext context, String hhid, String locationId) {
                 onPressed: () {
                   _callAcceptHouseholdAPI(hhid);
                   Navigator.pop(context);
-                  _confirmbox(context, hhid,locationId);
+                  _confirmbox(context, hhid, locationId);
                 },
                 child: const Text(
                   'Confirm',
@@ -523,10 +552,9 @@ void _confirmbox(BuildContext context, String hhid, String locationId) {
                 onPressed: () {
                   //pop all screens and go to action against hh
                   Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const CDOHome()),
-      (Route<dynamic> route) => false);
-      },
-
+                      MaterialPageRoute(builder: (context) => const CDOHome()),
+                      (Route<dynamic> route) => false);
+                },
                 child: const Text(
                   'Ok',
                   style: TextStyle(

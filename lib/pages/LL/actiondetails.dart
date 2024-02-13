@@ -1,13 +1,14 @@
 import 'dart:convert';
 
 import 'package:dalmia/pages/LL/action.dart';
+import 'package:dalmia/pages/LL/ll_home_screen.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 
-import '../CDO/cdohome.dart';
+
 
 class LLActionDetail extends StatefulWidget {
   final String hhid;
@@ -101,6 +102,49 @@ class _LLActionDetailState extends State<LLActionDetail> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> livestock = [];
+    if (houseHoldDetail != null) {
+      jsonDecode(houseHoldDetail?['livestockNumbers'])
+          .forEach((key, value) {
+        if(value!=0){
+          livestock.add(HouseDetails(
+            heading: key,
+            text: value.toString(),
+          ));
+        }
+      });
+    }
+    List<Widget> farmEquipment = [];
+    if (houseHoldDetail != null) {
+      if(houseHoldDetail?['farmEquipment']!=null){
+        jsonDecode(houseHoldDetail?['farmEquipment'])
+            .forEach((key, value) {
+          if(value!=0){
+            farmEquipment.add(HouseDetails(
+              heading: key,
+              text: value.toString(),
+            ));
+          }
+        });
+      }
+    }
+    List<Widget> houseType = [];
+    if (houseHoldDetail != null) {
+
+      if(houseHoldDetail?['houseType']!=null){
+        jsonDecode(houseHoldDetail?['houseType'])
+            .forEach((key, value) {
+          if(value!=0){
+            houseType.add(HouseDetails(
+              heading: key,
+              text: value.toString(),
+            ));
+          }
+        });
+      }
+    }
+
+
     return SafeArea(
         child: Scaffold(
       body: SingleChildScrollView(
@@ -217,35 +261,10 @@ class _LLActionDetailState extends State<LLActionDetail> {
                   heading: 'Rainfed Land',
                   text: houseHoldDetail==null?"":houseHoldDetail?['rainfedLand']==null?"0":houseHoldDetail?['rainfedLand'],
                 ),
-                Divider(
-                  thickness: 0.5,
-                  color: CustomColorTheme.labelColor,
-                ),
-                HouseDetails(
-                  heading: "Live Stock",
-                  text: houseHoldDetail==null?"":houseHoldDetail?['livestockNumbers']==null
-                      ?"0":houseHoldDetail?['livestockNumbers'].replaceAll("{", "").replaceAll("}", "").replaceAll("\"", "").replaceAll(",", "\n").replaceAll(":", " : ").replaceAll("null", "0"),
-                ),
-                Divider(
-                  thickness: 0.5,
-                  color: CustomColorTheme.labelColor,
-                ),
-                HouseDetails(
-                    heading: 'Farm Equipment',
-                    text: houseHoldDetail==null?"":houseHoldDetail?['farmEquipment']==null
-                        ?"0":houseHoldDetail?['farmEquipment'].replaceAll("{", "").replaceAll("}", "").replaceAll("\"", "").replaceAll(",", "\n").replaceAll(":", " : ").replaceAll("null", "0")
-                ),
-                Divider(
-                  thickness: 0.5,
-                  color: CustomColorTheme.labelColor,
-                ),
-                HouseDetails(
-                  heading: 'House type',
-                  text: houseHoldDetail==null
-                      ?"":houseHoldDetail!['houseConstruction']==null
-                      ?"0":houseHoldDetail!['houseConstruction'].replaceAll("{", "")
-                      .replaceAll("}", "").replaceAll("\"", "").replaceAll(",", "\n").replaceAll(":", " : ").replaceAll("null", "0"),
-                ),
+               for(var i in livestock) i,
+                for(var i in farmEquipment) i,
+                for(var i in houseType) i,
+
                 SizedBox(
                   height: 20,
                 ),
@@ -508,7 +527,7 @@ void _selectedconfirmbox(BuildContext context, String hhid, String locationId) {
                 ),
                 onPressed: () {
                   Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => const CDOHome()),
+                      MaterialPageRoute(builder: (context) => const LLHome()),
                           (Route<dynamic> route) => false);
                 },
                 child: const Text(
@@ -535,13 +554,9 @@ void _dropedconfirmbox(BuildContext context, String hhid, String locationId) {
     builder: (BuildContext context) {
       return WillPopScope(
         onWillPop: () async {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => ActionAgainstHHLL(
-                locationId: locationId,
-              ),
-            ),
-          );
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const LLHome()),
+                  (Route<dynamic> route) => false);
           return false;
         },
         child: AlertDialog(
@@ -577,8 +592,16 @@ void _dropedconfirmbox(BuildContext context, String hhid, String locationId) {
                 onPressed: () {
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
-                          builder: (context) => const CDOHome()),
+                          builder: (context) => const LLHome()),
                       (Route<dynamic> route) => false);
+                  // Navigator.of(context).pushReplacement(
+                  //   MaterialPageRoute(
+                  //     builder: (context) => ActionAgainstHHLL(
+                  //       locationId: locationId,
+                  //     ),
+                  //   ),
+                  // );
+
                 },
                 child: const Text(
                   'Ok',

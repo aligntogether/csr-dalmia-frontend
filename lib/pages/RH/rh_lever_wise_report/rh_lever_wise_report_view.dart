@@ -23,8 +23,9 @@ import '../../../helper/sharedpref.dart';
 
 class RhLeverWiseView extends StatefulWidget {
   String? refId;
+  List<String> regions;
 
-  RhLeverWiseView({Key? key,required this.refId}) : super(key: key);
+  RhLeverWiseView({Key? key,required this.refId,required this.regions}) : super(key: key);
 
   @override
   _RhLeverWiseViewState createState() => new _RhLeverWiseViewState();
@@ -42,49 +43,49 @@ class _RhLeverWiseViewState extends State<RhLeverWiseView> {
 
 
 
-  // void downloadExcel() {
-  //   try {
-  //     exportTableToExcel.exportLeverWiseReport(controller);
-  //     showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return AlertDialog(
-  //           title: Text('Download Successful'),
-  //           content: Text(
-  //               'The Excel file has been downloaded successfully in your download folder.'),
-  //           actions: <Widget>[
-  //             TextButton(
-  //               onPressed: () {
-  //                 Navigator.of(context).pop();
-  //               },
-  //               child: Text('OK'),
-  //             ),
-  //           ],
-  //         );
-  //       },
-  //     );
-  //   } catch (e) {
-  //     // Show error dialog
-  //     showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return AlertDialog(
-  //           title: Text('Download Error'),
-  //           content:
-  //           Text('An error occurred while downloading the Excel file.'),
-  //           actions: <Widget>[
-  //             TextButton(
-  //               onPressed: () {
-  //                 Navigator.of(context).pop();
-  //               },
-  //               child: Text('OK'),
-  //             ),
-  //           ],
-  //         );
-  //       },
-  //     );
-  //   }
-  // }
+  void downloadExcel() {
+    try {
+      exportTableToExcel.exportRhLeverWiseReport(controller,controller.selectedRegion!);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Download Successful'),
+            content: Text(
+                'The Excel file has been downloaded successfully in your download folder.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      // Show error dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Download Error'),
+            content:
+            Text('An error occurred while downloading the Excel file.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -186,6 +187,7 @@ class _RhLeverWiseViewState extends State<RhLeverWiseView> {
                     Space.height(14),
                     GestureDetector(
                       onTap: () {
+                        downloadExcel();
 
                       },
                       child: Container(
@@ -277,7 +279,8 @@ class _RhLeverWiseViewState extends State<RhLeverWiseView> {
                     DataColumn(
                       label: Container(
                         height: MySize.safeHeight! * 0.09,
-                        width: MySize.safeWidth! * 0.4,
+
+                        width: MySize.screenWidth*(80/MySize.screenWidth),
                         color: Color(0xff008CD3),
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         child: Center(
@@ -323,11 +326,14 @@ class _RhLeverWiseViewState extends State<RhLeverWiseView> {
                         ),
                         child: Row(
                           children: [
-                            Text(
-                              controller.levers[index],
-                              style: AppStyle.textStyleInterMed(fontSize: 14),
+                            Container(
+                              width: MySize.screenWidth*(120/MySize.screenWidth),
+                              child: Text(
+                                softWrap: true,
+                                controller.levers[index],
+                                style: AppStyle.textStyleInterMed(fontSize: 14),
+                              ),
                             ),
-
 
                           ],
 
@@ -341,7 +347,6 @@ class _RhLeverWiseViewState extends State<RhLeverWiseView> {
                             Container(
                               padding: EdgeInsets.only(left: 10),
                               height: MySize.safeHeight! * 0.09,
-                              width: MySize.safeWidth! * 0.4,
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 border: Border(
@@ -352,11 +357,21 @@ class _RhLeverWiseViewState extends State<RhLeverWiseView> {
                                 ),
                               ),
                               child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    controller.rhLeverWiseReportByRegionId![location][lever][controller.levers[index]].toString()=="null"?"0":controller.rhLeverWiseReportByRegionId![location][lever][controller.levers[index]].toString(),
-                                    style: AppStyle.textStyleInterMed(fontSize: 14),
+                                  VerticalDivider(
+                                    color: Color(0xff181818).withOpacity(0.3),
+                                    width: 0.5,
                                   ),
+                                  Container(
+                                    width: MySize.screenWidth*(60/MySize.screenWidth),
+                                    child: Text(
+                                      textAlign: TextAlign.center,
+                                      controller.rhLeverWiseReportByRegionId![location][lever][controller.levers[index]].toString()=="null"?"0":controller.rhLeverWiseReportByRegionId![location][lever][controller.levers[index]].toString(),
+                                      style: AppStyle.textStyleInterMed(fontSize: 14),
+                                    ),
+                                  ),
+
                                 ],
                               ),
                             ),

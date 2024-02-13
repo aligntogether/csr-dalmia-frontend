@@ -225,7 +225,8 @@ class _RHHomeState extends State<RHHome> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => RhLeverWiseView(refId: refId),
+                        builder: (context) => RhLeverWiseView(refId: refId,regions: regions,
+                        )
                       ),
                     );
                   },

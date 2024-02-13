@@ -97,13 +97,28 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
     List<String> details=[];
    performanceReport.forEach((key, value) {
      print("key : $key");
-      headerList.add(key);
-      value.keys.forEach((element) {
-        if(!details.contains(element)){
+     if(key!='cumulative'){
+       headerList.add(key);
+       value.keys.forEach((element) {
+         if(!details.contains(element)){
 
-          details.add(element);
-        }
-      });
+           details.add(element);
+         }
+       });
+     }
+
+    });
+    performanceReport.forEach((key, value) {
+      print("key : $key");
+      if(key=='cumulative'){
+        headerList.add(key);
+        value.keys.forEach((element) {
+          if(!details.contains(element)){
+
+            details.add(element);
+          }
+        });
+      }
 
     });
     List<String> headerList1= [];

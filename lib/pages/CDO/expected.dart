@@ -316,7 +316,7 @@ class _ExpectedincomeState extends State<Expectedincome> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    capitalizeFirstLetter(firstColumn)=='ClusterId'?'Cluster ID $i':capitalizeFirstLetter(firstColumn),
+                    capitalizeFirstLetter(firstColumn)=='ClusterId'?'Cluster ${i + 1}':capitalizeFirstLetter(firstColumn),
                     style: TextStyle(
                       fontWeight: CustomFontTheme.headingwt,
                       fontSize: CustomFontTheme.textSize,
