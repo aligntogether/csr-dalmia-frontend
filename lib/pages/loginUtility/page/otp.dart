@@ -251,6 +251,7 @@ class _OtpState extends State<Otp> {
           USER_TYPES_SHAREDPREF_KEY, authResponse.userType);
       SharedPrefHelper.storeSharedPref(
           ACCESS_TOKEN_SHAREDPREF_KEY, authResponse.accessToken);
+
       SharedPrefHelper.storeSharedPref(
           APP_NAME_SHAREDPREF_KEY, authResponse.appName);
       SharedPrefHelper.storeSharedPref(

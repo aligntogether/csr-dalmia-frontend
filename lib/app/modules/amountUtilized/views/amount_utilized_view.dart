@@ -44,13 +44,14 @@ class _AmountUtilizedViewState extends State<AmountUtilizedView> {
   }
 
   void setRegions(String userId) async {
+    String accessId =await SharedPrefHelper.getSharedPref(ACCESS_TOKEN_SHAREDPREF_KEY, context,false);
     Map<int, String> regions =
-        await amountUtilizedApiService.getListOfRegions(userId);
+        await amountUtilizedApiService.getListOfRegions(userId,accessId);
     Map<String, List<String>> locations =
-        await amountUtilizedApiService.getListOfLocations(regions);
+        await amountUtilizedApiService.getListOfLocations(regions,accessId);
     Map<String,dynamic> data =
     await amountUtilizedApiService.getAmountUtilizedByRhId(
-        userId);
+        userId,accessId);
     setState(() {
       controller.updateRegions(regions);
       controller.updateLocations(locations);

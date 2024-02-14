@@ -6,7 +6,6 @@ import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/size_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 import 'package:stomp_dart_client/stomp.dart';
@@ -16,6 +15,10 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 import 'feedback_view.dart';
 
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 class FeedBackSendMsgView extends StatefulWidget {
   String? regions, location, feedbackid, name, userid, recipentid, isAccepted;
   FeedBackSendMsgView({

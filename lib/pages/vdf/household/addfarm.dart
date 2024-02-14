@@ -8,9 +8,12 @@ import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 
 import '../../../common/size_constant.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 class AddFarm extends StatefulWidget {
   final String? id;
   const AddFarm({Key? key, this.id}) : super(key: key);

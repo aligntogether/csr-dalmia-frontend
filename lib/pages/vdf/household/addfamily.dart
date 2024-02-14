@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:dalmia/apis/commonobject.dart';
 import 'package:dalmia/pages/vdf/household/addhead.dart';
@@ -13,6 +12,10 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class AddFamily extends StatefulWidget {
   final String? id;

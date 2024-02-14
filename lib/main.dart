@@ -1,5 +1,6 @@
 import 'package:dalmia/app/routes/app_pages.dart';
 import 'package:dalmia/common/size_constant.dart';
+import 'package:dalmia/helper/http_intercepter.dart';
 import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
 
@@ -14,12 +15,11 @@ Future<void> main() async {
   print("1122");
   WidgetsFlutterBinding
       .ensureInitialized(); // Ensure that bindings are initialized
-  print("11223");
-  // Set preferred orientations if needed
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: CustomColorTheme.primaryColor, // Set the status bar color
     // statusBarIconBrightness: Brightness.light, // Set the status bar icon color
   ));
+
   print("11224");
   runApp(const MyWidget());
 }

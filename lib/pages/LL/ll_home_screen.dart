@@ -11,7 +11,6 @@ import 'package:dalmia/pages/LL/sourceoffunds.dart';
 import 'package:dalmia/pages/LL/vdffund.dart';
 import 'package:dalmia/pages/LL/vdfreports.dart';
 //import as http
-import 'package:http/http.dart' as http;
 import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +24,10 @@ import '../CDO/expected.dart';
 import '../CDO/sourceoffunds.dart';
 import '../CDO/vdffund.dart';
 import 'll_controller.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 class LLHome extends StatefulWidget {
   const LLHome({Key? key}) : super(key: key);
 
@@ -37,6 +40,7 @@ class _LLHomeState extends State<LLHome> {
   String? refId;
   String? locationId;
   String count='0';
+  String? accessId;
   LLController controller = Get.put(LLController());
   @override
   void initState() {
@@ -50,35 +54,42 @@ class _LLHomeState extends State<LLHome> {
     SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
         .then((value) => setState(() {
               value == '' ? refId = 'user' : refId = value;
-              try {
-                var url = Uri.parse(
-                    'https://mobileqacloud.dalmiabharat.com:443/csr/locations/search/findLocationIdByLocationLead?locationLead=$refId');
-                http.get(url).then((response) {
-                  var data = json.decode(response.body);
-                  print("ds$data");
+              SharedPrefHelper.getSharedPref(ACCESS_TOKEN_SHAREDPREF_KEY, context, false).then((value){
+                accessId=value;
+                fetch(value, refId!);
+              });
 
-                  locationId= data;
-
-                  var url=Uri.parse('https://mobileqacloud.dalmiabharat.com:443/csr/action-dropped-household-details-ll?locationId=$locationId');
-                  http.get(url).then((response) {
-                    var data = json.decode(response.body);
-                    print("ds$data");
-
-                    setState(() {
-                      count = data==null?'0':data['totalCount'].toString();
-                    });
-
-                  });
-                  return locationId;
-                });
-              } catch (e) {
-                locationId = '10001';
-                print(e);
-
-              }
 
     }));
     ;
+  }
+  void fetch(String accessId, String refId1) async{
+    try {
+      var url = Uri.parse(
+          'https://mobileqacloud.dalmiabharat.com:443/csr/locations/search/findLocationIdByLocationLead?locationLead=$refId1');
+      http.get(url, headers: {'X-Access-Token': accessId}).then((response) {
+        var data = json.decode(response.body);
+        print("ds$data");
+
+        locationId= data;
+
+        var url=Uri.parse('https://mobileqacloud.dalmiabharat.com:443/csr/action-dropped-household-details-ll?locationId=$locationId');
+        http.get(url,headers: {'X-Access-Token': accessId}).then((response) {
+          var data = json.decode(response.body);
+          print("ds$data");
+
+          setState(() {
+            count = data==null?'0':data['totalCount'].toString();
+          });
+
+        });
+        return locationId;
+      });
+    } catch (e) {
+      locationId = '10001';
+      print(e);
+
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -104,7 +115,9 @@ class _LLHomeState extends State<LLHome> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const VdfReport(),
+                        builder: (context) =>  VdfReport(
+                          accessId: accessId!,
+                        ),
                       ),
                     );
                   },
@@ -120,7 +133,9 @@ class _LLHomeState extends State<LLHome> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => VDFFunds(),
+                        builder: (context) => VDFFunds(
+                          locationId: locationId!,
+                        ),
                       ),
                     );
                   },
@@ -138,6 +153,7 @@ class _LLHomeState extends State<LLHome> {
                       MaterialPageRoute(
                         builder: (context) =>  Expectedincome(
                           locationId: int.tryParse(locationId!),
+                          accessId:accessId! ,
                         ),
                       ),
                     );
@@ -156,7 +172,7 @@ class _LLHomeState extends State<LLHome> {
                       MaterialPageRoute(
                         builder: (context) => SourceOfFunds(
                           locationId: int.tryParse(locationId!),
-
+                          accessId: accessId!,
                         ),
                       ),
                     );
@@ -184,7 +200,7 @@ class _LLHomeState extends State<LLHome> {
                       MaterialPageRoute(
                         builder: (context) => ActionAgainstHHLL(
                           locationId: locationId!,
-
+                          accessId: accessId!,
                         ),
                       ),
                     );

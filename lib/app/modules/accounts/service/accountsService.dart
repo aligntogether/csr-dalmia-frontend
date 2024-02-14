@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'package:dalmia/app/modules/accounts/controllers/accountsController.dart';
 import 'package:dalmia/helper/sharedpref.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class AccountsService {
   String? base = dotenv.env['BASE_URL'];

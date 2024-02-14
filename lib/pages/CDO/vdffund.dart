@@ -7,10 +7,19 @@ import 'package:dalmia/pages/CDO/cdohome.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+
+import '../../Constants/constant_export.dart';
+import '../../Constants/constants.dart';
+import '../../Constants/constants.dart';
+import '../../helper/sharedpref.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class VDFFunds extends StatefulWidget {
-  const VDFFunds({Key? key}) : super(key: key);
+  String locationId;
+   VDFFunds({Key? key,required this.locationId}) : super(key: key);
 
   @override
   State<VDFFunds> createState() => _VDFFundsState();
@@ -26,24 +35,31 @@ class _VDFFundsState extends State<VDFFunds> {
   }
 
   Future<void> fetchData() async {
-    final response = await http.get(
-      Uri.parse(
-        '$base/funds-utilized-by-vdf?locationId=10001',
-      ),
-    );
+    String accessId = await SharedPrefHelper.getSharedPref(ACCESS_TOKEN_SHAREDPREF_KEY, context, true);
+    if(accessId.isNotEmpty || accessId != ""){
+      final response = await http.get(
+          Uri.parse(
+            '$base/funds-utilized-by-vdf?locationId=${widget.locationId}',
+          ),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'X-Access-Token': accessId,
+          }
+      );
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = json.decode(response.body);
-      final List<dynamic> respBody = responseData['resp_body'];
-      print("ds$respBody");
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final List<dynamic> respBody = responseData['resp_body'];
+        print("ds$respBody");
 
-      setState(() {
-        fundData = List<Map<String, dynamic>>.from(respBody);
-        // print(fundData);
-      });
-    } else {
-      // Handle error
-      print('Error fetching data: ${response.statusCode}');
+        setState(() {
+          fundData = List<Map<String, dynamic>>.from(respBody);
+          // print(fundData);
+        });
+      } else {
+        // Handle error
+        print('Error fetching data: ${response.statusCode}');
+      }
     }
   }
 

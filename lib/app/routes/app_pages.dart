@@ -41,7 +41,6 @@ part 'app_routes.dart';
 
 class AppPages {
   AppPages._();
-
   static final routes = [
     GetPage(
       name: _Paths.REPORTS,
@@ -115,12 +114,13 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.SOURCE_FUNDS,
-      page: () => const SourceFundsView(),
+      page: () =>  SourceFundsView(),
       binding: SourceFundsBinding(),
     ),
     GetPage(
       name: _Paths.EXPECTED_ACTUAL,
-      page: () => const ExpectedActualView(),
+      page: () =>  ExpectedActualView(
+      ),
       binding: ExpectedActualBinding(),
     ),
     GetPage(

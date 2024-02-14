@@ -5,17 +5,23 @@ import 'package:dalmia/common/navmenu.dart';
 
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
+import '../../../common/size_constant.dart';
 import 'Home.dart';
 
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
+
 class Leverwise extends StatefulWidget {
-  const Leverwise({super.key});
+  String vdfId;
+   Leverwise({super.key, required this.vdfId});
 
   @override
   State<Leverwise> createState() => _LeverwiseState();
@@ -64,17 +70,26 @@ class _LeverwiseState extends State<Leverwise> {
   }
 
   List<Map<String, dynamic>> leverData = []; // List to store API data
-
+  String formatInLakhs(int number) {
+    if(number>100){
+      NumberFormat format = NumberFormat('#,##,###', 'en_IN');
+      return format.format(number / 100000);
+    }
+    else{
+      return number.toString();
+    }
+  }
   @override
   void initState() {
     super.initState();
     fetchleverData(); // Call the method to fetch API data when the page initializes
   }
 
+
   Future<void> fetchleverData() async {
     try {
       final response = await http.get(
-        Uri.parse('$base/get-lever-wise-interventions?vdfId=10001'),
+        Uri.parse('$base/get-lever-wise-interventions?vdfId=${widget.vdfId}'),
       );
 
       if (response.statusCode == 200) {
@@ -248,7 +263,7 @@ class _LeverwiseState extends State<Leverwise> {
                                   topRight: Radius.circular(10),
                                 ),
                               ),
-                              columns: const [
+                              columns:  [
                                 DataColumn(
                                   label: Text(
                                     'Levers',
@@ -268,15 +283,22 @@ class _LeverwiseState extends State<Leverwise> {
                                   ),
                                 ),
                                 DataColumn(
-                                  label: Text(
-                                    'Annual Income Reported',
-                                    style: TextStyle(color: Colors.white),
+                                  label: Container(
+                                    width: MySize.screenWidth*(120/MySize.screenWidth),
+
+                                    child: Text(
+                                      'Annual Income Reported',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                                 DataColumn(
-                                  label: Text(
-                                    'Avg. income/int.',
-                                    style: TextStyle(color: Colors.white),
+                                  label: Container(
+                                    width: MySize.screenWidth*(120/MySize.screenWidth),
+                                    child: Text(
+                                      'Avg. income/int.',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -302,11 +324,11 @@ class _LeverwiseState extends State<Leverwise> {
                                     ),
                                     DataCell(
                                       Text(
-                                          '${lever['annualIncomeReported'] ?? 0}'),
+                                          formatInLakhs(lever['annualIncomeReported'] ?? 0)),
                                     ),
                                     DataCell(
                                       Text(
-                                          '${lever['averageIncomePerIntervention'] ?? 0}'),
+                                          formatInLakhs(lever['averageIncomePerIntervention'] ?? 0))
                                     ),
                                   ],
                                 );

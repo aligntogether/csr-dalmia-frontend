@@ -10,9 +10,13 @@ import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
-import 'package:http/http.dart' as http;
 
+import '../../../common/size_constant.dart';
 import 'Home.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class BusinessPlan extends StatefulWidget {
   const BusinessPlan({Key? key}) : super(key: key);
@@ -28,6 +32,7 @@ class _BusinessPlanState extends State<BusinessPlan> {
       isreportMenuOpen = !isreportMenuOpen;
     });
   }
+  num total=0;
 
   int? selectedRadio;
   int selectedIndex = 0; // Track the currently selected tab index
@@ -226,17 +231,22 @@ class _BusinessPlanState extends State<BusinessPlan> {
                                 topRight: Radius.circular(10),
                               ),
                             ),
-                            columns: const [
+                            columns:  [
                               DataColumn(
                                 label: Text(
-                                  'Sno.',
-                                  style: TextStyle(color: Colors.white),
+                                    'Sno.',
+                                    style: TextStyle(color: Colors.white),
+
                                 ),
                               ),
                               DataColumn(
-                                label: Text(
-                                  'Business Plan Titles',
-                                  style: TextStyle(color: Colors.white),
+                                label: Container(
+                                  width: MySize.screenWidth,
+
+                                  child: Text(
+                                    'Intervention Title',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
                               ),
                               DataColumn(
@@ -247,6 +257,7 @@ class _BusinessPlanState extends State<BusinessPlan> {
                               ),
                             ],
                             rows: businessData.map<DataRow>((data) {
+                              total+=data['householdCount']==null?0:data['householdCount'];
                               return DataRow(
                                 color: MaterialStateColor.resolveWith(
                                   (states) {
@@ -260,7 +271,10 @@ class _BusinessPlanState extends State<BusinessPlan> {
                                   DataCell(Text((businessData.indexOf(data) + 1)
                                       .toString())),
                                   DataCell(
-                                      Text(data['interventionName'] ?? '')),
+                                      Container(
+                                          width: MySize.screenWidth,
+
+                                          child: Text(data['interventionName'] ?? ''))),
                                   DataCell(Text(
                                       data['householdCount']?.toString() ??
                                           '')),
@@ -269,7 +283,9 @@ class _BusinessPlanState extends State<BusinessPlan> {
                             }).toList(),
                           ),
                         ),
-                      )
+                      ),
+                      Text('Total HHs: $total',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),)
+
                     ],
                   ),
                 )

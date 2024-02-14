@@ -28,6 +28,7 @@ class PerformanceVdfView extends StatefulWidget {
 
 class _PerformanceVdfViewState extends State<PerformanceVdfView> {
   final PerformanceVdfApiService performanceVdfApiService = new PerformanceVdfApiService();
+  String? accessId;
 
   bool isLoading = false;
   PerformanceVdfController controller = Get.put(PerformanceVdfController());
@@ -84,15 +85,20 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
     SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
         .then((value) => setState(() {
       value == '' ? name = 'user' : name = value;
+      SharedPrefHelper.getSharedPref(ACCESS_TOKEN_SHAREDPREF_KEY, context, false)
+          .then((value) => setState(() {
+        accessId = value;
+        regionsFuture = performanceVdfApiService.getListOfRegions(accessId!);
+      }));
     }));
     ;
-    regionsFuture = performanceVdfApiService.getListOfRegions();
+
   }
 
 
 
   void updatePerformanceReport() async {
-    Map<String, dynamic> performanceReport = await performanceVdfApiService.getPerformanceReport(controller.selectVdfId ?? 0);
+    Map<String, dynamic> performanceReport = await performanceVdfApiService.getPerformanceReport(controller.selectVdfId ?? 0,accessId!);
     List<String> headerList= [];
     List<String> details=[];
    performanceReport.forEach((key, value) {
@@ -230,7 +236,7 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                                   // Get locations based on the selected regionId
                                   Map<String, dynamic> locationsData =
                                   await performanceVdfApiService.getListOfLocations(
-                                      controller.selectRegionId!);
+                                      controller.selectRegionId!,accessId!);
 
                                   // Extract the list of locations from the returned data
                                   List<Map<String, dynamic>> locations =
@@ -295,7 +301,7 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
 
                               Map<String, dynamic>? clustersData =
                               await performanceVdfApiService.getListOfClusters(
-                                  controller.selectLocationId ?? 0);
+                                  controller.selectLocationId ?? 0,accessId!);
 
                               if (clustersData != null) {
                                 List<Map<String, dynamic>> clusters = [];

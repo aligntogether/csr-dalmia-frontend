@@ -32,6 +32,7 @@ class _OverviewPanViewState extends State<OverviewPanView> {
   late Future<Map<String, dynamic>> clustersFuture;
   bool isLoading = true;
   bool isLoadingLocation=true;
+  String? accessId;
   ExportTableToExcel exportsTableToExcel = new ExportTableToExcel();
 
   void downloadExcel(String location) {
@@ -91,9 +92,14 @@ class _OverviewPanViewState extends State<OverviewPanView> {
       value == '' ? name = 'user' : name = value;
     }));
     ;
-    getPanIndiaReport();
+    SharedPrefHelper.getSharedPref(ACCESS_TOKEN_SHAREDPREF_KEY, context, true).then((value) => setState(() {
+      setState(() {
+        accessId = value;
+        getPanIndiaReport();
+      });
+    }));
 
-    regionsFuture = overviewReportApiService.getListOfRegions();
+    regionsFuture = overviewReportApiService.getListOfRegions(context);
     controller.selectRegion = "All Regions";
   }
   String formatNumber(int number) {
@@ -102,9 +108,9 @@ class _OverviewPanViewState extends State<OverviewPanView> {
   }
   void getPanIndiaReport() async {
 
-    List<Map<String, Map<String, dynamic>>> panIndiaMappedData = await overviewReportApiService.getPanIndiaReport(controller.allLocations, controller.objectKeys);
-    Map<int,String> regions=await overviewReportApiService.getAllRegions();
-    Map<String,List<String>> regionLocation=await overviewReportApiService.getRegionLocation(regions);
+    List<Map<String, Map<String, dynamic>>> panIndiaMappedData = await overviewReportApiService.getPanIndiaReport(controller.allLocations, controller.objectKeys,accessId!);
+    Map<int,String> regions=await overviewReportApiService.getAllRegions(accessId!);
+    Map<String,List<String>> regionLocation=await overviewReportApiService.getRegionLocation(regions,accessId!);
     setState(() {
       isLoading = false;
       controller.updateOverviewMappedList(panIndiaMappedData);
@@ -230,7 +236,7 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                                       .toList()) : [];
                                   locationsCode.add("TOTAL");
 
-                                  List<Map<String, Map<String, dynamic>>> regionWiseMappedList = await overviewReportApiService.getRegionWiseReport(locationsCode, controller.objectKeys, controller.selectRegionId!);
+                                  List<Map<String, Map<String, dynamic>>> regionWiseMappedList = await overviewReportApiService.getRegionWiseReport(locationsCode, controller.objectKeys, controller.selectRegionId!,accessId!);
 
                                   print("regionWiseMappedList : $regionWiseMappedList \n\n");
                                   // print("regionWiseMappedList1 : ${regionWiseMappedList[0]}");
@@ -313,7 +319,7 @@ class _OverviewPanViewState extends State<OverviewPanView> {
 
                               controller.selectCluster = null;
 
-                              Map<String, dynamic>? clustersData = await overviewReportApiService.getListOfClusters(controller.selectLocationId ?? 0);
+                              Map<String, dynamic>? clustersData = await overviewReportApiService.getListOfClusters(controller.selectLocationId ?? 0,accessId!);
 
 
                               if (clustersData != null) {
@@ -340,7 +346,10 @@ class _OverviewPanViewState extends State<OverviewPanView> {
                                         dynamic>>> locationWiseMappedList = await overviewReportApiService
                                     .getLocationWiseReport(
                                     clustersVdfNameList, controller.objectKeys,
-                                    controller.selectLocationId!);
+                                    controller.selectLocationId!,
+                                    accessId!
+
+                                );
 
                                 if (locationWiseMappedList.isNotEmpty) {
                                   setState(() {

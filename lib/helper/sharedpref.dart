@@ -7,9 +7,15 @@ class SharedPrefHelper {
   /**
    *  Function to store the user ID using SharedPreferences
    */
+
+  static String accessToken = "";
   static Future<bool> storeSharedPref(String key, dynamic value) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      if(key == ACCESS_TOKEN_SHAREDPREF_KEY){
+        accessToken = value;
+      }
+
       prefs.setString(key, value);
       return true;
     } catch (e) {
@@ -21,9 +27,18 @@ class SharedPrefHelper {
    *  Function to get the saved SharedPreferences
    */
   static Future<String> getSharedPref(
-      String key, BuildContext context, bool redirect) async {
+      String key, BuildContext? context, bool redirect) async {
+    if(context == null && key == ACCESS_TOKEN_SHAREDPREF_KEY){
+      return accessToken;
+    }
+    if(context == null){
+      return "";
+    }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var value = prefs.getString(key);
+    if(key == ACCESS_TOKEN_SHAREDPREF_KEY){
+      accessToken = value!;
+    }
 
     // If null then redirect to login
     if (value == null && redirect) {

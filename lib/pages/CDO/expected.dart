@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:dalmia/app/modules/downloadExcelFromTable/ExportTableToExcel.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:http/http.dart' as http;
 import 'package:dalmia/app/modules/leverWise/controllers/lever_wise_controller.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/size_constant.dart';
@@ -15,9 +14,13 @@ import '../../app/modules/expectedActual/controllers/expected_actual_controller.
 import '../../app/modules/expectedActual/services/expected_actual_service.dart';
 import '../../common/color_constant.dart';
 
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 class Expectedincome extends StatefulWidget {
   int? locationId;
-   Expectedincome({Key? key,required this.locationId}) : super(key: key);
+  String accessId;
+   Expectedincome({Key? key,required this.locationId,required this.accessId}) : super(key: key);
   @override
   State<Expectedincome> createState() => _ExpectedincomeState();
 }
@@ -43,7 +46,7 @@ class _ExpectedincomeState extends State<Expectedincome> {
     try{
       var url = Uri.parse(
           'https://mobileqacloud.dalmiabharat.com:443/csr/locations/${widget.locationId}');
-      http.get(url).then((response) {
+      http.get(url,headers: {"X-Access-Token":widget.accessId}).then((response) {
         var data = json.decode(response.body);
 
         location = data['locationCode'];
@@ -53,12 +56,12 @@ class _ExpectedincomeState extends State<Expectedincome> {
     }catch(e){
       print(e);
     }
-    Map<String, dynamic> expectedActualReport=await services.getExpectedActualIncomeReport();
+    Map<String, dynamic> expectedActualReport=await services.getExpectedActualIncomeReport(widget.accessId);
     List<String> clusterIdList = [];
     Map<String, dynamic> clusterList = {};
     List<String> clusterPropertyKeys = [];
-    Map<int,String> regions= await services.getAllRegions();
-    Map<String,List<String>> regionLocation=await services.getRegionLocation(regions);
+    Map<int,String> regions= await services.getAllRegions(widget.accessId);
+    Map<String,List<String>> regionLocation=await services.getRegionLocation(regions,widget.accessId);
     expectedActualReport.forEach((key, value) {
       value.keys.forEach((element) {
         clusterIdList.add(element);

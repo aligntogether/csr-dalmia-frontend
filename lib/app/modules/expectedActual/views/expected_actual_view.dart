@@ -1,7 +1,9 @@
+import 'package:dalmia/Constants/constant_export.dart';
 import 'package:dalmia/app/modules/downloadExcelFromTable/ExportTableToExcel.dart';
 import 'package:dalmia/app/modules/leverWise/controllers/lever_wise_controller.dart';
 import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/size_constant.dart';
+import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/LL/llappbar.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,7 @@ import '../../../../common/color_constant.dart';
 import '../controllers/expected_actual_controller.dart';
 import '../services/expected_actual_service.dart';
 class ExpectedActualView extends StatefulWidget {
-  const ExpectedActualView({Key? key}) : super(key: key);
+   ExpectedActualView({Key? key}) : super(key: key);
   @override
   State<ExpectedActualView> createState() => _ExpectedActualViewState();
 }
@@ -78,12 +80,13 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
     return format.format(number);
   }
   void getExpectActualAdditionalIncome() async{
-    Map<String, dynamic> expectedActualReport=await services.getExpectedActualIncomeReport();
+    String accessId=await SharedPrefHelper.getSharedPref(ACCESS_TOKEN_SHAREDPREF_KEY, context, false);
+    Map<String, dynamic> expectedActualReport=await services.getExpectedActualIncomeReport(accessId);
     List<String> clusterIdList = [];
     Map<String, dynamic> clusterList = {};
     List<String> clusterPropertyKeys = [];
-    Map<int,String> regions= await services.getAllRegions();
-    Map<String,List<String>> regionLocation=await services.getRegionLocation(regions);
+    Map<int,String> regions= await services.getAllRegions(accessId);
+    Map<String,List<String>> regionLocation=await services.getRegionLocation(regions,accessId);
     expectedActualReport.forEach((key, value) {
       value.keys.forEach((element) {
         clusterIdList.add(element);

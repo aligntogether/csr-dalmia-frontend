@@ -8,14 +8,18 @@ import 'package:dalmia/pages/CDO/vdf_report_controller.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 import '../../common/size_constant.dart';
 import '../../helper/sharedpref.dart';
 
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
+
 class VdfReport extends StatefulWidget {
-  const VdfReport({Key? key}) : super(key: key);
+  String accessId;
+   VdfReport({Key? key,required this.accessId}) : super(key: key);
 
   @override
   State<VdfReport> createState() => _VdfReportState();
@@ -25,6 +29,7 @@ class _VdfReportState extends State<VdfReport> {
   List<Map<String, dynamic>> VdfReportData = [];
   VDFReportController controller = VDFReportController();
   String cdoId = '';
+  String? accessId;
 
   @override
   void initState() {
@@ -33,15 +38,19 @@ class _VdfReportState extends State<VdfReport> {
     SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
         .then((value) => setState(() {
       value == '' ? cdoId = '10001' : cdoId = value;
-      fetchlocationId(cdoId);
+      SharedPrefHelper.getSharedPref(ACCESS_TOKEN_SHAREDPREF_KEY, context, false)
+          .then((value) => setState(() {
+        accessId = value;
+        fetchlocationId(cdoId,accessId!);
+      }));
     }));
     ;
 
   }
-  void fetchlocationId(String cdoId) {
+  void fetchlocationId(String cdoId,String accessId) {
     var url = Uri.parse(
         'https://mobileqacloud.dalmiabharat.com:443/csr/locations/search/findLocationIdByCdoId?cdoId=$cdoId');
-    http.get(url).then((response) {
+    http.get(url, headers: {'X-Access-Token': accessId}).then((response) {
       var data = json.decode(response.body);
 
       controller.selectLocationId = data;
@@ -57,7 +66,7 @@ class _VdfReportState extends State<VdfReport> {
 
           controller.selectCluster = null;
 
-          Map<String, dynamic>? clustersData = await overviewReportApiService.getListOfClusters(controller.selectLocationId ?? 0);
+          Map<String, dynamic>? clustersData = await overviewReportApiService.getListOfClusters(controller.selectLocationId ?? 0, accessId!);
 
 
           if (clustersData != null) {
@@ -84,7 +93,11 @@ class _VdfReportState extends State<VdfReport> {
                     dynamic>>> locationWiseMappedList = await overviewReportApiService
                 .getLocationWiseReport(
                 clustersVdfNameList, controller.objectKeys,
-                controller.selectLocationId!);
+                controller.selectLocationId!,
+              accessId!
+
+
+            );
 
             if (locationWiseMappedList.isNotEmpty) {
               setState(() {

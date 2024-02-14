@@ -24,8 +24,9 @@ import '../../../app/modules/overviewPan/service/overviewReportApiService.dart';
 
 class RhReportView extends StatefulWidget {
   String? refId;
+  String? accessId;
 
-  RhReportView({Key? key,required this.refId}) : super(key: key);
+  RhReportView({Key? key,required this.refId,required this.accessId}) : super(key: key);
 
   @override
   _RhReportViewState createState() => new _RhReportViewState();
@@ -37,6 +38,7 @@ class _RhReportViewState extends State<RhReportView> {
   OverviewPanController controller = Get.put(OverviewPanController());
   late Future<Map<String, dynamic>> regionsFuture;
   late Future<Map<String, dynamic>> clustersFuture;
+  String? accessId;
   bool isLoading = true;
   bool isLoadingLocation=true;
   ExportTableToExcel exportsTableToExcel = new ExportTableToExcel();
@@ -100,7 +102,7 @@ class _RhReportViewState extends State<RhReportView> {
     ;
     getPanIndiaReport();
 
-    regionsFuture = overviewReportApiService.getListOfRegions();
+    regionsFuture = overviewReportApiService.getListOfRegions(context);
     controller.selectRegion = "All Regions";
   }
   String formatNumber(int number) {
@@ -109,10 +111,10 @@ class _RhReportViewState extends State<RhReportView> {
   }
   void getPanIndiaReport() async {
     List<dynamic> regionByRhIdList =
-    await rhLeverWiseReportServices.getRegionByRhId(widget.refId!);
-    List<Map<String, Map<String, dynamic>>> panIndiaMappedData = await overviewReportApiService.getPanIndiaReport(controller.allLocations, controller.objectKeys);
-    Map<int,String> regions=await overviewReportApiService.getAllRegions();
-    Map<String,List<String>> regionLocation=await overviewReportApiService.getRegionLocation(regions);
+    await rhLeverWiseReportServices.getRegionByRhId(widget.refId!,widget.accessId!);
+    List<Map<String, Map<String, dynamic>>> panIndiaMappedData = await overviewReportApiService.getPanIndiaReport(controller.allLocations, controller.objectKeys,widget.accessId!);
+    Map<int,String> regions=await overviewReportApiService.getAllRegions(widget.accessId!);
+    Map<String,List<String>> regionLocation=await overviewReportApiService.getRegionLocation(regions,widget.accessId!);
     setState(() {
       isLoading = false;
       controller.updateRegionByRhId(regionByRhIdList);
@@ -218,7 +220,7 @@ class _RhReportViewState extends State<RhReportView> {
                                   locationsCode.add("TOTAL");
 
                                   List<Map<String, Map<String, dynamic>>> regionWiseMappedList = await overviewReportApiService.getRegionWiseReport(locationsCode, controller.objectKeys, controller.regionByRhIdList![controller.regionByRhIdList!.indexWhere(
-                                          (element) => element['region']==newValue)]['regionId']);
+                                          (element) => element['region']==newValue)]['regionId'],widget.accessId!);
 
                                   print("regionWiseMappedList : $regionWiseMappedList \n\n");
                                   // print("regionWiseMappedList1 : ${regionWiseMappedList[0]}");
@@ -231,12 +233,6 @@ class _RhReportViewState extends State<RhReportView> {
                                     controller.updateParticularWiseList(locationsCode);
 
                                   });
-
-
-
-
-
-
                                 }
 
                             );
@@ -295,7 +291,7 @@ class _RhReportViewState extends State<RhReportView> {
 
                               controller.selectCluster = null;
 
-                              Map<String, dynamic>? clustersData = await overviewReportApiService.getListOfClusters(controller.selectLocationId ?? 0);
+                              Map<String, dynamic>? clustersData = await overviewReportApiService.getListOfClusters(controller.selectLocationId ?? 0, widget.accessId!);
 
 
                               if (clustersData != null) {
@@ -322,7 +318,9 @@ class _RhReportViewState extends State<RhReportView> {
                                         dynamic>>> locationWiseMappedList = await overviewReportApiService
                                     .getLocationWiseReport(
                                     clustersVdfNameList, controller.objectKeys,
-                                    controller.selectLocationId!);
+                                    controller.selectLocationId!,
+                                    widget.accessId!
+                                    );
 
                                 if (locationWiseMappedList.isNotEmpty) {
                                   setState(() {

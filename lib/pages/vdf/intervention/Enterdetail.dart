@@ -8,9 +8,12 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
 
 import '../../../common/size_constant.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 class EnterDetail extends StatefulWidget {
   final String? hid;
   final String? interId;
@@ -49,8 +52,9 @@ class _EnterDetailState extends State<EnterDetail> {
 
   @override
   void initState() {
-    fetchFamilyMembers();
     super.initState();
+    fetchFamilyMembers();
+    print("hid is ${widget.hid}");
   }
 
   Future<void> _updateinterAPI(
@@ -324,9 +328,12 @@ void _successmsg(BuildContext context, String? hid) {
                       width: 1, color: CustomColorTheme.primaryColor),
                 ),
                 onPressed: () {
+                  print("fdf " + hid!);
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => Addinter(),
+                      builder: (context) => Addinter(
+                        id: hid,
+                      ),
                     ),
                   );
                 },

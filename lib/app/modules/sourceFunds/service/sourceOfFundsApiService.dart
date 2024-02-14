@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'package:dalmia/app/modules/sourceFunds/controllers/source_funds_controller.dart';
 import 'package:dalmia/helper/sharedpref.dart';
-import 'package:http/http.dart' as http;
 
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class SourceOfFundsApiService {
 
@@ -14,12 +17,12 @@ class SourceOfFundsApiService {
   // String? base = 'http://192.168.1.68:8080/csr';
 
 
-  Future<Map<String, dynamic>> getListOfRegions(SourceFundsController controller) async {
+  Future<Map<String, dynamic>> getListOfRegions(SourceFundsController controller,String accessId) async {
     try {
       String url = '$base/list-regions';
 
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.get(Uri.parse(url),headers: {"X-Access-Token":accessId}).timeout(Duration(seconds: 30));
 
 
       if (response.statusCode == 200) {
@@ -60,10 +63,10 @@ class SourceOfFundsApiService {
   }
 
 
-  Future<Map<String, dynamic>> getListOfLocations(int regionId) async {
+  Future<Map<String, dynamic>> getListOfLocations(int regionId,String accessId) async {
     try {
 
-      final response = await http.get(Uri.parse('$base/list-locations?regionId=$regionId'));
+      final response = await http.get(Uri.parse('$base/list-locations?regionId=$regionId'),headers: {"X-Access-Token":accessId}).timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
 
@@ -95,12 +98,12 @@ class SourceOfFundsApiService {
   }
 
 
-  Future<Map<String, dynamic>> getPanchayatsByLocations(int locationId) async {
+  Future<Map<String, dynamic>> getPanchayatsByLocations(int locationId,String accessId) async {
     try {
 
       print("Object1gp, $locationId, locationId");
 
-      final response = await http.get(Uri.parse('$base/list-panchayat-by-location?locationId=$locationId'));
+      final response = await http.get(Uri.parse('$base/list-panchayat-by-location?locationId=$locationId'),headers: {"X-Access-Token":accessId}).timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
 
@@ -135,12 +138,12 @@ class SourceOfFundsApiService {
   }
 
 
-  Future<Map<String, dynamic>> getListOfClusters(int locationId) async {
+  Future<Map<String, dynamic>> getListOfClusters(int locationId,String accessId) async {
 
     try {
       String url = '$base/list-cluster-by-location?locationId=$locationId';
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.get(Uri.parse(url),headers: {"X-Access-Token":accessId}).timeout(Duration(seconds: 30));
 
 
       if (response.statusCode == 200) {
@@ -176,12 +179,12 @@ class SourceOfFundsApiService {
   }
 
 
-  Future<String> validateDuplicatePanchayat(int clusterId, String panchayatName, String panchayatCode) async {
+  Future<String> validateDuplicatePanchayat(int clusterId, String panchayatName, String panchayatCode,String accessId ) async {
 
     try {
       String url = '$base/validate-duplicate-panchayat?clusterId=$clusterId&panchayatName=$panchayatName&panchayatCode=$panchayatCode';
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.get(Uri.parse(url),headers:{"X-Access-Token":accessId}).timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         print("API Response: ${response.body}");
@@ -206,10 +209,11 @@ class SourceOfFundsApiService {
   }
 
 
-  Future<Map<String, Map<String, dynamic>>?> fetchSourceOfFundsData(SourceFundsController controller) async {
+  Future<Map<String, Map<String, dynamic>>?> fetchSourceOfFundsData(SourceFundsController controller, String accessId) async {
     try {
       final response = await http.get(
         Uri.parse('$base/gpl-source-of-funds'),
+          headers:{"X-Access-Token":accessId}
       );
 
       if (response.statusCode == 200) {
@@ -255,10 +259,11 @@ class SourceOfFundsApiService {
   }
 
 
-  Future<Map<String, Map<String, dynamic>>?> fetchRegionWiseSourceOfFundsData(SourceFundsController controller) async {
+  Future<Map<String, Map<String, dynamic>>?> fetchRegionWiseSourceOfFundsData(SourceFundsController controller,String accessId) async {
     try {
       final response = await http.get(
         Uri.parse('$base/gpl-location-wise-source-of-funds?regionId=${controller.selectRegionId!}'),
+          headers:{"X-Access-Token":accessId}
       );
 
       if (response.statusCode == 200) {
@@ -304,10 +309,11 @@ class SourceOfFundsApiService {
   }
 
 
-  Future<Map<String, Map<String, dynamic>>?> fetchClusterWiseSourceOfFundsData(SourceFundsController controller) async {
+  Future<Map<String, Map<String, dynamic>>?> fetchClusterWiseSourceOfFundsData(SourceFundsController controller,String accessId) async {
     try {
       final response = await http.get(
         Uri.parse('$base/gpl-cluster-wise-source-of-funds?locationId=${controller.selectLocationId!}'),
+          headers:{"X-Access-Token":accessId}
       );
 
       if (response.statusCode == 200) {

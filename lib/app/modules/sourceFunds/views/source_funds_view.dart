@@ -1,3 +1,4 @@
+import 'package:dalmia/Constants/constant_export.dart';
 import 'package:dalmia/app/modules/downloadExcelFromTable/ExportTableToExcel.dart';
 import 'package:dalmia/app/modules/sourceFunds/views/source_interventions_view.dart';
 import 'package:dalmia/app/modules/sourceFunds/views/source_region_location_view.dart';
@@ -6,6 +7,7 @@ import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/common/color_constant.dart';
 import 'package:dalmia/common/image_constant.dart';
 import 'package:dalmia/common/size_constant.dart';
+import 'package:dalmia/helper/sharedpref.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -13,7 +15,7 @@ import 'package:get/get.dart';
 import '../controllers/source_funds_controller.dart';
 
 class SourceFundsView extends GetView<SourceFundsController> {
-  const SourceFundsView({Key? key}) : super(key: key);
+   SourceFundsView({Key? key}) : super(key: key);
 
 
 
@@ -43,13 +45,19 @@ class SourceFundsView extends GetView<SourceFundsController> {
         child: Column(
           children: [
             Space.height(40),
-            listData("Source of funds for Interventions", () {
-              Get.to(SourceInterventionsView());
+            listData("Source of funds for Interventions", () async {
+              Get.to(SourceInterventionsView(
+                accessId: await SharedPrefHelper.getSharedPref(ACCESS_TOKEN_SHAREDPREF_KEY, context, false),
+
+              ));
             }),
             listData(
                 "Source of funds for Region & Locations",
-                    () {
-                  Get.to(SourceRegionsView());
+                    () async {
+                  Get.to(SourceRegionsView(
+                      accessId: await SharedPrefHelper.getSharedPref(ACCESS_TOKEN_SHAREDPREF_KEY, context, false),
+
+                  ));
 
                 }),
 

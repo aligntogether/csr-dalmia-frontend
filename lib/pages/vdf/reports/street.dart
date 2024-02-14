@@ -3,10 +3,9 @@ import 'dart:math';
 
 import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/common/navmenu.dart';
+import 'package:dalmia/common/size_constant.dart';
 
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
-import 'package:http/http.dart' as http;
-
 
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
@@ -16,6 +15,10 @@ import 'package:flutter/material.dart';
 
 import 'Home.dart';
 import 'hhidform.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class StreetReport extends StatefulWidget {
   final String? selectedvillage;
@@ -347,29 +350,46 @@ class _StreetReportState extends State<StreetReport> {
                 ),
                 dividerThickness: 0,
                 columnSpacing: 15,
-                columns: const <DataColumn>[
+                columns:  <DataColumn>[
                   DataColumn(
-                    label: Text(
-                      'Street Name',
-                      style: TextStyle(color: Colors.white),
+                    label: Container(
+                      width: MySize.screenWidth*(120/MySize.screenWidth),
+                      child: Text(
+                        'Street Name',
+                        softWrap: true,
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                   DataColumn(
-                    label: Text(
-                      'Income follow up Overdue',
-                      style: TextStyle(color: Colors.white),
+                    label: Container(
+                      width: MySize.screenWidth*(120/MySize.screenWidth),
+
+                      child: Text(
+                        'Income follow up Overdue',
+                        softWrap: true,
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                   DataColumn(
-                    label: Text(
-                      'Number of selected HHs without intervention',
-                      style: TextStyle(color: Colors.white),
+                    label: Container(
+                      width: MySize.screenWidth*(120/MySize.screenWidth),
+                      child: Text(
+                        'Number of selected HHs without intervention',
+                        softWrap: true,
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                   DataColumn(
-                    label: Text(
-                      'No. of Interventions started but not completed',
-                      style: TextStyle(color: Colors.white),
+                    label: Container(
+                      width: MySize.screenWidth*(120/MySize.screenWidth),
+                      child: Text(
+                        softWrap: true,
+                        'No. of Interventions started but not completed',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ],
@@ -414,15 +434,19 @@ class _StreetReportState extends State<StreetReport> {
                         ),
                       ),
                       DataCell(
-                        Text('${street['incomeFollowUpDue'] ?? ''}'),
+                        Center(child: Text('${street['incomeFollowUpDue'] ?? ''}')),
                       ),
                       DataCell(
-                        Text(
-                            '${street['selectedHHWithoutIntervention'] ?? ''}'),
+                        Center(
+                          child: Text(
+                              '${street['selectedHHWithoutIntervention'] ?? ''}'),
+                        ),
                       ),
                       DataCell(
-                        Text(
-                            '${street['interventionStartedButNotCompleted'] ?? ''}'),
+                        Center(
+                          child: Text(
+                              '${street['interventionStartedButNotCompleted'] ?? ''}'),
+                        ),
                       ),
                     ],
                   );

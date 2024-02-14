@@ -21,8 +21,9 @@ import '../../../../helper/sharedpref.dart';
 
 
 class SourceInterventionsView extends StatefulWidget {
+  String accessId;
 
-  SourceInterventionsView({super.key});
+  SourceInterventionsView({super.key,required this.accessId});
 
   @override
   _SourceInterventionsViewState createState() => _SourceInterventionsViewState();
@@ -100,7 +101,7 @@ class _SourceInterventionsViewState extends State<SourceInterventionsView> {
   }
 
   void fetchSourceFundsData() async {
-    await sourceOfFundsApiService.fetchSourceOfFundsData(controller).then((value) => {
+    await sourceOfFundsApiService.fetchSourceOfFundsData(controller,widget.accessId).then((value) => {
       setState(() {
         controller.updateSourceOfFundsData(value!);
         isLoading = false;

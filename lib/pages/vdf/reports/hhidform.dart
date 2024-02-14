@@ -13,7 +13,6 @@ import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 import '../../../Constants/constants.dart';
@@ -22,6 +21,10 @@ import '../../../helper/sharedpref.dart';
 import '../intervention/Enterdetail.dart';
 import '../intervention/Followup.dart';
 import 'Home.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 class HhidForm extends StatefulWidget {
   final String? streetid;
 
@@ -34,7 +37,7 @@ class HhidForm extends StatefulWidget {
 class _HhidFormState extends State<HhidForm> {
   List<Map<String, dynamic>> HhidData = [];
    String? vdfId;
-   int? n;
+   int n=0;
   Future<void> fetchHhidData() async {
     try {
       print('street id -- ${widget.streetid}');
@@ -455,22 +458,35 @@ class _HhidFormState extends State<HhidForm> {
         ),
       ),);
       columns.add( DataColumn(
-        label: Text(
-          'Names',
-          style: TextStyle(color: Colors.white),
+        label: Container(
+          width: MySize.screenWidth*(80/MySize.screenWidth),
+
+          child: Text(
+            'Names',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ),);
       columns.add(DataColumn(
-        label: Text(
-          'Intervention Planned',
-          style: TextStyle(color: Colors.white),
+        label: Container(
+          width: MySize.screenWidth*(80/MySize.screenWidth),
+
+          child: Text(
+            softWrap: true,
+            'Intervention Planned',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ),);
       columns.add(
         DataColumn(
-          label: Text(
-            'Intervention completed',
-            style: TextStyle(color: Colors.white),
+          label: Container(
+            width: MySize.screenWidth*(80/MySize.screenWidth),
+            child: Text(
+              softWrap: true,
+              'Intervention completed',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ),
       );

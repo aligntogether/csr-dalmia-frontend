@@ -5,7 +5,6 @@ import 'package:dalmia/common/navmenu.dart';
 
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
 
-import 'package:http/http.dart' as http;
 
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
@@ -15,6 +14,9 @@ import 'package:flutter/material.dart';
 
 import 'Home.dart';
 
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 class LivehoodPlan extends StatefulWidget {
   const LivehoodPlan({Key? key}) : super(key: key);
 

@@ -14,7 +14,8 @@ import '../../../app/modules/expectedActual/controllers/expected_actual_controll
 import '../../../app/modules/expectedActual/services/expected_actual_service.dart';
 class RhExpectedActualView extends StatefulWidget {
   List<String> regions;
-   RhExpectedActualView({Key? key,required this.regions}) : super(key: key);
+  String accessId;
+   RhExpectedActualView({Key? key,required this.regions,required this.accessId}) : super(key: key);
   @override
   State<RhExpectedActualView> createState() => _RhExpectedActualViewState();
 }
@@ -79,12 +80,12 @@ class _RhExpectedActualViewState extends State<RhExpectedActualView> {
     return format.format(number);
   }
   void getExpectActualAdditionalIncome() async{
-    Map<String, dynamic> expectedActualReport=await services.getExpectedActualIncomeReport();
+    Map<String, dynamic> expectedActualReport=await services.getExpectedActualIncomeReport(widget.accessId);
     List<String> clusterIdList = [];
     Map<String, dynamic> clusterList = {};
     List<String> clusterPropertyKeys = [];
-    Map<int,String> regions= await services.getAllRegions();
-    Map<String,List<String>> regionLocation=await services.getRegionLocation(regions);
+    Map<int,String> regions= await services.getAllRegions(widget.accessId);
+    Map<String,List<String>> regionLocation=await services.getRegionLocation(regions,widget.accessId);
     expectedActualReport.forEach((key, value) {
       value.keys.forEach((element) {
         clusterIdList.add(element);

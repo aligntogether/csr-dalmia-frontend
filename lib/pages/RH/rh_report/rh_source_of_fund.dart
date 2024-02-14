@@ -18,7 +18,8 @@ import '../../../../helper/sharedpref.dart';
 
 class RhSourceRegionsView extends StatefulWidget {
   List<String> regions;
-   RhSourceRegionsView({super.key,required this.regions});
+  String accessId;
+   RhSourceRegionsView({super.key,required this.regions,required this.accessId});
 
   @override
   _RhSourceRegionsViewState createState() => _RhSourceRegionsViewState();
@@ -40,7 +41,7 @@ class _RhSourceRegionsViewState extends State<RhSourceRegionsView> {
       value == '' ? name = 'user' : name = value;
     }));
     ;
-    regionsFuture = sourceOfFundsApiService.getListOfRegions(controller);
+    regionsFuture = sourceOfFundsApiService.getListOfRegions(controller,widget.accessId);
   }
 
   String formatNumber(int number) {
@@ -182,7 +183,7 @@ class _RhSourceRegionsViewState extends State<RhSourceRegionsView> {
                                 Map<String, dynamic> locationsData =
                                 await sourceOfFundsApiService
                                     .getListOfLocations(
-                                    controller.selectRegionId!);
+                                    controller.selectRegionId!,widget.accessId);
 
                                 // Extract the list of locations from the returned data
                                 List<Map<String, dynamic>> locations =
@@ -210,7 +211,7 @@ class _RhSourceRegionsViewState extends State<RhSourceRegionsView> {
                                 var fetchRegionWiseSourceOfFundsData =
                                 await sourceOfFundsApiService
                                     .fetchRegionWiseSourceOfFundsData(
-                                    controller);
+                                    controller,widget.accessId);
 
                                 setState(() {
                                   isLoading = false;
@@ -319,7 +320,7 @@ class _RhSourceRegionsViewState extends State<RhSourceRegionsView> {
 
                             Map<String, dynamic> clustersData =
                             await sourceOfFundsApiService.getListOfClusters(
-                                controller.selectLocationId!);
+                                controller.selectLocationId!,widget.accessId);
 
                             // Extract the list of locations from the returned data
                             List<Map<String, dynamic>> clusters =
@@ -338,7 +339,7 @@ class _RhSourceRegionsViewState extends State<RhSourceRegionsView> {
 
                             controller.update(["add"]);
 
-                            var fetchLocationWiseSourceOfFundsData = await sourceOfFundsApiService.fetchClusterWiseSourceOfFundsData(controller);
+                            var fetchLocationWiseSourceOfFundsData = await sourceOfFundsApiService.fetchClusterWiseSourceOfFundsData(controller,widget.accessId);
 
                             setState(() {
                               isLoading = false;

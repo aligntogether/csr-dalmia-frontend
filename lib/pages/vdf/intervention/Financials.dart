@@ -7,9 +7,12 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
 
 import '../../../common/size_constant.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 class Financial extends StatefulWidget {
   final String? hid;
   final String? interId;
@@ -337,7 +340,9 @@ void _successmsg(BuildContext context, String? hid) {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => Addinter(),
+                          builder: (context) => Addinter(
+                            id: hid,
+                          ),
                         ),
                       );
                     },

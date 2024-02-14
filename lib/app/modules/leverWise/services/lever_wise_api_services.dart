@@ -1,6 +1,9 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 class LeverWiseApiServices{
   String? base = dotenv.env['BASE_URL'];
 
@@ -102,6 +105,7 @@ print("i am here");
             return MapEntry(
               location,
               {
+
                 'Agriculture': data['Agriculture'],
                 'Horticulture': data['Horticulture'],
                 'Livestock': data['Livestock'],

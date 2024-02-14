@@ -8,10 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 import '../../../Constants/constants.dart';
 import '../../../helper/sharedpref.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class Panchayat {
   final String panchayatId;

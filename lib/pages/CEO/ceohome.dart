@@ -7,7 +7,6 @@ import 'package:dalmia/common/app_style.dart';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/gpl/gpl_controller.dart';
 
-import 'package:http/http.dart' as http;
 
 import 'package:dalmia/pages/loginUtility/page/login.dart';
 import 'package:dalmia/theme.dart';
@@ -17,6 +16,10 @@ import 'package:get/get.dart';
 
 import '../../app/modules/reports/views/gpl_amount_utilized_view.dart';
 import '../../common/size_constant.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 class CEOHome extends StatefulWidget {
   const CEOHome({Key? key}) : super(key: key);
 
@@ -27,16 +30,24 @@ class CEOHome extends StatefulWidget {
 class _CEOHomeState extends State<CEOHome> {
   int length = 0;
   String name = "";
+  String? accessId;
   @override
   void initState() {
     super.initState();
     SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
         .then((value) => setState(() {
               value == '' ? name = 'user' : name = value;
+              SharedPrefHelper.getSharedPref(ACCESS_TOKEN_SHAREDPREF_KEY, context,false).then((value) {
+                setState(() {
+                  accessId = value;
+                  fetchData(context);
+                });
+              });
+
             }));
     ;
     // fetchDataAndProcess(context);
-    fetchData(context);
+
   }
   
 
@@ -137,7 +148,10 @@ class _CEOHomeState extends State<CEOHome> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.to(SourceRegionsView());
+                    Get.to(SourceRegionsView(
+                      accessId: accessId!,
+
+                    ));
                   },
                   child: cards(
                     title: 'Source of Funds',

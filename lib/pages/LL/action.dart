@@ -7,12 +7,16 @@ import 'package:dalmia/pages/LL/actiondetails.dart';
 import 'package:dalmia/pages/LL/ll_home_screen.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import '../../common/size_constant.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 class ActionAgainstHHLL extends StatefulWidget {
   String locationId;
-   ActionAgainstHHLL({Key? key,required this.locationId}) : super(key: key);
+  String accessId;
+   ActionAgainstHHLL({Key? key,required this.locationId,required this.accessId}) : super(key: key);
 
   @override
   State<ActionAgainstHHLL> createState() => _ActionAgainstHHLLState();
@@ -32,6 +36,7 @@ class _ActionAgainstHHLLState extends State<ActionAgainstHHLL> {
       Uri.parse(
         'https://mobileqacloud.dalmiabharat.com:443/csr/action-dropped-household-details-ll?locationId=${widget.locationId}',
       ),
+        headers:{"X-Access-Token":widget.accessId}
     );
     print("ds$response");
     if (response.statusCode == 200) {
@@ -169,6 +174,7 @@ class _ActionAgainstHHLLState extends State<ActionAgainstHHLL> {
                                   builder: (context) => LLActionDetail(
                                     hhid: householdData[index]['hhid']!,
                                     locationId: widget.locationId,
+                                    accessId: widget.accessId,
                                   ),
                                 ),
                               );

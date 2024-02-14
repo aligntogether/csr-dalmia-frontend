@@ -7,7 +7,6 @@ import 'package:dalmia/common/navmenu.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
 
 import 'package:dalmia/pages/vdf/reports/villagereport.dart';
-import 'package:http/http.dart' as http;
 
 
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
@@ -17,8 +16,13 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Constants/constants.dart';
+import '../../../common/size_constant.dart';
 import '../../../helper/sharedpref.dart';
 import 'Home.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class Cumulative extends StatefulWidget {
   const Cumulative({super.key});
@@ -369,32 +373,48 @@ class _CumulativeState extends State<Cumulative> {
                   ),
                 ),
                 columnSpacing: 15,
-                columns: const <DataColumn>[
+                columns:  <DataColumn>[
                   DataColumn(
-                    label: Text(
-                      textAlign: TextAlign.center,
-                      'Panchayat Name',
-                      style: TextStyle(color: Colors.white),
+                    label: Container(
+                      width: MySize.screenWidth*(120/MySize.screenWidth),
+                      child: Text(
+                        softWrap: true,
+                        textAlign: TextAlign.center,
+                        'Panchayat Name',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                   DataColumn(
-                    label: Text(
-                      'Income follow up Overdue',
-                      style: TextStyle(color: Colors.white),
+                    label: Container(
+                      width: MySize.screenWidth*(120/MySize.screenWidth),
+                      child: Text(
+                        softWrap: true,
+                        'Income follow up Overdue',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                   DataColumn(
-                    label: Text(
-                      textAlign: TextAlign.center,
-                      'Number of selected \nHHs without intervention',
-                      style: TextStyle(color: Colors.white),
+                    label: Container(
+                      width: MySize.screenWidth*(120/MySize.screenWidth),
+                      child: Text(
+                        softWrap: true,
+                        textAlign: TextAlign.center,
+                        'Number of selected \nHHs without intervention',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                   DataColumn(
-                    label: Text(
-                      textAlign: TextAlign.center,
-                      'No. of Interventions \nstarted but not completed',
-                      style: TextStyle(color: Colors.white),
+                    label: Container(
+                      width: MySize.screenWidth*(120/MySize.screenWidth),
+                      child: Text(
+                        softWrap: true,
+                        textAlign: TextAlign.center,
+                        'No. of Interventions \nstarted but not completed',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ],
@@ -436,17 +456,23 @@ class _CumulativeState extends State<Cumulative> {
                         ),
                       ),
                       DataCell(
-                        Text(
-                          '${panchayat['incomeFollowUpDue'] ?? 0}',
+                        Center(
+                          child: Text(
+                            '${panchayat['incomeFollowUpDue'] ?? 0}',
+                          ),
                         ),
                       ),
                       DataCell(
-                        Text(
-                            '${panchayat['selectedHHWithoutIntervention'] ?? 0}'),
+                        Center(
+                          child: Text(
+                              '${panchayat['selectedHHWithoutIntervention'] ?? 0}'),
+                        ),
                       ),
                       DataCell(
-                        Text(
-                            '${panchayat['interventionStartedButNotCompleted'] ?? 0}'),
+                        Center(
+                          child: Text(
+                              '${panchayat['interventionStartedButNotCompleted'] ?? 0}'),
+                        ),
                       ),
                     ],
                   );

@@ -8,7 +8,6 @@ import 'package:dalmia/common/navmenu.dart';
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
 import 'package:dalmia/pages/vdf/reports/street.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 
 
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
@@ -17,7 +16,12 @@ import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
+import '../../../common/size_constant.dart';
 import 'Home.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class VillageReport extends StatefulWidget {
   final String? selectedPanchayat;
@@ -344,7 +348,7 @@ class _VillageReportState extends State<VillageReport> {
                 ),
                 dividerThickness: 0,
                 columnSpacing: 15,
-                columns: const <DataColumn>[
+                columns:  <DataColumn>[
                   DataColumn(
                     label: Text(
                       'Village Name',
@@ -352,21 +356,34 @@ class _VillageReportState extends State<VillageReport> {
                     ),
                   ),
                   DataColumn(
-                    label: Text(
-                      'Income follow up Overdue',
-                      style: TextStyle(color: Colors.white),
+                    label: Container(
+                      width: MySize.screenWidth*(120/MySize.screenWidth),
+
+                      child: Text(
+                        softWrap: true,
+                        'Income follow up Overdue',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                   DataColumn(
-                    label: Text(
-                      'Number of selected HHs without intervention',
-                      style: TextStyle(color: Colors.white),
+                    label: Container(
+                      width: MySize.screenWidth*(120/MySize.screenWidth),
+                      child: Text(
+                        softWrap: true,
+                        'Number of selected HHs without intervention',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                   DataColumn(
-                    label: Text(
-                      'No. of Interventions started but not completed',
-                      style: TextStyle(color: Colors.white),
+                    label: Container(
+                      width: MySize.screenWidth*(120/MySize.screenWidth),
+                      child: Text(
+                        softWrap: true,
+                        'No. of Interventions started but not completed',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ],
@@ -410,15 +427,19 @@ class _VillageReportState extends State<VillageReport> {
                         ),
                       ),
                       DataCell(
-                        Text('${village['incomeFollowUpDue'] ?? 0}'),
+                        Center(child: Text('${village['incomeFollowUpDue'] ?? 0}')),
                       ),
                       DataCell(
-                        Text(
-                            '${village['selectedHHWithoutIntervention'] ?? 0}'),
+                        Center(
+                          child: Text(
+                              '${village['selectedHHWithoutIntervention'] ?? 0}'),
+                        ),
                       ),
                       DataCell(
-                        Text(
-                            '${village['interventionStartedButNotCompleted'] ?? 0}'),
+                        Center(
+                          child: Text(
+                              '${village['interventionStartedButNotCompleted'] ?? 0}'),
+                        ),
                       ),
                     ],
                   );

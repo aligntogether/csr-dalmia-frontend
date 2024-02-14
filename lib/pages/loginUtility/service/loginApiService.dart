@@ -1,10 +1,17 @@
 import 'dart:convert';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/loginUtility/controller/loginController.dart';
-import 'package:http/http.dart' as http;
-
+// import 'package:http/http.dart' as http;
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http_interceptor/http/intercepted_http.dart';
+
+import '../../../helper/http_intercepter.dart';
+
+// import http from helper http.dart
+// import '../../../helper/http.dart' as http1;
+// var http = http1.http;
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class LoginApiService {
 
@@ -193,19 +200,19 @@ class LoginApiService {
       var headers = {
         'accept': '*/*'
       };
-      var request = http.Request('GET', Uri.parse('https://mobileqacloud.dalmiabharat.com/csr/user-type?referenceId=${referenceId}'));
+      var resp = await http.get(Uri.parse('https://mobileqacloud.dalmiabharat.com/csr/user-type?referenceId=${referenceId}'));
 
 
-      request.headers.addAll(headers);
-
-      http.StreamedResponse resp = await request.send();
+      // request.headers.addAll(headers);
+      //
+      // http.StreamedResponse resp = await request.send();
 
       // final response = await http.get(Uri.parse(url),
       //   headers: <String, String> {
       //     "referenceId": referenceId!
       //   },
       // ).timeout(Duration(seconds: 30));
-      String response = await resp.stream.bytesToString();
+      String response = resp.body;
       print("\n : response ${response} \n");
 
 
@@ -242,7 +249,7 @@ class LoginApiService {
         }
       } else {
         print("API Error Response: ${resp.statusCode}");
-        throw Exception('${json.decode(resp.stream.toString())['resp_msg']}');
+        throw Exception('${json.decode(resp.body)['resp_msg']}');
       }
     } catch (e) {
       print("Error making API request: $e");

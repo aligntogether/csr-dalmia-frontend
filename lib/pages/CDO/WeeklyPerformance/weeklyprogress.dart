@@ -19,8 +19,9 @@ import '../../../theme.dart';
 
 class WeeklyProgress extends StatefulWidget {
   int? locationId;
+  String accessId;
 
-  WeeklyProgress({Key? key,required this.locationId}) : super(key: key);
+  WeeklyProgress({Key? key,required this.locationId,required this.accessId}) : super(key: key);
 
   @override
   _WeeklyProgressState createState() => new _WeeklyProgressState();
@@ -28,7 +29,7 @@ class WeeklyProgress extends StatefulWidget {
 
 class _WeeklyProgressState extends State<WeeklyProgress> {
   final PerformanceVdfApiService performanceVdfApiService = new PerformanceVdfApiService();
-
+  String? accessId;
   bool isLoading = false;
   PerformanceVdfController controller = Get.put(PerformanceVdfController());
   late Future<Map<String, dynamic>> regionsFuture;
@@ -84,11 +85,16 @@ class _WeeklyProgressState extends State<WeeklyProgress> {
     SharedPrefHelper.getSharedPref(EMPLOYEE_SHAREDPREF_KEY, context, false)
         .then((value) => setState(() {
       value == '' ? name = 'user' : name = value;
+      SharedPrefHelper.getSharedPref(ACCESS_TOKEN_SHAREDPREF_KEY, context,false)
+          .then((value) => setState(() {
+        accessId = value;
+        update();
+        regionsFuture = performanceVdfApiService.getListOfRegions(accessId!);
+      }));
 
     }));
     ;
-    update();
-    regionsFuture = performanceVdfApiService.getListOfRegions();
+
   }
   void update()async{
     if (widget.locationId != null)  {
@@ -100,7 +106,7 @@ class _WeeklyProgressState extends State<WeeklyProgress> {
 
       Map<String, dynamic>? clustersData =
       await performanceVdfApiService.getListOfClusters(
-          controller.selectLocationId ?? 0);
+          controller.selectLocationId ?? 0, accessId!);
 
       if (clustersData != null) {
         print("dfas${clustersData['clusters'][4]['vdfId']}");
@@ -141,7 +147,7 @@ class _WeeklyProgressState extends State<WeeklyProgress> {
 
 
   void updatePerformanceReport() async {
-    Map<String, dynamic> performanceReport = await performanceVdfApiService.getPerformanceReport(controller.selectVdfId ?? 0);
+    Map<String, dynamic> performanceReport = await performanceVdfApiService.getPerformanceReport(controller.selectVdfId ?? 0,accessId!);
     List<String> headerList= [];
     List<String> details=[];
     performanceReport.forEach((key, value) {

@@ -1,20 +1,27 @@
 import 'dart:convert';
 
+import 'package:dalmia/Constants/constant_export.dart';
 import 'package:dalmia/common/bottombar.dart';
 import 'package:dalmia/common/navmenu.dart';
+import 'package:dalmia/helper/sharedpref.dart';
 
 import 'package:dalmia/pages/vdf/Draft/draft.dart';
 
-import 'package:http/http.dart' as http;
 
 import 'package:dalmia/pages/vdf/household/addhouse.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'dart:math';
 
+import '../../../common/size_constant.dart';
 import 'Home.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class Top20 extends StatefulWidget {
   const Top20({Key? key}) : super(key: key);
@@ -70,13 +77,14 @@ class _Top20State extends State<Top20> {
   @override
   void initState() {
     super.initState();
-    fetchtop20Data(); // Call the method to fetch API data when the page initializes
+
+    SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false).then((value) => fetchtop20Data(value));// Call the method to fetch API data when the page initializes
   }
 
-  Future<void> fetchtop20Data() async {
+  Future<void> fetchtop20Data(String vdfId) async {
     try {
       final response = await http.get(
-        Uri.parse('$base/get-income-wise-top-households?vdfId=10001'),
+        Uri.parse('$base/get-income-wise-top-households?vdfId=${vdfId}'),
       );
 
       if (response.statusCode == 200) {
@@ -236,7 +244,7 @@ class _Top20State extends State<Top20> {
                                 topRight: Radius.circular(10),
                               ),
                             ),
-                            columns: const [
+                            columns:  [
                               DataColumn(
                                 label: Text(
                                   'Code',
@@ -250,9 +258,14 @@ class _Top20State extends State<Top20> {
                                 ),
                               ),
                               DataColumn(
-                                label: Text(
-                                  'Actual annual updated so far',
-                                  style: TextStyle(color: Colors.white),
+                                label: Container(
+                                  width: MySize.screenWidth*(120/MySize.screenWidth),
+
+                                  child: Text(
+                                    softWrap: true,
+                                    'Actual annual updated so far',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
                               ),
                             ],
@@ -270,7 +283,7 @@ class _Top20State extends State<Top20> {
                                   DataCell(Text(data['hhid'] ?? '')),
                                   DataCell(Text(data['memberName'] ?? '')),
                                   DataCell(
-                                      Text(data['income']?.toString() ?? '')),
+                                      Text(formatNumber(data['income']==null?0:data['income']))),
                                 ],
                               );
                             }).toList(),
@@ -338,4 +351,11 @@ class _Top20State extends State<Top20> {
       ),
     );
   }
+
+
+    String formatNumber(int number) {
+      var format = NumberFormat('#,##,###', 'en_IN');
+      return format.format(number).toString();
+    }
+
 }

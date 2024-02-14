@@ -1,4 +1,5 @@
 import 'package:dalmia/common/size_constant.dart';
+import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/vdf/reports/Business.dart';
 import 'package:dalmia/pages/vdf/reports/Cumulative.dart';
 import 'package:dalmia/pages/vdf/reports/Form1.dart';
@@ -10,6 +11,8 @@ import 'package:dalmia/pages/vdf/reports/Top20.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
+import '../Constants/constants.dart';
+
 class ReportPopupWidget extends StatefulWidget {
   final BuildContext context;
   ReportPopupWidget(this.context);
@@ -20,6 +23,19 @@ class ReportPopupWidget extends StatefulWidget {
 
 class _ReportPopupWidgetState extends State<ReportPopupWidget> {
   int? selectedRadio;
+  String vdfId='10001';
+  @override
+  void initState() {
+    super.initState();
+    SharedPrefHelper.getSharedPref(
+        USER_ID_SHAREDPREF_KEY, context, true).then((value) {
+      setState(() {
+        vdfId = value;
+      });
+
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +225,10 @@ class _ReportPopupWidgetState extends State<ReportPopupWidget> {
                 } else if (selectedRadio == 3) {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const Leverwise(),
+                      builder: (context) =>  Leverwise(
+                        vdfId:vdfId,
+
+                      ),
                     ),
                   ); // Navigate to the corresponding tab
                 } else if (selectedRadio == 4) {

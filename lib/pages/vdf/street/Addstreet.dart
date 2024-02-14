@@ -4,11 +4,14 @@ import 'package:dalmia/pages/vdf/street/CheckStreet.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../../../Constants/constants.dart';
 import '../../../helper/sharedpref.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 String selectedPanchayat = "";
 String selectedVillage = "";
 String selectedVillageId = "";
@@ -65,6 +68,7 @@ class _AddStreetState extends State<AddStreet> {
 
   Future<List<Panchayat>> fetchPanchayats(String vdfId) async {
     try {
+
       final response = await http.get(
         Uri.parse(panchayatUrl),
         headers: <String, String>{
@@ -114,6 +118,7 @@ class _AddStreetState extends State<AddStreet> {
   @override
   void initState() {
     super.initState();
+
     SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
         .then((value) {
       setState(() {

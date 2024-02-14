@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:dalmia/pages/Accounts/accounthome.dart';
-import 'package:http/http.dart' as http;
-
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class ExpectedActualServices {
 
@@ -15,11 +17,11 @@ class ExpectedActualServices {
   // String? base = 'http://192.168.1.16:8082';
 
 
-  Future<Map<String, dynamic>> getExpectedActualIncomeReport() async {
+  Future<Map<String, dynamic>> getExpectedActualIncomeReport(String accessId) async {
     try {
       String url = "$base/gpl-exp-act-additional-income";
 
-      final response = await http.get(Uri.parse(url));
+      final response = await http.get(Uri.parse(url),headers: {'X-Access-Token': accessId});
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         print(data);
@@ -37,12 +39,12 @@ class ExpectedActualServices {
     }
     return {"error": {"error": {"error": "failed to fetch data"}}};
   }
-  Future<Map<int, String>> getAllRegions() async {
+  Future<Map<int, String>> getAllRegions(String accessId) async {
     try {
       String url = '$base/list-regions';
 
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.get(Uri.parse(url),headers: {"X-Access-Token":accessId}).timeout(Duration(seconds: 30));
 
       print(response);
       if (response.statusCode == 200) {
@@ -73,14 +75,14 @@ class ExpectedActualServices {
       throw Exception('Error making API request: $e');
     }
   }
-  Future<Map<String, List<String>>> getRegionLocation(Map<int, String> regions) async {
+  Future<Map<String, List<String>>> getRegionLocation(Map<int, String> regions,String accessId) async {
     try {
       Map<String, List<String>> locations = {};
 
       for (int regionId in regions.keys) {
         String url = '$base/locations/search/findByRegionId?regionId=$regionId';
 
-        final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+        final response = await http.get(Uri.parse(url),headers: {"X-Access-Token":accessId}).timeout(Duration(seconds: 30));
 
         if (response.statusCode == 200) {
           final Map<String, dynamic> respBody = json.decode(response.body);

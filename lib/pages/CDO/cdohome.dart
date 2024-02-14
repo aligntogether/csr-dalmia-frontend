@@ -15,10 +15,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:http/http.dart' as http;
 import '../../common/app_style.dart';
 import '../../common/size_constant.dart';
 import 'CdoController.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 int LLid = 0;
 
 class CDOHome extends StatefulWidget {
@@ -34,6 +37,7 @@ class _CDOHomeState extends State<CDOHome> {
   String name = "";
   String cdoId = "";
   String count="";
+  String? accessId;
   VDFReportController controller1 = VDFReportController();
   @override
   void initState() {
@@ -44,41 +48,43 @@ class _CDOHomeState extends State<CDOHome> {
               value == '' ? name = 'user' : name = value;
             }));
     ;
-    SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
+    SharedPrefHelper.getSharedPref(ACCESS_TOKEN_SHAREDPREF_KEY, context, false)
         .then((value) => setState(() {
-      value == '' ? cdoId = '10001' : cdoId = value;
+              value == '' ? accessId = '10001' : accessId = value;
 
-      try {
-        var url = Uri.parse(
-            'https://mobileqacloud.dalmiabharat.com:443/csr/locations/search/findLocationIdByCdoId?cdoId=$cdoId');
-        http.get(url).then((response) {
-          var data = json.decode(response.body);
+      SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
+          .then((value) => setState(() {
+        value == '' ? cdoId = '10001' : cdoId = value;
 
-          controller1.selectLocationId = data;
+        try {
           var url = Uri.parse(
-              'https://mobileqacloud.dalmiabharat.com:443/csr/action-dropped-household-details?locationId=${data==null?10001:data}');
+              'https://mobileqacloud.dalmiabharat.com:443/csr/locations/search/findLocationIdByCdoId?cdoId=$cdoId');
           http.get(url).then((response) {
             var data = json.decode(response.body);
-            setState(() {
-              count = data['totalCount'].toString();
+
+            controller1.selectLocationId = data;
+            var url = Uri.parse(
+                'https://mobileqacloud.dalmiabharat.com:443/csr/action-dropped-household-details?locationId=${data==null?10001:data}');
+            http.get(url, headers: {'X-Access-Token': accessId!}).then((response) {
+              var data = json.decode(response.body);
+              setState(() {
+                count = data['totalCount'].toString();
+              });
+              print(count);
+
             });
-            print(count);
 
+            return controller1.selectLocationId;
           });
+        } catch (e) {
+          controller1.selectLocationId = 10001;
+          print(e);
 
-          return controller1.selectLocationId;
-        });
-      } catch (e) {
-        controller1.selectLocationId = 10001;
-        print(e);
+        }
 
-      }
-
-
-
-
-    }));
-    ;
+      }));
+      ;
+            }));
   }
 
 
@@ -107,7 +113,9 @@ class _CDOHomeState extends State<CDOHome> {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const VdfReport(),
+                      builder: (context) =>  VdfReport(
+                        accessId: accessId!,
+                      ),
                     ),
                   );
                 },
@@ -126,6 +134,7 @@ class _CDOHomeState extends State<CDOHome> {
                     MaterialPageRoute(
                       builder: (context) =>  WeeklyProgress(
                         locationId: controller1.selectLocationId,
+                        accessId: accessId!,
                       ),
                     ),
                   );
@@ -144,6 +153,7 @@ class _CDOHomeState extends State<CDOHome> {
                     MaterialPageRoute(
                       builder: (context) =>  Expectedincome(
                         locationId: controller1.selectLocationId,
+                        accessId: accessId!,
                       ),
                     ),
                   );
@@ -162,6 +172,7 @@ class _CDOHomeState extends State<CDOHome> {
                     MaterialPageRoute(
                       builder: (context) =>  SourceOfFunds(
                         locationId: controller1.selectLocationId,
+                        accessId: accessId!,
 
                       ),
                     ),
@@ -179,7 +190,9 @@ class _CDOHomeState extends State<CDOHome> {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const VDFFunds(),
+                      builder: (context) => VDFFunds(
+                        locationId: controller1.selectLocationId.toString(),
+                      ),
                     ),
                   );
                 },

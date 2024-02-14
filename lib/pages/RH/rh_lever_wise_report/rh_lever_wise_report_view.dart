@@ -24,8 +24,8 @@ import '../../../helper/sharedpref.dart';
 class RhLeverWiseView extends StatefulWidget {
   String? refId;
   List<String> regions;
-
-  RhLeverWiseView({Key? key,required this.refId,required this.regions}) : super(key: key);
+  String? accessId;
+  RhLeverWiseView({Key? key,required this.refId,required this.regions,required this.accessId}) : super(key: key);
 
   @override
   _RhLeverWiseViewState createState() => new _RhLeverWiseViewState();
@@ -101,8 +101,8 @@ class _RhLeverWiseViewState extends State<RhLeverWiseView> {
   void getLeverWiseReport() async {
     try {
       List<dynamic> regionByRhIdList =
-      await rhLeverWiseReportServices.getRegionByRhId(widget.refId!);
-      Map<String,dynamic> rhLeverWiseReportByRegionId = await rhLeverWiseReportServices.getRhLeverWiseReportByRegionId(regionByRhIdList[0]['regionId']);
+      await rhLeverWiseReportServices.getRegionByRhId(widget.refId!,widget.accessId!);
+      Map<String,dynamic> rhLeverWiseReportByRegionId = await rhLeverWiseReportServices.getRhLeverWiseReportByRegionId(regionByRhIdList[0]['regionId'],widget.accessId!);
       setState(() {
         isLoading=false;
         controller.updateRegionByRhIdList(regionByRhIdList);
@@ -172,7 +172,7 @@ class _RhLeverWiseViewState extends State<RhLeverWiseView> {
                 onChanged: (String? newValue) async {
                   controller.selectedRegion=newValue;
                   Map<String,dynamic> rhLeverWiseReportByRegionId = await rhLeverWiseReportServices.getRhLeverWiseReportByRegionId(
-                      controller.regionByRhIdList![controller.regionByRhIdList!.indexWhere((element) => element['region']==newValue)]['regionId']);
+                      controller.regionByRhIdList![controller.regionByRhIdList!.indexWhere((element) => element['region']==newValue)]['regionId'],widget.accessId!);
                   setState(() {
                     controller.updateRhLeverWiseReportByRegionId(rhLeverWiseReportByRegionId);
                   });

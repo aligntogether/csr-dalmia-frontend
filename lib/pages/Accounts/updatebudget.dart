@@ -11,13 +11,16 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:dalmia/pages/CDO/cdoappbar.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/app_style.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class UpdateBudget extends StatefulWidget {
   const UpdateBudget({Key? key}) : super(key: key);

@@ -10,12 +10,15 @@ import 'package:dalmia/common/image_constant.dart';
 import 'package:dalmia/common/size_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:dalmia/helper/sharedpref.dart';
 import 'package:intl/intl.dart';
 
 import '../controllers/feedback_controller.dart';
 import '../service/feedbackApiService.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class FeedbackView extends StatefulWidget {
   FeedbackView({Key? key}) : super(key: key);

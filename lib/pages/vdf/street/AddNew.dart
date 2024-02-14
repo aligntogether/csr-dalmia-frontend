@@ -9,12 +9,15 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:get/get_state_manager/src/simple/list_notifier.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 import '../../../Constants/constants.dart';
 import '../../../common/size_constant.dart';
 import '../../../helper/sharedpref.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 class Addnew extends StatefulWidget {
   final String? village;
   final String? panchayat;

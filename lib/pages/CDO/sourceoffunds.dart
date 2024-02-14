@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:dalmia/app/modules/downloadExcelFromTable/ExportTableToExcel.dart';
 import 'package:dalmia/app/modules/overviewPan/views/overview_pan_view.dart';
 import 'package:dalmia/app/modules/sourceFunds/controllers/source_funds_controller.dart';
@@ -18,9 +17,14 @@ import 'package:intl/intl.dart';
 import '../../../../Constants/constants.dart';
 import '../../../../helper/sharedpref.dart';
 
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
+
 class SourceOfFunds extends StatefulWidget {
   int? locationId;
-  SourceOfFunds({super.key, required this.locationId});
+  String accessId;
+  SourceOfFunds({super.key, required this.locationId,required this.accessId});
 
   @override
   _SourceOfFundsState createState() => _SourceOfFundsState();
@@ -44,7 +48,7 @@ class _SourceOfFundsState extends State<SourceOfFunds> {
             }));
     ;
 
-    regionsFuture = sourceOfFundsApiService.getListOfRegions(controller);
+    regionsFuture = sourceOfFundsApiService.getListOfRegions(controller,widget.accessId);
     update();
   }
 
@@ -85,7 +89,7 @@ class _SourceOfFundsState extends State<SourceOfFunds> {
         //
 
         Map<String, dynamic> clustersData = await sourceOfFundsApiService
-            .getListOfClusters(controller.selectLocationId!);
+            .getListOfClusters(controller.selectLocationId!,widget.accessId);
 
         List<Map<String, dynamic>> clusters = [];
 
@@ -109,7 +113,7 @@ class _SourceOfFundsState extends State<SourceOfFunds> {
         controller.update(["add"]);
 
         var fetchLocationWiseSourceOfFundsData = await sourceOfFundsApiService
-            .fetchClusterWiseSourceOfFundsData(controller);
+            .fetchClusterWiseSourceOfFundsData(controller,widget.accessId);
 
         setState(() {
           controller.locationWiseSourceOfFundsData =

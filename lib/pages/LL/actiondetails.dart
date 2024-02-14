@@ -4,16 +4,19 @@ import 'package:dalmia/pages/LL/action.dart';
 import 'package:dalmia/pages/LL/ll_home_screen.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 
 class LLActionDetail extends StatefulWidget {
   final String hhid;
   final String locationId;
-   LLActionDetail({super.key, required this.hhid,required this.locationId});
+  String accessId;
+   LLActionDetail({super.key, required this.hhid,required this.locationId,required this.accessId});
 
   @override
   State<LLActionDetail> createState() => _LLActionDetailState();
@@ -297,7 +300,7 @@ class _LLActionDetailState extends State<LLActionDetail> {
                     backgroundColor: Colors.white,
                   ),
                   onPressed: () {
-                    _selecthhDialog(context, widget.hhid, widget.locationId);
+                    _selecthhDialog(context, widget.hhid, widget.locationId,widget.accessId);
                   },
                   child: Text(
                     'Select HH',
@@ -418,7 +421,7 @@ void _drophhDialog(BuildContext context, String hhid, String locationId) {
   );
 }
 
-void _selecthhDialog(BuildContext context, String hhid, String locationId) {
+void _selecthhDialog(BuildContext context, String hhid, String locationId,String accessId) {
   print("HHID: $hhid");
   showDialog(
     context: context,
@@ -464,7 +467,7 @@ void _selecthhDialog(BuildContext context, String hhid, String locationId) {
                 onPressed: () {
                   _callAcceptHouseholdAPILL(hhid);
                   Navigator.pop(context);
-                  _selectedconfirmbox(context, hhid, locationId);
+                  _selectedconfirmbox(context, hhid, locationId,accessId);
                 },
                 child: const Text(
                   'Confirm',
@@ -479,7 +482,7 @@ void _selecthhDialog(BuildContext context, String hhid, String locationId) {
   );
 }
 
-void _selectedconfirmbox(BuildContext context, String hhid, String locationId) {
+void _selectedconfirmbox(BuildContext context, String hhid, String locationId,String accessId) {
   showDialog(
     barrierDismissible: false,
     context: context,
@@ -490,6 +493,7 @@ void _selectedconfirmbox(BuildContext context, String hhid, String locationId) {
             MaterialPageRoute(
               builder: (context) => ActionAgainstHHLL(
                 locationId: locationId,
+                accessId: accessId,
               ),
             ),
           );

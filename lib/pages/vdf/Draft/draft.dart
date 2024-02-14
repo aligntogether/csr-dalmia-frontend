@@ -14,11 +14,14 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 import '../../../Constants/constants.dart';
 import '../../../helper/sharedpref.dart';
 import '../notifications.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class Draft extends StatefulWidget {
   const Draft({Key? key});

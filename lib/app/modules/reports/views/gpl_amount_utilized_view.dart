@@ -21,7 +21,6 @@ import '../../amountUtilized/controllers/amount_utilized_controller.dart';
 
 class GplAmountUtilizedView extends StatefulWidget {
 
-
   GplAmountUtilizedView({Key? key}) : super(key: key);
 
   @override
@@ -34,6 +33,7 @@ class _GplAmountUtilizedViewState extends State<GplAmountUtilizedView> {
   int isRH = 0;
   bool isLoading = true;
   String name = "";
+  String? accessId;
   String userId = "";
 
   AmountUtilizedController controller = Get.put(AmountUtilizedController());
@@ -55,12 +55,13 @@ class _GplAmountUtilizedViewState extends State<GplAmountUtilizedView> {
 
 
   void setRegions() async {
+    accessId = await SharedPrefHelper.getSharedPref(ACCESS_TOKEN_SHAREDPREF_KEY, context, false);
     Map<int, String> regions =
-    await amountUtilizedApiService.getAllRegions();
+    await amountUtilizedApiService.getAllRegions(accessId!);
     Map<String, List<String>> locations =
-    await amountUtilizedApiService.getListOfLocations(regions);
+    await amountUtilizedApiService.getListOfLocations(regions,accessId!);
     Map<String,dynamic> data =
-    await amountUtilizedApiService.getAmountUtilized();
+    await amountUtilizedApiService.getAmountUtilized(accessId!);
     setState(() {
       controller.updateRegions(regions);
       controller.updateLocations(locations);

@@ -1,9 +1,15 @@
 import 'dart:convert';
 import 'package:dalmia/helper/sharedpref.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter/cupertino.dart';
 
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import '../../../../Constants/constants.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class OverviewReportApiService {
 
@@ -11,12 +17,12 @@ class OverviewReportApiService {
   String? base = dotenv.env['BASE_URL'];
   // String? base = 'https://mobileqacloud.dalmiabharat.com:443/csr';
   // String? base = 'http://192.168.1.16:8082';
-  Future<Map<int, String>> getAllRegions() async {
+  Future<Map<int, String>> getAllRegions(String accessId) async {
     try {
       String url = '$base/list-regions';
 
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.get(Uri.parse(url), headers: {'X-Access-Token': accessId}).timeout(Duration(seconds: 30));
 
       print(response);
       if (response.statusCode == 200) {
@@ -47,7 +53,7 @@ class OverviewReportApiService {
       throw Exception('Error making API request: $e');
     }
   }
-  Future<Map<String, List<String>>>getRegionLocation(Map<int, String> regions) async {
+  Future<Map<String, List<String>>>getRegionLocation(Map<int, String> regions,String accessId) async {
     try {
       print("regions : $regions");
       Map<String, List<String>> locations = {};
@@ -56,7 +62,7 @@ class OverviewReportApiService {
         print("regionId : $regionId");
         String url = '$base/locations/search/findByRegionId?regionId=$regionId';
 
-        final response = await http.get(Uri.parse(url), headers: {'accept': '*/*'},).timeout(Duration(seconds: 30));
+        final response = await http.get(Uri.parse(url), headers: {'accept': '*/*', 'X-Access-Token': accessId},).timeout(Duration(seconds: 30));
         print("response : $response");
 
         if (response.statusCode == 200) {
@@ -89,12 +95,15 @@ class OverviewReportApiService {
   }
 
 
-  Future<Map<String, dynamic>> getListOfRegions() async {
+  Future<Map<String, dynamic>> getListOfRegions(BuildContext context) async {
     try {
+      String accessId=await SharedPrefHelper.getSharedPref(ACCESS_TOKEN_SHAREDPREF_KEY,context, false);
       String url = '$base/list-regions';
+      print("List accessId : $accessId");
 
+      final response = await http.get(Uri.parse(url), headers: {
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+        'X-Access-Token': accessId}).timeout(Duration(seconds: 30));
 
 
       if (response.statusCode == 200) {
@@ -105,6 +114,7 @@ class OverviewReportApiService {
 
         if (respBody.containsKey('resp_body')) {
           final List<dynamic> regionsData = respBody['resp_body'];
+
 
           final List<Map<String, dynamic>> regions = regionsData.map<Map<String, dynamic>>((region) => {
             'regionId': region['regionId'],
@@ -172,12 +182,12 @@ class OverviewReportApiService {
   }
 
 
-  Future<Map<String, dynamic>?> getListOfClusters(int locationId) async {
+  Future<Map<String, dynamic>?> getListOfClusters(int locationId,String accessId) async {
 
     try {
       String url = '$base/list-cluster-by-location?locationId=$locationId';
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.get(Uri.parse(url), headers: {'X-Access-Token': accessId}).timeout(Duration(seconds: 30));
 
 
       if (response.statusCode == 200) {
@@ -219,12 +229,12 @@ class OverviewReportApiService {
 
 
 
-  Future<List<Map<String, Map<String, dynamic>>>> getPanIndiaReport(List<String> allLocations, List<String> objectKeys) async {
+  Future<List<Map<String, Map<String, dynamic>>>> getPanIndiaReport(List<String> allLocations, List<String> objectKeys,String accessId) async {
     try {
 
       String url = '$base/pan-india-report';
-
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      print("accessId : $accessId");
+      final response = await http.get(Uri.parse(url), headers: {'X-Access-Token': accessId}).timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         print("API Response: ${response.body}");
@@ -280,12 +290,12 @@ class OverviewReportApiService {
   }
 
 
-  Future<List<Map<String, Map<String, dynamic>>>> getRegionWiseReport(List<String> allLocations, List<String> objectKeys, int regionId) async {
+  Future<List<Map<String, Map<String, dynamic>>>> getRegionWiseReport(List<String> allLocations, List<String> objectKeys, int regionId,String accessId) async {
     try {
 
       String url = '$base/region-wise-report?regionId=$regionId';
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.get(Uri.parse(url), headers: {'X-Access-Token': accessId}).timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         print("API Response: ${response.body}");
@@ -341,12 +351,12 @@ class OverviewReportApiService {
   }
 
 
-  Future<List<Map<String, Map<String, dynamic>>>> getLocationWiseReport(List<String> allLocations, List<String> objectKeys, int locationId) async {
+  Future<List<Map<String, Map<String, dynamic>>>> getLocationWiseReport(List<String> allLocations, List<String> objectKeys, int locationId,String accessId) async {
     try {
 
       String url = '$base/location-wise-report?locationId=$locationId';
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.get(Uri.parse(url), headers: {'X-Access-Token': accessId}).timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         print("API Response: ${response.body}");

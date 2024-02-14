@@ -17,7 +17,8 @@ import '../../../../Constants/constants.dart';
 import '../../../../helper/sharedpref.dart';
 
 class SourceRegionsView extends StatefulWidget {
-  const SourceRegionsView({super.key});
+  String accessId;
+   SourceRegionsView({super.key,required this.accessId});
 
   @override
   _SourceRegionsViewState createState() => _SourceRegionsViewState();
@@ -39,7 +40,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
       value == '' ? name = 'user' : name = value;
     }));
     ;
-    regionsFuture = sourceOfFundsApiService.getListOfRegions(controller);
+    regionsFuture = sourceOfFundsApiService.getListOfRegions(controller,widget.accessId);
   }
 
   String formatNumber(int number) {
@@ -183,7 +184,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                 Map<String, dynamic> locationsData =
                                     await sourceOfFundsApiService
                                         .getListOfLocations(
-                                            controller.selectRegionId!);
+                                            controller.selectRegionId!,widget.accessId);
 
                                 // Extract the list of locations from the returned data
                                 List<Map<String, dynamic>> locations =
@@ -211,7 +212,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
                                 var fetchRegionWiseSourceOfFundsData =
                                     await sourceOfFundsApiService
                                         .fetchRegionWiseSourceOfFundsData(
-                                            controller);
+                                            controller,widget.accessId);
 
                                 setState(() {
                                   isLoading = false;
@@ -320,7 +321,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
 
                             Map<String, dynamic> clustersData =
                                 await sourceOfFundsApiService.getListOfClusters(
-                                    controller.selectLocationId!);
+                                    controller.selectLocationId!,widget.accessId);
 
                             // Extract the list of locations from the returned data
                             List<Map<String, dynamic>> clusters =
@@ -339,7 +340,7 @@ class _SourceRegionsViewState extends State<SourceRegionsView> {
 
                             controller.update(["add"]);
 
-                            var fetchLocationWiseSourceOfFundsData = await sourceOfFundsApiService.fetchClusterWiseSourceOfFundsData(controller);
+                            var fetchLocationWiseSourceOfFundsData = await sourceOfFundsApiService.fetchClusterWiseSourceOfFundsData(controller,widget.accessId);
 
                             setState(() {
                               isLoading = false;

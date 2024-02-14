@@ -6,9 +6,12 @@ import 'package:dalmia/pages/LL/ll_home_screen.dart';
 import 'package:dalmia/pages/vdf/street/Addstreet.dart';
 import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import '../../common/size_constant.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 class LLVdfReport extends StatefulWidget {
   const LLVdfReport({Key? key}) : super(key: key);
 

@@ -1,6 +1,9 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class RhLeverWiseReportServices{
 
@@ -9,12 +12,12 @@ class RhLeverWiseReportServices{
 
 
 
-  Future<List<dynamic>> getRegionByRhId(String rhId) async {
+  Future<List<dynamic>> getRegionByRhId(String rhId,String accessId) async {
     try {
       String url = "$base/list-regions-under-user?userId=$rhId";
       print(rhId);
 
-      final response = await http.get(Uri.parse(url));
+      final response = await http.get(Uri.parse(url),headers: {'X-Access-Token': accessId});
       print(response.statusCode);
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
@@ -34,10 +37,10 @@ class RhLeverWiseReportServices{
     return [];
   }
 
-  Future<Map<String,dynamic>> getRhLeverWiseReportByRegionId(int  regionId) async{
+  Future<Map<String,dynamic>> getRhLeverWiseReportByRegionId(int  regionId,String accessId) async{
     try{
       String url = "$base/rh-lever-wise-report?regionId=$regionId";
-      final response = await http.get(Uri.parse(url));
+      final response = await http.get(Uri.parse(url),headers: {'X-Access-Token': accessId});
       print(response);
       if (response.statusCode == 200) {
         var data = json.decode(response.body);

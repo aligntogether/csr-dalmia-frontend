@@ -13,11 +13,14 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 import '../../../Constants/constants.dart';
 import '../../../helper/sharedpref.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class HomeReport extends StatefulWidget {
   const HomeReport({super.key});

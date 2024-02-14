@@ -6,10 +6,13 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../../common/size_constant.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 String interventionname = '';
 
 class Details extends StatefulWidget {

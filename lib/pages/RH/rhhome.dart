@@ -15,11 +15,14 @@ import 'package:dalmia/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 
 import '../../app/modules/amountUtilized/views/amount_utilized_view.dart';
 import '../../common/app_style.dart';
 import '../../common/size_constant.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 class RHHome extends StatefulWidget {
   const RHHome({Key? key}) : super(key: key);
 
@@ -28,6 +31,7 @@ class RHHome extends StatefulWidget {
 }
 
 class _RHHomeState extends State<RHHome> {
+  String? accessId;
   int length = 0;
   String? refId;
   String name = "";
@@ -44,52 +48,26 @@ class _RHHomeState extends State<RHHome> {
     SharedPrefHelper.getSharedPref(USER_ID_SHAREDPREF_KEY, context, false)
         .then((value) => setState(() {
               refId = value;
-              fetchRegion(refId!);
+              SharedPrefHelper.getSharedPref(ACCESS_TOKEN_SHAREDPREF_KEY, context, false)
+              .then((value) => setState(() {
+                print("fdsf$value");
+                        accessId = value;
+                        print(value);
+
+                fetchRegion(refId!);
+
+                      }));
             }));
-    fetchData(context);
+
   }
   void fetchRegion(String rhId) async{
+    print('rhId = $rhId accessId = $accessId');
     final response = await http.get(
       Uri.parse(
           'https://mobileqacloud.dalmiabharat.com:443/csr/regions/search/findAllByRhId?rhId=${rhId}'),
+      headers: {"X-Access-Token": accessId!},
     );
     if (response.statusCode == 200) {
-     // response {
-      //   "_embedded": {
-      //     "regions": [
-      //       {
-      //         "region": "South and Chandrapur",
-      //         "rhId": 10001,
-      //         "_links": {
-      //           "self": {
-      //             "href": "https://mobileqacloud.dalmiabharat.com/csr/regions/10001"
-      //           },
-      //           "region": {
-      //             "href": "https://mobileqacloud.dalmiabharat.com/csr/regions/10001"
-      //           }
-      //         }
-      //       },
-      //       {
-      //         "region": "North East",
-      //         "rhId": 10001,
-      //         "_links": {
-      //           "self": {
-      //             "href": "https://mobileqacloud.dalmiabharat.com/csr/regions/10002"
-      //           },
-      //           "region": {
-      //             "href": "https://mobileqacloud.dalmiabharat.com/csr/regions/10002"
-      //           }
-      //         }
-      //       }
-      //     ]
-      //   },
-      //   "_links": {
-      //     "self": {
-      //       "href": "https://mobileqacloud.dalmiabharat.com/csr/regions/search/findAllByRhId?rhId=10001"
-      //     }
-      //   }
-      // }
-      // Response headers
 
       final Map<String, dynamic> responseData = json.decode(response.body);
       final Map<String, dynamic> respBody = responseData['_embedded'];
@@ -122,6 +100,9 @@ class _RHHomeState extends State<RHHome> {
     final response = await http.get(
       Uri.parse(
           'https://mobileqacloud.dalmiabharat.com:443/csr/list-feedback?userId=${userIdSharedPref}'),
+      headers: {
+        'X-Access-Token': accessId!,
+      }
       // SharedPrefHelper.storeSharedPref(
       // USER_ID_SHAREDPREF_KEY, authResponse.referenceId)
     );
@@ -174,10 +155,12 @@ class _RHHomeState extends State<RHHome> {
                 ),
                 GestureDetector(
                   onTap: () {
+
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => RhReportView(
-                            refId: refId
+                            refId: refId,
+                          accessId: accessId,
                         ),
                       ),
                     );
@@ -209,6 +192,7 @@ class _RHHomeState extends State<RHHome> {
                       MaterialPageRoute(
                         builder: (context) => RhExpectedActualView(
                           regions: regions,
+                          accessId: accessId!,
                         )
                       ),
                     );
@@ -225,7 +209,7 @@ class _RHHomeState extends State<RHHome> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => RhLeverWiseView(refId: refId,regions: regions,
+                        builder: (context) => RhLeverWiseView(refId: refId,regions: regions,accessId: accessId!,
                         )
                       ),
                     );
@@ -242,6 +226,7 @@ class _RHHomeState extends State<RHHome> {
                   onTap: () {
                     Get.to(RhSourceRegionsView(
                       regions: regions,
+                      accessId: accessId!,
                     ));
                   },
                   child: cards(

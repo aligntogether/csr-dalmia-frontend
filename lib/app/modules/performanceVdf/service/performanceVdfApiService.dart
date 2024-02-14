@@ -1,8 +1,11 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '../../../../helper/http_intercepter.dart';
+final http = InterceptedHttp.build(interceptors: [HttpInterceptor()]);
 
 class PerformanceVdfApiService {
 
@@ -12,12 +15,12 @@ class PerformanceVdfApiService {
   // String? base = 'http://192.168.1.16:8082';
 
 
-  Future<Map<String, dynamic>> getListOfRegions() async {
+  Future<Map<String, dynamic>> getListOfRegions(String accessId) async {
     try {
       String url = '$base/list-regions';
 
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.get(Uri.parse(url),headers: {'X-Access-Token': accessId});
 
 
       if (response.statusCode == 200) {
@@ -51,10 +54,10 @@ class PerformanceVdfApiService {
   }
 
 
-  Future<Map<String, dynamic>> getListOfLocations(int regionId) async {
+  Future<Map<String, dynamic>> getListOfLocations(int regionId,String accessId) async {
     try {
 
-      final response = await http.get(Uri.parse('$base/list-locations?regionId=$regionId'));
+      final response = await http.get(Uri.parse('$base/list-locations?regionId=$regionId'),headers: {'X-Access-Token': accessId});
 
       if (response.statusCode == 200) {
 
@@ -86,12 +89,12 @@ class PerformanceVdfApiService {
   }
 
 
-  Future<Map<String, dynamic>?> getListOfClusters(int locationId) async {
+  Future<Map<String, dynamic>?> getListOfClusters(int locationId,String accessId) async {
 
     try {
       String url = '$base/list-cluster-by-location?locationId=$locationId';
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.get(Uri.parse(url),headers: {'X-Access-Token': accessId}).timeout(Duration(seconds: 30));
 
 
       if (response.statusCode == 200) {
@@ -133,12 +136,12 @@ class PerformanceVdfApiService {
   }
 
 
-  Future<String> validateDuplicatePanchayat(int clusterId, String panchayatName, String panchayatCode) async {
+  Future<String> validateDuplicatePanchayat(int clusterId, String panchayatName, String panchayatCode,String accessId) async {
 
     try {
       String url = '$base/validate-duplicate-panchayat?clusterId=$clusterId&panchayatName=$panchayatName&panchayatCode=$panchayatCode';
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.get(Uri.parse(url), headers: {'X-Access-Token': accessId}).timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         print("API Response: ${response.body}");
@@ -163,14 +166,14 @@ class PerformanceVdfApiService {
   }
 
 
-  Future<String> replaceVdf(int clusterId, String vdfName) async {
+  Future<String> replaceVdf(int clusterId, String vdfName,String accessId) async {
 
     try {
       String url = '$base/replace-vdf-for-cluster?clusterId=$clusterId&vdfName=$vdfName';
 
 
 
-      final response = await http.put(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.put(Uri.parse(url),headers: {'X-Access-Token': accessId}).timeout(Duration(seconds: 30));
 
 
       if (response.statusCode == 200) {
@@ -196,12 +199,12 @@ class PerformanceVdfApiService {
     }
   }
 
-  Future<Map<String, dynamic>> getPerformanceReport(int vdfId) async {
+  Future<Map<String, dynamic>> getPerformanceReport(int vdfId,String accessId) async {
 
     try {
       String url = '$base/gpl-vdf-performance?vdfId=$vdfId';
 
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
+      final response = await http.get(Uri.parse(url),headers: {'X-Access-Token': accessId}).timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
        // Parse the response and extract regionId and region
