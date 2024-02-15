@@ -14,6 +14,7 @@ import 'package:dalmia/pages/loginUtility/service/loginApiService.dart';
 import 'package:dalmia/pages/loginUtility/page/otp.dart';
 import 'package:dalmia/pages/vdf/vdfhome.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 
 import 'package:flutter/material.dart';
@@ -44,12 +45,25 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    InternetConnectionChecker().onStatusChange.listen((status) {
-      final hasInternet = status == InternetConnectionStatus.connected;
-      setState(() {
-        isInternetAvailable = hasInternet;
+    print("oooo $kIsWeb");
+    // if it is web
+    if (!kIsWeb) {
+      // check internet connection
+      InternetConnectionChecker().onStatusChange.listen((status) {
+        switch (status) {
+          case InternetConnectionStatus.connected:
+            setState(() {
+              isInternetAvailable = true;
+            });
+            break;
+          case InternetConnectionStatus.disconnected:
+            setState(() {
+              isInternetAvailable = false;
+            });
+            break;
+        }
       });
-    });
+    }
     // get usertype from shared pref
     SharedPrefHelper.getSharedPref(USER_TYPES_SHAREDPREF_KEY, context, false)
         .then((userType) => {
@@ -74,7 +88,9 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     print("yyyy$isInternetAvailable");
-    return isInternetAvailable
+    return
+      // PopScope(canPop: true, child: login(context));
+      kIsWeb || isInternetAvailable
         ?PopScope(canPop: true, child: login(context))
         :PopScope(canPop: true, child: loading(context));
   }
@@ -153,7 +169,7 @@ class _LoginState extends State<Login> {
                     ),
                     Container(
                       margin: const EdgeInsets.only(bottom: 40.0),
-                      width: MySize.screenWidth! >500?MySize.screenWidth!*0.25:MySize.screenWidth!*0.8,
+                      width: MySize.screenWidth! >400?MySize.screenWidth!*0.25:MySize.screenWidth!*0.8,
                       child: TextField(
                         controller:
                             loginController.selectMobileController.value,

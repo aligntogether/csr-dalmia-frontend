@@ -233,27 +233,27 @@ class _LLActionDetailState extends State<LLActionDetail> {
                 ),
                 HouseDetails(
                   heading: 'Family Head',
-                  text: houseHoldDetail==null?"":houseHoldDetail?['memberName'],
+                  text: houseHoldDetail==null?"":houseHoldDetail?['memberName']==null?"":houseHoldDetail?['memberName'],
                 ),
                 HouseDetails(
                   heading: 'Street Name',
-                  text: houseHoldDetail==null?"":houseHoldDetail?['streetName'],
+                  text: houseHoldDetail==null?"":houseHoldDetail?['streetName']==null?"":houseHoldDetail?['streetName'],
                 ),
                 HouseDetails(
                   heading: 'Village Name',
-                  text: houseHoldDetail==null?"":houseHoldDetail?['villageName'],
+                  text: houseHoldDetail==null?"":houseHoldDetail?['villageName']==null?"":houseHoldDetail?['villageName'],
                 ),
                 HouseDetails(
                   heading: 'Panchayat Name',
-                  text: houseHoldDetail==null?"":houseHoldDetail?['panchayatName'],
+                  text: houseHoldDetail==null?"":houseHoldDetail?['panchayatName']==null?"":houseHoldDetail?['panchayatName'],
                 ),
                 HouseDetails(
                   heading: 'Primary Occupation',
-                  text: houseHoldDetail==null?"":houseHoldDetail?['primaryEmployment'],
+                  text: houseHoldDetail==null?"":houseHoldDetail?['primaryEmployment']==null?"":houseHoldDetail?['primaryEmployment'],
                 ),
                 HouseDetails(
                   heading: 'Secondary Information',
-                  text: houseHoldDetail==null?"":houseHoldDetail?['secondaryEmployment'],
+                  text: houseHoldDetail==null?"":houseHoldDetail?['secondaryEmployment']==null?"":houseHoldDetail?['secondaryEmployment'],
                 ),
 
                 HouseDetails(

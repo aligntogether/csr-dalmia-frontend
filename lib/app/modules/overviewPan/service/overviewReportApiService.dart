@@ -62,7 +62,7 @@ class OverviewReportApiService {
         print("regionId : $regionId");
         String url = '$base/locations/search/findByRegionId?regionId=$regionId';
 
-        final response = await http.get(Uri.parse(url), headers: {'accept': '*/*', 'X-Access-Token': accessId},).timeout(Duration(seconds: 30));
+        final response = await http.get(Uri.parse(url), headers: { 'X-Access-Token': accessId}).timeout(Duration(seconds: 30));
         print("response : $response");
 
         if (response.statusCode == 200) {

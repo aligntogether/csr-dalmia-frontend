@@ -78,6 +78,7 @@ class _UpdateBudgetState extends State<UpdateBudget> {
           "\n hjebf controller.clustersList![index]['clusterId'] : ${controller.clustersList![index]['clusterId']}");
 
       Map<String, dynamic> updateMap = controller.clustersList![index];
+      print("udpateMap$updateMap");
 
       if (updateMap['allocatedAmount'] != null) {
         // Handle the case where newValue is not a valid integer string
