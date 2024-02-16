@@ -66,13 +66,13 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
           Space.height(MySize.screenHeight * 0.01),
           Row(
             children: [
-              Expanded(
-                child: GestureDetector(
+               GestureDetector(
                   onTap: () {
                     Get.toNamed(Routes.REPORTS);
                   },
                   child: Container(
                       height: MySize.screenHeight*(100/MySize.screenHeight),
+                    width: MySize.screenWidth*(110/MySize.screenWidth),
                     decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(),
                       shadows: [
@@ -124,7 +124,7 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
                     ),
                   ),
                 ),
-              ),
+
 
             ],
           ),
@@ -144,7 +144,8 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
             },
             child: Container(
               height: MySize.safeHeight! * 0.15,
-              width: MySize.safeWidth! ,
+              width: MySize.screenWidth*(110/MySize.screenWidth),
+
 
               decoration: ShapeDecoration(
                 shape: RoundedRectangleBorder(),
@@ -614,7 +615,8 @@ class _GPLHomeScreenState extends State<GPLHomeScreen> {
             },
             child: Container(
               height:  MySize.safeHeight! * (110/MySize.screenHeight),
-              width: MySize.safeWidth!,
+              width: MySize.screenWidth*(110/MySize.screenWidth),
+
               decoration: ShapeDecoration(
                 shape: RoundedRectangleBorder(),
                 shadows: [

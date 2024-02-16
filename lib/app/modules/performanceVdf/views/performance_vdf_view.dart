@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../Constants/constants.dart';
 import '../../../../helper/sharedpref.dart';
@@ -114,6 +115,16 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
      }
 
     });
+   // sort headerList
+  headerList.sort((b, a) => a.compareTo(b));
+
+//   for(var header in headerList){
+//     // header = yy-mm-dd chng to dd-MMM
+// var date = DateTime.parse(header);
+// var formattedDate=DateFormat.d().format(date)+"-"+DateFormat.MMM().format(date);
+// headerList[headerList.indexOf(header)]=formattedDate;
+//   }
+
     performanceReport.forEach((key, value) {
       print("key : $key");
       if(key=='cumulative'){

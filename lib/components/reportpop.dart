@@ -114,7 +114,7 @@ class _ReportPopupWidgetState extends State<ReportPopupWidget> {
             activeColor: CustomColorTheme.iconColor,
             selectedTileColor: CustomColorTheme.iconColor,
             title: Text(
-              'Leverwise number of interventions',
+              'Leverwise number of completed interventions',
               style: TextStyle(
                   fontSize: CustomFontTheme.textSize,
                   fontWeight: selectedRadio == 3

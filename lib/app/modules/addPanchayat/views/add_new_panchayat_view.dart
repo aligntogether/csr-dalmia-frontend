@@ -273,7 +273,10 @@ class _AddNewPClusterState extends State<AddNewPCluster> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator();
                   } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
+                    return Text('There is no cluster in this location',style: TextStyle(
+                      color: Colors.red,
+                    ));
+
                   } else {
                     Map<String, dynamic> responseData = snapshot.data ?? {};
 

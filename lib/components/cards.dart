@@ -60,7 +60,7 @@ class CustomCard extends StatelessWidget {
                Text(
                   subtitle,
                   style: TextStyle(
-                    fontSize: MySize.screenHeight*(14/MySize.screenHeight),
+                    fontSize: MySize.screenHeight*(13/MySize.screenHeight),
                     fontWeight: FontWeight.w500,
                     color: textcolor,
                   ),
@@ -70,7 +70,7 @@ class CustomCard extends StatelessWidget {
                   title,
                   style: TextStyle(
                     color: textcolor,
-                    fontSize: 24.0,
+                    fontSize: MySize.screenHeight*(16/MySize.screenHeight),
                     fontWeight: FontWeight.w600,
                   ),
                 ),

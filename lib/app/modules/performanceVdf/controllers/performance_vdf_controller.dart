@@ -11,6 +11,8 @@ class PerformanceVdfController extends GetxController {
   String? selectVdfName;
   int? selectVdfId;
   List<String>? headerList;
+  List<String>? headerList1;
+  List<String>? headerList2;
   List<Map<String, dynamic>>? locations;
   List<Map<String, dynamic>>? clusters;
   Map<String, dynamic>? performanceReport;
@@ -27,6 +29,9 @@ class PerformanceVdfController extends GetxController {
   }
   void updateHeaderList(List<String> headerList) {
     this.headerList = headerList;
+    update(["add"]);
+  } void updateHeaderList2(List<String> headerList) {
+    this.headerList2 = headerList;
     update(["add"]);
   }
   void updateDetails(List<String> details) {

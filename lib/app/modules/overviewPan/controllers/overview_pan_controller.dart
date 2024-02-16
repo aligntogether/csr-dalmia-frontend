@@ -85,7 +85,7 @@ class OverviewPanController extends GetxController {
     "householdWithAtLeast1Completed", "noInterventionPlanned", "followupOverdue",
     'HH with Annual Addl. Income', "zeroAdditionalIncome", "lessThan25KIncome",
     "between25KTO50KIncome", "between50KTO75KIncome", "between75KTO1LIncome",
-    "moreThan1LIncome", "mapped"];
+    "moreThan1LIncome", "selected"];
 
 
   List<String> regions = [

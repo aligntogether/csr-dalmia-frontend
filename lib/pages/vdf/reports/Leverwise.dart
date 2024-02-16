@@ -70,10 +70,27 @@ class _LeverwiseState extends State<Leverwise> {
   }
 
   List<Map<String, dynamic>> leverData = []; // List to store API data
-  String formatInLakhs(int number) {
+  String formatInLakhs(var number) {
     if(number>100){
+      var num=number / 100000;
       NumberFormat format = NumberFormat('#,##,###', 'en_IN');
-      return format.format(number / 100000);
+      // .00 maximum fraction digits
+
+      return format.format(num);
+    }
+    else{
+      return number.toString();
+    }
+  }
+  String formatInLakhs1(var number) {
+    if(number>100){
+      var num=number / 100000;
+      print("fdsf$num");
+      NumberFormat format = NumberFormat('#,##,###.0#', 'en_IN');
+      // .00 maximum fraction digits
+      format.maximumFractionDigits = 2;
+      print("fsf ${format.format(num)}");
+      return format.format(num);
     }
     else{
       return number.toString();
@@ -287,6 +304,7 @@ class _LeverwiseState extends State<Leverwise> {
                                     width: MySize.screenWidth*(120/MySize.screenWidth),
 
                                     child: Text(
+                                      softWrap: true,
                                       'Annual Income Reported',
                                       style: TextStyle(color: Colors.white),
                                     ),
@@ -296,6 +314,8 @@ class _LeverwiseState extends State<Leverwise> {
                                   label: Container(
                                     width: MySize.screenWidth*(120/MySize.screenWidth),
                                     child: Text(
+                                      softWrap: true,
+
                                       'Avg. income/int.',
                                       style: TextStyle(color: Colors.white),
                                     ),
@@ -328,7 +348,7 @@ class _LeverwiseState extends State<Leverwise> {
                                     ),
                                     DataCell(
                                       Text(
-                                          formatInLakhs(lever['averageIncomePerIntervention'] ?? 0))
+                                        (lever['noOfInterventions']==null?'0':lever['annualIncomeReported']==null?'0' :((lever['annualIncomeReported']/lever['noOfInterventions'])).toString()?? '0')),
                                     ),
                                   ],
                                 );
