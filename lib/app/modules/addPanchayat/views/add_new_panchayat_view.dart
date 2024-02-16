@@ -209,194 +209,196 @@ class _AddNewPClusterState extends State<AddNewPCluster> {
           Space.width(20)
         ],
       ),
-      body: Column(
-        children: [
-          Space.height(28),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 20),
-            height: MySize.size74,
-            width: Get.width,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Color(0xff006838).withOpacity(0.15)),
-            child: Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Spacer(),
-                  //Text("Region: ",style: AppStyle.textStyleBoldMed(color: Color(0xff006838)),)
-                  RichText(
-                    text: TextSpan(
-                      text: 'Region: ',
-                      style: AppStyle.textStyleBoldMed(
-                          fontSize: 14, color: Color(0xff006838)),
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: widget.region,
-                            style: AppStyle.textStyleInterMed(
-                                fontSize: 14,
-                                color: Color(0xff006838).withOpacity(0.5))),
-                      ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Space.height(28),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              height: MySize.size74,
+              width: Get.width,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color(0xff006838).withOpacity(0.15)),
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Spacer(),
+                    //Text("Region: ",style: AppStyle.textStyleBoldMed(color: Color(0xff006838)),)
+                    RichText(
+                      text: TextSpan(
+                        text: 'Region: ',
+                        style: AppStyle.textStyleBoldMed(
+                            fontSize: 14, color: Color(0xff006838)),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: widget.region,
+                              style: AppStyle.textStyleInterMed(
+                                  fontSize: 14,
+                                  color: Color(0xff006838).withOpacity(0.5))),
+                        ],
+                      ),
                     ),
-                  ),
-                  Space.height(8),
-                  RichText(
-                    text: TextSpan(
-                      text: 'Location: ',
-                      style: AppStyle.textStyleBoldMed(
-                          fontSize: 14, color: Color(0xff006838)),
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: widget.location,
-                            style: AppStyle.textStyleInterMed(
-                                fontSize: 14,
-                                color: Color(0xff006838).withOpacity(0.5))),
-                      ],
+                    Space.height(8),
+                    RichText(
+                      text: TextSpan(
+                        text: 'Location: ',
+                        style: AppStyle.textStyleBoldMed(
+                            fontSize: 14, color: Color(0xff006838)),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: widget.location,
+                              style: AppStyle.textStyleInterMed(
+                                  fontSize: 14,
+                                  color: Color(0xff006838).withOpacity(0.5))),
+                        ],
+                      ),
                     ),
-                  ),
-                  Spacer(),
-                ],
+                    Spacer(),
+                  ],
+                ),
               ),
             ),
-          ),
 
-          Space.height(15),
-          GetBuilder<AddPanchayatController>(
-            id: "add",
-            builder: (controller) {
+            Space.height(15),
+            GetBuilder<AddPanchayatController>(
+              id: "add",
+              builder: (controller) {
 
-              return FutureBuilder<Map<String, dynamic>>(
-                // Assuming that getListOfRegions returns a Future<Map<String, dynamic>>
-                future: clustersFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    return Text('There is no cluster in this location',style: TextStyle(
-                      color: Colors.red,
-                    ));
+                return FutureBuilder<Map<String, dynamic>>(
+                  // Assuming that getListOfRegions returns a Future<Map<String, dynamic>>
+                  future: clustersFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('There is no cluster in this location',style: TextStyle(
+                        color: Colors.red,
+                      ));
 
-                  } else {
-                    Map<String, dynamic> responseData = snapshot.data ?? {};
-
-                    if (responseData.containsKey('clusters')) {
-                      List<Map<String, dynamic>> clusterOptions =
-                      responseData['clusters'];
-
-                      return CustomDropdownFormField(
-                        title: "Select Cluster",
-                        options: clusterOptions
-                            .map((cluster) => cluster['clusterName'].toString())
-                            .toList(),
-                        selectedValue: controller.selectCluster,
-                        onChanged: (String? newValue) async {
-                          // Find the selected region and get its corresponding regionId
-                          Map<String, dynamic>? selectedCluster =
-                          clusterOptions.firstWhereOrNull(
-                                  (cluster) => cluster['clusterName'] == newValue);
-
-                          print('controller.selectedCluster: ${selectedCluster}');
-
-
-                          if (selectedCluster != null &&
-                              selectedCluster['clusterId'] != null) {
-                            controller.selectClusterId =
-                            selectedCluster['clusterId'];
-                            controller.selectCluster = newValue;
-                            controller.update(["add"]);
-
-                            print('controller.selectedCluster: ${controller.selectClusterId}');
-
-
-
-                          }
-                        },
-                      );
                     } else {
-                      return Text('No clusters available');
+                      Map<String, dynamic> responseData = snapshot.data ?? {};
+
+                      if (responseData.containsKey('clusters')) {
+                        List<Map<String, dynamic>> clusterOptions =
+                        responseData['clusters'];
+
+                        return CustomDropdownFormField(
+                          title: "Select Cluster",
+                          options: clusterOptions
+                              .map((cluster) => cluster['clusterName'].toString())
+                              .toList(),
+                          selectedValue: controller.selectCluster,
+                          onChanged: (String? newValue) async {
+                            // Find the selected region and get its corresponding regionId
+                            Map<String, dynamic>? selectedCluster =
+                            clusterOptions.firstWhereOrNull(
+                                    (cluster) => cluster['clusterName'] == newValue);
+
+                            print('controller.selectedCluster: ${selectedCluster}');
+
+
+                            if (selectedCluster != null &&
+                                selectedCluster['clusterId'] != null) {
+                              controller.selectClusterId =
+                              selectedCluster['clusterId'];
+                              controller.selectCluster = newValue;
+                              controller.update(["add"]);
+
+                              print('controller.selectedCluster: ${controller.selectClusterId}');
+
+
+
+                            }
+                          },
+                        );
+                      } else {
+                        return Text('No clusters available');
+                      }
                     }
-                  }
+                  },
+                );
+
+              },
+            ),
+            Space.height(16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 34),
+              child: TextFormField(
+
+                onChanged: (value) {
+                  controller.panchayatNameValue = value;
                 },
-              );
+                decoration: const InputDecoration(
+                  labelText: "Enter Panchayat Name",
+                  contentPadding:
+                  EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+                ),
+              ),
+            ),
+            Space.height(16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 34),
+              child: TextFormField(
+                onChanged: (value) {
+                  controller.panchayatCodeValue = value;
+                },
+                decoration: const InputDecoration(
+                  labelText: "Enter Panchayat Code",
+                  contentPadding:
+                  EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
+                ),
+              ),
+            ),
+            Space.height(30),
+            GestureDetector(onTap: ()  async {
+
+              String? validationresult = await validateAndShowDialog(context);
+
+              if (validationresult == null) {
+                // If validation passes, show the confirmation dialog
+
+                String addPanchayatRespMessage = await apiService.addPanchayat(controller.selectClusterId ?? 0, controller.panchayatNameValue ?? "", controller.panchayatCodeValue ?? "");
+
+                print("addPanchayatRespMessage : $addPanchayatRespMessage");
+                print("addPanchayatRespMessage1 : ${addPanchayatRespMessage.toString()}");
+
+                if (addPanchayatRespMessage == 'Data Added')
+                  showConfirmationDialog(context);
+                else
+                  validationresult = addPanchayatRespMessage;
+              } else {
+                // Handle validation failure, show an error message or take appropriate action
+                print('Validation failed: $validationresult');
+              }
+              setState(() {
+                validationResult = validationresult;
+              });
 
             },
-          ),
-          Space.height(16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 34),
-            child: TextFormField(
-
-              onChanged: (value) {
-                controller.panchayatNameValue = value;
-              },
-              decoration: const InputDecoration(
-                labelText: "Enter Panchayat Name",
-                contentPadding:
-                EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
-              ),
-            ),
-          ),
-          Space.height(16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 34),
-            child: TextFormField(
-              onChanged: (value) {
-                controller.panchayatCodeValue = value;
-              },
-              decoration: const InputDecoration(
-                labelText: "Enter Panchayat Code",
-                contentPadding:
-                EdgeInsets.symmetric(horizontal: 16, vertical: 20.0),
-              ),
-            ),
-          ),
-          Space.height(30),
-          GestureDetector(onTap: ()  async {
-
-            String? validationresult = await validateAndShowDialog(context);
-
-            if (validationresult == null) {
-              // If validation passes, show the confirmation dialog
-
-              String addPanchayatRespMessage = await apiService.addPanchayat(controller.selectClusterId ?? 0, controller.panchayatNameValue ?? "", controller.panchayatCodeValue ?? "");
-
-              print("addPanchayatRespMessage : $addPanchayatRespMessage");
-              print("addPanchayatRespMessage1 : ${addPanchayatRespMessage.toString()}");
-
-              if (addPanchayatRespMessage == 'Data Added')
-                showConfirmationDialog(context);
-              else
-                validationresult = addPanchayatRespMessage;
-            } else {
-              // Handle validation failure, show an error message or take appropriate action
-              print('Validation failed: $validationresult');
-            }
-            setState(() {
-              validationResult = validationresult;
-            });
-
-          },
-            child: commonButton(
-                title: "Add Panchayat",
-                color:  (controller.panchayatNameValue != null && controller.panchayatCodeValue != null)
-                    ? Color(0xff27528F)
-                    : Color(0xff27528F).withOpacity(0.7)),
-          ),
-
-
-          // Display the error message with red color if there's an error
-          if (validationResult != null)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                validationResult!,
-                style: TextStyle(color: Colors.red),
-              ),
+              child: commonButton(
+                  title: "Add Panchayat",
+                  color:  (controller.panchayatNameValue != null && controller.panchayatCodeValue != null)
+                      ? Color(0xff27528F)
+                      : Color(0xff27528F).withOpacity(0.7)),
             ),
 
 
-        ],
+            // Display the error message with red color if there's an error
+            if (validationResult != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  validationResult!,
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+
+
+          ],
+        ),
       ),
     ));
   }

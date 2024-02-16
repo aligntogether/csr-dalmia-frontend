@@ -20,7 +20,7 @@ class LocationWiseController extends GetxController {
   List<String> details = [
     'HH Alloted',
     'HH Selected',
-    'No. of HHs with planned int.',
+    'No. of HHs with completed int.',
     'No. of HHs with AAAI',
 
   ];

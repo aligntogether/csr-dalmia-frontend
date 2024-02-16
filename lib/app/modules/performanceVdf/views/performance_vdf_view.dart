@@ -498,7 +498,7 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                         padding: EdgeInsets.only(left: 10),
                         child: Center(
                           child: Text(
-                            'Details',
+                            'VDF names',
                             style: TextStyle(
                                 fontWeight: CustomFontTheme.headingwt,
                                 fontSize: CustomFontTheme.textSize,
@@ -518,7 +518,7 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           child: Center(
                             child: Text(
-                              date=='cumulative'? "Cumulative":date,
+                              date=='cumulative'? "Cumulative":DateFormat.d().format(DateTime.parse(date))+"-"+DateFormat.MMM().format(DateTime.parse(date)),
                               style: TextStyle(
                                 fontWeight: CustomFontTheme.headingwt,
                                 fontSize: CustomFontTheme.textSize,
@@ -564,7 +564,7 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
                           child: Row(
                             children: [
                               Text(
-                                controller.details![index].capitalizeFirst!,
+                                insertSpaceAfterFirstCapital(controller.details![index]).capitalizeFirst!,
                                 style:  AppStyle.textStyleInterMed(fontSize: 14),
                               ),
                               Spacer(),
@@ -631,6 +631,18 @@ class _PerformanceVdfViewState extends State<PerformanceVdfView> {
     );
 
 
+  }
+  String insertSpaceAfterFirstCapital(String input) {
+    // Iterate through each character in the string
+    for (int i = 1; i < input.length; i++) {
+      // Check if the character is a capital letter
+      if (input[i].toUpperCase() == input[i]) {
+        // Insert a space before the capital letter
+        input = input.substring(0, i) + ' ' + input.substring(i);
+        break; // Stop after inserting the space
+      }
+    }
+    return input;
   }
 
 

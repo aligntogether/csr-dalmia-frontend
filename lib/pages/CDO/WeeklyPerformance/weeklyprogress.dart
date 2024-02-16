@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:intl/intl.dart';
 
 import '../../../Constants/constants.dart';
 import '../../../app/modules/downloadExcelFromTable/ExportTableToExcel.dart';
@@ -152,13 +153,38 @@ class _WeeklyProgressState extends State<WeeklyProgress> {
     List<String> details=[];
     performanceReport.forEach((key, value) {
       print("key : $key");
-      headerList.add(key);
-      value.keys.forEach((element) {
-        if(!details.contains(element)){
+      if(key!='cumulative'){
+        headerList.add(key);
+        value.keys.forEach((element) {
+          if(!details.contains(element)){
 
-          details.add(element);
-        }
-      });
+            details.add(element);
+          }
+        });
+      }
+
+    });
+    // sort headerList
+    headerList.sort((b, a) => a.compareTo(b));
+
+//   for(var header in headerList){
+//     // header = yy-mm-dd chng to dd-MMM
+// var date = DateTime.parse(header);
+// var formattedDate=DateFormat.d().format(date)+"-"+DateFormat.MMM().format(date);
+// headerList[headerList.indexOf(header)]=formattedDate;
+//   }
+
+    performanceReport.forEach((key, value) {
+      print("key : $key");
+      if(key=='cumulative'){
+        headerList.add(key);
+        value.keys.forEach((element) {
+          if(!details.contains(element)){
+
+            details.add(element);
+          }
+        });
+      }
 
     });
     List<String> headerList1= [];
@@ -374,7 +400,7 @@ class _WeeklyProgressState extends State<WeeklyProgress> {
                         padding: EdgeInsets.only(left: 10),
                         child: Center(
                           child: Text(
-                            'Details',
+                            'VDF Names',
                             style: TextStyle(
                                 fontWeight: CustomFontTheme.headingwt,
                                 fontSize: CustomFontTheme.textSize,
@@ -394,7 +420,7 @@ class _WeeklyProgressState extends State<WeeklyProgress> {
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         child: Center(
                           child: Text(
-                            date=='cumulative'?"Cumulative":date,
+                            date=='cumulative'?"Cumulative":DateFormat.d().format(DateTime.parse(date))+"-"+DateFormat.MMM().format(DateTime.parse(date)),
                             style: TextStyle(
                               fontWeight: CustomFontTheme.headingwt,
                               fontSize: CustomFontTheme.textSize,
@@ -440,7 +466,7 @@ class _WeeklyProgressState extends State<WeeklyProgress> {
                           child: Row(
                             children: [
                               Text(
-                                controller.details![index],
+                                  insertSpaceAfterFirstCapital(controller.details![index]).capitalizeFirst!,
                                 style:  AppStyle.textStyleInterMed(fontSize: 14),
                               ),
                               Spacer(),
@@ -507,6 +533,24 @@ class _WeeklyProgressState extends State<WeeklyProgress> {
 
 
   }
+  String insertSpaceAfterFirstCapital(String input) {
+    // Iterate through each character in the string
+    for (int i = 1; i < input.length; i++) {
+      // Check if the character is a capital letter
+      if (input[i].toUpperCase() == input[i]) {
+        // Insert a space before the capital letter
+        input = input.substring(0, i) + ' ' + input.substring(i);
+        break; // Stop after inserting the space
+      }
+    }
+    return input;
+  }
+
+  void main() {
+    var name = "BruceWayne";
+    print(insertSpaceAfterFirstCapital(name)); // Output: Bruce Wayne
+  }
+
 
 
 }

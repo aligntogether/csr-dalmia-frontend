@@ -73,7 +73,7 @@ class _LeverwiseState extends State<Leverwise> {
   String formatInLakhs(var number) {
     if(number>100){
       var num=number / 100000;
-      NumberFormat format = NumberFormat('#,##,###', 'en_IN');
+      NumberFormat format = NumberFormat('#,##,###0.00', 'en_IN');
       // .00 maximum fraction digits
 
       return format.format(num);
@@ -348,7 +348,8 @@ class _LeverwiseState extends State<Leverwise> {
                                     ),
                                     DataCell(
                                       Text(
-                                        (lever['noOfInterventions']==null?'0':lever['annualIncomeReported']==null?'0' :((lever['annualIncomeReported']/lever['noOfInterventions'])).toString()?? '0')),
+                                        (lever['averageIncomePerIntervention'].toString()=='null'?'0':formatInLakhs(lever['averageIncomePerIntervention'])??'0'
+                                            )),
                                     ),
                                   ],
                                 );

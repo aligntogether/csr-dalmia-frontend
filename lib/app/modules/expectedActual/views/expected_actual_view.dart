@@ -388,7 +388,7 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    capitalizeFirstLetter(firstColumn=='clusterId'?'Cluster ${i+1}':firstColumn),
+                    firstColumn=='clusterId'?'Cluster ${i+1}':insertSpaceAfterFirstCapital(firstColumn).capitalizeFirst!.replaceAll("eaai", "EAAI").replaceAll("aaai", "AAAI"),
                     style: TextStyle(
                       fontWeight: CustomFontTheme.headingwt,
                       fontSize: CustomFontTheme.textSize,
@@ -574,10 +574,19 @@ class _ExpectedActualViewState extends State<ExpectedActualView> {
     );
   }
 
-  String capitalizeFirstLetter(String input) {
-    if (input.isEmpty) {
-      return input; // Return the original string if it's empty
+
+  String insertSpaceAfterFirstCapital(String input) {
+    // Iterate through each character in the string
+    for (int i = 1; i < input.length; i++) {
+      // Check if the character is a capital letter
+      if (input[i].toUpperCase() == input[i]) {
+        // Insert a space before the capital letter
+        input = input.substring(0, i) + ' ' + input.substring(i);
+        break; // Stop after inserting the space
+      }
     }
-    return input[0].toUpperCase() + input.substring(1);
+    return input;
   }
+
+
 }
