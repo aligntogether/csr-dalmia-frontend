@@ -148,9 +148,10 @@ class _AddClusterViewLState extends State<AddClusterViewL> {
     // Example: Check if fields are not empty, perform API validation, etc.
     // Return true if validation passes, false otherwise
 
-    print('performValidation ${a.nameController.value.text}');
+    print('performValidation ${a.codeController.value.text}');
 
-    Future<String> message = apiService.addLocation(a.selectRegionId ?? 0, a.nameController.value.text ?? "", a.selectedIndex < 0 ? a.selectedIndex : 0);
+    Future<String> message = apiService.addLocation(
+        a.selectRegionId ?? 0, a.nameController.value.text ?? "",a.codeController.value.text??"", a.selectedIndex < 0 ? a.selectedIndex : 0);
 
     return message;
   }

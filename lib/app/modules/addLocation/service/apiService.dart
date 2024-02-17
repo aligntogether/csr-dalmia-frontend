@@ -141,7 +141,7 @@ class ApiService {
     }
   }
 
-  Future<String> addLocation(int regionId, String locationName, int clusterCount) async {
+  Future<String> addLocation(int regionId, String locationName,String locationCode, int clusterCount) async {
 
     try {
       String url = '$base/add-location';
@@ -151,6 +151,7 @@ class ApiService {
       Map<String, dynamic> requestBody = {
         "clusterCount": clusterCount,
         "location": locationName,
+        "locationCode": locationCode,
         "regionId": regionId
       };
 

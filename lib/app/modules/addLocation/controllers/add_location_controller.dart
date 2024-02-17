@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 class AddLocationController extends GetxController {
   Rx<TextEditingController> nameController = TextEditingController().obs;
+  Rx<TextEditingController> codeController = TextEditingController().obs;
   String? selectLocation;
   int selectedIndex = -2;
   List locationList = [
